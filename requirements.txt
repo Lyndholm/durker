@@ -1,0 +1,6 @@
+discord.py
+discord.py[voice]
+apscheduler
+asyncio
+loguru
+psycopg2

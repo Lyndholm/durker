@@ -1,0 +1,257 @@
+{
+  "achievements": [
+    {
+      "id": {
+        "data_type": "integer",
+        "not_null": true,
+        "primary_key": true
+      }
+    },
+    {
+      "name": {
+        "data_type": "text",
+        "not_null": true,
+        "primary_key": false
+      }
+    },
+    {
+      "description": {
+        "data_type": "text",
+        "not_null": true,
+        "primary_key": false
+      }
+    },
+    {
+      "rep_boost": {
+        "data_type": "integer",
+        "not_null": true,
+        "primary_key": false
+      }
+    },
+    {
+      "thumbnail": {
+        "data_type": "text",
+        "not_null": false,
+        "primary_key": false
+      }
+    }
+  ],
+
+  "reactions": [
+    {
+      "emoji": {
+        "data_type": "text",
+        "not_null": true,
+        "primary_key": false
+      }
+    },
+    {
+      "role": {
+        "data_type": "text",
+        "not_null": true,
+        "primary_key": false
+      }
+    },
+    {
+      "message_id": {
+        "data_type": "text",
+        "not_null": true,
+        "primary_key": false
+      }
+    },
+    {
+      "channel_id": {
+        "data_type": "text",
+        "not_null": true,
+        "primary_key": false
+      }
+    },
+    {
+      "guild_id": {
+        "data_type": "text",
+        "not_null": true,
+        "primary_key": false
+      }
+    }
+  ],
+
+  "users_info": [
+    {
+      "user_id": {
+        "data_type": "integer",
+        "not_null": true,
+        "primary_key": true
+      }
+    },
+    {
+      "nickname": {
+        "data_type": "text",
+        "not_null": true,
+        "primary_key": false
+      }
+    },
+    {
+      "mention": {
+        "data_type": "text",
+        "not_null": true,
+        "primary_key": false
+      }
+    },
+    {
+      "joined_at": {
+        "data_type": "text",
+        "not_null": true,
+        "primary_key": false
+      }
+    }
+  ],
+
+  "users_stats": [
+    {
+      "user_id": {
+        "data_type": "integer",
+        "not_null": true,
+        "primary_key": true
+      }
+    },
+    {
+      "achievements_list": {
+        "data_type": "json",
+        "not_null": false,
+        "primary_key": false
+      }
+    },
+    {
+      "messages_count": {
+        "data_type": "integer",
+        "not_null": false,
+        "primary_key": false
+      }
+    },
+    {
+      "last_message_date": {
+        "data_type": "text",
+        "not_null": false,
+        "primary_key": false
+      }
+    },
+    {
+      "rep_rank": {
+        "data_type": "integer",
+        "not_null": false,
+        "primary_key": false
+      }
+    },
+    {
+      "vbucks_count": {
+        "data_type": "integer",
+        "not_null": false,
+        "primary_key": false
+      }
+    },
+    {
+      "purchases": {
+        "data_type": "json",
+        "not_null": false,
+        "primary_key": false
+      }
+    },
+    {
+      "invoice_time": {
+        "data_type": "integer",
+        "not_null": false,
+        "primary_key": false
+      }
+    },
+    {
+      "warn_count": {
+        "data_type": "integer",
+        "not_null": false,
+        "primary_key": false
+      }
+    },
+    {
+      "mute_count": {
+        "data_type": "integer",
+        "not_null": false,
+        "primary_key": false
+      }
+    },
+    {
+      "total_mute_time": {
+        "data_type": "integer",
+        "not_null": false,
+        "primary_key": false
+      }
+    },
+    {
+      "lost_reputation": {
+        "data_type": "integer",
+        "not_null": false,
+        "primary_key": false
+      }
+    }
+  ],
+
+  "leveling": [
+    {
+      "user_id": {
+        "data_type": "integer",
+        "not_null": true,
+        "primary_key": true
+      }
+    },
+    {
+      "level": {
+        "data_type": "integer",
+        "not_null": false,
+        "primary_key": false
+      }
+    },
+    {
+      "xp": {
+        "data_type": "integer",
+        "not_null": false,
+        "primary_key": false
+      }
+    },
+    {
+      "total_xp": {
+        "data_type": "integer",
+        "not_null": false,
+        "primary_key": false
+      }
+    }
+  ],
+
+  "durka_stats": [
+    {
+      "user_id": {
+        "data_type": "integer",
+        "not_null": true,
+        "primary_key": true
+      }
+    },
+    {
+      "available_durka_uses": {
+        "data_type": "integer",
+        "not_null": false,
+        "primary_key": false
+      }
+    },
+    {
+      "received_durka_calls": {
+        "data_type": "integer",
+        "not_null": false,
+        "primary_key": false
+      }
+    },
+    {
+      "sent_durka_calls": {
+        "data_type": "integer",
+        "not_null": false,
+        "primary_key": false
+      }
+    }
+  ]
+}
