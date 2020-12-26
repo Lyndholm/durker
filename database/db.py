@@ -63,5 +63,22 @@ def delete(table: str, row_id: int) -> None:
     conn.commit()
 
 
+def execute(command, *values):
+    """
+    Executes a SQL query
+    """
+    cursor.execute(command, tuple(values))
+
+
 def get_cursor():
+    """
+    Returns a DB connection cursor
+    """
     return cursor
+
+
+def commit():
+    """
+    Make commit into DB
+    """
+    conn.commit()

@@ -768,4 +768,5 @@ MigrationBackup/
 .ionide/
 
 logs/
+dev/
 db_structure.json

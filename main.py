@@ -43,6 +43,7 @@ async def on_ready():
     print("\nReady to use!\n")
 
 
+@logger.catch
 @bot.event
 async def on_message(message):
     print(message.content)
