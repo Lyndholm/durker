@@ -1,10 +1,13 @@
-from discord import Intents
+from discord import Intents, Embed, Color
 from discord.ext.commands import Bot as BotBase
+from discord.ext.commands import CommandNotFound, CommandOnCooldown
+from datetime import datetime
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from os import getenv
-
 from loguru import logger
 
+from ..utils import constants
+from ..utils.utils import russian_plural
 
 logger.add("logs/{time:DD-MM-YYYY---HH-mm-ss}.log",
            format="{time:DD-MM-YYYY HH:mm:ss} | {level} | {message}",
@@ -40,13 +43,6 @@ class Bot(BotBase):
         print("Running bot...")
         super().run(self.TOKEN, reconnect=True)
 
-    @logger.catch
-    async def on_connect(self):
-        print("Bot connected")
-
-    @logger.catch
-    async def on_disconnect(self):
-        print("Bot disconnected")
 
     @logger.catch
     async def on_ready(self):
@@ -58,13 +54,45 @@ class Bot(BotBase):
             for guild in bot.guilds:
                 print(guild.name, guild.id)
             print("\nReady to use!\n")
+            #await self.get_user(OWNER_IDS[0]).send("I am online!\nReady to use!")
 
         else:
             print("Bot reconnected")
 
+
+    async def on_connect(self):
+        print("Bot connected")
+
+    async def on_disconnect(self):
+        print("Bot disconnected")
+
+    async def on_command_error(self, ctx, exc):
+        if isinstance(exc, CommandNotFound):
+            embed = Embed(title=':exclamation: Ошибка!', description=f'Команда `{ctx.message.content}` не найдена.', color = Color.red())
+            await ctx.send(embed=embed, delete_after = 10)
+        elif isinstance(exc, CommandOnCooldown):
+            embed = Embed(title=f"{str(exc.cooldown.type).split('.')[-1]}", description =f"Команда на откате. Ожидайте {int(exc.retry_after)} {russian_plural(int(exc.retry_after),['секунду','секунды','секунд'])}.") #exc.retry_after:,.2f
+            await ctx.send(embed)
+        else:
+            try:
+                if hasattr(ctx.command, 'on_error'):
+                    embed = Embed(title="Error.", description = "Something went wrong, an error occured.\nCheck logs.", timestamp=datetime.now(), color = Color.red())
+                    await dev.send(embed=embed)
+                else:
+                    embed = Embed(title=f'Ошибка при выполнении команды {ctx.command}.', description=f'`{ctx.command.qualified_name} {ctx.command.signature}`\n{error}', color = Color.red())
+                    channel = self.get_channel(id=constants.AUDIT_LOG_CHANNEL)
+                    await channel.send(embed=embed)
+            except:
+                embed = Embed(title=f'Ошибка при выполнении команды {ctx.command}.', description=f'`{ctx.command.qualified_name} {ctx.command.signature}`\n{error}', color = Color.red())
+                channel = self.get_channel(id=constants.AUDIT_LOG_CHANNEL)
+                await channel.send(embed=embed)
+            finally:
+                raise exc
+
+
     @logger.catch
     async def on_message(self, message):
-        pass
+        await self.process_commands(message)
 
 
 bot = Bot()
