@@ -1,4 +1,6 @@
+from asyncio import sleep
 from datetime import datetime
+from glob import glob
 from os import getenv
 
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
@@ -7,9 +9,9 @@ from discord.ext.commands import Bot as BotBase
 from discord.ext.commands import CommandNotFound, CommandOnCooldown
 from loguru import logger
 
+from ..db import db
 from ..utils import constants
 from ..utils.utils import russian_plural
-from ..db import db
 
 logger.add("logs/{time:DD-MM-YYYY---HH-mm-ss}.log",
            format="{time:DD-MM-YYYY HH:mm:ss} | {level} | {message}",
@@ -23,6 +25,20 @@ TOKEN = getenv('DISCORD_BOT_TOKEN')
 PREFIX = "+"
 GUILD = 490181820353347584
 OWNER_IDS = [375722626636578816]
+COGS = [path.split("\\")[-1][:-3] for path in glob("./lib/cogs/*.py")]
+
+
+class Ready(object):
+    def __init__(self):
+        for cog in COGS:
+            setattr(self, cog, False)
+
+    def ready_up(self, cog):
+        setattr(self, cog, True)
+        print(f"{cog.title()} cog ready")
+
+    def all_ready(self):
+        return all([getattr(self, cog) for cog in COGS])
 
 
 class Bot(BotBase):
@@ -30,6 +46,7 @@ class Bot(BotBase):
         self.TOKEN = TOKEN
         self.PREFIX = PREFIX
         self.ready = False
+        self.cogs_ready = Ready()
         self.guild = None
         self.scheduler = AsyncIOScheduler()
 
@@ -41,8 +58,20 @@ class Bot(BotBase):
                          intents=Intents.all())
 
     @logger.catch
+    def setup(self):
+        for cog in COGS:
+            self.load_extension(f"lib.cogs.{cog}")
+            print(f"{cog} cog loaded")
+
+        print("Setup complete")
+
+
+    @logger.catch
     def run(self, version):
         self.VERSION = version
+
+        print("Running setup...")
+        self.setup()
 
         print("Running bot...")
         super().run(self.TOKEN, reconnect=True)
@@ -51,13 +80,19 @@ class Bot(BotBase):
     @logger.catch
     async def on_ready(self):
         if not self.ready:
-            self.ready = True
+            self.scheduler.start()
+
             print("\nLogged in as:", bot.user)
             print("ID:", bot.user.id)
             print("\nAvailable guilds:")
             for guild in bot.guilds:
-                print(guild.name, guild.id)
-            self.scheduler.start()
+                print(guild.name, guild.id, "\n")
+            
+
+            while not self.cogs_ready.all_ready():
+                await sleep(0.5)
+
+            self.ready = True
             print("\nReady to use!\n")
             #await self.get_user(OWNER_IDS[0]).send("I am online!\nReady to use!")
 
