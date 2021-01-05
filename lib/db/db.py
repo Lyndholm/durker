@@ -2,6 +2,7 @@ import os
 from typing import Dict, List
 
 import psycopg2
+from apscheduler.triggers.cron import CronTrigger
 
 conn = psycopg2.connect(
     dbname=os.environ.get('DB_NAME'),
@@ -102,6 +103,11 @@ def commit():
     """
     conn.commit()
 
+def autosave(sched):
+    """
+    Scheduled method that makes commit to DB every 60 seconds
+    """
+    sched.add_job(commit, CronTrigger(second=0))
 
 def close():
     """

@@ -1,13 +1,15 @@
-from discord import Intents, Embed, Color
+from datetime import datetime
+from os import getenv
+
+from apscheduler.schedulers.asyncio import AsyncIOScheduler
+from discord import Color, Embed, Intents
 from discord.ext.commands import Bot as BotBase
 from discord.ext.commands import CommandNotFound, CommandOnCooldown
-from datetime import datetime
-from apscheduler.schedulers.asyncio import AsyncIOScheduler
-from os import getenv
 from loguru import logger
 
 from ..utils import constants
 from ..utils.utils import russian_plural
+from ..db import db
 
 logger.add("logs/{time:DD-MM-YYYY---HH-mm-ss}.log",
            format="{time:DD-MM-YYYY HH:mm:ss} | {level} | {message}",
@@ -31,6 +33,8 @@ class Bot(BotBase):
         self.guild = None
         self.scheduler = AsyncIOScheduler()
 
+        db.autosave(self.scheduler)
+
         super().__init__(command_prefix=PREFIX,
                          case_insensitive=True,
                          owner_ids=OWNER_IDS,
@@ -53,6 +57,7 @@ class Bot(BotBase):
             print("\nAvailable guilds:")
             for guild in bot.guilds:
                 print(guild.name, guild.id)
+            self.scheduler.start()
             print("\nReady to use!\n")
             #await self.get_user(OWNER_IDS[0]).send("I am online!\nReady to use!")
 
