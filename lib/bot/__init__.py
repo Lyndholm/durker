@@ -4,9 +4,9 @@ from glob import glob
 from os import getenv
 
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
-from discord import Color, Embed, Intents
-from discord.ext.commands import Bot as BotBase
-from discord.ext.commands import CommandNotFound, CommandOnCooldown
+from discord import Color, Embed, Intents, HTTPException
+from discord.ext.commands import Bot as BotBase, Context
+from discord.ext.commands import CommandNotFound, CommandOnCooldown, DisabledCommand, NoPrivateMessage
 from loguru import logger
 
 from ..db import db
@@ -78,6 +78,16 @@ class Bot(BotBase):
 
 
     @logger.catch
+    async def process_commands(self, message):
+        ctx = await self.get_context(message, cls=Context)
+
+        if ctx.command is not None and ctx.guild is not None:
+            if self.ready:
+                await self.invoke(ctx)
+            else:
+                await ctx.send("Бот не готов принимать сообщения и обрабатывать команды. Пожалуйста, подождите.", delete_after=60)
+
+    @logger.catch
     async def on_ready(self):
         if not self.ready:
             self.scheduler.start()
@@ -110,20 +120,33 @@ class Bot(BotBase):
         if isinstance(exc, CommandNotFound):
             embed = Embed(title=':exclamation: Ошибка!', description=f'Команда `{ctx.message.content}` не найдена.', color = Color.red())
             await ctx.send(embed=embed, delete_after = 10)
+
         elif isinstance(exc, CommandOnCooldown):
             embed = Embed(title=f"{str(exc.cooldown.type).split('.')[-1]}", description =f"Команда на откате. Ожидайте {int(exc.retry_after)} {russian_plural(int(exc.retry_after),['секунду','секунды','секунд'])}.") #exc.retry_after:,.2f
-            await ctx.send(embed)
+            await ctx.send(embed=embed, delete_after = 10)
+
+        elif isinstance(exc, DisabledCommand):
+            embed = Embed(title=':exclamation: Ошибка!', description =f"Команда отключена.")
+            await ctx.send(embed=embed, delete_after = 10)
+
+        elif isinstance(exc, NoPrivateMessage):
+            try:
+                embed = Embed(title=':exclamation: Ошибка!', description =f"Команда `{ctx.command}` не может быть использована в личных сообщениях.")
+                await ctx.author.send(embed=embed)
+            except HTTPException:
+                pass
+
         else:
             try:
                 if hasattr(ctx.command, 'on_error'):
                     embed = Embed(title="Error.", description = "Something went wrong, an error occured.\nCheck logs.", timestamp=datetime.now(), color = Color.red())
                     await dev.send(embed=embed)
                 else:
-                    embed = Embed(title=f'Ошибка при выполнении команды {ctx.command}.', description=f'`{ctx.command.qualified_name} {ctx.command.signature}`\n{error}', color = Color.red())
+                    embed = Embed(title=f'Ошибка при выполнении команды {ctx.command}.', description=f'`{ctx.command.qualified_name} {ctx.command.signature}`\n{exc}', color = Color.red())
                     channel = self.get_channel(id=constants.AUDIT_LOG_CHANNEL)
                     await channel.send(embed=embed)
             except:
-                embed = Embed(title=f'Ошибка при выполнении команды {ctx.command}.', description=f'`{ctx.command.qualified_name} {ctx.command.signature}`\n{error}', color = Color.red())
+                embed = Embed(title=f'Ошибка при выполнении команды {ctx.command}.', description=f'`{ctx.command.qualified_name} {ctx.command.signature}`\n{exc}', color = Color.red())
                 channel = self.get_channel(id=constants.AUDIT_LOG_CHANNEL)
                 await channel.send(embed=embed)
             finally:
