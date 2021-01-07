@@ -142,11 +142,11 @@ class Bot(BotBase):
             embed = Embed(title=':exclamation: Ошибка!', description =f"Команда `{ctx.command}` работает только в личных сообщениях. Она не может быть использована на сервере.", color = Color.red())
             await ctx.send(embed=embed, delete_after = 30)
 
-        elif isinstance(exc.original, Forbidden):
+        elif isinstance(exc, Forbidden):
             embed = Embed(title=':exclamation: Ошибка!', description =f"Недостаточно прав для выполнения действия.", color= Color.red())
             await ctx.send(embed=embed, delete_after = 30)
 
-        # elif isinstance(exc.original, HTTPException):
+        # elif isinstance(exc, HTTPException):
         #     embed = Embed(title=':exclamation: Ошибка!', description =f"Невозможно отправить сообщение.", color= Color.red())
         #     await ctx.send(embed=embed, delete_after = 30)
 
