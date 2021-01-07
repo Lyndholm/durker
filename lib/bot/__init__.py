@@ -6,7 +6,8 @@ from os import getenv
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from discord import Color, Embed, Intents, HTTPException
 from discord.ext.commands import Bot as BotBase, Context
-from discord.ext.commands import CommandNotFound, CommandOnCooldown, DisabledCommand, NoPrivateMessage
+from discord.ext.commands import (CommandNotFound, CommandOnCooldown, DisabledCommand, 
+                                NoPrivateMessage, PrivateMessageOnly)
 from loguru import logger
 
 from ..db import db
@@ -81,7 +82,7 @@ class Bot(BotBase):
     async def process_commands(self, message):
         ctx = await self.get_context(message, cls=Context)
 
-        if ctx.command is not None and ctx.guild is not None:
+        if ctx.command is not None:
             if self.ready:
                 await self.invoke(ctx)
             else:
@@ -135,6 +136,10 @@ class Bot(BotBase):
                 await ctx.author.send(embed=embed)
             except HTTPException:
                 pass
+
+        elif isinstance(exc, PrivateMessageOnly):
+            embed = Embed(title=':exclamation: Ошибка!', description =f"Команда `{ctx.command}` работает только в личных сообщениях. Она не может быть использована на сервере.")
+            await ctx.author.send(embed=embed)
 
         else:
             try:
