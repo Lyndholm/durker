@@ -1,6 +1,7 @@
 from discord.ext.commands import Cog
 from discord.ext.commands import command
 from discord.ext.commands import is_owner, guild_only
+from discord.errors import HTTPException
 from random import randint
 
 from ..utils import checks
@@ -29,6 +30,13 @@ class Fun(Cog):
         rolls = [randint(1, value) for i in range(dice)]
 
         await ctx.send(" + ".join([str(r) for r in rolls]) + f" = {sum(rolls)}")
+
+    @dice_command.error
+    async def dice_command_error(self, ctx, exc):
+        if isinstance(exc.original, HTTPException):
+            await ctx.send("Длина получившейся комбинации превышает лимит символов (2000). Пожалуйста, используйте числа меньше.")
+        elif isinstance(exc.original, ValueError):
+            await ctx.send("Пожалуйста, введите корректную комбинацию.")
 
 
     @Cog.listener()

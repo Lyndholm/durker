@@ -4,10 +4,11 @@ from glob import glob
 from os import getenv
 
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
-from discord import Color, Embed, Intents, HTTPException
+from discord import Color, Embed, Intents
 from discord.ext.commands import Bot as BotBase, Context
 from discord.ext.commands import (CommandNotFound, CommandOnCooldown, DisabledCommand, 
                                 NoPrivateMessage, PrivateMessageOnly)
+from discord.errors import HTTPException, Forbidden
 from loguru import logger
 
 from ..db import db
@@ -123,23 +124,31 @@ class Bot(BotBase):
             await ctx.send(embed=embed, delete_after = 10)
 
         elif isinstance(exc, CommandOnCooldown):
-            embed = Embed(title=f"{str(exc.cooldown.type).split('.')[-1]}", description =f"Команда на откате. Ожидайте {int(exc.retry_after)} {russian_plural(int(exc.retry_after),['секунду','секунды','секунд'])}.") #exc.retry_after:,.2f
+            embed = Embed(title=f"{str(exc.cooldown.type).split('.')[-1]}", description =f"Команда на откате. Ожидайте {int(exc.retry_after)} {russian_plural(int(exc.retry_after),['секунду','секунды','секунд'])}.", color = Color.red()) #exc.retry_after:,.2f
             await ctx.send(embed=embed, delete_after = 10)
 
         elif isinstance(exc, DisabledCommand):
-            embed = Embed(title=':exclamation: Ошибка!', description =f"Команда отключена.")
+            embed = Embed(title=':exclamation: Ошибка!', description =f"Команда отключена.", color = Color.red())
             await ctx.send(embed=embed, delete_after = 10)
 
         elif isinstance(exc, NoPrivateMessage):
             try:
-                embed = Embed(title=':exclamation: Ошибка!', description =f"Команда `{ctx.command}` не может быть использована в личных сообщениях.")
-                await ctx.author.send(embed=embed)
+                embed = Embed(title=':exclamation: Ошибка!', description =f"Команда `{ctx.command}` не может быть использована в личных сообщениях.", color = Color.red())
+                await ctx.author.send(embed=embed, delete_after = 30)
             except HTTPException:
                 pass
 
         elif isinstance(exc, PrivateMessageOnly):
-            embed = Embed(title=':exclamation: Ошибка!', description =f"Команда `{ctx.command}` работает только в личных сообщениях. Она не может быть использована на сервере.")
-            await ctx.author.send(embed=embed)
+            embed = Embed(title=':exclamation: Ошибка!', description =f"Команда `{ctx.command}` работает только в личных сообщениях. Она не может быть использована на сервере.", color = Color.red())
+            await ctx.send(embed=embed, delete_after = 30)
+
+        elif isinstance(exc.original, Forbidden):
+            embed = Embed(title=':exclamation: Ошибка!', description =f"Недостаточно прав для выполнения действия.", color= Color.red())
+            await ctx.send(embed=embed, delete_after = 30)
+
+        # elif isinstance(exc.original, HTTPException):
+        #     embed = Embed(title=':exclamation: Ошибка!', description =f"Невозможно отправить сообщение.", color= Color.red())
+        #     await ctx.send(embed=embed, delete_after = 30)
 
         else:
             try:
