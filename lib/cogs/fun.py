@@ -2,13 +2,15 @@ from discord import Embed, Color, Member
 from discord.ext.commands import Cog
 from discord.ext.commands import command
 from discord.ext.commands import check_any, is_owner, guild_only, dm_only
-from discord.ext.commands.errors import CheckFailure
+from discord.ext.commands.errors import CheckFailure, MissingRequiredArgument
 from discord.channel import DMChannel
 from discord.errors import HTTPException
 
 from random import randint, choice
 from aiohttp import ClientSession
 from asyncio import sleep
+
+import json
 
 from ..utils import checks
 
@@ -76,10 +78,10 @@ class Fun(Cog):
     
     @command(name="saper", aliases=['сапер', 'сапёр'],
             brief="Сыграйте в сапёра.",
-            description='Выберите сложност и бот сгенерирует игровое поле.',
+            description='Выберите сложность и бот сгенерирует игровое поле.',
             help="The long help text for the command. Сюда можно написать о кулдауне команды, необходимом уровне и разрешенных каналах.",
             enabled=True, hidden=False)
-    async def sap(self, ctx):
+    async def saper_command(self, ctx):
         await ctx.message.delete()
 
         r_list = ['🟩', '🟧', '🟥']
@@ -92,11 +94,11 @@ class Fun(Cog):
         for r in r_list:
             await msg.add_reaction(r)
         try:
-            react, user = await self.bot.wait_for('reaction_add', timeout=30.0, check=lambda react,
+            react, user = await self.bot.wait_for('reaction_add', timeout=45.0, check=lambda react,
                                                                                              user: user == ctx.author and react.message.channel == ctx.channel and react.emoji in r_list)
         except Exception:
             await msg.delete()
-            await ctx.send(f"{ctx.author.mention}, время на выбор сложности вышло.", delete_after=15)
+            await ctx.send(f"{ctx.author.mention}, время на выбор сложности вышло.", delete_after=20)
         else:
             if str(react.emoji) == r_list[0]:
                 columns = 4
@@ -193,6 +195,143 @@ class Fun(Cog):
             pass
 
 
+    @command(name="flags", aliases=['флаги'],
+            brief="Сыграйте в игру по угадыванию флага страны.",
+            description='Мини-игра по угадывания флага страны.',
+            help="The long help text for the command. Сюда можно написать о кулдауне команды, необходимом уровне и разрешенных каналах.",
+            enabled=True, hidden=False)
+    async def guess_flags_command(self, ctx):
+        event_members = {}
+        with open('./data/country_flags.json', 'r', encoding = 'utf8') as f:
+            flags = json.load(f)
+            count = 1
+            flags_list = []
+            while count <= 10:
+                otvet = choice(flags['Флаги'])
+                if otvet in flags_list:
+                    pass
+                elif otvet not in flags_list:
+                    flags_list.append(otvet)
+                    embed = Embed(title = f"Флаг {count}", color=Color.random())
+                    embed.set_image(url = otvet['url'])
+                    await ctx.send(embed=embed)
+                    def check(m):
+                        answers = []
+                        answers.append(otvet['answer'])
+                        try:
+                            answers.append(otvet['alias'])
+                        except KeyError:
+                            pass
+                        return any([m.content.lower() == answer.lower() for answer in answers]) and m.channel == ctx.channel
+
+                    try:
+                        msg = await self.bot.wait_for('message', timeout=600.0,  check=check)
+                    except:
+                        ctx.send("Время на угадывание флага вышло, игра окончена.", delete_after = 30)
+                    if str(msg.author.id) not in event_members:
+                        event_members[str(msg.author.id)] = {}
+                        event_members[str(msg.author.id)]["score"] = 1
+                    elif str(msg.author.id) in event_members:
+                        event_members[str(msg.author.id)]["score"] += 1
+                    em = Embed(title = "Правильный ответ!", color=Color.green())
+                    em.add_field(name = "Ответил:", value = f"{msg.author.mention}")
+                    em.add_field(name = "Правильный ответ:",value = f"{msg.content.title()}")
+                    await ctx.channel.send(embed = em)
+                    count = count + 1
+                    await sleep(1)
+                    if count == 11:
+                        e = Embed(title = "Конец игры!", description = f"Таблица лидеров:", color=Color.random())
+                        leaders = sorted(event_members, key=lambda score: event_members[score]['score'], reverse=True)
+                        position = 1
+                        for leader in leaders:
+                            leader = self.bot.get_user(int(leaders[position-1]))
+                            leader_score = event_members[str(leader.id)]['score']
+                            e.add_field(name=f"{position} место:", value=f"{leader.mention} | очки: **{leader_score}**",inline=False)
+                            position += 1
+                        await ctx.send(embed = e)
+                        return
+
+
+    @command(name="knb", aliases = ['кнб', 'камень_ножницы_бумага'],
+            brief="Сыграйте в камень-ножницы-бумага.",
+            description='Мини-игра камень-ножницы-бумага.',
+            usage = "<камень/ножницы/бумага>",
+            help="The long help text for the command. Сюда можно написать о кулдауне команды, необходимом уровне и разрешенных каналах.",
+            enabled=True, hidden=False)
+    async def stone_scissors_paper_command(self, ctx, item: str):
+        await ctx.message.delete()
+        robot = ['Камень', 'Ножницы', 'Бумага']
+        stone_list = ["stone", "камень","к"]
+        paper_list = ["paper", "бумага", "б"]
+        scissors_list = ["scissors", "ножницы","н"]  
+                                   
+        out = {
+            "icon": None, 
+            "value": None, 
+            "img": None
+            }
+                                   
+        robot_choice = choice(robot)  
+                                   
+        win_list = ["Вы выиграли! :smiley:","Вы проиграли :pensive:", "Ничья! :cowboy:"]
+                                   
+        if item.lower() in stone_list:       
+            if robot_choice == 'Ножницы':
+                win = win_list[0]
+                out["icon"] = ":scissors:"
+            elif robot_choice == 'Бумага':
+                win = win_list[1]
+                out["icon"] = ":newspaper:"
+            else:
+                win = win_list[2]
+                out["icon"] = ":rock:"
+
+        elif item.lower() in paper_list:
+            if robot_choice == 'Камень':
+                win = win_list[0]
+                out["icon"] = ":rock:"     
+            elif robot_choice == 'Ножницы':
+                win = win_list[1]
+                out["icon"] = ":scissors:"             
+            else:
+                win = win_list[2]
+                out["icon"] = ":newspaper:"               
+
+        elif item.lower() in scissors_list:
+            if robot_choice == 'Бумага':
+                win = win_list[0]
+                out["icon"] = ":newspaper:"               
+            elif robot_choice == 'Камень':
+                win = win_list[1]
+                out["icon"] = ":rock:"                
+            else:
+                win = win_list[2]  
+                out["icon"] = ":scissors:"     
+        else:
+            await ctx.send("Ошибка!", delete_after = 20)
+            return
+                
+        if win == win_list[0]:
+            out["img"] = "https://image.flaticon.com/icons/png/512/445/445087.png"
+        elif win == win_list[1]:
+            out["img"] = "https://cdn.discordapp.com/attachments/774698479981297664/774700936958312468/placeholder.png"
+        else:
+            out["img"] = "https://cdn.discordapp.com/attachments/774698479981297664/774700936958312468/placeholder.png"
+        
+        embed = Embed(title="Результат игры", description = win, colour=Color.random(), timestamp=ctx.message.created_at)
+        embed.add_field(name="Выбор бота:", value=robot_choice, inline=True)
+        embed.add_field(name=f"Выбор {ctx.author.display_name}:", value=item.title(), inline=True)
+        embed.set_thumbnail(url=out["img"])
+        embed.set_footer(icon_url=ctx.author.avatar_url)
+        await ctx.send(embed=embed)
+
+    @stone_scissors_paper_command.error
+    async def stone_scissors_paper_command_error(self, ctx, exc):
+        if isinstance(exc, MissingRequiredArgument):
+            embed = Embed(title=':exclamation: Внимание!', description =f"Укажите, что вы выбрали: камень, ножницы или бумагу.\n`{ctx.command} {ctx.command.usage}`", color= Color.red())
+            await ctx.send(embed=embed, delete_after = 20)
+
+
     @command(name="dice", aliases=["roll"])
     @guild_only()
     @is_owner()
@@ -205,9 +344,9 @@ class Fun(Cog):
     @dice_command.error
     async def dice_command_error(self, ctx, exc):
         if isinstance(exc.original, HTTPException):
-            await ctx.send("Длина получившейся комбинации превышает лимит символов (2000). Пожалуйста, используйте числа меньше.", delete_after = 15)
+            await ctx.send("Длина получившейся комбинации превышает лимит символов (2000). Пожалуйста, используйте числа меньше.", delete_after = 20)
         elif isinstance(exc.original, ValueError):
-            await ctx.send("Пожалуйста, введите корректную комбинацию.", delete_after = 15)
+            await ctx.send("Пожалуйста, введите корректную комбинацию.", delete_after = 20)
 
 
     @Cog.listener()
