@@ -254,8 +254,9 @@
         "url": "https://www.megaflag.ru/sites/default/files/styles/h_60/public/images/shop/products/flag_ispanija_new.jpg?itok=rNZb7_wp"
       },
       {
-        "answer": "Катар",
-        "url": "https://www.megaflag.ru/sites/default/files/styles/h_60/public/images/shop/products/flag_katar_new.jpg?itok=T3PZqJ1x"
+        "answer": "Молдавия",
+        "alias": "Молдова",
+        "url": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/27/Flag_of_Moldova.svg/250px-Flag_of_Moldova.png"
       },
       {
         "answer": "Исландия",
@@ -272,10 +273,6 @@
       {
         "answer": "Беларусь",
         "url": "https://www.megaflag.ru/sites/default/files/styles/h_60/public/images/directory_names/flag_belorussija_enl.jpg?itok=w9HuHhkR"
-      },
-      {
-        "answer": "Бахрейн",
-        "url": "https://www.megaflag.ru/sites/default/files/styles/h_60/public/images/directory_names/flag_bahrejn_enl.jpg?itok=FoalLBrp"
       },
       {
         "answer": "Афганистан",

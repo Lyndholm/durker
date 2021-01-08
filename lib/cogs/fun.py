@@ -226,29 +226,40 @@ class Fun(Cog):
 
                     try:
                         msg = await self.bot.wait_for('message', timeout=600.0,  check=check)
+                        if str(msg.author.id) not in event_members:
+                            event_members[str(msg.author.id)] = {}
+                            event_members[str(msg.author.id)]["score"] = 1
+                        elif str(msg.author.id) in event_members:
+                            event_members[str(msg.author.id)]["score"] += 1
+                        em = Embed(title = "Верно!", color=Color.green())
+                        em.set_thumbnail(url=otvet['url'])
+                        em.add_field(name = "Правильный ответ:",value = f"{msg.content.title()}")
+                        em.add_field(name = "Ответил:", value = f"{msg.author.mention}")                    
+                        await ctx.channel.send(embed = em)
+                        count = count + 1
+                        await sleep(1)
+                        if count == 11:
+                            e = Embed(title = "Конец игры!", description = f"Таблица лидеров:", color=Color.random())
+                            leaders = sorted(event_members, key=lambda score: event_members[score]['score'], reverse=True)
+                            position = 1
+                            for leader in leaders:
+                                leader = self.bot.get_user(int(leaders[position-1]))
+                                leader_score = event_members[str(leader.id)]['score']
+                                e.add_field(name=f"{position} место:", value=f"{leader.mention} | очки: **{leader_score}**",inline=False)
+                                position += 1
+                            await ctx.send(embed = e)
                     except:
-                        ctx.send("Время на угадывание флага вышло, игра окончена.", delete_after = 30)
-                    if str(msg.author.id) not in event_members:
-                        event_members[str(msg.author.id)] = {}
-                        event_members[str(msg.author.id)]["score"] = 1
-                    elif str(msg.author.id) in event_members:
-                        event_members[str(msg.author.id)]["score"] += 1
-                    em = Embed(title = "Правильный ответ!", color=Color.green())
-                    em.add_field(name = "Ответил:", value = f"{msg.author.mention}")
-                    em.add_field(name = "Правильный ответ:",value = f"{msg.content.title()}")
-                    await ctx.channel.send(embed = em)
-                    count = count + 1
-                    await sleep(1)
-                    if count == 11:
-                        e = Embed(title = "Конец игры!", description = f"Таблица лидеров:", color=Color.random())
-                        leaders = sorted(event_members, key=lambda score: event_members[score]['score'], reverse=True)
-                        position = 1
-                        for leader in leaders:
-                            leader = self.bot.get_user(int(leaders[position-1]))
-                            leader_score = event_members[str(leader.id)]['score']
-                            e.add_field(name=f"{position} место:", value=f"{leader.mention} | очки: **{leader_score}**",inline=False)
-                            position += 1
-                        await ctx.send(embed = e)
+                        await ctx.send("Время на угадывание флага вышло, игра окончена.")
+                        if count > 1:
+                            e = Embed(title = "Конец игры!", description = f"Таблица лидеров:", color=Color.random())
+                            leaders = sorted(event_members, key=lambda score: event_members[score]['score'], reverse=True)
+                            position = 1
+                            for leader in leaders:
+                                leader = self.bot.get_user(int(leaders[position-1]))
+                                leader_score = event_members[str(leader.id)]['score']
+                                e.add_field(name=f"{position} место:", value=f"{leader.mention} | очки: **{leader_score}**",inline=False)
+                                position += 1
+                            await ctx.send(embed = e)
                         return
 
 
