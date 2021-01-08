@@ -8,7 +8,9 @@ from discord import Color, Embed, Intents
 from discord.ext.commands import Bot as BotBase, Context
 from discord.ext.commands import (CommandNotFound, CommandOnCooldown, DisabledCommand, 
                                 NoPrivateMessage, PrivateMessageOnly)
+from discord.channel import DMChannel
 from discord.errors import HTTPException, Forbidden
+
 from loguru import logger
 
 from ..db import db
@@ -161,6 +163,8 @@ class Bot(BotBase):
                     await channel.send(embed=embed)
             except:
                 embed = Embed(title=f'Ошибка при выполнении команды {ctx.command}.', description=f'`{ctx.command.qualified_name} {ctx.command.signature}`\n{exc}', color = Color.red())
+                if isinstance(ctx.channel, DMChannel):
+                    embed.add_field(name="Additional info:", value="Exception occured in DMChannel.")
                 channel = self.get_channel(id=constants.AUDIT_LOG_CHANNEL)
                 await channel.send(embed=embed)
             finally:

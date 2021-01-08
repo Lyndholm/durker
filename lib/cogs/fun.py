@@ -1,8 +1,9 @@
 from discord import Embed, Color, Member
 from discord.ext.commands import Cog
 from discord.ext.commands import command
-from discord.ext.commands import is_owner, guild_only
+from discord.ext.commands import check_any, is_owner, guild_only, dm_only
 from discord.ext.commands.errors import CheckFailure
+from discord.channel import DMChannel
 from discord.errors import HTTPException
 
 from random import randint, choice
@@ -27,7 +28,7 @@ class Fun(Cog):
             brief="Обнимите кого-нибудь!",
             description="Покажите всем свою любовь и обнимите кого-нибудь!",
             usage="<member>",
-            help="The long help text for the command.",
+            help="The long help text for the command. Сюда можно написать о кулдауне команды, необходимом уровне и разрешенных каналах.",
             enabled=True, hidden=False)
     async def hug_command(self, ctx, *, member: Member):
         await ctx.message.delete()
@@ -50,8 +51,7 @@ class Fun(Cog):
             help="Пригодится при непростом выборе.",
             enabled=True, hidden=False)
     @checks.required_level(5)
-    @checks.is_any_channel([777979537795055636, 796439346344493107, 708601604353556491])
-    @guild_only()
+    @check_any(checks.is_any_channel([777979537795055636, 796439346344493107, 708601604353556491]), dm_only())  
     async def drop_coin_command(self, ctx):
         robot_choice = choice(["орёл", "решка"])
                                    
@@ -66,11 +66,131 @@ class Fun(Cog):
 
     @drop_coin_command.error
     async def drop_coin_command_error(self, ctx, exc):
-        await ctx.message.delete()
+        if not isinstance(ctx.channel, DMChannel):
+            await ctx.message.delete()
         if isinstance(exc, CheckFailure):
-            embed = Embed(title=':exclamation: Ошибка!', description =f"{ctx.author.mention}\nКоманда `{ctx.command}` может быть использована только в канале <#708601604353556491>"
+            embed = Embed(title=':exclamation: Ошибка!', description =f"{ctx.author.mention}\nКоманда `{ctx.command}` может быть использована только в канале <#708601604353556491> или в личных сообщениях."
             "\nТакже у вас должен быть 5-й и выше уровень.", color = Color.red())
             await ctx.send(embed=embed, delete_after = 30)
+
+    
+    @command(name="saper", aliases=['сапер', 'сапёр'],
+            brief="Сыграйте в сапёра.",
+            description='Выберите сложност и бот сгенерирует игровое поле.',
+            help="The long help text for the command. Сюда можно написать о кулдауне команды, необходимом уровне и разрешенных каналах.",
+            enabled=True, hidden=False)
+    async def sap(self, ctx):
+        await ctx.message.delete()
+
+        r_list = ['🟩', '🟧', '🟥']
+
+        rows = None
+        columns = None
+
+        embed = Embed(title="Выберите сложность:", description=f"{r_list[0]} — Легко\n{r_list[1]} — Средне\n{r_list[2]} — Сложно", color=Color.random())
+        msg = await ctx.send(embed=embed)
+        for r in r_list:
+            await msg.add_reaction(r)
+        try:
+            react, user = await self.bot.wait_for('reaction_add', timeout=30.0, check=lambda react,
+                                                                                             user: user == ctx.author and react.message.channel == ctx.channel and react.emoji in r_list)
+        except Exception:
+            await msg.delete()
+            await ctx.send(f"{ctx.author.mention}, время на выбор сложности вышло.", delete_after=15)
+        else:
+            if str(react.emoji) == r_list[0]:
+                columns = 4
+                rows = 4
+                await msg.clear_reactions()
+            elif str(react.emoji) == r_list[1]:
+                columns = 8
+                rows = 8
+                await msg.clear_reactions()
+            elif str(react.emoji) == r_list[2]:
+                columns = 12
+                rows = 12
+                await msg.clear_reactions()
+            else:
+                await msg.delete()
+                await ctx.send('Неверная реакция!', delete_after=10.0)
+
+        try:
+            bombs = columns * rows - 1
+            bombs = bombs / 2.5
+            bombs = round(randint(3, round(bombs)))
+
+            columns = int(columns)
+            rows = int(rows)
+            bombs = int(bombs)
+
+            grid = [[0 for num in range(columns)] for num in range(rows)]
+
+            loop_count = 0
+            while loop_count < bombs:
+                x = randint(0, columns - 1)
+                y = randint(0, rows - 1)
+
+                if grid[y][x] == 0:
+                    grid[y][x] = 'B'
+                    loop_count = loop_count + 1
+
+                if grid[y][x] == 'B':
+                    pass
+
+            pos_x = 0
+            pos_y = 0
+            while pos_x * pos_y < columns * rows and pos_y < rows:
+
+                adj_sum = 0
+
+                for (adj_y, adj_x) in [(0, 1), (0, -1), (1, 0), (-1, 0), (1, 1), (-1, 1), (1, -1), (-1, -1)]:
+
+                    try:
+                        if grid[adj_y + pos_y][adj_x + pos_x] == 'B' and adj_y + pos_y > -1 and adj_x + pos_x > -1:
+                            adj_sum = adj_sum + 1
+                    except Exception:
+                        pass
+
+                if grid[pos_y][pos_x] != 'B':
+                    grid[pos_y][pos_x] = adj_sum
+
+                if pos_x == columns - 1:
+                    pos_x = 0
+                    pos_y = pos_y + 1
+                else:
+                    pos_x = pos_x + 1
+
+            not_final = []
+
+            for the_rows in grid:
+                not_final.append(''.join(map(str, the_rows)))
+
+            not_final = '\n'.join(not_final)
+
+            not_final = not_final.replace('0', '||:zero:||')
+            not_final = not_final.replace('1', '||:one:||')
+            not_final = not_final.replace('2', '||:two:||')
+            not_final = not_final.replace('3', '||:three:||')
+            not_final = not_final.replace('4', '||:four:||')
+            not_final = not_final.replace('5', '||:five:||')
+            not_final = not_final.replace('6', '||:six:||')
+            not_final = not_final.replace('7', '||:seven:||')
+            not_final = not_final.replace('8', '||:eight:||')
+            final = not_final.replace('B', '||:bomb:||')
+
+            percentage = columns * rows
+            percentage = bombs / percentage
+            percentage = 100 * percentage
+            percentage = round(percentage, 2)
+
+            embed = Embed(description=final,color=Color.random())
+            embed.add_field(name='Всего клеток :', value=columns * rows, inline=False)
+            embed.add_field(name='Количество столбцов :', value=columns,inline=True)
+            embed.add_field(name='Количество строк:', value=rows, inline=True)
+            embed.add_field(name='Количество бомб:', value=bombs, inline=True)
+            await msg.edit(embed=embed)
+        except TypeError:
+            pass
 
 
     @command(name="dice", aliases=["roll"])
