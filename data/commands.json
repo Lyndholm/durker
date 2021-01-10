@@ -1,0 +1,111 @@
+{
+    "fun":
+    {
+        "hug":{
+            "name": "hug",
+            "aliases": ["обнять","обнимашки"],
+            "brief": "Обнимите кого-нибудь!",
+            "description": "Покажите всем свою любовь и обнимите кого-нибудь!",
+            "usage": "hug <member>",
+            "help": "Команда для обнимашек. Работает только на сервере, во всех каналах.\n**Куладун:** отсутсвует.\n**Необходимый уровень:** 0",
+            "required_level": 0,
+            "has_cooldown": false,
+            "cooldown_rate": 0,
+            "cooldown_per_second": 0,
+            "cooldown_type": "None",
+            "hidden": false
+        },
+        "coin":{
+            "name": "coin",
+            "aliases": ["монетка", "орел_решка","о_р","орёл_решка"],
+            "brief": "Сыграйте в орёл-решка.",
+            "description": "Бот подбрасывает монетку.",
+            "usage": "coin",
+            "help": "Пригодится при непростом выборе. Работает на сервере и в личных сообщениях.\n**Куладун:** отсутсвует.\n**Необходимый уровень:** 3",
+            "required_level": 3,
+            "has_cooldown": false,
+            "cooldown_rate": 0,
+            "cooldown_per_second": 0,
+            "cooldown_type": "None",
+            "hidden": false
+        },
+        "saper":{
+            "name": "saper",
+            "aliases": ["сапер", "сапёр"],
+            "brief": "Сыграйте в сапёра.",
+            "description": "Выберите сложность и бот сгенерирует игровое поле.",
+            "usage": "saper",
+            "help": "Почувствуйте себя сапёром. Работает на сервере и в личных сообщениях.\n**Куладун:** отсутсвует.\n**Необходимый уровень:** 3",
+            "required_level": 3,
+            "has_cooldown": false,
+            "cooldown_rate": 0,
+            "cooldown_per_second": 0,
+            "cooldown_type": "None",
+            "hidden": false
+        },
+        "flags":{
+            "name": "flags",
+            "aliases": ["флаги"],
+            "brief": "Сыграйте в игру по угадыванию флага страны.",
+            "description": "Мини-игра по угадывания флага страны.",
+            "usage": "flags",
+            "help": "Проверьте, насколько хорошо вы знаете флаги разных стран. Работает только на сервере в канале мини-игр.\n**Куладун:** отсутсвует.\n**Необходимый уровень:** 3",
+            "required_level": 3,
+            "has_cooldown": false,
+            "cooldown_rate": 0,
+            "cooldown_per_second": 0,
+            "cooldown_type": "None",
+            "hidden": false
+        },
+        "knb":{
+            "name": "knb",
+            "aliases": ["кнб", "камень_ножницы_бумага"],
+            "brief": "Сыграйте в камень-ножницы-бумага.",
+            "description": "Мини-игра камень-ножницы-бумага.",
+            "usage": "knb <камень/ножницы/бумага>",
+            "help": "Бот играет с вами в игру. Работает только на сервере в канале мини-игр.\n**Куладун:** отсутсвует.\n**Необходимый уровень:** 3",
+            "required_level": 3,
+            "has_cooldown": false,
+            "cooldown_rate": 0,
+            "cooldown_per_second": 0,
+            "cooldown_type": "None",
+            "hidden": false
+        }
+    },
+
+    "help":
+    {
+        "help":{
+            "name": "help",
+            "aliases": ["хелп", "хэлп", "h"],
+            "brief": "Help меню.",
+            "description": "Отображает все доступные команды бота.",
+            "usage": "help [command]",
+            "help": "Помогает разобраться с использованием команд бота. Работает на сервере и в личных сообщениях.\n**Куладун:** отсутсвует.",
+            "required_level": 0,
+            "has_cooldown": false,
+            "cooldown_rate": 0,
+            "cooldown_per_second": 0,
+            "cooldown_type": "None",
+            "hidden": false
+        }
+    },
+
+    "nekos":
+    {
+        "anipic":{
+            "name": "anipic",
+            "aliases": ["аниме", "anime"],
+            "brief": "Отображает случайную аниме картинку.",
+            "description": "Бот присылает случайную картинку c аниме-тян.",
+            "usage": "anipic",
+            "help": "Бот присылает случайную картинку c аниме-тян. Все картинки SFW (safe for work) и не содержат эротический контент. По крайней мере, так написано в документации используемого API. Если вы обнаружили, что картинка таковой не является, сообщите, пожалуйста, об этом администрации сервера.\nРаботает на сервере и в личных сообщениях.\n**Куладун:** отсутсвует.\n**Необходимый уровень:** 5",
+            "required_level": 5,
+            "has_cooldown": false,
+            "cooldown_rate": 0,
+            "cooldown_per_second": 0,
+            "cooldown_type": "None",
+            "hidden": false
+        }
+    }
+}

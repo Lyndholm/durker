@@ -6,6 +6,11 @@ from discord.ext.commands import command
 
 from typing import Optional
 
+from ..utils.utils import load_commands_from_json
+
+
+cmd = load_commands_from_json("help")
+
 
 def syntax(command):
     cmd_and_aliases = "|".join([str(command), *command.aliases])
@@ -29,7 +34,7 @@ class HelpMenu(ListPageSource):
         offset = (menu.current_page*self.per_page+1)
         len_data = len(self.entries)
 
-        embed = Embed(title="Help", description="Help dialog.", color=self.ctx.author.color)
+        embed = Embed(title="Dungeon Durker", description="Help меню.", color=self.ctx.author.color)
         embed.set_thumbnail(url=self.ctx.guild.icon_url)
         embed.set_footer(text=f"{offset:,} - {min(len_data, offset+self.per_page-1):,} из {len_data:,} команд.")
 
@@ -53,11 +58,16 @@ class Help(Cog):
         self.bot.remove_command("help")
         
     async def cmd_help(self, ctx, command):
-        embed = Embed(title=str(command), description=syntax(command), color=ctx.author.color)
-        embed.add_field(name="Описание команды", value=command.help)
+        embed = Embed(title=f"Команда: {str(command)}", description=command.help, color=ctx.author.color)
+        embed.add_field(name="Синтаксис:", value=syntax(command))
         await ctx.send(embed=embed)
 
-    @command(name="help", aliases=["хелп","h"])
+    @command(name=cmd["help"]["name"], aliases=cmd["help"]["aliases"], 
+            brief=cmd["help"]["brief"],
+            description=cmd["help"]["description"],
+            usage=cmd["help"]["usage"],
+            help=cmd["help"]["help"],
+            hidden=cmd["help"]["hidden"], enabled=True)
     async def help_command(self, ctx, cmd: Optional[str]):
         if cmd is None:
             commands_list = []

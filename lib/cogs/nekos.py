@@ -3,9 +3,15 @@ from discord.ext.commands import Cog
 from discord.ext.commands import command
 
 from aiohttp import ClientSession
-from random import choice, randint
+from random import choice
 
 import json
+
+
+from ..utils.utils import load_commands_from_json
+
+
+cmd = load_commands_from_json("nekos")
 
 
 class Nekos(Cog):
@@ -21,28 +27,22 @@ class Nekos(Cog):
         if not self.bot.ready:
            self.bot.cogs_ready.ready_up("nekos")
 
-    @command(name="anipic", aliases=['аниме', 'anime'],
-        brief="Отображает случайную аниме картинку.",
-        description='Бот присылает случайную картинку c аниме-тян.',
-        help="Все картинки SFW (safe for work) и не содержат эротический контент. По крайней мере, так написано в документации используемого API. "
-            "Если вы обнаружили, что картинка таковой не является, сообщите, пожалуйста, об этом администрации сервера.",
-        enabled=True, hidden=False)
+    @command(name=cmd["anipic"]["name"], aliases=cmd["anipic"]["aliases"], 
+            brief=cmd["anipic"]["brief"],
+            description=cmd["anipic"]["description"],
+            usage=cmd["anipic"]["usage"],
+            help=cmd["anipic"]["help"],
+            hidden=cmd["anipic"]["hidden"], enabled=True)
     async def random_anime_picture_command(self, ctx):  
-        chance = randint(0,100)
-        if 40 < chance < 100:
-            async with ClientSession() as session:
-                async with session.get(f'https://waifu.pics/api/sfw/{choice(self.anime_categories)}') as r:
-                        if r.status == 200:
-                            data = await r.json()
-                            img = data["url"]
+        async with ClientSession() as session:
+            async with session.get(f'https://waifu.pics/api/sfw/{choice(self.anime_categories)}') as r:
+                    if r.status == 200:
+                        data = await r.json()
+                        img = data["url"]
+                    else:
+                        img = choice(self.waifu_images)
 
-        elif 3 < chance < 39:
-            img = f'https://{choice(self.anime_weeb_services)}.weeb.services/'
-
-        else:
-            img = choice(self.waifu_images)
-
-        embed = Embed(title = f'Anime picture',color=Color.random(), timestamp=ctx.message.created_at)
+        embed = Embed(color=Color.random(), timestamp=ctx.message.created_at)
         embed.set_image(url=img)
         embed.set_footer(text=f'{ctx.author.name}', icon_url=ctx.author.avatar_url)
         await ctx.send(embed=embed)

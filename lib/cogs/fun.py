@@ -13,6 +13,11 @@ from asyncio import sleep
 import json
 
 from ..utils import checks
+from ..utils.utils import load_commands_from_json
+
+
+cmd = load_commands_from_json("fun")
+
 
 class Fun(Cog):
     def __init__(self, bot):
@@ -26,12 +31,12 @@ class Fun(Cog):
                         "https://media.tenor.com/images/ca88f916b116711c60bb23b8eb608694/tenor.gif"]
 
 
-    @command(name="hug", aliases=["обнять","обнимашки"], 
-            brief="Обнимите кого-нибудь!",
-            description="Покажите всем свою любовь и обнимите кого-нибудь!",
-            usage="<member>",
-            help="The long help text for the command. Сюда можно написать о кулдауне команды, необходимом уровне и разрешенных каналах.",
-            enabled=True, hidden=False)
+    @command(name=cmd["hug"]["name"], aliases=cmd["hug"]["aliases"], 
+            brief=cmd["hug"]["brief"],
+            description=cmd["hug"]["description"],
+            usage=cmd["hug"]["usage"],
+            help=cmd["hug"]["help"],
+            hidden=cmd["hug"]["hidden"], enabled=True)
     async def hug_command(self, ctx, *, member: Member):
         await ctx.message.delete()
         async with ClientSession() as session:
@@ -47,12 +52,13 @@ class Fun(Cog):
         await ctx.send(embed=embed, delete_after=180)
 
 
-    @command(name="coin", aliases=['монетка', 'орел_решка','о_р','орёл_решка'],
-            brief="Сыграйте в орёл-решка.",
-            description='Бот подбрасывает монетку.',
-            help="Пригодится при непростом выборе.",
-            enabled=True, hidden=False)
-    @checks.required_level(5)
+    @command(name=cmd["coin"]["name"], aliases=cmd["coin"]["aliases"], 
+            brief=cmd["coin"]["brief"],
+            description=cmd["coin"]["description"],
+            usage=cmd["coin"]["usage"],
+            help=cmd["coin"]["help"],
+            hidden=cmd["coin"]["hidden"], enabled=True)
+    @checks.required_level(cmd["coin"]["required_level"])
     @check_any(checks.is_any_channel([777979537795055636, 796439346344493107, 708601604353556491]), dm_only())  
     async def drop_coin_command(self, ctx):
         robot_choice = choice(["орёл", "решка"])
@@ -76,11 +82,12 @@ class Fun(Cog):
             await ctx.send(embed=embed, delete_after = 30)
 
     
-    @command(name="saper", aliases=['сапер', 'сапёр'],
-            brief="Сыграйте в сапёра.",
-            description='Выберите сложность и бот сгенерирует игровое поле.',
-            help="The long help text for the command. Сюда можно написать о кулдауне команды, необходимом уровне и разрешенных каналах.",
-            enabled=True, hidden=False)
+    @command(name=cmd["saper"]["name"], aliases=cmd["saper"]["aliases"], 
+            brief=cmd["saper"]["brief"],
+            description=cmd["saper"]["description"],
+            usage=cmd["saper"]["usage"],
+            help=cmd["saper"]["help"],
+            hidden=cmd["saper"]["hidden"], enabled=True)
     async def saper_command(self, ctx):
         await ctx.message.delete()
 
@@ -195,11 +202,12 @@ class Fun(Cog):
             pass
 
 
-    @command(name="flags", aliases=['флаги'],
-            brief="Сыграйте в игру по угадыванию флага страны.",
-            description='Мини-игра по угадывания флага страны.',
-            help="The long help text for the command. Сюда можно написать о кулдауне команды, необходимом уровне и разрешенных каналах.",
-            enabled=True, hidden=False)
+    @command(name=cmd["flags"]["name"], aliases=cmd["flags"]["aliases"], 
+            brief=cmd["flags"]["brief"],
+            description=cmd["flags"]["description"],
+            usage=cmd["flags"]["usage"],
+            help=cmd["flags"]["help"],
+            hidden=cmd["flags"]["hidden"], enabled=True)
     async def guess_flags_command(self, ctx):
         event_members = {}
         with open('./data/country_flags.json', 'r', encoding = 'utf8') as f:
@@ -263,12 +271,12 @@ class Fun(Cog):
                         return
 
 
-    @command(name="knb", aliases = ['кнб', 'камень_ножницы_бумага'],
-            brief="Сыграйте в камень-ножницы-бумага.",
-            description='Мини-игра камень-ножницы-бумага.',
-            usage = "<камень/ножницы/бумага>",
-            help="The long help text for the command. Сюда можно написать о кулдауне команды, необходимом уровне и разрешенных каналах.",
-            enabled=True, hidden=False)
+    @command(name=cmd["knb"]["name"], aliases=cmd["knb"]["aliases"], 
+            brief=cmd["knb"]["brief"],
+            description=cmd["knb"]["description"],
+            usage=cmd["knb"]["usage"],
+            help=cmd["knb"]["help"],
+            hidden=cmd["knb"]["hidden"], enabled=True)
     async def stone_scissors_paper_command(self, ctx, item: str):
         await ctx.message.delete()
         robot = ['Камень', 'Ножницы', 'Бумага']
