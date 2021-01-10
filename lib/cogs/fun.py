@@ -1,6 +1,6 @@
 from discord import Embed, Color, Member
-from discord.ext.commands import Cog
-from discord.ext.commands import command
+from discord.ext.commands import Cog, BucketType
+from discord.ext.commands import command, cooldown
 from discord.ext.commands import check_any, is_owner, guild_only, dm_only
 from discord.ext.commands.errors import CheckFailure, MissingRequiredArgument
 from discord.channel import DMChannel
@@ -344,6 +344,7 @@ class Fun(Cog):
 
 
     @command(name="dice", aliases=["roll"])
+    @cooldown(1, 10, BucketType.user)
     @guild_only()
     @is_owner()
     async def dice_command(self, ctx, dice_string: str):
@@ -354,9 +355,9 @@ class Fun(Cog):
 
     @dice_command.error
     async def dice_command_error(self, ctx, exc):
-        if isinstance(exc.original, HTTPException):
+        if isinstance(exc, HTTPException):
             await ctx.send("Длина получившейся комбинации превышает лимит символов (2000). Пожалуйста, используйте числа меньше.", delete_after = 20)
-        elif isinstance(exc.original, ValueError):
+        elif isinstance(exc, ValueError):
             await ctx.send("Пожалуйста, введите корректную комбинацию.", delete_after = 20)
 
 

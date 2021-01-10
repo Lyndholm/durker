@@ -126,7 +126,8 @@ class Bot(BotBase):
             await ctx.send(embed=embed, delete_after = 10)
 
         elif isinstance(exc, CommandOnCooldown):
-            embed = Embed(title=f"{str(exc.cooldown.type).split('.')[-1]}", description =f"Команда на откате. Ожидайте {int(exc.retry_after)} {russian_plural(int(exc.retry_after),['секунду','секунды','секунд'])}.", color = Color.red()) #exc.retry_after:,.2f
+            await ctx.message.delete()
+            embed = Embed(title=f"{str(exc.cooldown.type).split('.')[-1]} cooldown", description =f"Команда на откате. Ожидайте {int(exc.retry_after)+1} {russian_plural(int(exc.retry_after)+1,['секунду','секунды','секунд'])}.", color = Color.red()) #exc.retry_after:,.2f
             await ctx.send(embed=embed, delete_after = 10)
 
         elif isinstance(exc, DisabledCommand):
