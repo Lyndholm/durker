@@ -72,6 +72,64 @@ class Owner(Cog):
             await ctx.send(embed=embed)
 
 
+    @command(name=cmd["disablecmd"]["name"], aliases=cmd["disablecmd"]["aliases"], 
+            brief=cmd["disablecmd"]["brief"],
+            description=cmd["disablecmd"]["description"],
+            usage=cmd["disablecmd"]["usage"],
+            help=cmd["disablecmd"]["help"],
+            hidden=cmd["disablecmd"]["hidden"], enabled=True)
+    @dm_only()
+    @is_owner()
+    async def disable_cmd_command(self, ctx, *, cmd: str):
+        try:
+            command = self.bot.get_command(name=cmd)
+            command.update(enabled=False, hidden=True)
+        except Exception as e:
+            embed = Embed(title=':exclamation: Ошибка!', description=f'{type(e).__name__} - {e}', color = Color.red())
+            await ctx.send(embed=embed)
+        else:
+            embed = Embed(title=':thumbsup: Успешно!', description=f'Команда **`{cmd}`** отключена!', color = Color.green())
+            await ctx.send(embed=embed)
+
+    ### !!! TO FIX !!! ###
+    # @command(name=cmd["enablecmd"]["name"], aliases=cmd["enablecmd"]["aliases"], 
+    #         brief=cmd["enablecmd"]["brief"],
+    #         description=cmd["enablecmd"]["description"],
+    #         usage=cmd["enablecmd"]["usage"],
+    #         help=cmd["enablecmd"]["help"],
+    #         hidden=cmd["enablecmd"]["hidden"], enabled=False)
+    # @dm_only()
+    # @is_owner()
+    # async def enable_cmd_command(self, ctx, *, cmd: str):
+    #     try:
+    #         command = self.bot.get_command(name=cmd)
+    #         command.update(enabled=True, hidden=False) # after invoking enabled command occurs Exception : ctx is a required argument that is missing.
+    #     except Exception as e:
+    #         embed = Embed(title=':exclamation: Ошибка!', description=f'{type(e).__name__} - {e}', color = Color.red())
+    #         await ctx.send(embed=embed)
+    #     else:
+    #         embed = Embed(title=':thumbsup: Успешно!', description=f'Команда **`{cmd}`** включена!', color = Color.green())
+    #         await ctx.send(embed=embed)
+    ### !!! TO FIX !!! ###
+    
+
+    @command(name=cmd["disabledcmds"]["name"], aliases=cmd["disabledcmds"]["aliases"], 
+            brief=cmd["disabledcmds"]["brief"],
+            description=cmd["disabledcmds"]["description"],
+            usage=cmd["disabledcmds"]["usage"],
+            help=cmd["disabledcmds"]["help"],
+            hidden=cmd["disabledcmds"]["hidden"], enabled=True)
+    @dm_only()
+    @is_owner()
+    async def show_disabled_cmds_command(self, ctx):
+        disabled_cmds = []
+        for command in self.bot.commands:
+            if not command.enabled:
+                disabled_cmds.append(str(command))
+        embed = Embed(title=':arrow_down: Отключённые команды.', description="\n".join(disabled_cmds) if disabled_cmds else "Все команды работают в штатном режиме.", color = Color.red())
+        await ctx.send(embed=embed)
+
+
     @Cog.listener()
     async def on_ready(self):
         if not self.bot.ready:

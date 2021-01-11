@@ -91,7 +91,8 @@ CREATE TABLE public.users_info
     nickname text,
     mention text,
     joined_at timestamp without time zone DEFAULT (now())::timestamp without time zone,
-    brief_biography text
+    brief_biography text,
+    is_profile_public boolean DEFAULT FALSE
 );
 
 ALTER TABLE public.users_info

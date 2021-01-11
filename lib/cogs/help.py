@@ -87,15 +87,10 @@ class Help(Cog):
             command = get(self.bot.commands, name=cmd)
             if command and not command.hidden:
                 await self.cmd_help(ctx, command)
-            elif command and command.hidden:
-                if ctx.author.id == 375722626636578816:
-                    await self.cmd_help(ctx, command)
-                else:
-                    await ctx.message.delete()
-                    embed = Embed(title=':exclamation: Ошибка!', description =f"В доступе отказано.", color = Color.red())
-                    await ctx.send(embed=embed, delete_after = 30)
+            elif command and command.hidden and ctx.author.id == 375722626636578816:
+                await self.cmd_help(ctx, command)
             else:
-                embed = Embed(title=':exclamation: Ошибка!', description =f"Указанная команда не сущесвует, либо она скрыта.", color = Color.red())
+                embed = Embed(title=':exclamation: Ошибка!', description =f"Указанная команда не существует, либо она скрыта или отключена.", color = Color.red())
                 await ctx.send(embed=embed, delete_after = 30)
 
     @Cog.listener()

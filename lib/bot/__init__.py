@@ -130,7 +130,7 @@ class Bot(BotBase):
             await ctx.send(embed=embed, delete_after = 10)
 
         elif isinstance(exc, DisabledCommand):
-            embed = Embed(title=':exclamation: Ошибка!', description =f"Команда отключена.", color = Color.red())
+            embed = Embed(title=':exclamation: Ошибка!', description =f"Команда `{ctx.command}` отключена.", color = Color.red())
             await ctx.send(embed=embed, delete_after = 10)
 
         elif isinstance(exc, NoPrivateMessage):
@@ -158,11 +158,11 @@ class Bot(BotBase):
                     embed = Embed(title="Error.", description = "Something went wrong, an error occured.\nCheck logs.", timestamp=datetime.now(), color = Color.red())
                     await dev.send(embed=embed)
                 else:
-                    embed = Embed(title=f'Ошибка при выполнении команды {ctx.command}.', description=f'`{ctx.command.qualified_name} {ctx.command.signature}`\n{exc}', color = Color.red())
+                    embed = Embed(title=f'Ошибка при выполнении команды {ctx.command}.', description=f'`{ctx.command.signature}`\n{exc}', color = Color.red())
                     channel = self.get_channel(id=constants.AUDIT_LOG_CHANNEL)
                     await channel.send(embed=embed)
             except:
-                embed = Embed(title=f'Ошибка при выполнении команды {ctx.command}.', description=f'`{ctx.command.qualified_name} {ctx.command.signature}`\n{exc}', color = Color.red())
+                embed = Embed(title=f'Ошибка при выполнении команды {ctx.command}.', description=f'`{ctx.command.signature}`\n{exc}', color = Color.red())
                 if isinstance(ctx.channel, DMChannel):
                     embed.add_field(name="Additional info:", value="Exception occured in DMChannel.")
                 channel = self.get_channel(id=constants.AUDIT_LOG_CHANNEL)

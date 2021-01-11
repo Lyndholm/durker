@@ -154,6 +154,51 @@
             "cooldown_per_second": 0,
             "cooldown_type": "None",
             "hidden": true
+        },
+        "disablecmd":
+        {
+            "name": "disablecmd",
+            "aliases": ["отключить"],
+            "brief": "Отключает указанную команду.",
+            "description": "Отключает и скрывает указанную команду.",
+            "usage": "disablecmd <command>",
+            "help": "Отключает и скрывает указанную команду. Работает только в личных сообщениях. Доступно только разработчику бота.",
+            "required_level": 0,
+            "has_cooldown": false,
+            "cooldown_rate": 0,
+            "cooldown_per_second": 0,
+            "cooldown_type": "None",
+            "hidden": true
+        },
+        "enablecmd":
+        {
+            "name": "enablecmd",
+            "aliases": ["включить"],
+            "brief": "Включает указанную команду.",
+            "description": "Включает и делает видимой указанную команду.",
+            "usage": "enablecmd <command>",
+            "help": "Включает и делает видимой указанную команду. Работает только в личных сообщениях. Доступно только разработчику бота.",
+            "required_level": 0,
+            "has_cooldown": false,
+            "cooldown_rate": 0,
+            "cooldown_per_second": 0,
+            "cooldown_type": "None",
+            "hidden": true
+        },
+        "disabledcmds":
+        {
+            "name": "disabledcmds",
+            "aliases": ["discmds"],
+            "brief": "Отображает отключенные команды.",
+            "description": "Формирует список отключенных команд.",
+            "usage": "disabledcmds",
+            "help": "Формирует список отключенных команд. Работает только в личных сообщениях. Доступно только разработчику бота.",
+            "required_level": 0,
+            "has_cooldown": false,
+            "cooldown_rate": 0,
+            "cooldown_per_second": 0,
+            "cooldown_type": "None",
+            "hidden": true
         }
     }
 }
