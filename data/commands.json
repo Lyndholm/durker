@@ -107,5 +107,53 @@
             "cooldown_type": "None",
             "hidden": false
         }
+    },
+
+    "owner":
+    {
+        "loadcog":{
+            "name": "loadcog",
+            "aliases": ["cogload"],
+            "brief": "Загружает указанный cog в бота.",
+            "description": "Загружает, инициализирует и запускает cog.",
+            "usage": "loadcog lib.cogs.<cog_name>",
+            "help": "Загружает, инициализирует и запускает cog. Работает только в личных сообщениях. Доступно только разработчику бота.",
+            "required_level": 0,
+            "has_cooldown": false,
+            "cooldown_rate": 0,
+            "cooldown_per_second": 0,
+            "cooldown_type": "None",
+            "hidden": true
+        },
+        "unloadcog":
+        {
+            "name": "unloadcog",
+            "aliases": ["cogunload"],
+            "brief": "Выгружает из бота указанный cog.",
+            "description": "Деактивирует и выгружает cog.",
+            "usage": "unloadcog lib.cogs.<cog_name>",
+            "help": "Деактивирует и выгружает cog. Работает только в личных сообщениях. Доступно только разработчику бота.",
+            "required_level": 0,
+            "has_cooldown": false,
+            "cooldown_rate": 0,
+            "cooldown_per_second": 0,
+            "cooldown_type": "None",
+            "hidden": true
+        },
+        "reloadcog":
+        {
+            "name": "reloadcog",
+            "aliases": ["cogreload"],
+            "brief": "Перезагружает указанный cog.",
+            "description": "Деактивирует —> выгружает —> загружает —> активирует cog.",
+            "usage": "reloadcog lib.cogs.<cog_name>",
+            "help": "Деактивирует —> выгружает —> загружает —> активирует cog. Работает только в личных сообщениях. Доступно только разработчику бота.",
+            "required_level": 0,
+            "has_cooldown": false,
+            "cooldown_rate": 0,
+            "cooldown_per_second": 0,
+            "cooldown_type": "None",
+            "hidden": true
+        }
     }
 }

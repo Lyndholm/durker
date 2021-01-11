@@ -4,16 +4,22 @@ from discord.ext.commands import command
 from discord.ext.commands import is_owner, dm_only
 
 
+from ..utils.utils import load_commands_from_json
+
+
+cmd = load_commands_from_json("owner")
+
+
 class Owner(Cog):
     def __init__(self, bot):
         self.bot = bot
     
-    @command(name="loadcog", aliases=["cogload"], 
-            brief="Загружает указанный cog в бота.",
-            description="Загружает, инициализирует и запускает cog.",
-            usage="cogs.{cog_name}",
-            help="Большой текст для help команды.",
-            enabled=True, hidden=True)
+    @command(name=cmd["loadcog"]["name"], aliases=cmd["loadcog"]["aliases"], 
+            brief=cmd["loadcog"]["brief"],
+            description=cmd["loadcog"]["description"],
+            usage=cmd["loadcog"]["usage"],
+            help=cmd["loadcog"]["help"],
+            hidden=cmd["loadcog"]["hidden"], enabled=True)
     @dm_only()
     @is_owner()
     async def load_cog_command(self, ctx, *, cog: str):
@@ -27,12 +33,12 @@ class Owner(Cog):
             await ctx.send(embed=embed)
 
 
-    @command(name="unloadcog", aliases=["cogunload"], 
-        brief="Выгружает из бота указанный cog.",
-        description="Деактивирует и выгружает cog.",
-        usage="cogs.{cog_name}",
-        help="Большой текст для help команды.",
-        enabled=True, hidden=True)
+    @command(name=cmd["unloadcog"]["name"], aliases=cmd["unloadcog"]["aliases"], 
+            brief=cmd["unloadcog"]["brief"],
+            description=cmd["unloadcog"]["description"],
+            usage=cmd["unloadcog"]["usage"],
+            help=cmd["unloadcog"]["help"],
+            hidden=cmd["unloadcog"]["hidden"], enabled=True)
     @dm_only()
     @is_owner()
     async def unload_cog_command(self, ctx, *, cog: str):
@@ -46,12 +52,12 @@ class Owner(Cog):
             await ctx.send(embed=embed)
 
 
-    @command(name="reloadcog", aliases=["cogreload"], 
-    brief="Перезагружает указанный cog.",
-    description="Деактивирует, выгружает, загружает и активирует cog.",
-    usage="cogs.{cog_name}",
-    help="Большой текст для help команды.",
-    enabled=True, hidden=True)
+    @command(name=cmd["reloadcog"]["name"], aliases=cmd["reloadcog"]["aliases"], 
+            brief=cmd["reloadcog"]["brief"],
+            description=cmd["reloadcog"]["description"],
+            usage=cmd["reloadcog"]["usage"],
+            help=cmd["reloadcog"]["help"],
+            hidden=cmd["reloadcog"]["hidden"], enabled=True)
     @dm_only()
     @is_owner()
     async def reload_cog_command(self, ctx, *, cog: str):

@@ -1,4 +1,4 @@
-from discord import Embed
+from discord import Embed, Color
 from discord.utils import get
 from discord.ext.menus import MenuPages, ListPageSource
 from discord.ext.commands import Cog
@@ -84,10 +84,19 @@ class Help(Cog):
             await menu.start(ctx)
 
         else:
-            if (command := get(self.bot.commands, name=cmd)):
+            command = get(self.bot.commands, name=cmd)
+            if command and not command.hidden:
                 await self.cmd_help(ctx, command)
+            elif command and command.hidden:
+                if ctx.author.id == 375722626636578816:
+                    await self.cmd_help(ctx, command)
+                else:
+                    await ctx.message.delete()
+                    embed = Embed(title=':exclamation: Ошибка!', description =f"В доступе отказано.", color = Color.red())
+                    await ctx.send(embed=embed, delete_after = 30)
             else:
-                await ctx.send("Указанная команда не сущесвует.")
+                embed = Embed(title=':exclamation: Ошибка!', description =f"Указанная команда не сущесвует, либо она скрыта.", color = Color.red())
+                await ctx.send(embed=embed, delete_after = 30)
 
     @Cog.listener()
     async def on_ready(self):
