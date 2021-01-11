@@ -13,9 +13,13 @@ def russian_plural(value: int, quantitative: list) -> str:
     return quantitative[2]
 
 
-def load_commands_from_json(cog_name:str) -> dict:
+def load_commands_from_json(cog_name:str = None) -> dict:
     """Returns a dictionary containing all commands of the specified cog"""
 
     f = open('./data/commands.json', 'r', encoding = 'utf8')
     commands = json.load(f)
-    return commands[cog_name]
+
+    if cog_name is not None:
+        return commands[cog_name]
+    else:
+        return commands
