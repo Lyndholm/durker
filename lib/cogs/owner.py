@@ -13,6 +13,7 @@ cmd = load_commands_from_json("owner")
 class Owner(Cog):
     def __init__(self, bot):
         self.bot = bot
+        self.modified_commands = {}
     
     @command(name=cmd["loadcog"]["name"], aliases=cmd["loadcog"]["aliases"], 
             brief=cmd["loadcog"]["brief"],
@@ -83,34 +84,47 @@ class Owner(Cog):
     async def disable_cmd_command(self, ctx, *, cmd: str):
         try:
             command = self.bot.get_command(name=cmd)
-            command.update(enabled=False, hidden=True)
+            if command.enabled:
+                cmd_data = {
+                    "command": cmd,
+                    "cog": command.cog.qualified_name
+                }
+                self.modified_commands[cmd] = cmd_data
+                command.update(enabled=False, hidden=True)
+                embed = Embed(title=':thumbsup: Успешно!', description=f'Команда **`{cmd}`** отключена!', color = Color.green())
+                await ctx.send(embed=embed)
+            else:
+                embed = Embed(title=':exclamation: Ошибка!', description=f'Команда `{cmd}` уже отключена.', color = Color.red())
+                await ctx.send(embed=embed)
         except Exception as e:
             embed = Embed(title=':exclamation: Ошибка!', description=f'{type(e).__name__} - {e}', color = Color.red())
             await ctx.send(embed=embed)
-        else:
-            embed = Embed(title=':thumbsup: Успешно!', description=f'Команда **`{cmd}`** отключена!', color = Color.green())
-            await ctx.send(embed=embed)
 
-    ### !!! TO FIX !!! ###
-    # @command(name=cmd["enablecmd"]["name"], aliases=cmd["enablecmd"]["aliases"], 
-    #         brief=cmd["enablecmd"]["brief"],
-    #         description=cmd["enablecmd"]["description"],
-    #         usage=cmd["enablecmd"]["usage"],
-    #         help=cmd["enablecmd"]["help"],
-    #         hidden=cmd["enablecmd"]["hidden"], enabled=False)
-    # @dm_only()
-    # @is_owner()
-    # async def enable_cmd_command(self, ctx, *, cmd: str):
-    #     try:
-    #         command = self.bot.get_command(name=cmd)
-    #         command.update(enabled=True, hidden=False) # after invoking enabled command occurs Exception : ctx is a required argument that is missing.
-    #     except Exception as e:
-    #         embed = Embed(title=':exclamation: Ошибка!', description=f'{type(e).__name__} - {e}', color = Color.red())
-    #         await ctx.send(embed=embed)
-    #     else:
-    #         embed = Embed(title=':thumbsup: Успешно!', description=f'Команда **`{cmd}`** включена!', color = Color.green())
-    #         await ctx.send(embed=embed)
-    ### !!! TO FIX !!! ###
+
+    @command(name=cmd["enablecmd"]["name"], aliases=cmd["enablecmd"]["aliases"], 
+            brief=cmd["enablecmd"]["brief"],
+            description=cmd["enablecmd"]["description"],
+            usage=cmd["enablecmd"]["usage"],
+            help=cmd["enablecmd"]["help"],
+            hidden=cmd["enablecmd"]["hidden"], enabled=True)
+    @dm_only()
+    @is_owner()
+    async def enable_cmd_command(self, ctx, *, cmd: str):
+        try:
+            command = self.bot.get_command(name=cmd)
+            if not command.enabled:
+                command_cog = self.bot.get_cog(self.modified_commands[cmd]["cog"])
+                command.update(enabled=True, hidden=False)
+                command.cog = command_cog
+                del self.modified_commands[cmd]
+                embed = Embed(title=':thumbsup: Успешно!', description=f'Команда **`{cmd}`** включена!', color = Color.green())
+                await ctx.send(embed=embed)
+            else:
+                embed = Embed(title=':exclamation: Ошибка!', description=f'Команда `{cmd}` сейчас активна. Повторное включение невозможно', color = Color.red())
+                await ctx.send(embed=embed)
+        except Exception as e:
+            embed = Embed(title=':exclamation: Ошибка!', description=f'{type(e).__name__} - {e}', color = Color.red())
+            await ctx.send(embed=embed)
     
 
     @command(name=cmd["disabledcmds"]["name"], aliases=cmd["disabledcmds"]["aliases"], 
