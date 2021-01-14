@@ -34,6 +34,7 @@ class Welcome(Cog):
                 embed.add_field(name="Есть вопросы?", value="Пиши в <#546700132390010882>", inline=False)
                 embed.add_field(name="Сделали покупку с нашим тегом?", value="Присылайте скрин в <#546408250158088192>", inline=False)
                 embed.set_thumbnail(url=after.guild.icon_url)
+                embed.set_footer(text="Это автоматическое сообщение, отвечать на него не нужно.")
                 await after.send(embed=embed)
 
             except Forbidden:
