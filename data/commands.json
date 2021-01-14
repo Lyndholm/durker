@@ -70,6 +70,20 @@
             "cooldown_per_second": 0,
             "cooldown_type": "None",
             "hidden": false
+        },
+        "8ball":{
+            "name": "8ball",
+            "aliases": ["8b", "ball", "шар"],
+            "brief": "Задайте вопрос магическому шару.",
+            "description": "Шуточный способ предсказывать будущее.",
+            "usage": "шар <вопрос>",
+            "help": "Задайте вопрос магическому шару. Шуточный способ предсказывать будущее. Работает только на сервере в канале мини-игр.\n**Куладун:** отсутсвует.\n**Необходимый уровень:** 3",
+            "required_level": 3,
+            "has_cooldown": false,
+            "cooldown_rate": 0,
+            "cooldown_per_second": 0,
+            "cooldown_type": "None",
+            "hidden": false
         }
     },
 

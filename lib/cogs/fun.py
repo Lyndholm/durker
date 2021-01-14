@@ -351,6 +351,60 @@ class Fun(Cog):
             await ctx.send(embed=embed, delete_after = 20)
 
 
+    @command(name=cmd["8ball"]["name"], aliases=cmd["8ball"]["aliases"], 
+            brief=cmd["8ball"]["brief"],
+            description=cmd["8ball"]["description"],
+            usage=cmd["8ball"]["usage"],
+            help=cmd["8ball"]["help"],
+            hidden=cmd["8ball"]["hidden"], enabled=True)
+    @guild_only()
+    async def magic_ball_command(self, ctx, *, question: str):           
+        posible_answers = {
+            "affirmative": {
+                "color": Color.green(),
+                "answers": [
+                    "**Бесспорно**", "**Предрешено**", "**Никаких сомнений**", "**Определённо да**", "**Можешь быть уверен в этом**",
+                    "**Мне кажется — «да»**", "**Вероятнее всего**", "**Хорошие перспективы**", "**Знаки говорят — «да»**", "**Да**"
+                ]
+            },
+            "non-committal":{
+                "color": Color.gold(),
+                "answers": [
+                    "**Пока не ясно, попробуй снова**", "**Спроси позже**", "**Лучше не рассказывать**", "**Сейчас нельзя предсказать**",
+                    "**Сконцентрируйся и спроси опять**"
+                ]
+            },
+            "negative":{
+                "color": Color.red(),
+                "answers": [
+                    "**Даже не думай**", "**Мой ответ — «нет»**", "**По моим данным — «нет»**", "**Перспективы не очень хорошие**", 
+                    "**Весьма сомнительно**"
+                ]
+            }
+        }
+        
+        answer_category = choice(list(posible_answers.keys()))
+        
+        if question.strip()[-1] == "?":
+            embed = Embed(description=choice(posible_answers[answer_category]["answers"]), color=posible_answers[answer_category]["color"])
+            embed.set_author(name="Магический шар", icon_url="https://upload.wikimedia.org/wikipedia/commons/e/eb/Magic_eight_ball.png")
+            await ctx.send(embed=embed)
+        else:
+            await ctx.send("Это не вопрос.")
+
+
+    @magic_ball_command.error
+    async def magic_ball_command_error(self, ctx, exc):
+        if isinstance(exc, CheckFailure):
+            embed = Embed(title=':exclamation: Ошибка!', description =f"{ctx.author.mention}\nКоманда `{ctx.command}` может быть использована только в канале <#708601604353556491> или в личных сообщениях."
+            "\nТакже у вас должен быть 3-й и выше уровень.", color = Color.red())
+            await ctx.send(embed=embed, delete_after = 30)
+
+        elif isinstance(exc, MissingRequiredArgument):
+            embed = Embed(title=':exclamation: Внимание!', description =f"Пожалуйста, укажите вопрос.", color = Color.red())
+            await ctx.send(embed=embed, delete_after = 30)
+
+
     @command(name="dice", aliases=["roll"])
     @cooldown(1, 10, BucketType.user)
     @guild_only()
