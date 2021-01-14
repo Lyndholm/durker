@@ -107,6 +107,11 @@ class Bot(BotBase):
                 await sleep(0.5)
 
             self.ready = True
+
+            self.load_extension("jishaku")
+            print("jishaku loaded")
+                
+            
             print("\nReady to use!\n")
             #await self.get_user(OWNER_IDS[0]).send("I am online!\nReady to use!")
 

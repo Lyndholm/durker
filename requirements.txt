@@ -4,4 +4,5 @@ apscheduler
 asyncio
 loguru
 psycopg2
+jishaku
 git+https://github.com/Rapptz/discord-ext-menus
