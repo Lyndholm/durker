@@ -12,13 +12,6 @@ class Welcome(Cog):
 
 
     @Cog.listener()
-    async def on_member_join(self, member):
-        embed = Embed(title=f"Новый участник на сервере.", description=f"Пользователь **{member.display_name}** ({member.mention}) присоединился к серверу, но пока что не принял правила. Пользователь в процессе верификации.",
-                    color=Color.dark_red(), timestamp=datetime.now())
-        await self.bot.get_channel(AUDIT_LOG_CHANNEL).send(embed=embed)
-
-
-    @Cog.listener()
     async def on_member_update(self, before: Member, after: Member):
         if before.pending is True and after.pending is False:
             try:
