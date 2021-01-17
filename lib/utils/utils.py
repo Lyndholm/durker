@@ -1,4 +1,7 @@
 import json
+import discord
+
+from ..db import db
 
 
 def russian_plural(value: int, quantitative: list) -> str:
@@ -23,3 +26,13 @@ def load_commands_from_json(cog_name:str = None) -> dict:
         return commands[cog_name]
     else:
         return commands
+
+
+def insert_new_user_in_db(member: discord.Member):
+    db.insert("casino", {"user_id": member.id})
+    db.insert("durka_stats", {"user_id": member.id})
+    db.insert("leveling", {"user_id": member.id})
+    db.insert("users_stats", {"user_id": member.id})
+    db.insert("users_info", {"user_id": member.id, 
+                            "nickname": member.display_name,
+                            "mention": member.mention})

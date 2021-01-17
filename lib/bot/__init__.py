@@ -14,8 +14,8 @@ from discord.errors import HTTPException, Forbidden
 from loguru import logger
 
 from ..db import db
-from ..utils import constants
-from ..utils.utils import russian_plural
+from ..utils.constants import GUILD_ID, AUDIT_LOG_CHANNEL
+from ..utils.utils import russian_plural, insert_new_user_in_db
 
 logger.add("logs/{time:DD-MM-YYYY---HH-mm-ss}.log",
            format="{time:DD-MM-YYYY HH:mm:ss} | {level} | {message}",
@@ -101,6 +101,12 @@ class Bot(BotBase):
             print("\nAvailable guilds:")
             for guild in bot.guilds:
                 print(guild.name, guild.id, "\n")
+                if guild.id == GUILD_ID:
+                    for member in guild.members:
+                        if member.pending is False:
+                            if rec := db.fetchone(["user_id"], "users_info", "user_id", member.id) is None:
+                                insert_new_user_in_db(member)
+
             
 
             while not self.cogs_ready.all_ready():
@@ -164,13 +170,13 @@ class Bot(BotBase):
                     await dev.send(embed=embed)
                 else:
                     embed = Embed(title=f'Ошибка при выполнении команды {ctx.command}.', description=f'`{ctx.command.signature}`\n{exc}', color = Color.red())
-                    channel = self.get_channel(id=constants.AUDIT_LOG_CHANNEL)
+                    channel = self.get_channel(id=AUDIT_LOG_CHANNEL)
                     await channel.send(embed=embed)
             except:
                 embed = Embed(title=f'Ошибка при выполнении команды {ctx.command}.', description=f'`{ctx.command.signature}`\n{exc}', color = Color.red())
                 if isinstance(ctx.channel, DMChannel):
                     embed.add_field(name="Additional info:", value="Exception occured in DMChannel.")
-                channel = self.get_channel(id=constants.AUDIT_LOG_CHANNEL)
+                channel = self.get_channel(id=AUDIT_LOG_CHANNEL)
                 await channel.send(embed=embed)
             finally:
                 raise exc

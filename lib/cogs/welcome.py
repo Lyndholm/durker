@@ -4,7 +4,7 @@ from discord.ext.commands import Cog
 from discord.ext.commands import command
 from datetime import datetime
 from ..utils.constants import WELCOME_CHANNEL, GOODBYE_CHANNEL, AUDIT_LOG_CHANNEL
-
+from ..utils.utils import insert_new_user_in_db
 
 class Welcome(Cog):
     def __init__(self, bot):
@@ -34,6 +34,7 @@ class Welcome(Cog):
                 pass
 
             finally:
+                insert_new_user_in_db(after)
                 embed = Embed(description=f"Привет, **{after.display_name}** ({after.mention})!\nДобро пожаловать на сервер **{after.guild.name}** :tada::hugging:!",
                             color=Color.green(), timestamp=datetime.now())
                 embed.set_author(name=f"Новый участник на сервере!", icon_url=f"{after.guild.icon_url}")
