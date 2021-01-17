@@ -4,7 +4,7 @@ from discord.ext.commands import Cog
 from discord.ext.commands import command
 from datetime import datetime
 from ..utils.constants import WELCOME_CHANNEL, GOODBYE_CHANNEL, AUDIT_LOG_CHANNEL
-from ..utils.utils import insert_new_user_in_db
+from ..utils.utils import insert_new_user_in_db, dump_user_data_in_json, delete_user_from_db
 
 class Welcome(Cog):
     def __init__(self, bot):
@@ -35,6 +35,7 @@ class Welcome(Cog):
 
             finally:
                 insert_new_user_in_db(after)
+                
                 embed = Embed(description=f"Привет, **{after.display_name}** ({after.mention})!\nДобро пожаловать на сервер **{after.guild.name}** :tada::hugging:!",
                             color=Color.green(), timestamp=datetime.now())
                 embed.set_author(name=f"Новый участник на сервере!", icon_url=f"{after.guild.icon_url}")
@@ -52,6 +53,9 @@ class Welcome(Cog):
             await self.bot.get_channel(AUDIT_LOG_CHANNEL).send(embed=embed)
 
         else:
+            dump_user_data_in_json(member)
+            delete_user_from_db(member.id)
+
             embed = Embed(description=f"К сожалению, пользователь **{member.display_name}** ({member.mention}) покинул сервер:disappointed:",
                         color=Color.gold(), timestamp=datetime.now())
             embed.set_author(name=f"Участник покинул сервер", icon_url=f"{member.guild.icon_url}")

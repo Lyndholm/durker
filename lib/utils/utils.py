@@ -2,11 +2,12 @@ import json
 import discord
 
 from ..db import db
+from datetime import datetime
 
 
 def russian_plural(value: int, quantitative: list) -> str:
-
     """Returns a string with a declined noun"""
+
     if value % 100 in (11, 12, 13, 14):
         return quantitative[2]
     if value % 10 == 1:
@@ -29,6 +30,8 @@ def load_commands_from_json(cog_name:str = None) -> dict:
 
 
 def insert_new_user_in_db(member: discord.Member):
+    """Adds user data to the database"""
+
     db.insert("casino", {"user_id": member.id})
     db.insert("durka_stats", {"user_id": member.id})
     db.insert("leveling", {"user_id": member.id})
@@ -36,3 +39,54 @@ def insert_new_user_in_db(member: discord.Member):
     db.insert("users_info", {"user_id": member.id, 
                             "nickname": member.display_name,
                             "mention": member.mention})
+
+
+def delete_user_from_db(user_id: int):
+    """Deletes user data from the database"""
+
+    tables = ["casino", "durka_stats", "fn_profiles", "leveling", "users_stats", "users_info"]
+
+    for table in tables:
+        db.execute(f"DELETE FROM {table} WHERE user_id = {user_id}")
+
+
+def dump_user_data_in_json(member: discord.Member):
+    """Dump part of the user's data to a json file"""
+
+    data = {}
+    cursor = db.get_cursor()
+
+    cursor.execute("SELECT * FROM casino where user_id = %s", (member.id,))
+    rec = cursor.fetchone()
+    data["casino"] = {"cash":rec[1],"e-cash":rec[2],"credits":rec[3]}
+
+    cursor.execute("SELECT * FROM durka_stats where user_id = %s", (member.id,))
+    rec = cursor.fetchone()
+    data["durka_stats"] = {"available_durka_uses":rec[1],"received_durka_calls":rec[2],"sent_durka_calls":rec[3]}
+
+    cursor.execute("SELECT * FROM leveling where user_id = %s", (member.id,))
+    rec = cursor.fetchone()
+    data["leveling"] = {"level":rec[1],"xp":rec[2],"total_xp":rec[3]}
+
+    cursor.execute("SELECT * FROM users_info where user_id = %s", (member.id,))
+    rec = cursor.fetchone()
+    data["users_info"] = {"joined_at":str(member.joined_at),"brief_biography":rec[4]}
+
+    cursor.execute("SELECT * FROM users_stats where user_id = %s", (member.id,))
+    rec = cursor.fetchone()
+    data["users_stats"] = {
+        "achievements_list": rec[1],
+        "messages_count": rec[2],
+        "rep_rank": rec[4],
+        "lost_reputation": rec[5],
+        "profanity_triggers": rec[6],
+        "invoice_time": rec[7],
+        "purchases": rec[8],
+        "mutes_story": rec[9],
+        "warns_story": rec[10]
+    }
+
+    time_now = datetime.now().strftime("%d.%m.%Y %H.%M.%S")
+
+    with open(f"./data/users_backup/{member.id} [{time_now}].json", "w") as f:
+        json.dump(data, f, indent=4, sort_keys=True, ensure_ascii=False)

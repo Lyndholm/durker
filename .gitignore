@@ -763,5 +763,5 @@ MigrationBackup/
 
 logs/
 dev/
-db_structure.json
 .vscode/
+data/users_backup
