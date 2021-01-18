@@ -133,7 +133,7 @@ class Bot(BotBase):
 
     async def on_command_error(self, ctx, exc):
         if isinstance(exc, CommandNotFound):
-            embed = Embed(title=':exclamation: Ошибка!', description=f'Команда `{ctx.message.content}` не найдена.', color = Color.red())
+            embed = Embed(title=':exclamation: Ошибка!', description=f'Команда `{ctx.message.clean_content}` не найдена.', color = Color.red())
             await ctx.send(embed=embed, delete_after = 10)
 
         elif isinstance(exc, CommandOnCooldown):

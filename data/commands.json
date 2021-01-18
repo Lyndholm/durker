@@ -84,6 +84,20 @@
             "cooldown_per_second": 0,
             "cooldown_type": "None",
             "hidden": false
+        },
+        "randint":{
+            "name": "randint",
+            "aliases": ["random", "рандом", "число"],
+            "brief": "Генерация случайных целых чисел.",
+            "description": "Бот генерирует случайное число в заданном диапазане.",
+            "usage": "randint <digit a> <digit b>",
+            "help": "Бот генерирует случайное число в диапазоне от A до B включительно. Работает только на сервере.\n**Куладун:** отсутсвует.\n**Необходимый уровень:** 3",
+            "required_level": 3,
+            "has_cooldown": false,
+            "cooldown_rate": 0,
+            "cooldown_per_second": 0,
+            "cooldown_type": "None",
+            "hidden": false
         }
     },
 

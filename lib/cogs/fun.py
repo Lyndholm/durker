@@ -405,6 +405,28 @@ class Fun(Cog):
             await ctx.send(embed=embed, delete_after = 30)
 
 
+    @command(name=cmd["randint"]["name"], aliases=cmd["randint"]["aliases"], 
+            brief=cmd["randint"]["brief"],
+            description=cmd["randint"]["description"],
+            usage=cmd["randint"]["usage"],
+            help=cmd["randint"]["help"],
+            hidden=cmd["randint"]["hidden"], enabled=True)
+    async def randint_command(self, ctx, a: int, b: int):
+        embed = Embed(title="Генератор случайных чисел", description=f"Случайное целое число: **{randint(a,b)}**", color=Color.random())
+        await ctx.send(embed=embed)
+    
+    @randint_command.error
+    async def randint_command_error(self, ctx, exc):
+        if isinstance(exc, CheckFailure):
+            embed = Embed(title=':exclamation: Ошибка!', description =f"{ctx.author.mention}\nКоманда `{ctx.command}` может быть использована только в канале <#708601604353556491> или в личных сообщениях."
+            "\nТакже у вас должен быть 3-й и выше уровень.", color = Color.red())
+            await ctx.send(embed=embed, delete_after = 30)
+
+        elif isinstance(exc, MissingRequiredArgument):
+            embed = Embed(title=':exclamation: Внимание!', description =f"Пожалуйста, укажите корректный диапазон **целых** чисел.", color = Color.red())
+            await ctx.send(embed=embed, delete_after = 30)
+
+
     @command(name="dice", aliases=["roll"])
     @cooldown(1, 10, BucketType.user)
     @guild_only()

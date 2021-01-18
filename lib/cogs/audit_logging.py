@@ -33,13 +33,15 @@ class Audit(Cog):
                     for embed in message.embeds:
                         await log_channel.send("Нельзя удалять сообщения бота в аудите!", embed=embed)
                     return
+                elif message.author.bot:
+                    return
 
                 embed = Embed(title="Сообщение было удалено", color=Color.red(), timestamp=datetime.now())
 
                 if message.system_content:
-                    embed.description = f"**Удалённое сообщение:**```{message.system_content.replace('`', '`­')[:2020]}\n```"
+                    embed.description = f"**Удалённое сообщение:**```{message.clean_content.replace('`', '`­')[:2020]}\n```"
                 elif message.content:
-                    embed.description =  f"**Удалённое сообщение:**```{message.content.replace('`', '`­')[:2020]}\n```"
+                    embed.description =  f"**Удалённое сообщение:**```{message.clean_content.replace('`', '`­')[:2020]}\n```"
 
                 if message.attachments:
                     attachments_url = [attachment for attachment in message.attachments]
@@ -103,11 +105,11 @@ class Audit(Cog):
                             attachments_url = [attachment for attachment in msg.attachments]
 
                             f.write(f"{time} | User = {msg.author.display_name} | UserID = {msg.author.id}" + "\n" +   
-                                f"MessageID = {msg.id}\nMessage content: {msg.content}" + "\n" + 
+                                f"MessageID = {msg.id}\nMessage content: {msg.clean_content}" + "\n" + 
                                 f"Attachments: {nl.join([url.proxy_url for url in attachments_url]) + nl + nl.join([url.url for url in attachments_url])}" "\n\n")
                         else:
                             f.write(f"{time} | User = {msg.author.display_name} | UserID = {msg.author.id}" + nl +    
-                                f"MessageID = {msg.id}\nMessage content: {msg.content}" + "\n\n")
+                                f"MessageID = {msg.id}\nMessage content: {msg.clean_content}" + "\n\n")
 
                 embed.add_field(name="Канал:", value=f"{messages[0].channel.name} ({messages[0].channel.mention})")
 
