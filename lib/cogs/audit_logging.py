@@ -139,23 +139,24 @@ class Audit(Cog):
 
     @Cog.listener()
     async def on_message_edit(self, before: Message, after: Message):
-        log_channel = after.guild.get_channel(AUDIT_LOG_CHANNEL)
-        if not before.author.bot:
-            if before.content != after.content:
-                if before.channel.id == ADMINS_CHANNEL or before.channel.id == GVARDIYA_CHANNEL:
-                    return
-                else:
-                    d = Differ()
-                    diff = d.compare(before.content.splitlines(), after.content.splitlines())
-                    diff_str = "\n".join([x for x in diff if not x.startswith("? ")]).replace("`", "`­")
+        if not isinstance (after.channel, DMChannel):
+            log_channel = after.guild.get_channel(AUDIT_LOG_CHANNEL)
+            if not before.author.bot:
+                if before.content != after.content:
+                    if before.channel.id == ADMINS_CHANNEL or before.channel.id == GVARDIYA_CHANNEL:
+                        return
+                    else:
+                        d = Differ()
+                        diff = d.compare(before.clean_content.splitlines(), after.clean_content.splitlines())
+                        diff_str = "\n".join([x for x in diff if not x.startswith("? ")]).replace("`", "`­")
 
-                    embed = Embed(title=f"Сообщение было отредактировано", color=Color.blurple(), timestamp=datetime.now())
-                    embed.description = f"```diff\n{diff_str[:2030]}\n```"
-                    embed.add_field(name='Автор:', value=f'**{after.author.display_name}** ({after.author.mention})', inline=True)
-                    embed.add_field(name="Канал:", value=before.channel.mention)
-                    embed.add_field(name=f"Jump url:", value=f"[Click]({before.jump_url})")
-                    embed.set_footer(text=f"ID сообщения: {after.id}")
-                    await log_channel.send(embed=embed)
+                        embed = Embed(title=f"Сообщение было отредактировано", color=Color.blurple(), timestamp=datetime.now())
+                        embed.description = f"```diff\n{diff_str[:2030]}\n```"
+                        embed.add_field(name='Автор:', value=f'**{after.author.display_name}** ({after.author.mention})', inline=True)
+                        embed.add_field(name="Канал:", value=before.channel.mention)
+                        embed.add_field(name=f"Jump url:", value=f"[Click]({before.jump_url})")
+                        embed.set_footer(text=f"ID сообщения: {after.id}")
+                        await log_channel.send(embed=embed)
 
 
     @Cog.listener()

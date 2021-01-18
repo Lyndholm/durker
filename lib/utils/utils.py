@@ -32,10 +32,10 @@ def load_commands_from_json(cog_name:str = None) -> dict:
 def insert_new_user_in_db(member: discord.Member):
     """Adds user data to the database"""
 
-    db.insert("casino", {"user_id": member.id})
-    db.insert("durka_stats", {"user_id": member.id})
-    db.insert("leveling", {"user_id": member.id})
-    db.insert("users_stats", {"user_id": member.id})
+    tables = ["casino", "durka_stats", "leveling", "users_stats"]
+    for table in tables:
+        db.insert(f"{table}", {"user_id": member.id})
+
     db.insert("users_info", {"user_id": member.id, 
                             "nickname": member.display_name,
                             "mention": member.mention})

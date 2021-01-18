@@ -85,11 +85,7 @@ class Owner(Cog):
         try:
             command = self.bot.get_command(name=cmd)
             if command.enabled:
-                cmd_data = {
-                    "command": cmd,
-                    "cog": command.cog.qualified_name
-                }
-                self.modified_commands[cmd] = cmd_data
+                self.modified_commands[cmd] = command.cog.qualified_name
                 command.update(enabled=False, hidden=True)
                 embed = Embed(title=':thumbsup: Успешно!', description=f'Команда **`{cmd}`** отключена!', color = Color.green())
                 await ctx.send(embed=embed)
@@ -113,7 +109,7 @@ class Owner(Cog):
         try:
             command = self.bot.get_command(name=cmd)
             if not command.enabled:
-                command_cog = self.bot.get_cog(self.modified_commands[cmd]["cog"])
+                command_cog = self.bot.get_cog(self.modified_commands[cmd])
                 command.update(enabled=True, hidden=False)
                 command.cog = command_cog
                 del self.modified_commands[cmd]
