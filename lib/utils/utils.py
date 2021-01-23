@@ -3,6 +3,15 @@ import discord
 
 from ..db import db
 from datetime import datetime
+from discord.ext.buttons import Paginator
+
+
+class Pag(Paginator):
+    async def teardown(self):
+        try:
+            await self.page.clear_reactions()
+        except discord.HTTPException:
+            pass
 
 
 def russian_plural(value: int, quantitative: list) -> str:
@@ -90,3 +99,10 @@ def dump_user_data_in_json(member: discord.Member):
 
     with open(f"./data/users_backup/{member.id} [{time_now}].json", "w") as f:
         json.dump(data, f, indent=4, sort_keys=True, ensure_ascii=False)
+
+
+def clean_code(content: str):
+    if content.startswith("```") and content.endswith("```"):
+        return "\n".join(content.split("\n")[1:])[:-3]
+    else:
+        return content

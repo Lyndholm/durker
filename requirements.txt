@@ -5,4 +5,5 @@ asyncio
 loguru
 psycopg2
 jishaku
+buttons
 git+https://github.com/Rapptz/discord-ext-menus
