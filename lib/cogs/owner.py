@@ -1,3 +1,5 @@
+import time
+from aiohttp import ClientSession
 from discord import Embed, Color
 from discord.ext.commands import Cog
 from discord.ext.commands import command
@@ -138,6 +140,65 @@ class Owner(Cog):
                 disabled_cmds.append(str(command))
         embed = Embed(title=':arrow_down: Отключённые команды.', description="\n".join(disabled_cmds) if disabled_cmds else "Все команды работают в штатном режиме.", color = Color.red())
         await ctx.send(embed=embed)
+
+
+    @command(name=cmd["fnping"]["name"], aliases=cmd["fnping"]["aliases"], 
+            brief=cmd["fnping"]["brief"],
+            description=cmd["fnping"]["description"],
+            usage=cmd["fnping"]["usage"],
+            help=cmd["fnping"]["help"],
+            hidden=cmd["fnping"]["hidden"], enabled=True)
+    @dm_only()
+    @is_owner()
+    async def ping_fortnite_apis_command(self, ctx):
+        """Get the response time for APIs."""
+        message = await ctx.send("Response time for APIs:")
+        async with ClientSession() as session:
+            now = time.monotonic()
+            async with session.get('https://benbotfn.tk/api/v1/status') as r:
+                benbot_ping = time.monotonic() - now if r.status == 200 else 0
+
+            now = time.monotonic()
+            async with session.get('https://fortnite-api.com') as r:
+                fnapicom_ping = time.monotonic() - now if r.status == 200 else 0
+
+            now = time.monotonic()
+            async with session.get('https://fortniteapi.io') as r:
+                fnapiio_ping = time.monotonic() - now if r.status == 200 else 0
+
+            now = time.monotonic()
+            async with session.get('https://fortnitetracker.com') as r:
+                fntracker_ping = time.monotonic() - now if r.status == 200 else 0
+
+            now = time.monotonic()
+            async with session.get('https://api.nitestats.com') as r:
+                ninestats_ping = time.monotonic() - now if r.status == 200 else 0
+
+        await message.edit(
+            embed=Embed(color=Color.random())
+            .add_field(name="Discord", value=f"{round(self.bot.latency * 1000)} ms.")
+            .add_field(
+                name="BenBot",
+                value=f"{round(benbot_ping * 1000)} ms.",
+            )
+            .add_field(
+                name="FortniteAPI.com",
+                value=f"{round(fnapicom_ping * 1000)} ms.",
+            )
+            .add_field(
+                name="FortniteAPI.io",
+                value=f"{round(fnapiio_ping * 1000)} ms.",
+            )
+            .add_field(
+                name="FortniteTracker",
+                value=f"{round(fntracker_ping * 1000)} ms.",
+            )
+            .add_field(
+                name="NiteStats",
+                value=f"{round(ninestats_ping * 1000)} ms.",
+            ),
+        )
+        inline = True
 
 
     @Cog.listener()

@@ -1,4 +1,64 @@
-{   "covid":
+{   
+    "benbot":
+    {
+        "benbotstatus":{
+            "name": "benbotstatus",
+            "aliases": ["benstatus","pingbenbot"],
+            "brief": "Отображает состояние BenBot API.",
+            "description": "Fetch the current BenBot API Status.",
+            "usage": "benstatus",
+            "help": "Отображает состояние BenBot API. Работает только в личных сообщениях. Доступно только разработчику бота.",
+            "required_level": 0,
+            "has_cooldown": false,
+            "cooldown_rate": 0,
+            "cooldown_per_second": 0,
+            "cooldown_type": "None",
+            "hidden": true
+        },
+        "aes":{
+            "name": "aes",
+            "aliases": ["fnaes"],
+            "brief": "Отображает AES ключи для доступа к файлам игры.",
+            "description": "Fetch the current AES Keys.",
+            "usage": "aes [version]",
+            "help": "Отображает AES ключи для доступа к файлам игры. По умолчанию отображаются ключи для текущей версии игры. В случае необходимости мы можете указать необходимую вам версию.\nРаботает только на сервере.\n**Кулдаун:** отсутствует.\n**Необходимый уровень:** 0",
+            "required_level": 0,
+            "has_cooldown": false,
+            "cooldown_rate": 0,
+            "cooldown_per_second": 0,
+            "cooldown_type": "None",
+            "hidden": false
+        },
+        "cosmeticinfo":{
+            "name": "cosmeticinfo",
+            "aliases": ["itemid","fnitem"],
+            "brief": "Отображает информацию о косметическом предмете по его ID.",
+            "description": "Show cosmetic info from a cosmetic ID.",
+            "usage": "cosmeticinfo <ID>",
+            "help": "Отображает информацию о косметическом предмете по его ID.\nРаботает только на сервере.\n**Кулдаун:** отсутствует.\n**Необходимый уровень:** 0",
+            "required_level": 0,
+            "has_cooldown": false,
+            "cooldown_rate": 0,
+            "cooldown_per_second": 0,
+            "cooldown_type": "None",
+            "hidden": false
+        },
+        "extractasset":{
+            "name": "extractasset",
+            "aliases": ["fnextract", "fnexport", "exportasset"],
+            "brief": "Извлекает asset из файлов игры.",
+            "description": "Extract an asset from Fortnite's files.",
+            "usage": "extractasset <path> [*params]",
+            "help": "Извлекает asset из файлов игры.\nРаботает только на сервере.\n**Кулдаун:** отсутствует.\n**Необходимый уровень:** 0",
+            "required_level": 0,
+            "has_cooldown": false,
+            "cooldown_rate": 0,
+            "cooldown_per_second": 0,
+            "cooldown_type": "None",
+            "hidden": false
+        }
+    },
+    "covid":
     {
         "covid":{
             "name": "covid",
@@ -254,6 +314,21 @@
             "description": "Формирует список отключенных команд.",
             "usage": "disabledcmds",
             "help": "Формирует список отключенных команд. Работает только в личных сообщениях. Доступно только разработчику бота.",
+            "required_level": 0,
+            "has_cooldown": false,
+            "cooldown_rate": 0,
+            "cooldown_per_second": 0,
+            "cooldown_type": "None",
+            "hidden": true
+        },
+        "fnping":
+        {
+            "name": "fnping",
+            "aliases": ["fnapiping", "fnpingapi"],
+            "brief": "Отображает время ответа используемых Fortnite API.",
+            "description": "Get the response time for APIs.",
+            "usage": "fnping",
+            "help": "Отображает время ответа используемых Fortnite API. Работает только в личных сообщениях. Доступно только разработчику бота.",
             "required_level": 0,
             "has_cooldown": false,
             "cooldown_rate": 0,

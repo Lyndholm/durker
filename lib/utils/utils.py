@@ -101,7 +101,8 @@ def dump_user_data_in_json(member: discord.Member):
         json.dump(data, f, indent=4, sort_keys=True, ensure_ascii=False)
 
 
-def clean_code(content: str):
+def clean_code(content: str) -> str:
+    """Clear code the ``` chars from"""
     if content.startswith("```") and content.endswith("```"):
         return "\n".join(content.split("\n")[1:])[:-3]
     else:
