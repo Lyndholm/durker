@@ -2,9 +2,8 @@ from discord import Embed, Color, Member
 from discord.ext.commands import Cog, BucketType
 from discord.ext.commands import command, cooldown
 from discord.ext.commands import check_any, is_owner, guild_only, dm_only
-from discord.ext.commands.errors import CheckFailure, MissingRequiredArgument
+from discord.ext.commands.errors import MissingRequiredArgument
 from discord.channel import DMChannel
-from discord.errors import HTTPException
 
 from random import randint, choice
 from aiohttp import ClientSession
@@ -72,16 +71,7 @@ class Fun(Cog):
         embed_new.set_footer(text=f'{ctx.author.name}', icon_url=ctx.author.avatar_url)
         await message.edit(embed=embed_new)
 
-    @drop_coin_command.error
-    async def drop_coin_command_error(self, ctx, exc):
-        if not isinstance(ctx.channel, DMChannel):
-            await ctx.message.delete()
-        if isinstance(exc, CheckFailure):
-            embed = Embed(title=':exclamation: Ошибка!', description =f"{ctx.author.mention}\nКоманда `{ctx.command}` может быть использована только в канале <#708601604353556491> или в личных сообщениях."
-            "\nТакже у вас должен быть 5-й и выше уровень.", color = Color.red())
-            await ctx.send(embed=embed, delete_after = 30)
 
-    
     @command(name=cmd["saper"]["name"], aliases=cmd["saper"]["aliases"], 
             brief=cmd["saper"]["brief"],
             description=cmd["saper"]["description"],
@@ -395,12 +385,7 @@ class Fun(Cog):
 
     @magic_ball_command.error
     async def magic_ball_command_error(self, ctx, exc):
-        if isinstance(exc, CheckFailure):
-            embed = Embed(title=':exclamation: Ошибка!', description =f"{ctx.author.mention}\nКоманда `{ctx.command}` может быть использована только в канале <#708601604353556491> или в личных сообщениях."
-            "\nТакже у вас должен быть 3-й и выше уровень.", color = Color.red())
-            await ctx.send(embed=embed, delete_after = 30)
-
-        elif isinstance(exc, MissingRequiredArgument):
+        if isinstance(exc, MissingRequiredArgument):
             embed = Embed(title=':exclamation: Внимание!', description =f"Пожалуйста, укажите вопрос.", color = Color.red())
             await ctx.send(embed=embed, delete_after = 30)
 
@@ -417,12 +402,7 @@ class Fun(Cog):
     
     @randint_command.error
     async def randint_command_error(self, ctx, exc):
-        if isinstance(exc, CheckFailure):
-            embed = Embed(title=':exclamation: Ошибка!', description =f"{ctx.author.mention}\nКоманда `{ctx.command}` может быть использована только в канале <#708601604353556491> или в личных сообщениях."
-            "\nТакже у вас должен быть 3-й и выше уровень.", color = Color.red())
-            await ctx.send(embed=embed, delete_after = 30)
-
-        elif isinstance(exc, MissingRequiredArgument):
+        if isinstance(exc, MissingRequiredArgument):
             embed = Embed(title=':exclamation: Внимание!', description =f"Пожалуйста, укажите корректный диапазон **целых** чисел.", color = Color.red())
             await ctx.send(embed=embed, delete_after = 30)
 
@@ -439,9 +419,7 @@ class Fun(Cog):
 
     @dice_command.error
     async def dice_command_error(self, ctx, exc):
-        if isinstance(exc, HTTPException):
-            await ctx.send("Длина получившейся комбинации превышает лимит символов (2000). Пожалуйста, используйте числа меньше.", delete_after = 20)
-        elif isinstance(exc, ValueError):
+        if isinstance(exc, ValueError):
             await ctx.send("Пожалуйста, введите корректную комбинацию.", delete_after = 20)
 
 

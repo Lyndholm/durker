@@ -8,6 +8,7 @@ from discord import Color, Embed, Intents
 from discord.ext.commands import Bot as BotBase, Context
 from discord.ext.commands import (CommandNotFound, CommandOnCooldown, DisabledCommand, 
                                 NoPrivateMessage, PrivateMessageOnly)
+from discord.ext.commands.errors import CheckFailure, CheckAnyFailure
 from discord.channel import DMChannel
 from discord.errors import HTTPException, Forbidden
 
@@ -159,9 +160,13 @@ class Bot(BotBase):
             embed = Embed(title=':exclamation: Ошибка!', description =f"Недостаточно прав для выполнения действия.", color= Color.red())
             await ctx.send(embed=embed, delete_after = 30)
 
-        # elif isinstance(exc, HTTPException):
-        #     embed = Embed(title=':exclamation: Ошибка!', description =f"Невозможно отправить сообщение.", color= Color.red())
-        #     await ctx.send(embed=embed, delete_after = 30)
+        elif isinstance(exc, HTTPException):
+            embed = Embed(title=':exclamation: Ошибка!', description =f"Невозможно отправить сообщение. Возможно, превышен лимит символов.", color= Color.red())
+            await ctx.send(embed=embed, delete_after = 30)
+
+        elif isinstance(exc, CheckFailure) or isinstance(exc, CheckAnyFailure):
+            embed = Embed(title=':exclamation: Ошибка!', description =f"{ctx.author.mention}\nНевозможно выполнить указанную команду. Возможно, вы используете неправильный канал, у вас недостаточный уровень или отсутсвуют права на выполнение запрошенной команды.", color= Color.red())
+            await ctx.send(embed=embed, delete_after = 30)
 
         else:
             try:
