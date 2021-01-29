@@ -1,9 +1,10 @@
-from discord import Embed, Color
+from io import BytesIO
+from discord import Embed, Color, File
 from discord.ext.commands import Cog
 from discord.ext.commands import command
 
 from aiohttp import ClientSession
-from random import choice
+from random import choice, randint
 
 import json
 
@@ -34,18 +35,26 @@ class Nekos(Cog):
             help=cmd["anipic"]["help"],
             hidden=cmd["anipic"]["hidden"], enabled=True)
     async def random_anime_picture_command(self, ctx):  
-        async with ClientSession() as session:
-            async with session.get(f'https://waifu.pics/api/sfw/{choice(self.anime_categories)}') as r:
-                    if r.status == 200:
-                        data = await r.json()
-                        img = data["url"]
-                    else:
-                        img = choice(self.waifu_images)
-
         embed = Embed(color=Color.random(), timestamp=ctx.message.created_at)
-        embed.set_image(url=img)
         embed.set_footer(text=f'{ctx.author.name}', icon_url=ctx.author.avatar_url)
-        await ctx.send(embed=embed)
+
+        async with ClientSession() as session:
+            chance = randint(1, 100)
+            if 50 < chance < 100:
+                async with session.get(f'https://waifu.pics/api/sfw/{choice(self.anime_categories)}') as r:
+                        if r.status == 200:
+                            data = await r.json()
+                            embed.set_image(url=data["url"])
+                        else:
+                            embed.set_image(url=choice(self.waifu_images))
+                        await ctx.send(embed=embed)
+
+            elif 0 < chance < 50:
+                async with session.get(f'https://{choice(self.anime_weeb_services)}.weeb.services/') as r:
+                        if r.status == 200:
+                            f = File(BytesIO(await r.read()), filename="weeb.png")
+                            embed.set_image(url="attachment://weeb.png")
+                            await ctx.send(embed=embed, file=f) 
 
 
 def setup(bot):
