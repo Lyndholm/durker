@@ -92,6 +92,37 @@
             "hidden": true
         }
     },
+    "fortniteapicom":
+    {
+        "news":{
+            "name": "news",
+            "aliases": ["fortnews", "fnnews", "newsfn"],
+            "brief": "Отображает внутриигровые новости Fortnite.",
+            "description": "Возможность посмотреть новости Fortnite.",
+            "usage": "news <mode> [language]",
+            "help": "Просмотр внутриигровых новостей Fortnite. Доступные режимы: `br`, `creative`, `stw`.\n**Куладун:** отсутсвует.\n**Необходимый уровень:** 0",
+            "required_level": 0,
+            "has_cooldown": false,
+            "cooldown_rate": 0,
+            "cooldown_per_second": 0,
+            "cooldown_type": "None",
+            "hidden": true
+        },
+        "creatorcode":{
+            "name": "creatorcode",
+            "aliases": ["searchcreator", "searchcode", "getcode"],
+            "brief": "Отображает о коде автора Epic Games.",
+            "description": "Информация о введённом теге автора.",
+            "usage": "news <mode> [language]",
+            "help": "Просмотр информации о коде автора Epic Games. Если найдено несколько позиций, информация будет отображена в нескольких страницах.\n**Куладун:** отсутсвует.\n**Необходимый уровень:** 0",
+            "required_level": 0,
+            "has_cooldown": false,
+            "cooldown_rate": 0,
+            "cooldown_per_second": 0,
+            "cooldown_type": "None",
+            "hidden": true
+        }
+    },
     "fun":
     {
         "hug":{
