@@ -179,6 +179,10 @@ class Owner(Cog):
             async with session.get('https://api.nitestats.com') as r:
                 ninestats_ping = time.monotonic() - now if r.status == 200 else 0
 
+            now = time.monotonic()
+            async with session.get('https://api.peely.de') as r:
+                peelyde_ping = time.monotonic() - now if r.status == 200 else 0
+
         await message.edit(
             embed=Embed(color=Color.random())
             .add_field(name="Discord", value=f"{round(self.bot.latency * 1000)} ms.")
@@ -201,6 +205,10 @@ class Owner(Cog):
             .add_field(
                 name="NiteStats",
                 value=f"{round(ninestats_ping * 1000)} ms.",
+            )
+            .add_field(
+                name="Api.peely.de",
+                value=f"{round(peelyde_ping * 1000)} ms.",
             ),
         )
         inline = True
