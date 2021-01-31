@@ -28,7 +28,7 @@ class FortniteAPIio(Cog):
             embed.set_image(url=f"https://media.fortniteapi.io/images/map.png?showPOI=true&lang={language}")
         else:
             embed.set_image(url="https://media.fortniteapi.io/images/map.png")
-            
+
         await ctx.send(embed=embed)
 
     @Cog.listener()

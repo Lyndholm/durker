@@ -94,6 +94,20 @@
     },
     "fortniteapicom":
     {
+        "searchcosmetic":{
+            "name": "searchcosmetic",
+            "aliases": ["cosmeticsearch"],
+            "brief": "Поиск косметического предмета Fortnite.",
+            "description": "Инофрмация о косметическом предмете Fortnite.",
+            "usage": "searchcosmetic <-name> [-lang] [-rarity] [-unseenFor] [-id]",
+            "help": "Поиск косметического предмета Fortnite и отображение информации о нём.\n**Внимание!** Название предметов необходимо вводить на английском языке, это требование API.\n**Куладун:** отсутсвует.\n**Необходимый уровень:** 0",
+            "required_level": 0,
+            "has_cooldown": false,
+            "cooldown_rate": 0,
+            "cooldown_per_second": 0,
+            "cooldown_type": "None",
+            "hidden": false
+        },
         "news":{
             "name": "news",
             "aliases": ["fortnews", "fnnews", "newsfn"],
@@ -106,7 +120,7 @@
             "cooldown_rate": 0,
             "cooldown_per_second": 0,
             "cooldown_type": "None",
-            "hidden": true
+            "hidden": false
         },
         "creatorcode":{
             "name": "creatorcode",
@@ -120,7 +134,7 @@
             "cooldown_rate": 0,
             "cooldown_per_second": 0,
             "cooldown_type": "None",
-            "hidden": true
+            "hidden": false
         }
     },
     "fortniteapiio":
@@ -137,7 +151,7 @@
             "cooldown_rate": 0,
             "cooldown_per_second": 0,
             "cooldown_type": "None",
-            "hidden": true
+            "hidden": false
         }
     },
     "fun":
@@ -400,7 +414,7 @@
             "cooldown_rate": 0,
             "cooldown_per_second": 0,
             "cooldown_type": "None",
-            "hidden": true
+            "hidden": false
         },
         "setbio":
         {
@@ -415,7 +429,7 @@
             "cooldown_rate": 0,
             "cooldown_per_second": 0,
             "cooldown_type": "None",
-            "hidden": true
+            "hidden": false
         }
     }
 }

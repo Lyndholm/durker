@@ -1,18 +1,183 @@
+import shlex
+from argparse import ArgumentParser
+from asyncio.exceptions import TimeoutError
 from aiohttp import ClientSession
 from discord import Embed, Color
 from discord.ext.commands import Cog
 from discord.ext.commands import command
 from datetime import datetime
 
+from ..utils.constants import PLACEHOLDER
 from ..utils.utils import load_commands_from_json
 from ..utils.paginator import Paginator
 
 cmd = load_commands_from_json("fortniteapicom")
 
 
+class Arguments(ArgumentParser):
+    def error(self, message):
+        raise RuntimeError(message)
+
+
 class FortniteAPIcom(Cog):
     def __init__(self, bot):
         self.bot = bot
+
+
+    @command(name=cmd["searchcosmetic"]["name"], aliases=cmd["searchcosmetic"]["aliases"], 
+            brief=cmd["searchcosmetic"]["brief"],
+            description=cmd["searchcosmetic"]["description"],
+            usage=cmd["searchcosmetic"]["usage"],
+            help=cmd["searchcosmetic"]["help"],
+            hidden=cmd["searchcosmetic"]["hidden"], enabled=True)
+    async def search_fortnite_cosmetic_command(self, ctx, *, args: str = None):
+        if args is not None:
+            parser = Arguments(add_help=False, allow_abbrev=False)
+            parser.add_argument('-name', nargs='+')
+            parser.add_argument('-lang', nargs='+')
+            parser.add_argument('-rarity', nargs='+')
+            parser.add_argument('-unseenFor', nargs='+')
+            parser.add_argument('-id', nargs='+')
+
+            try:
+                args = parser.parse_args(shlex.split(args))
+            except Exception as e:
+                await ctx.send(str(e))
+                return
+
+            parameter = "?"
+
+            if args.name:
+                name = ""
+                for i in args.name:
+                    if i != args.name[len(args.name) - 1]:
+                        name += f"{i}+"
+                    else:
+                        name += f"{i}"
+                parameter += f"&name={name}"
+
+            if args.lang:
+                parameter += f"&language={args.lang[0].lower()}"
+            else:
+                parameter += "&language=ru"
+
+            if args.rarity:
+                parameter += f"&rarity={args.rarity[0].lower()}"
+
+            if args.unseenFor:
+                parameter += f"&unseenFor={args.unseenFor[0].lower()}"
+
+            if args.id:
+                parameter += f"&id={args.id[0].lower()}"
+
+            async with ClientSession() as session:
+                async with session.get(
+                        url=f"https://fortnite-api.com/v2/cosmetics/br/search{parameter}&matchMethod=contains") as r:
+                    data = await r.json()
+
+                    if r.status == 404:
+                        embed = Embed(
+                            title='Предмет не найден.', 
+                            description=f"```txt\n" + data["error"] + "```", 
+                            color=Color.red(),
+                            timestamp=datetime.utcnow())
+                        return await ctx.send(embed=embed)
+
+                    elif r.status == 200:
+                        i = data["data"]
+                        embed = Embed(color=Color.random())
+                        embed.set_author(name=i["name"])
+
+                        if i["images"]["icon"]:
+                            embed.set_thumbnail(url=i["images"]["icon"])
+                        elif i["images"]["smallIcon"]:
+                            embed.set_thumbnail(url=i["images"]["smallIcon"])
+                        elif i["images"]["featured"]:
+                            embed.set_thumbnail(url=i["images"]["featured"])
+                        elif i["images"]["other"]:
+                            embed.set_thumbnail(url=i["images"]["other"])
+                        else:
+                            embed.set_thumbnail(url=PLACEHOLDER)
+
+                        try:
+                            embed.add_field(name="ID:", value=i["id"] + " (**" + str(len(i["id"])) + "**)",
+                                            inline=False)
+                        except:
+                            pass
+                        try:
+                            embed.add_field(name="Описание:", value=i["description"], inline=False)
+                        except:
+                            pass
+                        try:
+                            embed.add_field(name="Редкость:", value=i["rarity"]["displayValue"], inline=False)
+                        except:
+                            pass
+                        try:
+                            embed.add_field(name="Первое появление:", value=i["introduction"]["text"], inline=False)
+                        except:
+                            pass
+                        try:
+                            hist = "```\n"
+                            for i2 in i["shopHistory"]:
+                                i2 = i2.split("T")
+                                i2 = i2[0].split("-")
+                                hist += f"{i2[2]}.{i2[1]}.{i2[0]}\n"
+                            hist += "```"
+                            embed.add_field(name="Появления в магазине:", value=hist[:1024], inline=False)
+                        except:
+                            pass
+                        variants = False
+                        try:
+                            if i["variants"]:
+                                variants = True
+                        except Exception as ex:
+                            print(ex)
+                            pass
+
+                        if variants is True:
+                            embed.set_footer(text="Нажмите на реакцию, чтобы увидеть дополнительные стили.")
+
+                        msg = await ctx.send(embed=embed)
+                        if variants is True:
+                            await msg.add_reaction("✅")
+                            try:
+                                p = await self.bot.wait_for("raw_reaction_add", timeout=120,
+                                                            check=lambda p: p.user_id == ctx.author.id and str(
+                                                                p.emoji) == "✅" and p.channel_id == ctx.channel.id)
+                            except TimeoutError:
+                                await msg.clear_reactions()
+                                return
+
+                            if i["variants"]:
+                                variants_embeds = []
+                                for i2 in i["variants"]:
+                                    for i3 in i2["options"]:
+                                        embed = Embed(
+                                            title=i2["channel"] + " | " + i2["type"].title(),
+                                            color=Color.green(),
+                                            timestamp=datetime.utcnow()
+                                        )
+                                        embed.add_field(name=i3["name"], value=i3.get("unlockRequirements", "Стиль открыт по умолчанию."), inline=False)
+                                        embed.set_image(url=i3.get("image", PLACEHOLDER))
+                                        variants_embeds.append(embed)
+                                        
+                            variants_msg = await msg.reply(embed=variants_embeds[0], mention_author=False)
+                            page = Paginator(self.bot, variants_msg, only=ctx.author, embeds=variants_embeds)
+                            await page.start()
+
+                        return
+                    else:
+                        embed = Embed(
+                            title=':exclamation: Ошибка!', 
+                            description=str(data["status"]) + "\n```txt\n" + data["error"] + "```", 
+                            color=Color.red(),
+                            timestamp=datetime.utcnow())
+                        await ctx.send(embed=embed)
+                        return
+        else:
+            await ctx.send(
+                "Пожалуйста, введите аргументы корректно.\n\n```+searchcosmetic -name Renegade Raider -lang ru -rarity "
+                "epic -unseenFor 120```")
 
 
     @command(name=cmd["news"]["name"], aliases=cmd["news"]["aliases"], 
@@ -23,7 +188,7 @@ class FortniteAPIcom(Cog):
             hidden=cmd["news"]["hidden"], enabled=True)
     async def show_fortnite_news_command(self, ctx, mode: str = "br", language: str = "ru"):
         mode = mode.lower()
-        placeholder = "https://cdn.discordapp.com/attachments/774698479981297664/774700936958312468/placeholder.png"
+        placeholder = PLACEHOLDER
 
         if mode not in ["br", "stw", "creative"]:
             embed = Embed(title=':exclamation: Внимание!', description ="Укажите режим корректно: `br`, `stw`, `creative`.", color= Color.red())
