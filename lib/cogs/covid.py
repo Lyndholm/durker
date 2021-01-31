@@ -5,9 +5,6 @@ from datetime import datetime
 
 from aiohttp import ClientSession
 
-import json
-
-
 from ..utils.utils import load_commands_from_json
 
 
@@ -16,6 +13,11 @@ cmd = load_commands_from_json("covid")
 class Covid(Cog):
     def __init__(self, bot):
         self.bot = bot
+
+    @Cog.listener()
+    async def on_ready(self):
+        if not self.bot.ready:
+           self.bot.cogs_ready.ready_up("covid")
 
     @command(name=cmd["covid"]["name"], aliases=cmd["covid"]["aliases"], 
             brief=cmd["covid"]["brief"],
@@ -65,12 +67,6 @@ class Covid(Cog):
                         else:
                             embed = Embed(title=':exclamation: Внимание!', description =f"Что-то пошло не так. API вернуло: {r.status}", color = Color.red())
                             await ctx.send(embed=embed)
-
-
-    @Cog.listener()
-    async def on_ready(self):
-        if not self.bot.ready:
-           self.bot.cogs_ready.ready_up("covid")
 
 
 def setup(bot):

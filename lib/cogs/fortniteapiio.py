@@ -15,6 +15,11 @@ class FortniteAPIio(Cog):
         self.bot = bot
         self.api_token = getenv('FORTNITEAPIIO_TOKEN')
 
+    @Cog.listener()
+    async def on_ready(self):
+        if not self.bot.ready:
+           self.bot.cogs_ready.ready_up("fortniteapiio")
+
     @command(name=cmd["map"]["name"], aliases=cmd["map"]["aliases"], 
             brief=cmd["map"]["brief"],
             description=cmd["map"]["description"],
@@ -30,11 +35,6 @@ class FortniteAPIio(Cog):
             embed.set_image(url="https://media.fortniteapi.io/images/map.png")
 
         await ctx.send(embed=embed)
-
-    @Cog.listener()
-    async def on_ready(self):
-        if not self.bot.ready:
-           self.bot.cogs_ready.ready_up("fortniteapiio")
 
 
 def setup(bot):

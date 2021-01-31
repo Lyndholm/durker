@@ -23,6 +23,10 @@ class FortniteAPIcom(Cog):
     def __init__(self, bot):
         self.bot = bot
 
+    @Cog.listener()
+    async def on_ready(self):
+        if not self.bot.ready:
+           self.bot.cogs_ready.ready_up("fortniteapicom")
 
     @command(name=cmd["searchcosmetic"]["name"], aliases=cmd["searchcosmetic"]["aliases"], 
             brief=cmd["searchcosmetic"]["brief"],
@@ -276,12 +280,6 @@ class FortniteAPIcom(Cog):
 
                 else:
                     await ctx.send(f"```json\n{r.text}```")
-
-
-    @Cog.listener()
-    async def on_ready(self):
-        if not self.bot.ready:
-           self.bot.cogs_ready.ready_up("fortniteapicom")
 
 
 def setup(bot):

@@ -15,6 +15,10 @@ class UserStats(Cog):
     def __init__(self, bot):
         self.bot = bot
 
+    @Cog.listener()
+    async def on_ready(self):
+        if not self.bot.ready:
+           self.bot.cogs_ready.ready_up("user_stats")
 
     @command(name=cmd["profile"]["name"], aliases=cmd["profile"]["aliases"], 
         brief=cmd["profile"]["brief"],
@@ -230,12 +234,6 @@ class UserStats(Cog):
 
             except Exception as e:
                 raise e
-
-
-    @Cog.listener()
-    async def on_ready(self):
-        if not self.bot.ready:
-           self.bot.cogs_ready.ready_up("user_stats")
 
 
 def setup(bot):

@@ -17,6 +17,11 @@ class Owner(Cog):
         self.bot = bot
         self.modified_commands = {}
     
+    @Cog.listener()
+    async def on_ready(self):
+        if not self.bot.ready:
+           self.bot.cogs_ready.ready_up("owner")
+
     @command(name=cmd["loadcog"]["name"], aliases=cmd["loadcog"]["aliases"], 
             brief=cmd["loadcog"]["brief"],
             description=cmd["loadcog"]["description"],
@@ -199,12 +204,6 @@ class Owner(Cog):
             ),
         )
         inline = True
-
-
-    @Cog.listener()
-    async def on_ready(self):
-        if not self.bot.ready:
-           self.bot.cogs_ready.ready_up("owner")
 
 
 def setup(bot):

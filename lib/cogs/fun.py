@@ -29,6 +29,10 @@ class Fun(Cog):
                         "https://25.media.tumblr.com/2a3ec53a742008eb61979af6b7148e8d/tumblr_mt1cllxlBr1s2tbc6o1_500.gif",
                         "https://media.tenor.com/images/ca88f916b116711c60bb23b8eb608694/tenor.gif"]
 
+    @Cog.listener()
+    async def on_ready(self):
+        if not self.bot.ready:
+           self.bot.cogs_ready.ready_up("fun")
 
     @command(name=cmd["hug"]["name"], aliases=cmd["hug"]["aliases"], 
             brief=cmd["hug"]["brief"],
@@ -421,12 +425,6 @@ class Fun(Cog):
     async def dice_command_error(self, ctx, exc):
         if isinstance(exc, ValueError):
             await ctx.send("Пожалуйста, введите корректную комбинацию.", delete_after = 20)
-
-
-    @Cog.listener()
-    async def on_ready(self):
-        if not self.bot.ready:
-           self.bot.cogs_ready.ready_up("fun")
 
 
 def setup(bot):

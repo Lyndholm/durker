@@ -6,9 +6,6 @@ from discord.ext.commands import command
 from aiohttp import ClientSession
 from random import choice, randint
 
-import json
-
-
 from ..utils.utils import load_commands_from_json
 
 

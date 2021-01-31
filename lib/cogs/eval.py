@@ -17,6 +17,11 @@ class Eval(Cog):
     def __init__(self, bot):
         self.bot = bot
 
+    @Cog.listener()
+    async def on_ready(self):
+        if not self.bot.ready:
+           self.bot.cogs_ready.ready_up("eval")
+
     @command(name=cmd["eval"]["name"], aliases=cmd["eval"]["aliases"], 
             brief=cmd["eval"]["brief"],
             description=cmd["eval"]["description"],
@@ -60,12 +65,6 @@ class Eval(Cog):
         )
 
         await pager.start(ctx)
-
-
-    @Cog.listener()
-    async def on_ready(self):
-        if not self.bot.ready:
-           self.bot.cogs_ready.ready_up("eval")
 
 
 def setup(bot):

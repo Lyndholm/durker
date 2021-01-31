@@ -15,6 +15,11 @@ class Audit(Cog):
     def __init__(self, bot):
         self.bot = bot
 
+    @Cog.listener()
+    async def on_ready(self):
+        if not self.bot.ready:
+           self.bot.cogs_ready.ready_up("audit_logging")
+
     @staticmethod
     def list_diff(l1: List, l2: List) -> Tuple[List, List, List]:
         """Get the items in l1 that are not in l2, vice versa, and the intersection"""
@@ -324,17 +329,6 @@ class Audit(Cog):
                 embed.add_field(name = "Предыдущий канал:", value = f"**{before.channel.name}** ({before.channel.mention})", inline=True)
                 embed.set_footer(text = f"ID участника: {member.id}")
                 await log_channel.send(embed=embed)
-
-
-    @command(name="purge")
-    async def purge_command(self, ctx, amount:int=3):
-        await ctx.message.delete()
-        await ctx.channel.purge(limit=amount)
-
-    @Cog.listener()
-    async def on_ready(self):
-        if not self.bot.ready:
-           self.bot.cogs_ready.ready_up("audit_logging")
 
 
 def setup(bot):

@@ -18,6 +18,11 @@ class BenBot(Cog):
     def __init__(self, bot):
         self.bot = bot
 
+    @Cog.listener()
+    async def on_ready(self):
+        if not self.bot.ready:
+           self.bot.cogs_ready.ready_up("benbot")
+
     @command(name=cmd["benbotstatus"]["name"], aliases=cmd["benbotstatus"]["aliases"], 
             brief=cmd["benbotstatus"]["brief"],
             description=cmd["benbotstatus"]["description"],
@@ -162,12 +167,6 @@ class BenBot(Cog):
                     await ctx.send(
                         f"```Unknown Content-Type: {r.headers.get('Content-Type', 'Unknown')}```"
                     )
-
-
-    @Cog.listener()
-    async def on_ready(self):
-        if not self.bot.ready:
-           self.bot.cogs_ready.ready_up("benbot")
 
 
 def setup(bot):

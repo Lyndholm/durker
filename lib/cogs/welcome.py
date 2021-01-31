@@ -10,6 +10,10 @@ class Welcome(Cog):
     def __init__(self, bot):
         self.bot = bot
 
+    @Cog.listener()
+    async def on_ready(self):
+        if not self.bot.ready:
+           self.bot.cogs_ready.ready_up("welcome")
 
     @Cog.listener()
     async def on_member_update(self, before: Member, after: Member):
@@ -61,12 +65,6 @@ class Welcome(Cog):
             embed.set_author(name=f"Участник покинул сервер", icon_url=f"{member.guild.icon_url}")
 
             await self.bot.get_channel(GOODBYE_CHANNEL).send(embed=embed)
-
-
-    @Cog.listener()
-    async def on_ready(self):
-        if not self.bot.ready:
-           self.bot.cogs_ready.ready_up("welcome")
 
 
 def setup(bot):

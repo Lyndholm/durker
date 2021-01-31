@@ -56,7 +56,12 @@ class Help(Cog):
     def __init__(self, bot):
         self.bot = bot
         self.bot.remove_command("help")
-        
+    
+    @Cog.listener()
+    async def on_ready(self):
+        if not self.bot.ready:
+           self.bot.cogs_ready.ready_up("help")
+
     async def cmd_help(self, ctx, command):
         embed = Embed(title=f"Команда: {str(command)}", description=command.help, color=ctx.author.color)
         embed.add_field(name="Синтаксис:", value=syntax(command))
@@ -92,11 +97,6 @@ class Help(Cog):
             else:
                 embed = Embed(title=':exclamation: Ошибка!', description =f"Указанная команда не существует, либо она скрыта или отключена.", color = Color.red())
                 await ctx.send(embed=embed, delete_after = 30)
-
-    @Cog.listener()
-    async def on_ready(self):
-        if not self.bot.ready:
-           self.bot.cogs_ready.ready_up("help")
 
 
 def setup(bot):
