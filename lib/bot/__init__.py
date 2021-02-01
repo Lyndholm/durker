@@ -169,19 +169,20 @@ class Bot(BotBase):
             await ctx.send(embed=embed, delete_after = 30)
 
         else:
+            channel = self.get_channel(id=AUDIT_LOG_CHANNEL)
             try:
                 if hasattr(ctx.command, 'on_error'):
                     embed = Embed(title="Error.", description = "Something went wrong, an error occured.\nCheck logs.", timestamp=datetime.now(), color = Color.red())
                     await dev.send(embed=embed)
                 else:
                     embed = Embed(title=f'Ошибка при выполнении команды {ctx.command}.', description=f'`{ctx.command.signature}`\n{exc}', color = Color.red())
-                    channel = self.get_channel(id=AUDIT_LOG_CHANNEL)
+                    if isinstance(ctx.channel, DMChannel):
+                        embed.add_field(name="Additional info:", value="Exception occured in DMChannel.")
                     await channel.send(embed=embed)
             except:
                 embed = Embed(title=f'Ошибка при выполнении команды {ctx.command}.', description=f'`{ctx.command.signature}`\n{exc}', color = Color.red())
                 if isinstance(ctx.channel, DMChannel):
                     embed.add_field(name="Additional info:", value="Exception occured in DMChannel.")
-                channel = self.get_channel(id=AUDIT_LOG_CHANNEL)
                 await channel.send(embed=embed)
             finally:
                 raise exc

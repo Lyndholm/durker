@@ -308,7 +308,6 @@
             "hidden": false
         }
     },
-
     "owner":
     {
         "loadcog":{
@@ -408,6 +407,20 @@
             "description": "Get the response time for APIs.",
             "usage": "fnping",
             "help": "Отображает время ответа используемых Fortnite API. Работает только в личных сообщениях. Доступно только разработчику бота.",
+            "required_level": 0,
+            "has_cooldown": false,
+            "cooldown_rate": 0,
+            "cooldown_per_second": 0,
+            "cooldown_type": "None",
+            "hidden": true
+        },
+        "bearer":{
+            "name": "bearer",
+            "aliases": ["epickey"],
+            "brief": "Fetch the current bearer token.",
+            "description": "Fetch the current bearer token.",
+            "usage": "bearer",
+            "help": "Fetch the current bearer token.",
             "required_level": 0,
             "has_cooldown": false,
             "cooldown_rate": 0,

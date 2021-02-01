@@ -4,7 +4,7 @@ from discord import Embed, Color
 from discord.ext.commands import Cog
 from discord.ext.commands import command
 from discord.ext.commands import is_owner, dm_only
-
+from datetime import datetime
 
 from ..utils.utils import load_commands_from_json
 
@@ -212,6 +212,32 @@ class Owner(Cog):
             ),
         )
         inline = True
+
+
+    @command(name=cmd["bearer"]["name"], aliases=cmd["bearer"]["aliases"], 
+            brief=cmd["bearer"]["brief"],
+            description=cmd["bearer"]["description"],
+            usage=cmd["bearer"]["usage"],
+            help=cmd["bearer"]["help"],
+            hidden=cmd["bearer"]["hidden"], enabled=True)
+    @dm_only()
+    @is_owner()
+    async def fetch_bearer_token_command(self, ctx):
+        async with ClientSession() as session:
+            async with session.get('https://api.nitestats.com/v1/epic/bearer') as r:
+                if r.status != 200:
+                    await ctx.send(f"""```json\n{await r.text()}```""")
+                    return
+                
+                data = await r.json()
+                embed = Embed(
+                    title="Bearer token",
+                    color=Color.random(),
+                    timestamp=ctx.message.created_at,
+                    description=f'**Token:** {data.get("accessToken", "Unknown")}\n'
+                                f'**Updated:** {datetime.fromtimestamp(data.get("lastUpdated", 0)).strftime("%d.%m.%Y %H:%M:%S")}'
+                )
+                await ctx.send(embed=embed)
 
 
 def setup(bot):
