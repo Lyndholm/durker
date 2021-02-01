@@ -6,6 +6,7 @@ from discord import Embed, Color, File
 from discord.ext.commands import Cog
 from discord.ext.commands import command, is_owner, dm_only, check_any
 from discord.ext.commands.errors import CheckAnyFailure
+from datetime import datetime
 
 from ..utils.utils import load_commands_from_json
 from ..utils.checks import is_channel, required_level
@@ -167,6 +168,36 @@ class BenBot(Cog):
                     await ctx.send(
                         f"```Unknown Content-Type: {r.headers.get('Content-Type', 'Unknown')}```"
                     )
+
+
+    @command(name=cmd["shopsections"]["name"], aliases=cmd["shopsections"]["aliases"], 
+            brief=cmd["shopsections"]["brief"],
+            description=cmd["shopsections"]["description"],
+            usage=cmd["shopsections"]["usage"],
+            help=cmd["shopsections"]["help"],
+            hidden=cmd["shopsections"]["hidden"], enabled=True)
+    async def display_fortnite_section_store_command(self, ctx):
+        async with ClientSession() as session:
+            async with session.get("https://benbotfn.tk/api/v1/calendar") as r:
+                if r.status != 200:
+                    await ctx.send(f"""```json\n{await r.text()}```""")
+                    return
+
+                data = await r.json()
+                embed = Embed(
+                    title="Разделы магазина предметов",
+                    color=Color.gold(),
+                    timestamp=datetime.utcnow()
+                )
+                sections_dict = data["channels"]["client-events"]["states"][0]["state"]["sectionStoreEnds"]
+
+                var = "Дата напротив каждой категории обозначает время, до которого раздел будет существовать. Время указано в **UTC**.\n\n"
+                for key, value in sections_dict.items():
+                    var+= f"**{key}:** {value}\n"
+
+                embed.description = var
+
+                await ctx.send(embed=embed)
 
 
 def setup(bot):
