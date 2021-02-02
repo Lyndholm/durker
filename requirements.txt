@@ -6,4 +6,7 @@ loguru
 psycopg2
 jishaku
 buttons
+pillow
+coloredlogs
+requests
 git+https://github.com/Rapptz/discord-ext-menus

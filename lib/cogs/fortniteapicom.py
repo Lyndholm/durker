@@ -2,7 +2,7 @@ import shlex
 from argparse import ArgumentParser
 from asyncio.exceptions import TimeoutError
 from aiohttp import ClientSession
-from discord import Embed, Color
+from discord import Embed, Color, File, HTTPException
 from discord.ext.commands import Cog
 from discord.ext.commands import command
 from datetime import datetime
@@ -280,6 +280,32 @@ class FortniteAPIcom(Cog):
 
                 else:
                     await ctx.send(f"```json\n{r.text}```")
+
+
+    @command(name=cmd["shop"]["name"], aliases=cmd["shop"]["aliases"], 
+            brief=cmd["shop"]["brief"],
+            description=cmd["shop"]["description"],
+            usage=cmd["shop"]["usage"],
+            help=cmd["shop"]["help"],
+            hidden=cmd["shop"]["hidden"], enabled=True)
+    async def show_battle_royale_shop_command(self, ctx):
+        shop_img = File("athena/itemshop.jpg")
+
+        embed = Embed(
+            title="Магазин Королевской Битвы",
+            color=Color.magenta(),
+            timestamp=datetime.utcnow(),
+            description=f":hourglass: Дата: {datetime.now().strftime('%d.%m.%Y')}\n:game_die: Тег автора: FNFUN"
+        )
+        embed.set_image(url="attachment://itemshop.jpg")
+        try:
+            await ctx.send(embed=embed, file=shop_img)         
+        except HTTPException:
+            embed = Embed(title=':exclamation: HTTPException', 
+            description =f"Если вы видите это сообщение, значит, вес изображения с магазином превышает 8 Мб, вследствие чего его невозможно отправить.\n"
+                        "Пожалуйста, сообщите об этом <@375722626636578816>",
+            color= Color.red())
+            await ctx.send(embed=embed)
 
 
 def setup(bot):

@@ -51,7 +51,7 @@ class Nekos(Cog):
                         if r.status == 200:
                             f = File(BytesIO(await r.read()), filename="weeb.png")
                             embed.set_image(url="attachment://weeb.png")
-                            await ctx.send(embed=embed, file=f) 
+                            await ctx.send(embed=embed, file=f)
 
 
 def setup(bot):
