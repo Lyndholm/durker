@@ -135,7 +135,7 @@ class FortniteAPIcom(Cog):
                             if i["variants"]:
                                 variants = True
                         except Exception as ex:
-                            print(ex)
+                            #print(ex)
                             pass
 
                         if variants is True:
@@ -289,7 +289,7 @@ class FortniteAPIcom(Cog):
             help=cmd["shop"]["help"],
             hidden=cmd["shop"]["hidden"], enabled=True)
     async def show_battle_royale_shop_command(self, ctx):
-        shop_img = File("athena/itemshop.jpg")
+        shop_img = File("athena/itemshop.jpg", filename="itemshop.jpg")
 
         embed = Embed(
             title="Магазин Королевской Битвы",

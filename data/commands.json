@@ -199,6 +199,23 @@
             "hidden": false
         }
     },
+    "fortnitetracker":
+    {
+        "fnstats":{
+            "name": "fnstats",
+            "aliases": ["fortstats", "statsfn", "fn"],
+            "brief": "Отображает статистику игрового профиля Fortnite.",
+            "description": "Просмотр статистики профиля Fortnite.",
+            "usage": "fn <nickname>",
+            "help": "Возможность просмотреть статистику игрового профиля Fortnite.\nКоманда работает в тестовом режиме, поэтому возможны проблемы в её работе.\nРаботает только на сервере.\n\n**Кулдаун:** отсутсвует.\n**Необходимый уровень:** 0",
+            "required_level": 0,
+            "has_cooldown": false,
+            "cooldown_rate": 0,
+            "cooldown_per_second": 0,
+            "cooldown_type": "None",
+            "hidden": false
+        }
+    },
     "fun":
     {
         "hug":{
