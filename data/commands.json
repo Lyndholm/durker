@@ -197,6 +197,20 @@
             "cooldown_per_second": 0,
             "cooldown_type": "None",
             "hidden": false
+        },
+        "fnach":{
+            "name": "fnach",
+            "aliases": ["fnachievements", "достиженияфортнайт"],
+            "brief": "Список достижений Fortnite текущего сезона.",
+            "description": "Достижения в Fortnite.",
+            "usage": "fnach",
+            "help": "Отображает достижения текущего сезона королевской битвы Fortnite.\n\n**Кулдаун:** отсутсвует.\n**Необходимый уровень:** 0",
+            "required_level": 0,
+            "has_cooldown": false,
+            "cooldown_rate": 0,
+            "cooldown_per_second": 0,
+            "cooldown_type": "None",
+            "hidden": false
         }
     },
     "fortnitetracker":
