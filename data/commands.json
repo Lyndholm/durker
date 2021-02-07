@@ -225,6 +225,20 @@
             "cooldown_per_second": 0,
             "cooldown_type": "None",
             "hidden": false
+        },
+        "challenges":{
+            "name": "challenges",
+            "aliases": ["fnchallenge"],
+            "brief": "Список редких заданий (карточек медалей) Fortnite текущего сезона.",
+            "description": "Редкие задания (карточки  медалей) в Fortnite.",
+            "usage": "challenges",
+            "help": "Отображает редкие задания (карточки медалей), которые доступны в текущем сезоне королевской битвы Fortnite.\n\n**Кулдаун:** отсутсвует.\n**Необходимый уровень:** 0",
+            "required_level": 0,
+            "has_cooldown": false,
+            "cooldown_rate": 0,
+            "cooldown_per_second": 0,
+            "cooldown_type": "None",
+            "hidden": false
         }
     },
     "fortnitetracker":

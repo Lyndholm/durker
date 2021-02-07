@@ -6,6 +6,7 @@ from discord import Embed, Color
 from discord.ext.commands import Cog
 from discord.ext.commands import command
 from datetime import datetime
+from random import randint, choice
 
 from ..utils.utils import load_commands_from_json
 from ..utils.paginator import Paginator
@@ -86,7 +87,7 @@ class FortniteAPIio(Cog):
             usage=cmd["fish"]["usage"],
             help=cmd["fish"]["help"],
             hidden=cmd["fish"]["hidden"], enabled=True)
-    async def show_fortnite_fish_list_command(self, ctx, number: int = 0, language: str ="ru"):
+    async def show_fortnite_fish_list_command(self, ctx, number: int = 0):
         async with aiofiles.open('./data/fish.json', mode='r', encoding='utf-8') as f:
             data = json.loads(await f.read())
 
@@ -94,16 +95,16 @@ class FortniteAPIio(Cog):
             fish_embeds = []
             for count, entry in enumerate(data["fish"]):
                 embed = Embed(
-                    title=entry['name'] + f" | {str(count+1)}",
+                    title=f"{choice(['🐟','🐠','🐡'])} {entry['name']} | {str(count+1)}",
                     color=Color.blue(),
                     description=entry['description'],
                 )
                 embed.set_thumbnail(url=entry['image'])
 
                 fields = [
-                    ("Редкость", entry["rarity"], True),
                     ("Подробности", entry["details"], True),
                     ("Требуется проф. удочка", "Да" if entry["needsProFishingRod"] else "Нет", True),
+                    ("Редкость", entry["rarity"], True),
                     ("Минимальный размер", entry["sizeMin"], True),
                     ("Максимальный размер", entry["sizeMax"], True),
                     ("Максимум в слоте", entry["maxStackSize"], True)
@@ -124,18 +125,19 @@ class FortniteAPIio(Cog):
                 embed = Embed(title='Некорректный номер рыбки!', color= Color.red())
                 await ctx.message.reply(embed=embed)
                 return
+                
             number-=1
             embed = Embed(
-                    title=data['fish'][number]['name'] + f" | {str(number+1)}",
+                    title=f"{choice(['🐟','🐠','🐡'])} {data['fish'][number]['name']} | {str(number+1)}",
                     color=Color.blue(),
                     description=data['fish'][number]['description']
                 )
             embed.set_thumbnail(url=data['fish'][number]['image'])
 
             fields = [
-                    ("Редкость", data['fish'][number]["rarity"], True),
                     ("Подробности", data['fish'][number]["details"], True),
                     ("Требуется проф. удочка", "Да" if data['fish'][number]["needsProFishingRod"] else "Нет", True),
+                    ("Редкость", data['fish'][number]["rarity"], True),
                     ("Минимальный размер", data['fish'][number]["sizeMin"], True),
                     ("Максимальный размер", data['fish'][number]["sizeMax"], True),
                     ("Максимум в слоте", data['fish'][number]["maxStackSize"], True)
@@ -145,7 +147,55 @@ class FortniteAPIio(Cog):
                 embed.add_field(name=name, value=value, inline=inline)
 
             await ctx.send(embed=embed)
-                
+
+
+    @command(name=cmd["challenges"]["name"], aliases=cmd["challenges"]["aliases"], 
+            brief=cmd["challenges"]["brief"],
+            description=cmd["challenges"]["description"],
+            usage=cmd["challenges"]["usage"],
+            help=cmd["challenges"]["help"],
+            hidden=cmd["challenges"]["hidden"], enabled=True)
+    async def show_fortnite_rare_challenges_command(self, ctx, language: str = "ru"):
+        QUEST_ID = "Quest_S15_Milestone"
+        quest_embeds = []
+        xp_total = 0
+        async with ClientSession(headers=self.headers) as session:
+            async with session.get("https://fortniteapi.io/v1/challenges", params={"season":"current", "lang":language}) as r:
+                if r.status != 200:
+                    await ctx.send(f"""```json\n{await r.text()}```""")
+                    return
+
+                data = await r.json()
+
+        for item in data['other']:
+            if QUEST_ID in item['challenges'][0]['quest_id']:
+                embed = Embed(
+                    title=f"📘 {item['challenges'][0]['title']}",
+                    color=Color.random()
+                )
+                embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/774698479981297664/808066523671167006/battle_pass_quests_logo.png")
+
+                if randint(0, 100) == 1:
+                    embed.set_image(url="https://cdn.discordapp.com/attachments/708601604353556491/808062904325767248/i.png")
+                    embed.description = "**Опа, пасхал04ка**"
+
+                for count, challenge in enumerate(item['challenges']):
+                    embed.add_field(
+                        name=f"Этап {count+1}", 
+                        value=f"{challenge['progress_total']} | Награда: {challenge['xp']} XP", 
+                        inline=False)
+                    xp_total+=challenge['xp']
+                embed.add_field(
+                        name=f"Всего опыта за задание", 
+                        value=f"{xp_total} XP", 
+                        inline=False)
+                xp_total = 0
+                quest_embeds.append(embed)
+
+        message = await ctx.send(embed=quest_embeds[0])
+        page = Paginator(self.bot, message, only=ctx.author, embeds=quest_embeds)
+        await page.start()
+
 
 def setup(bot):
     bot.add_cog(FortniteAPIio(bot))
