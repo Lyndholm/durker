@@ -211,6 +211,20 @@
             "cooldown_per_second": 0,
             "cooldown_type": "None",
             "hidden": false
+        },
+        "fish":{
+            "name": "fish",
+            "aliases": ["рыбки", "рыбка"],
+            "brief": "Список рыбок Fortnite текущего сезона.",
+            "description": "Рыбки в Fortnite.",
+            "usage": "fish [number]",
+            "help": "Отображает рыбки, которые доступны в текущем сезоне королевской битвы Fortnite.\n\n**Кулдаун:** отсутсвует.\n**Необходимый уровень:** 0",
+            "required_level": 0,
+            "has_cooldown": false,
+            "cooldown_rate": 0,
+            "cooldown_per_second": 0,
+            "cooldown_type": "None",
+            "hidden": false
         }
     },
     "fortnitetracker":
