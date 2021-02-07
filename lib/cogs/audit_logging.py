@@ -1,3 +1,4 @@
+import aiofiles
 from discord import Message, Member, User, Guild, Embed, Color, File, MessageType, VoiceState
 from discord import AuditLogAction, RawMessageDeleteEvent, RawMessageUpdateEvent, RawBulkMessageDeleteEvent, RawMessageUpdateEvent
 from discord.channel import DMChannel
@@ -102,18 +103,18 @@ class Audit(Cog):
 
                 embed = Embed(title=f"Несколько ({len(messages)}) сообщений были удалены. Подробности в прикреплённом файле.", 
                             color=Color.red(), timestamp=datetime.now())
-                with open(f'./data/audit/bulk-deleted-messages/{messages[0].id}.log', 'w', encoding='utf-8') as f:
+                async with aiofiles.open(f'./data/audit/bulk-deleted-messages/{messages[0].id}.log', mode='w', encoding='utf-8') as f:
                     nl = '\n'
                     time = datetime.now().strftime("%d.%m.%Y %H:%M:%S")
                     for msg in messages:
                         if msg.attachments:
                             attachments_url = [attachment for attachment in msg.attachments]
 
-                            f.write(f"{time} | User = {msg.author.display_name} | UserID = {msg.author.id}" + "\n" +   
+                            await f.write(f"{time} | User: {msg.author} | UserID = {msg.author.id}" + "\n" +   
                                 f"MessageID = {msg.id}\nMessage content: {msg.clean_content}" + "\n" + 
                                 f"Attachments: {nl.join([url.proxy_url for url in attachments_url]) + nl + nl.join([url.url for url in attachments_url])}" "\n\n")
                         else:
-                            f.write(f"{time} | User = {msg.author.display_name} | UserID = {msg.author.id}" + nl +    
+                            await f.write(f"{time} | User: {msg.author} | UserID = {msg.author.id}" + nl +    
                                 f"MessageID = {msg.id}\nMessage content: {msg.clean_content}" + "\n\n")
 
                 embed.add_field(name="Канал:", value=f"{messages[0].channel.name} ({messages[0].channel.mention})")

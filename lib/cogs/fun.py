@@ -1,3 +1,5 @@
+import json
+import aiofiles
 from discord import Embed, Color, Member
 from discord.ext.commands import Cog, BucketType
 from discord.ext.commands import command, cooldown
@@ -9,7 +11,6 @@ from random import randint, choice
 from aiohttp import ClientSession
 from asyncio import sleep
 
-import json
 
 from ..utils import checks
 from ..utils.utils import load_commands_from_json
@@ -204,8 +205,8 @@ class Fun(Cog):
             hidden=cmd["flags"]["hidden"], enabled=True)
     async def guess_flags_command(self, ctx):
         event_members = {}
-        with open('./data/country_flags.json', 'r', encoding = 'utf8') as f:
-            flags = json.load(f)
+        async with aiofiles.open('./data/country_flags.json', mode='r', encoding = 'utf8') as f:
+            flags = json.loads(await f.read())
             count = 1
             flags_list = []
             while count <= 10:
