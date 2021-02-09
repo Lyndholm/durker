@@ -28,12 +28,12 @@ class UserStats(Cog):
         hidden=cmd["profile"]["hidden"], enabled=True)
     @guild_only()
     async def fetch_member_profile_command(self, ctx, member: Member = None):
-        if member:
+        if member and member != ctx.author:
             is_member_profile_public = db.fetchone(["is_profile_public"], "users_info", "user_id", member.id)
             if is_member_profile_public[0] is False:
                 embed = Embed(title=":exclamation: Внимание!", color=Color.red(), timestamp=datetime.utcnow(),
-                            description=f"Профиль участника **{member.display_name}** ({member.mention}) скрыт. Просматривать его может только хозяин.")
-                embed.set_footer(text=f"Запрос от: {ctx.author}")
+                            description=f"Профиль участника **{member.display_name}** ({member.mention}) скрыт. Просматривать его может только владелец.")
+                embed.set_footer(text=ctx.author, icon_url=ctx.author.avatar_url)
                 await ctx.send(embed=embed)
                 return
             else:
@@ -153,7 +153,8 @@ class UserStats(Cog):
                         inline=True)
 
         if member:
-            embed.set_footer(text=f"Запрос от: {ctx.author}")
+            embed.timestamp = datetime.utcnow()
+            embed.set_footer(text=f"Запрос от: {ctx.author}", icon_url=ctx.author.avatar_url)
         else:
             embed.set_footer(text="Карточка сформирована " + datetime.now().strftime("%d.%m.%Y %H:%M:%S"))
 
@@ -234,6 +235,80 @@ class UserStats(Cog):
 
             except Exception as e:
                 raise e
+
+
+    @command(name=cmd["setprivacy"]["name"], aliases=cmd["setprivacy"]["aliases"], 
+        brief=cmd["setprivacy"]["brief"],
+        description=cmd["setprivacy"]["description"],
+        usage=cmd["setprivacy"]["usage"],
+        help=cmd["setprivacy"]["help"],
+        hidden=cmd["setprivacy"]["hidden"], enabled=True)
+    @guild_only()
+    async def set_user_profile_privacy_command(self, ctx):
+        r_list = ['🟩', '🟥', '❌']
+        embed = Embed(
+            color = Color.magenta(), 
+            description = f"Пожалуйста, выберите тип вашего профиля:\n\n"
+                "🟩 — Открытый, просматривать его могут все пользователи в любое время.\n🟥 — Закрытый, просматровать профиль можете только вы."
+                "\n\n❌ — выход."
+            )
+        msg = await ctx.send(embed=embed)
+
+        for r in r_list:
+            await msg.add_reaction(r)
+        try:
+            react, user = await self.bot.wait_for("reaction_add", timeout=60.0, check=lambda react,
+                        user: user == ctx.author and react.message.channel == ctx.channel
+                        and react.emoji in r_list)
+
+        except TimeoutError:
+            await msg.clear_reactions()
+            embed = Embed(title="Время вышло", color=Color.magenta(), timestamp=datetime.utcnow(),
+                        description=f"{ctx.author.mention}, время на выбор вышло, дейсвтие оменено.")
+            await msg.reply(embed=embed)
+            return
+        
+
+        if str(react.emoji) == r_list[2]:
+            await msg.delete()
+            embed = Embed(
+                title='❌ Действие отменено',
+                сolor = Color.dark_red(), 
+                timestamp = datetime.utcnow()
+            )
+            await ctx.message.reply(embed=embed)
+            return
+
+        if str(react.emoji) == r_list[0]:
+            await msg.clear_reactions()
+
+            db.execute("UPDATE users_info SET is_profile_public = %s WHERE user_id = %s",
+                    True, ctx.author.id)
+            db.commit()
+
+            embed = Embed(
+                title=':white_check_mark: Выполнено!', 
+                color = Color.green(), 
+                timestamp = datetime.utcnow(),
+                description = f"**{ctx.author.display_name}**, ваши настройки приватности обновлены.\nТип вашего профиля: **Открытый**"
+            )
+            await msg.edit(embed=embed)
+            return
+
+        elif str(react.emoji) == r_list[1]:
+            await msg.clear_reactions()
+
+            db.execute("UPDATE users_info SET is_profile_public = %s WHERE user_id = %s",
+                    False, ctx.author.id)
+            db.commit()
+
+            embed = Embed(
+                title=':white_check_mark: Выполнено!', 
+                color = Color.red(), 
+                timestamp = datetime.utcnow(),
+                description = f"**{ctx.author.display_name}**, ваши настройки приватности обновлены.\nТип вашего профиля: **Закрытый**"
+            )
+            await msg.edit(embed=embed)
 
 
 def setup(bot):
