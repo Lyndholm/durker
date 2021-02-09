@@ -1,0 +1,867 @@
+[
+  {
+    "description": {
+      "index": "Лекса — это персонаж из текущего боевого пропуска и она — аниме тян, готовая на подвиги. И главный ее подвиг — спасать нас, игроков, давая нам золото за испытания. находится Лекса в локации [Охотничья обитель](https://fortnitefun.ru/ohotnichja-obitel-hunter-s-haven/), она может перемещаться, но обычно бывает на втором этаже, в доме, который на западе локации.",
+      "secondary": "\n\nЭтот персонаж может быть полезен тем, что продает экзотическую снайперку синоптик за 1225 слитков и тем, что у нее можно купить данные сундуков с сокровищами. Если вы такие данные купите, то вам подсветится сундук.\n\nГде купить снайперскую винтовку синоптик? Конечно, у Лексы!"
+    },
+    "id": "CID_963_Athena_Commando_F_Lexa",
+    "images": {
+      "background": "https://media.fortniteapi.io/images/4a18324e1730eb90fd078b3ccc8b1882/background.png",
+      "featured": null,
+      "full_background": "https://media.fortniteapi.io/images/4a18324e1730eb90fd078b3ccc8b1882/background_full.ru.png",
+      "full_size": "https://media.fortniteapi.io/images/4a18324e1730eb90fd078b3ccc8b1882/featured.png",
+      "icon": "https://media.fortniteapi.io/images/4a18324e1730eb90fd078b3ccc8b1882/transparent.png"
+    },
+    "index": 1,
+    "name": "Лекса",
+    "map": "https://fortnitefun.ru/wp-content/uploads/2020/12/%D0%BF%D0%B5%D1%80%D1%81%D0%BE%D0%BD%D0%B0%D0%B6-%D0%BB%D0%B5%D0%BA%D1%81%D0%B0-%D0%B2-%D1%84%D0%BE%D1%80%D1%82%D0%BD%D0%B0%D0%B9%D1%82.jpg",
+    "offers": []
+  },
+  {
+    "description": {
+      "index": "Риз — персонаж из текущего боевого пропуска, предалагющий много чего полезного. Находится она в самом большом ангаре в [Дрянных доках](https://fortnitefun.ru/drjannoj-dok-dirty-docks/).",
+      "secondary": "\n\nРиз предлагает купить пистолет ищейку экзотического качества за 1225 слитков, а также она может улучшить ваше оружие за несколько десятков золота, и еще, вы можете нанять Риз за сто золотых.\n\nКупить экзотическую пушку Ищейка можно у Риз."
+    },
+    "id": "CID_965_Athena_Commando_F_SpaceFighter",
+    "images": {
+      "background": "https://media.fortniteapi.io/images/c3aab2ea2423a9656bd34ded20785bf3/background.v2.png",
+      "featured": "https://media.fortniteapi.io/images/c3aab2ea2423a9656bd34ded20785bf3/featured.png",
+      "full_background": "https://media.fortniteapi.io/images/c3aab2ea2423a9656bd34ded20785bf3/background_full.v2.ru.png",
+      "full_size": "https://media.fortniteapi.io/images/c3aab2ea2423a9656bd34ded20785bf3/featured.png",
+      "icon": "https://media.fortniteapi.io/images/c3aab2ea2423a9656bd34ded20785bf3/transparent.png"
+    },
+    "index": 2,
+    "name": "Риз",
+    "map": "https://fortnitefun.ru/wp-content/uploads/2020/12/%D0%BF%D0%B5%D1%80%D1%81%D0%BE%D0%BD%D0%B0%D0%B6-%D1%80%D0%B8%D0%B7-%D0%B2-%D1%84%D0%BE%D1%80%D1%82%D0%BD%D0%B0%D0%B9%D1%82.jpg",
+    "offers": []
+  },
+  {
+    "description": {
+      "index": "Менес — 3 персонаж в коллекции. Он обосновался в колоссальном колизее. Прямо в центре арены. И на наше счастье он бывает только в этой локации.",
+      "secondary": "\n\nА предлагает данный персонаж дуэль. И если вы выиграете, то получите эпический автомат."
+    },
+    "id": "CID_967_M_AncientGladiatorMenace",
+    "images": {
+      "background": "https://media.fortniteapi.io/images/cce2a1c98ec28fb8173741a799a390d0/background.png",
+      "featured": null,
+      "full_background": "https://media.fortniteapi.io/images/cce2a1c98ec28fb8173741a799a390d0/background_full.ru.png",
+      "full_size": "https://media.fortniteapi.io/images/cce2a1c98ec28fb8173741a799a390d0/featured.png",
+      "icon": "https://media.fortniteapi.io/images/cce2a1c98ec28fb8173741a799a390d0/transparent.png"
+    },
+    "index": 3,
+    "name": "Менес",
+    "map": "https://fortnitefun.ru/wp-content/uploads/2020/12/%D0%BF%D0%B5%D1%80%D1%81%D0%BE%D0%BD%D0%B0%D0%B6-%D0%BC%D0%B5%D0%BD%D0%B5%D1%81-%D0%B2-%D1%84%D0%BE%D1%80%D1%82%D0%BD%D0%B0%D0%B9%D1%82.jpg",
+    "offers": []
+  },
+  {
+    "description": {
+      "index": "Блинчик — сладкий парень, обитающий в центре карты. Кафе на юге и посетителей там много, так что будьте осторожны.",
+      "secondary": "\n\nБлинчика можно нанять за 100 слитков и купить ночного ястреба за 1225 золота.\n\nНочной ястреб продается у персонажа Блинчика."
+    },
+    "id": "CID_962_Athena_Commando_M_FlapjackWrangler",
+    "images": {
+      "background": "https://media.fortniteapi.io/images/e8987d971e156d9000f2c3596bc3b603/background.png",
+      "featured": null,
+      "full_background": "https://media.fortniteapi.io/images/e8987d971e156d9000f2c3596bc3b603/background_full.ru.png",
+      "full_size": "https://media.fortniteapi.io/images/e8987d971e156d9000f2c3596bc3b603/featured.png",
+      "icon": "https://media.fortniteapi.io/images/e8987d971e156d9000f2c3596bc3b603/transparent.png"
+    },
+    "index": 4,
+    "name": "Блинчик",
+    "map": "https://fortnitefun.ru/wp-content/uploads/2020/12/%D0%BF%D0%B5%D1%80%D1%81%D0%BE%D0%BD%D0%B0%D0%B6-%D0%B1%D0%BB%D0%B8%D0%BD%D1%87%D0%B8%D0%BA-%D0%B2-%D1%84%D0%BE%D1%80%D1%82%D0%BD%D0%B0%D0%B9%D1%82.jpg",
+    "offers": [
+      {
+        "cost": 1225,
+        "description": "Пистолет Полуавтоматическое оружие. Универсальный пистолет с хорошей скорострельностью, вместительным магазином и тепловизором, наносящий умеренный урон.",
+        "enabled": true,
+        "gameplayTags": [
+          "Skill.sniper.headshotbuff",
+          "Gameplay.DamageSource.Weapon",
+          "Bacchus.Shoot.Pistol.Semi",
+          "Weapon.Ranged.Pistol.Standard",
+          "phoebe.weapon.ranged.pistol",
+          "phoebe.items.WaffleTruck.07",
+          "Weapon.Meta.DoNotApplyWraps",
+          "Item.Weapon.Ranged.Pistol.Thermal"
+        ],
+        "id": "WID_WaffleTruck_Pistol_ThermalScope",
+        "images": {
+          "background": "https://media.fortniteapi.io/images/T-Icon-Weapons-ScopedThermalPistol-L_bg-transcendent.png",
+          "icon": "https://media.fortniteapi.io/images/T-Icon-Weapons-ScopedThermalPistol-L.png"
+        },
+        "mainStats": {
+          "BulletsPerCartridge": 1,
+          "ClipSize": 6,
+          "DamageZone_Critical": 2,
+          "DmgPB": 44,
+          "FiringRate": 1.6,
+          "ReloadTime": 1.98,
+          "Spread": 1,
+          "SpreadDownsights": 0
+        },
+        "name": "Ночной ястреб",
+        "map": "https://cdn.discordapp.com/attachments/774698479981297664/774700936958312468/placeholder.png",
+        "rarity": "transcendent",
+        "searchTags": "Guns Ranged Pistols LightBullets SemiAuto",
+        "type": "standard"
+      }
+    ]
+  },
+  {
+    "description": {
+      "index": "Дикарка своего поколения и защитница родных джунглей. Находится она в домах около бухты разрушенных кораблей.",
+      "secondary": "\n\nЕе можно только нанять. Стоимость удовольствия — 100 слитков."
+    },
+    "id": "CID_961_Athena_Commando_F_Shapeshifter",
+    "images": {
+      "background": "https://media.fortniteapi.io/images/2d6ae8968c3bcac72f6ee9ce45d4f545/background.png",
+      "featured": "https://media.fortniteapi.io/images/2d6ae8968c3bcac72f6ee9ce45d4f545/full_featured.png",
+      "full_background": "https://media.fortniteapi.io/images/2d6ae8968c3bcac72f6ee9ce45d4f545/background_full.ru.png",
+      "full_size": "https://media.fortniteapi.io/images/2d6ae8968c3bcac72f6ee9ce45d4f545/featured.png",
+      "icon": "https://media.fortniteapi.io/images/2d6ae8968c3bcac72f6ee9ce45d4f545/transparent.png"
+    },
+    "index": 5,
+    "name": "Мэйв",
+    "map": "https://fortnitefun.ru/wp-content/uploads/2020/12/%D0%BF%D0%B5%D1%80%D1%81%D0%BE%D0%BD%D0%B0%D0%B6-%D0%BC%D0%B5%D0%B9%D0%B2-%D0%B2-%D1%84%D0%BE%D1%80%D1%82%D0%BD%D0%B0%D0%B9%D1%82.jpg",
+    "offers": []
+  },
+  {
+    "description": {
+      "index": "Кондор не только скин текущего бп, но и персонаж. Он гуляет по центру Горного городка и всегда рад предложить вам парочку заданий.",
+      "secondary": "\n\nТакже, при желании, вы можете улучшить оружие у данного персонажа и поучаствовать в дуэли, за которую получите эпический пистолет. Ну и еще, у него можно купить эпический новый дробовик, который обойдется вам в сто слитков.\n\nДробовик «Дыхание дракона» продается у персонажа Кондор."
+    },
+    "id": "CID_966_Athena_Commando_M_FutureSamurai",
+    "images": {
+      "background": "https://media.fortniteapi.io/images/c33db0a26c632e6a133c7201440f1593/background.png",
+      "featured": null,
+      "full_background": "https://media.fortniteapi.io/images/c33db0a26c632e6a133c7201440f1593/background_full.ru.png",
+      "full_size": "https://media.fortniteapi.io/images/c33db0a26c632e6a133c7201440f1593/featured.png",
+      "icon": "https://media.fortniteapi.io/images/c33db0a26c632e6a133c7201440f1593/transparent.png"
+    },
+    "index": 6,
+    "name": "Кондор",
+    "map": "https://fortnitefun.ru/wp-content/uploads/2020/12/%D0%BF%D0%B5%D1%80%D1%81%D0%BE%D0%BD%D0%B0%D0%B6-%D0%BA%D0%BE%D0%BD%D0%B4%D0%BE%D1%80-%D0%B2-%D1%84%D0%BE%D1%80%D1%82%D0%BD%D0%B0%D0%B9%D1%82.jpg",
+    "offers": []
+  },
+  {
+    "description": {
+      "index": "Мандалорец — это персонаж, который относится к числу боссов 15 сезона. Его можно найти на корбалке [Лезвие бритвы](https://fortnitefun.ru/lezvie-britvy-razor-crest/).",
+      "secondary": "\n\nИз Мандалорца может выпасть абманская снайперская винтовка Мандалорца и реактивный ранец."
+    },
+    "id": "CID_960_Athena_Commando_M_Cosmos",
+    "images": {
+      "background": "https://media.fortniteapi.io/images/55f5cd4bd2720606751b71b04dce9c6e/background.png",
+      "featured": null,
+      "full_background": "https://media.fortniteapi.io/images/55f5cd4bd2720606751b71b04dce9c6e/background_full.ru.png",
+      "full_size": "https://media.fortniteapi.io/images/55f5cd4bd2720606751b71b04dce9c6e/featured.png",
+      "icon": "https://media.fortniteapi.io/images/55f5cd4bd2720606751b71b04dce9c6e/transparent.png"
+    },
+    "index": 7,
+    "name": "Мандалорец",
+    "map": "https://fortnitefun.ru/wp-content/uploads/2020/12/%D0%B3%D0%B4%D0%B5-%D0%B1%D0%BE%D1%81%D1%81-%D0%BC%D0%B0%D0%BD%D0%B4%D0%B0%D0%BB%D0%BE%D1%80%D0%B5%D1%86-%D0%B2-%D1%84%D0%BE%D1%80%D1%82%D0%BD%D0%B0%D0%B9%D1%82.jpg",
+    "offers": [
+      {
+        "cost": "Eliminate",
+        "id": null,
+        "name": "The Mandalorian's Jetpack"
+      }
+    ]
+  },
+  {
+    "description": {
+      "index": "Персонаж Душегуб находится в месте, где в прошлом сезоне мы наблюдали забвение. Ага, Душегуб в этом странном месте у ржавого крана!",
+      "secondary": "\n\nПолезен Джон Уик может быть только улучшением оружия. Так что берите оружие, золото и начинайте улучшать."
+    },
+    "id": "CID_084_Athena_Commando_M_Assassin",
+    "images": {
+      "background": "https://media.fortniteapi.io/images/0c3ea68-65c83bb-6a93e44-0939ee3/background.png",
+      "featured": null,
+      "full_background": "https://media.fortniteapi.io/images/0c3ea68-65c83bb-6a93e44-0939ee3/background_full.ru.png",
+      "full_size": "https://media.fortniteapi.io/images/0c3ea68-65c83bb-6a93e44-0939ee3/featured.png",
+      "icon": "https://media.fortniteapi.io/images/0c3ea68-65c83bb-6a93e44-0939ee3/transparent.png"
+    },
+    "index": 8,
+    "name": "Душегуб",
+    "map": "https://fortnitefun.ru/wp-content/uploads/2020/12/%D0%BF%D0%B5%D1%80%D1%81%D0%BE%D0%BD%D0%B0%D0%B6-%D0%B4%D1%83%D1%88%D0%B5%D0%B3%D1%83%D0%B1-%D0%B2-%D1%84%D0%BE%D1%80%D1%82%D0%BD%D0%B0%D0%B9%D1%82-%D0%B2-%D1%84%D0%BE%D1%80%D1%82%D0%BD%D0%B0%D0%B9%D1%82.jpg",
+    "offers": []
+  },
+  {
+    "description": {
+      "index": "Здоровяк — громила, расположившийся в [Дрянных доках](https://fortnitefun.ru/drjannoj-dok-dirty-docks/). Он находится в здании, которое располагается в южной части локации.",
+      "secondary": "\n\nЗдоровяк может быть полезен тем, что предлагает купить легендарный заряжаемый дробовик за 245 золота, а также он улучшает оружие за несколько десятков слитков. Также, вы можете бросить вызов здоровяку и если его победите, то получите эпический пп."
+    },
+    "id": "CID_692_Athena_Commando_M_HenchmanTough",
+    "images": {
+      "background": "https://media.fortniteapi.io/images/c471e0a51f69c118bb2d66848425d5d0/background.png",
+      "featured": null,
+      "full_background": "https://media.fortniteapi.io/images/c471e0a51f69c118bb2d66848425d5d0/background_full.ru.png",
+      "full_size": "https://media.fortniteapi.io/images/c471e0a51f69c118bb2d66848425d5d0/featured.png",
+      "icon": "https://media.fortniteapi.io/images/c471e0a51f69c118bb2d66848425d5d0/transparent.png"
+    },
+    "index": 9,
+    "name": "Здоровяк",
+    "map": "https://fortnitefun.ru/wp-content/uploads/2020/12/%D0%BF%D0%B5%D1%80%D1%81%D0%BE%D0%BD%D0%B0%D0%B6-%D0%B7%D0%B4%D0%BE%D1%80%D0%BE%D0%B2%D1%8F%D0%BA-%D0%B2-%D1%84%D0%BE%D1%80%D1%82%D0%BD%D0%B0%D0%B9%D1%82.jpg",
+    "offers": []
+  },
+  {
+    "description": {
+      "index": "Ковбоя можно найти в офисе шерифа. Если не знаете где это, смотрите на карту.",
+      "secondary": "\n\nОн продает только легендарный пистолет."
+    },
+    "id": "CID_250_Athena_Commando_M_EvilCowboy",
+    "images": {
+      "background": "https://media.fortniteapi.io/images/1e2191f-e474727-38e6ab6-8b343fc/background.png",
+      "featured": "https://media.fortniteapi.io/images/1e2191f-e474727-38e6ab6-8b343fc/full_featured.png",
+      "full_background": "https://media.fortniteapi.io/images/1e2191f-e474727-38e6ab6-8b343fc/background_full.ru.png",
+      "full_size": "https://media.fortniteapi.io/images/1e2191f-e474727-38e6ab6-8b343fc/featured.png",
+      "icon": "https://media.fortniteapi.io/images/1e2191f-e474727-38e6ab6-8b343fc/transparent.png"
+    },
+    "index": 10,
+    "name": "Проклятый Ковбой",
+    "map": "https://fortnitefun.ru/wp-content/uploads/2020/12/%D0%BF%D0%B5%D1%80%D1%81%D0%BE%D0%BD%D0%B0%D0%B6-%D0%BF%D1%80%D0%BE%D0%BA%D0%BB%D1%8F%D1%82%D1%8B%D0%B9-%D0%BA%D0%BE%D0%B2%D0%B1%D0%BE%D0%B9-%D0%B2-%D1%84%D0%BE%D1%80%D1%82%D0%BD%D0%B0%D0%B9%D1%82.jpg",
+    "offers": []
+  },
+  {
+    "description": {
+      "index": "Боевой карась — и скин, и персонаж на карте 15 сезона фортнайт. Он находится в заливе, сразу под развалинами.",
+      "secondary": "\n\nУ боевого карася можно купить редкий пп и патроны к нему. Да-да, вот такой странный набор."
+    },
+    "id": "CID_315_Athena_Commando_M_TeriyakiFish",
+    "images": {
+      "background": "https://media.fortniteapi.io/images/ec3f88b34ce01474d3064eb248b9d97c/background.v2.png",
+      "featured": "https://media.fortniteapi.io/images/ec3f88b34ce01474d3064eb248b9d97c/full_featured.png",
+      "full_background": "https://media.fortniteapi.io/images/ec3f88b34ce01474d3064eb248b9d97c/background.v2.png",
+      "full_size": "https://media.fortniteapi.io/images/ec3f88b34ce01474d3064eb248b9d97c/full_featured.png",
+      "icon": "https://media.fortniteapi.io/images/ec3f88b34ce01474d3064eb248b9d97c/transparent.png"
+    },
+    "index": 11,
+    "name": "Боевой карась",
+    "map": "https://fortnitefun.ru/wp-content/uploads/2020/12/%D0%BF%D0%B5%D1%80%D1%81%D0%BE%D0%BD%D0%B0%D0%B6-%D0%B1%D0%BE%D0%B5%D0%B2%D0%BE%D0%B9-%D0%BA%D0%B0%D1%80%D0%B0%D1%81%D1%8C-%D0%B2-%D1%84%D0%BE%D1%80%D1%82%D0%BD%D0%B0%D0%B9%D1%82.jpg",
+    "offers": []
+  },
+  {
+    "description": {
+      "index": "Мишень в виде скина — это кошмар любого игрока, а в виде персонажа — мечта. Или наоборот? Мишень находится в [Гигантских градирнях](https://fortnitefun.ru/gigantskie-gradirni-steamy-stacks/).",
+      "secondary": "\n\nОна предлагает купить эпический автомат и патроны к нему. Также, Мишень можно нанять."
+    },
+    "id": "CID_242_Athena_Commando_F_Bullseye",
+    "images": {
+      "background": "https://media.fortniteapi.io/images/3c83cd1-592e881-d91e78b-34442d8/background.png",
+      "featured": "https://media.fortniteapi.io/images/3c83cd1-592e881-d91e78b-34442d8/full_featured.png",
+      "full_background": "https://media.fortniteapi.io/images/3c83cd1-592e881-d91e78b-34442d8/background_full.ru.png",
+      "full_size": "https://media.fortniteapi.io/images/3c83cd1-592e881-d91e78b-34442d8/featured.png",
+      "icon": "https://media.fortniteapi.io/images/3c83cd1-592e881-d91e78b-34442d8/transparent.png"
+    },
+    "index": 12,
+    "name": "Мишень",
+    "map": "https://fortnitefun.ru/wp-content/uploads/2020/12/%D0%BF%D0%B5%D1%80%D1%81%D0%BE%D0%BD%D0%B0%D0%B6-%D0%BC%D0%B8%D1%88%D0%B5%D0%BD%D1%8C-%D0%B2-%D1%84%D0%BE%D1%80%D1%82%D0%BD%D0%B0%D0%B9%D1%82.jpg",
+    "offers": []
+  },
+  {
+    "description": {
+      "index": "Бандольер — это герой, находящийся на болотах около фабрики фаянса.",
+      "secondary": "\n\nЕго можно нанять за 100 слитков или купить у него эпический заряжаемый дробовик за 98 слитков."
+    },
+    "id": "CID_131_Athena_Commando_M_WarPaint",
+    "images": {
+      "background": "https://media.fortniteapi.io/images/b26eab9-53a4fc9-4b4957d-cfa521b/background.png",
+      "featured": "https://media.fortniteapi.io/images/b26eab9-53a4fc9-4b4957d-cfa521b/full_featured.png",
+      "full_background": "https://media.fortniteapi.io/images/b26eab9-53a4fc9-4b4957d-cfa521b/background_full.ru.png",
+      "full_size": "https://media.fortniteapi.io/images/b26eab9-53a4fc9-4b4957d-cfa521b/featured.png",
+      "icon": "https://media.fortniteapi.io/images/b26eab9-53a4fc9-4b4957d-cfa521b/transparent.png"
+    },
+    "index": 13,
+    "name": "Бандольер",
+    "map": "https://fortnitefun.ru/wp-content/uploads/2020/12/%D0%BF%D0%B5%D1%80%D1%81%D0%BE%D0%BD%D0%B0%D0%B6-%D0%B1%D0%B0%D0%BD%D0%B4%D0%BE%D0%BB%D1%8C%D0%B5%D1%80-%D0%B2-%D1%84%D0%BE%D1%80%D1%82%D0%BD%D0%B0%D0%B9%D1%82.jpg",
+    "offers": []
+  },
+  {
+    "description": {
+      "index": "Молчун живет в [Горном городке](https://fortnitefun.ru/gornyj-gorodok-misty-meadows/) и, видимо, молчит.",
+      "secondary": "\n\nОн продает снайперскую винтовку со скользящим затвором, патроны к ней и его можно нанять."
+    },
+    "id": "CID_275_Athena_Commando_M_SniperHood",
+    "images": {
+      "background": "https://media.fortniteapi.io/images/077d698-8be4caf-3e0c840-e5dbb8b/background.png",
+      "featured": "https://media.fortniteapi.io/images/077d698-8be4caf-3e0c840-e5dbb8b/full_featured.png",
+      "full_background": "https://media.fortniteapi.io/images/077d698-8be4caf-3e0c840-e5dbb8b/background_full.ru.png",
+      "full_size": "https://media.fortniteapi.io/images/077d698-8be4caf-3e0c840-e5dbb8b/featured.png",
+      "icon": "https://media.fortniteapi.io/images/077d698-8be4caf-3e0c840-e5dbb8b/transparent.png"
+    },
+    "index": 14,
+    "name": "Молчун",
+    "map": "https://fortnitefun.ru/wp-content/uploads/2020/12/%D0%BF%D0%B5%D1%80%D1%81%D0%BE%D0%BD%D0%B0%D0%B6-%D0%BC%D0%BE%D0%BB%D1%87%D1%83%D0%BD-%D0%B2-%D1%84%D0%BE%D1%80%D1%82%D0%BD%D0%B0%D0%B9%D1%82.jpg",
+    "offers": []
+  },
+  {
+    "description": {
+      "index": "Фитиль — данный НПС находится на острове на самом севере карты, между [Тайной Твердыней](https://fortnitefun.ru/tajnaja-tverdynja-stealthy-stronghold/) и [Пляжным посёлком](https://fortnitefun.ru/pljazhnyj-poselok-craggy-cliffs/).",
+      "secondary": "\n\nУ данного героя можно купить экзотическую винтовку «Грохот» за 1225 золота и ракетницу стоимостью 980 слитков. Такой вот он взрывной парень.\n\nЭкзотическую винтовку Грохот можно купить только у Фитиля!"
+    },
+    "id": "CID_388_Athena_Commando_M_TheBomb",
+    "images": {
+      "background": "https://media.fortniteapi.io/images/210d2e7-e24492c-84df9d8-77faa57/background.png",
+      "featured": "https://media.fortniteapi.io/images/210d2e7-e24492c-84df9d8-77faa57/full_featured.png",
+      "full_background": "https://media.fortniteapi.io/images/210d2e7-e24492c-84df9d8-77faa57/background_full.ru.png",
+      "full_size": "https://media.fortniteapi.io/images/210d2e7-e24492c-84df9d8-77faa57/featured.png",
+      "icon": "https://media.fortniteapi.io/images/210d2e7-e24492c-84df9d8-77faa57/transparent.png"
+    },
+    "index": 15,
+    "name": "Фитиль",
+    "map": "https://fortnitefun.ru/wp-content/uploads/2020/12/%D0%BF%D0%B5%D1%80%D1%81%D0%BE%D0%BD%D0%B0%D0%B6-%D1%84%D0%B8%D1%82%D0%B8%D0%BB%D1%8C-%D0%B2-%D1%84%D0%BE%D1%80%D1%82%D0%BD%D0%B0%D0%B9%D1%82.jpg",
+    "offers": [
+      {
+        "cost": 1225,
+        "description": "Снайперская винтовка, стреляющая пулями, которые взрываются при попадании.",
+        "enabled": true,
+        "gameplayTags": [
+          "Skill.sniper.headshotbuff",
+          "Gameplay.DamageSource.Weapon",
+          "Weapon.Meta.Scoped",
+          "Trait.Scoped",
+          "Trait.QuestVaultedItem",
+          "phoebe.weapon.ranged.sniper",
+          "phoebe.weapon.trait.scoped",
+          "phoebe.weapon.trait.singleshot",
+          "phoebe.items.WaffleTruck.03",
+          "Item.Weapon.Ranged.Sniper.Boom",
+          "Weapon.Meta.DoNotApplyWraps"
+        ],
+        "id": "WID_WaffleTruck_BoomSniper",
+        "images": {
+          "background": "https://media.fortniteapi.io/images/T-Icon-Weapons-BoomSniperWeapon-L_bg-transcendent.png",
+          "icon": "https://media.fortniteapi.io/images/T-Icon-Weapons-BoomSniperWeapon-L.png"
+        },
+        "mainStats": {
+          "BulletsPerCartridge": 1,
+          "ClipSize": 5,
+          "DamageZone_Critical": 2.5,
+          "DmgPB": 60,
+          "FiringRate": 1,
+          "ReloadTime": 4.05,
+          "Spread": 2.25,
+          "SpreadDownsights": 0
+        },
+        "name": "Винтовка «Грохот»",
+        "rarity": "transcendent",
+        "searchTags": "Guns Ranged Sniper Rifles HeavyBullets BoltAction Explosive",
+        "type": "standard"
+      }
+    ]
+  },
+  {
+    "description": {
+      "index": "Вспышка — эта девушка находится рядом со статуей лесорубов, чуть ниже [Беспечного берега](https://fortnitefun.ru/bespechnyj-bereg-sweaty-sands/). Вторая вспышка находится в маленьком городке чуть левее [Гигантских градирен](https://fortnitefun.ru/gigantskie-gradirni-steamy-stacks/).",
+      "secondary": "\n\nИ вот, что она предлагает: банку со сверчками за 500 золота и дуэль. Если вы выиграете дуэль и победите вспышку, то получите эпический дробовик.\n\nС новым обновлением у Вспышки появилась экзотическая снайперская винтовка «Дыхание дракона». Стоит оно 1213 слитков."
+    },
+    "id": "CID_784_Athena_Commando_F_RenegadeRaiderFire",
+    "images": {
+      "background": "https://media.fortniteapi.io/images/61353db005257542ce48c83d2485a24d/background.png",
+      "featured": "https://media.fortniteapi.io/images/61353db005257542ce48c83d2485a24d/full_featured.png",
+      "full_background": "https://media.fortniteapi.io/images/61353db005257542ce48c83d2485a24d/background_full.ru.png",
+      "full_size": "https://media.fortniteapi.io/images/61353db005257542ce48c83d2485a24d/featured.png",
+      "icon": "https://media.fortniteapi.io/images/61353db005257542ce48c83d2485a24d/transparent.png"
+    },
+    "index": 16,
+    "name": "Вспышка",
+    "map": "https://fortnitefun.ru/wp-content/uploads/2020/12/%D0%BF%D0%B5%D1%80%D1%81%D0%BE%D0%BD%D0%B0%D0%B6-%D0%B2%D1%81%D0%BF%D1%8B%D1%88%D0%BA%D0%B0-%D0%B2-%D1%84%D0%BE%D1%80%D1%82%D0%BD%D0%B0%D0%B9%D1%82-1.jpg",
+    "offers": []
+  },
+  {
+    "description": {
+      "index": "Анестезия — персонаж, который находится в [Пляжном посёлке](https://fortnitefun.ru/pljazhnyj-poselok-craggy-cliffs/). Как ни странно, наша медсестричка предлагает нам бинты за 50 слитков и возможность ее нанять.",
+      "secondary": "\n\nС патчем 15.30 она стала предлагать к покупке экзотическое оружие Ядреная пушка."
+    },
+    "id": "CID_567_Athena_Commando_F_RebirthMedic",
+    "images": {
+      "background": "https://media.fortniteapi.io/images/072402071dcaac29ee547d1c40ac24b5/background.png",
+      "featured": null,
+      "full_background": "https://media.fortniteapi.io/images/072402071dcaac29ee547d1c40ac24b5/background_full.ru.png",
+      "full_size": "https://media.fortniteapi.io/images/072402071dcaac29ee547d1c40ac24b5/featured.png",
+      "icon": "https://media.fortniteapi.io/images/072402071dcaac29ee547d1c40ac24b5/transparent.png"
+    },
+    "index": 17,
+    "name": "Анестезия",
+    "map": "https://fortnitefun.ru/wp-content/uploads/2021/02/%D0%BF%D0%B5%D1%80%D1%81%D0%BE%D0%BD%D0%B0%D0%B6-%D0%B0%D0%BD%D0%B5%D1%81%D1%82%D0%B5%D0%B7%D0%B8%D1%8F-%D0%B2-%D1%84%D0%BE%D1%80%D1%82%D0%BD%D0%B0%D0%B9%D1%82.jpg",
+    "offers": []
+  },
+  {
+    "description": {
+      "index": "Нектарный Крушитель может быть в [Нектарной низине](https://fortnitefun.ru/nektarnaja-nizina/), а может быть в окрестностях.",
+      "secondary": "\n\nУ него можно купить большие банки щита и бросить ему вызов. В награду получите эпичекий компактный пп."
+    },
+    "id": "CID_620_Athena_Commando_L_BigChuggus",
+    "images": {
+      "background": "https://media.fortniteapi.io/images/31d15c932dd11031e5a93108360d9a65/background.png",
+      "featured": "https://media.fortniteapi.io/images/31d15c932dd11031e5a93108360d9a65/full_featured.png",
+      "full_background": "https://media.fortniteapi.io/images/31d15c932dd11031e5a93108360d9a65/background_full.ru.png",
+      "full_size": "https://media.fortniteapi.io/images/31d15c932dd11031e5a93108360d9a65/featured.png",
+      "icon": "https://media.fortniteapi.io/images/31d15c932dd11031e5a93108360d9a65/transparent.png"
+    },
+    "index": 18,
+    "name": "Нектарный крушитель",
+    "map": "https://fortnitefun.ru/wp-content/uploads/2020/12/%D0%BF%D0%B5%D1%80%D1%81%D0%BE%D0%BD%D0%B0%D0%B6-%D0%BD%D0%B5%D0%BA%D1%82%D0%B0%D1%80%D0%BD%D1%8B%D0%B9-%D0%BA%D1%80%D1%83%D1%88%D0%B8%D1%82%D0%B5%D0%BB%D1%8C-%D0%B2-%D1%84%D0%BE%D1%80%D1%82%D0%BD%D0%B0%D0%B9%D1%82-1.jpg",
+    "offers": []
+  },
+  {
+    "description": {
+      "index": "Кайл — друг деревьев, обитающий в [Рыдающей роще](https://fortnitefun.ru/rydajushhaja-roshha-weeping-woods/).",
+      "secondary": "\n\nОн продает ресурсы и ищет костерки."
+    },
+    "id": "T_Kairos_ConstructorM",
+    "images": {
+      "full_size": "https://media.fortniteapi.io/images/1e3394eb46ebba5de7f240708275385e/featured.png",
+      "icon": "http://cdn2.unrealengine.com/Kairos/portraits/stw_constructor_m.png"
+    },
+    "index": 19,
+    "name": "Кайл",
+    "map": "https://fortnitefun.ru/wp-content/uploads/2020/12/%D0%BF%D0%B5%D1%80%D1%81%D0%BE%D0%BD%D0%B0%D0%B6-%D0%BA%D0%B0%D0%B9%D0%BB-%D0%B2-%D1%84%D0%BE%D1%80%D1%82%D0%BD%D0%B0%D0%B9%D1%82-1.jpg",
+    "offers": []
+  },
+  {
+    "description": {
+      "index": "Персонаж Шахтёр находится в домах около бухты разрушенных кораблей. Почти там же, где расположилась Мейв.",
+      "secondary": "\n\nУ шахтера можно купить ресурсов и экзотическое оружие «Двойные гравикамни»."
+    },
+    "id": "CID_401_Athena_Commando_M_Miner",
+    "images": {
+      "background": "https://media.fortniteapi.io/images/3fe59b122cdea51a51d03cebef023a97/background.png",
+      "featured": "https://media.fortniteapi.io/images/3fe59b122cdea51a51d03cebef023a97/full_featured.png",
+      "full_background": "https://media.fortniteapi.io/images/3fe59b122cdea51a51d03cebef023a97/background_full.ru.png",
+      "full_size": "https://media.fortniteapi.io/images/3fe59b122cdea51a51d03cebef023a97/featured.png",
+      "icon": "https://media.fortniteapi.io/images/3fe59b122cdea51a51d03cebef023a97/transparent.png"
+    },
+    "index": 20,
+    "name": "Шахтёр",
+    "map": "https://fortnitefun.ru/wp-content/uploads/2020/12/%D0%BF%D0%B5%D1%80%D1%81%D0%BE%D0%BD%D0%B0%D0%B6-%D1%88%D0%B0%D1%85%D1%82%D0%B5%D1%80-%D0%B2-%D1%84%D0%BE%D1%80%D1%82%D0%BD%D0%B0%D0%B9%D1%82-1.jpg",
+    "offers": []
+  },
+  {
+    "description": {
+      "index": "Рагнарёк — главный персонаж 5 сезона. Он бегает около остролистных оград, где теперь можно найти огромный [Судно Северян](https://fortnitefun.ru/sudno-severjan-viking-vessel/).",
+      "secondary": "\n\nУ данного персонажа можно купить только дуэль, и если вы ее выиграете, то получите 37 дерева и эпический компактный пистолет пулемет."
+    },
+    "id": "CID_165_Athena_Commando_M_DarkViking",
+    "images": {
+      "background": "https://media.fortniteapi.io/images/d2ccdfb-51481cf-22f19cc-4c301ab/background.png",
+      "featured": null,
+      "full_background": "https://media.fortniteapi.io/images/d2ccdfb-51481cf-22f19cc-4c301ab/background_full.ru.png",
+      "full_size": "https://media.fortniteapi.io/images/d2ccdfb-51481cf-22f19cc-4c301ab/featured.png",
+      "icon": "https://media.fortniteapi.io/images/d2ccdfb-51481cf-22f19cc-4c301ab/transparent.png"
+    },
+    "index": 21,
+    "name": "Рагнарёк",
+    "map": "https://fortnitefun.ru/wp-content/uploads/2020/12/%D0%BF%D0%B5%D1%80%D1%81%D0%BE%D0%BD%D0%B0%D0%B6-%D1%80%D0%B0%D0%B3%D0%BD%D0%B0%D1%80%D0%B5%D0%BA-%D0%B2-%D1%84%D0%BE%D1%80%D1%82%D0%BD%D0%B0%D0%B9%D1%82.jpg",
+    "offers": []
+  },
+  {
+    "description": {
+      "index": "Леший имеет 3 точки спавна, одна из которых находится в [Колких башнях](https://fortnitefun.ru/kolkie-bashni-salty-towers/).",
+      "secondary": "\n\nЛеший предлагает купить перец и себя за 100 золотых."
+    },
+    "id": "CID_611_Athena_Commando_M_WeepingWoods",
+    "images": {
+      "background": "https://media.fortniteapi.io/images/7ef5c2d3fe4d91ba496ebfb9cf6040ec/background.png",
+      "featured": "https://media.fortniteapi.io/images/7ef5c2d3fe4d91ba496ebfb9cf6040ec/full_featured.png",
+      "full_background": "https://media.fortniteapi.io/images/7ef5c2d3fe4d91ba496ebfb9cf6040ec/background_full.ru.png",
+      "full_size": "https://media.fortniteapi.io/images/7ef5c2d3fe4d91ba496ebfb9cf6040ec/featured.png",
+      "icon": "https://media.fortniteapi.io/images/7ef5c2d3fe4d91ba496ebfb9cf6040ec/transparent.png"
+    },
+    "index": 22,
+    "name": "Леший",
+    "map": "https://fortnitefun.ru/wp-content/uploads/2020/12/%D0%BF%D0%B5%D1%80%D1%81%D0%BE%D0%BD%D0%B0%D0%B6-%D0%BB%D0%B5%D1%88%D0%B8%D0%B9-%D0%B2-%D1%84%D0%BE%D1%80%D1%82%D0%BD%D0%B0%D0%B9%D1%82.jpg",
+    "offers": []
+  },
+  {
+    "description": {
+      "index": "NPC Краш обитает над [Приятным парком](https://fortnitefun.ru/pleasant-park/). Он предлагает экзотический дробовик за 1225 золота и батут.",
+      "secondary": "\n\nДробовик «Аргумент» можно купить у Краша возле приятного парка."
+    },
+    "id": "CID_795_Athena_Commando_M_Dummeez",
+    "images": {
+      "background": "https://media.fortniteapi.io/images/51d30a24ab77d09644e0db6a9ea14ddc/background.png",
+      "featured": "https://media.fortniteapi.io/images/51d30a24ab77d09644e0db6a9ea14ddc/full_featured.png",
+      "full_background": "https://media.fortniteapi.io/images/51d30a24ab77d09644e0db6a9ea14ddc/background_full.ru.png",
+      "full_size": "https://media.fortniteapi.io/images/51d30a24ab77d09644e0db6a9ea14ddc/featured.png",
+      "icon": "https://media.fortniteapi.io/images/51d30a24ab77d09644e0db6a9ea14ddc/transparent.png"
+    },
+    "index": 23,
+    "name": "Краш",
+    "map": "https://fortnitefun.ru/wp-content/uploads/2020/12/%D0%93%D0%94%D0%95-%D0%9F%D0%95%D0%A0%D0%A1%D0%9E%D0%9D%D0%90%D0%96-%D0%9A%D0%A0%D0%90%D0%A8-%D0%92-%D0%A4%D0%9E%D0%A0%D0%A2%D0%9D%D0%90%D0%99%D0%A2.jpg",
+    "offers": [
+      {
+        "cost": 1225,
+        "description": "Дробовик. Помповое ружье. Наносит высокий урон, но обладает умеренной скорострельностью. Имеет малую дальнобойность и небольшой магазин.",
+        "enabled": true,
+        "gameplayTags": [
+          "Gameplay.DamageSource.Weapon",
+          "phoebe.weapon.ranged.shotgun",
+          "phoebe.items.WaffleTruck.04",
+          "Weapon.Meta.DoNotApplyWraps",
+          "Item.Weapon.Ranged.Shotgun.Dub"
+        ],
+        "id": "WID_WaffleTruck_Dub",
+        "images": {
+          "background": "https://media.fortniteapi.io/images/T-Icon-Weapons-TheDubWeapon-L_bg-transcendent.png",
+          "icon": "https://media.fortniteapi.io/images/T-Icon-Weapons-TheDubWeapon-L.png"
+        },
+        "mainStats": {
+          "BulletsPerCartridge": 10,
+          "ClipSize": 2,
+          "DamageZone_Critical": 1.25,
+          "DmgPB": 120,
+          "FiringRate": 1.9,
+          "ReloadTime": 2.7,
+          "Spread": 0.8,
+          "SpreadDownsights": 0.9
+        },
+        "name": "Аргумент",
+        "rarity": "transcendent",
+        "searchTags": "Guns Ranged Shotgun Shells Slugs AOE SemiAuto",
+        "type": "standard"
+      }
+    ]
+  },
+  {
+    "description": {
+      "index": "Ремонтница — персонаж, которого можно обнаружить в [Рыдающей роще](https://fortnitefun.ru/rydajushhaja-roshha-weeping-woods/).",
+      "secondary": "\n\nОна предлагает улучшить оружие и найти поблизости машины."
+    },
+    "id": "CID_335_Athena_Commando_F_Scrapyard",
+    "images": {
+      "background": "https://media.fortniteapi.io/images/e76cb8d-bec8b2f-0161c68-5da68b4/background.png",
+      "featured": "https://media.fortniteapi.io/images/e76cb8d-bec8b2f-0161c68-5da68b4/full_featured.png",
+      "full_background": "https://media.fortniteapi.io/images/e76cb8d-bec8b2f-0161c68-5da68b4/background_full.ru.png",
+      "full_size": "https://media.fortniteapi.io/images/e76cb8d-bec8b2f-0161c68-5da68b4/featured.png",
+      "icon": "https://media.fortniteapi.io/images/e76cb8d-bec8b2f-0161c68-5da68b4/transparent.png"
+    },
+    "index": 24,
+    "name": "Ремонтница",
+    "map": "https://fortnitefun.ru/wp-content/uploads/2020/12/%D0%BF%D0%B5%D1%80%D1%81%D0%BE%D0%BD%D0%B0%D0%B6-%D1%80%D0%B5%D0%BC%D0%BE%D0%BD%D1%82%D0%BD%D0%B8%D1%86%D0%B0-%D0%B2-%D1%84%D0%BE%D1%80%D1%82%D0%BD%D0%B0%D0%B9%D1%82-1.jpg",
+    "offers": []
+  },
+  {
+    "description": {
+      "index": "Герой Асфальта находится в западной части локации [Беспечный Берег](https://fortnitefun.ru/bespechnyj-bereg-sweaty-sands/) и стоит возле машин.",
+      "secondary": "Предлагает данный герой, помимо заказов, только одно — найти поблизости машины."
+    },
+    "id": "CID_094_Athena_Commando_M_Rider",
+    "images": {
+      "background": "https://media.fortniteapi.io/images/fc54dd4-2432261-0a75ef6-6ff0597/background.png",
+      "featured": "https://media.fortniteapi.io/images/fc54dd4-2432261-0a75ef6-6ff0597/full_featured.png",
+      "full_background": "https://media.fortniteapi.io/images/fc54dd4-2432261-0a75ef6-6ff0597/background_full.ru.png",
+      "full_size": "https://media.fortniteapi.io/images/fc54dd4-2432261-0a75ef6-6ff0597/featured.png",
+      "icon": "https://media.fortniteapi.io/images/fc54dd4-2432261-0a75ef6-6ff0597/transparent.png"
+    },
+    "index": 25,
+    "name": "Герой асфальта",
+    "map": "https://fortnitefun.ru/wp-content/uploads/2020/12/%D0%BF%D0%B5%D1%80%D1%81%D0%BE%D0%BD%D0%B0%D0%B6-%D0%B3%D0%B5%D1%80%D0%BE%D0%B9-%D0%B0%D1%81%D1%84%D0%B0%D0%BB%D1%8C%D1%82%D0%B0-%D0%B2-%D1%84%D0%BE%D1%80%D1%82%D0%BD%D0%B0%D0%B9%D1%82-1.jpg",
+    "offers": []
+  },
+  {
+    "description": {
+      "index": "Рыбак — это хороший друг рыбачки и занимаются они одним делом — продают удочку.",
+      "secondary": "\n\nНу и конечно, рыбак предлагает задания."
+    },
+    "id": null,
+    "images": {
+      "background": "https://media.fortniteapi.io/images/f2b4422df8f542a1521863ac09a935ee/background.v2.png",
+      "featured": "https://media.fortniteapi.io/images/f2b4422df8f542a1521863ac09a935ee/full_featured.png",
+      "full_background": "https://media.fortniteapi.io/images/f2b4422df8f542a1521863ac09a935ee/background_full.v2.ru.png",
+      "full_size": "https://media.fortniteapi.io/images/f2b4422df8f542a1521863ac09a935ee/full_featured.png",
+      "icon": "https://media.fortniteapi.io/images/f2b4422df8f542a1521863ac09a935ee/transparent.png"
+    },
+    "index": 26,
+    "name": "Рыбак",
+    "map": "https://fortnitefun.ru/wp-content/uploads/2020/12/%D0%BF%D0%B5%D1%80%D1%81%D0%BE%D0%BD%D0%B0%D0%B6-%D1%80%D1%8B%D0%B1%D0%B0%D0%BA-%D0%B2-%D1%84%D0%BE%D1%80%D1%82%D0%BD%D0%B0%D0%B9%D1%82-1.jpg",
+    "offers": []
+  },
+  {
+    "description": {
+      "index": "Рыбачка — как не сложно догадаться, она специализируется на рыбалке и её можно встретить на берегу [Беспечного Берега](https://fortnitefun.ru/bespechnyj-bereg-sweaty-sands/).",
+      "secondary": "\n\nА полезна она многим, ведь у нее можно купить профессиональную удочку всего за 30 слитков и несколько рыбешек."
+    },
+    "id": "CID_578_Athena_Commando_F_Fisherman",
+    "images": {
+      "background": "https://media.fortniteapi.io/images/bf56ac037697593979d2365261d34798/background.png",
+      "featured": "https://media.fortniteapi.io/images/bf56ac037697593979d2365261d34798/full_featured.png",
+      "full_background": "https://media.fortniteapi.io/images/bf56ac037697593979d2365261d34798/background_full.ru.png",
+      "full_size": "https://media.fortniteapi.io/images/bf56ac037697593979d2365261d34798/featured.png",
+      "icon": "https://media.fortniteapi.io/images/bf56ac037697593979d2365261d34798/transparent.png"
+    },
+    "index": 27,
+    "name": "Рыбачка",
+    "map": "https://fortnitefun.ru/wp-content/uploads/2020/12/%D0%BF%D0%B5%D1%80%D1%81%D0%BE%D0%BD%D0%B0%D0%B6-%D1%80%D1%8B%D0%B1%D0%B0%D1%87%D0%BA%D0%B0-%D0%B2-%D1%84%D0%BE%D1%80%D1%82%D0%BD%D0%B0%D0%B9%D1%82-1.jpg",
+    "offers": []
+  },
+  {
+    "description": {
+      "index": "Аферистка находится в [Одиноком озере](https://fortnitefun.ru/odinokoe-ozero-lazy-lake/) в правом доме на севере локации.",
+      "secondary": "\n\nУ аферистки можно купить данные “сундуки с сокровищами”. Если их купить, то подсветится сундук."
+    },
+    "id": "CID_135_Athena_Commando_F_Jailbird",
+    "images": {
+      "background": "https://media.fortniteapi.io/images/2acdecc-0a02fe0-66c2c54-08319b6/background.png",
+      "featured": "https://media.fortniteapi.io/images/2acdecc-0a02fe0-66c2c54-08319b6/full_featured.png",
+      "full_background": "https://media.fortniteapi.io/images/2acdecc-0a02fe0-66c2c54-08319b6/background_full.ru.png",
+      "full_size": "https://media.fortniteapi.io/images/2acdecc-0a02fe0-66c2c54-08319b6/featured.png",
+      "icon": "https://media.fortniteapi.io/images/2acdecc-0a02fe0-66c2c54-08319b6/transparent.png"
+    },
+    "index": 28,
+    "name": "Аферистка",
+    "map": "https://fortnitefun.ru/wp-content/uploads/2020/12/%D1%81%D0%BA%D0%B8%D0%BD-%D0%B0%D1%84%D0%B5%D1%80%D0%B8%D1%81%D1%82%D0%BA%D0%B0-%D0%B2-%D1%84%D0%BE%D1%80%D1%82%D0%BD%D0%B0%D0%B9%D1%82.jpg",
+    "offers": []
+  },
+  {
+    "description": {
+      "index": "Шпик — агент всем агентам, которого можно найти в [Торговой точке](https://fortnitefun.ru/retail-row/).",
+      "secondary": "\n\nС его помощью можно обнаружить персонажей на карте. Но только на недолгое время."
+    },
+    "id": "CID_154_Athena_Commando_M_Gumshoe",
+    "images": {
+      "background": "https://media.fortniteapi.io/images/3f87e6f-d6cd088-5e3f2a9-3639456/background.png",
+      "featured": "https://media.fortniteapi.io/images/3f87e6f-d6cd088-5e3f2a9-3639456/full_featured.png",
+      "full_background": "https://media.fortniteapi.io/images/3f87e6f-d6cd088-5e3f2a9-3639456/background_full.ru.png",
+      "full_size": "https://media.fortniteapi.io/images/3f87e6f-d6cd088-5e3f2a9-3639456/featured.png",
+      "icon": "https://media.fortniteapi.io/images/3f87e6f-d6cd088-5e3f2a9-3639456/transparent.png"
+    },
+    "index": 29,
+    "name": "Шпик",
+    "map": "https://fortnitefun.ru/wp-content/uploads/2020/12/%D0%BF%D0%B5%D1%80%D1%81%D0%BE%D0%BD%D0%B0%D0%B6-%D1%88%D0%BF%D0%B8%D0%BA-%D0%B2-%D1%84%D0%BE%D1%80%D1%82%D0%BD%D0%B0%D0%B9%D1%82-1.jpg",
+    "offers": []
+  },
+  {
+    "description": {
+      "index": "Зимний Гном — находится в развалинах около [Беспечного берега](https://fortnitefun.ru/bespechnyj-bereg-sweaty-sands/).",
+      "secondary": "\n\nУ него можно улучшить оружие и купить данные “сундуки с скоровищами”. Если вы их купите, то вы узнаете где находятся поблизости сундуки."
+    },
+    "id": "CID_304_Athena_Commando_M_Gnome",
+    "images": {
+      "background": "https://media.fortniteapi.io/images/83f70fd-bab9e03-4ca5026-b7e3c21/background.png",
+      "featured": "https://media.fortniteapi.io/images/83f70fd-bab9e03-4ca5026-b7e3c21/full_featured.png",
+      "full_background": "https://media.fortniteapi.io/images/83f70fd-bab9e03-4ca5026-b7e3c21/background_full.ru.png",
+      "full_size": "https://media.fortniteapi.io/images/83f70fd-bab9e03-4ca5026-b7e3c21/featured.png",
+      "icon": "https://media.fortniteapi.io/images/83f70fd-bab9e03-4ca5026-b7e3c21/transparent.png"
+    },
+    "index": 30,
+    "name": "Зимний гном",
+    "map": "https://fortnitefun.ru/wp-content/uploads/2020/12/%D0%BF%D0%B5%D1%80%D1%81%D0%BE%D0%BD%D0%B0%D0%B6-%D0%B3%D0%BD%D0%BE%D0%BC-%D0%B2-%D1%84%D0%BE%D1%80%D1%82%D0%BD%D0%B0%D0%B9%D1%82.jpg",
+    "offers": []
+  },
+  {
+    "description": {
+      "index": "Ромашка находится во фруктовом саду.",
+      "secondary": "\n\nИ честно, пусть персонаж и милый, но какой-то скучный, ведь кроме яблок да капусты у нее на продажу ничего нет."
+    },
+    "id": "CID_356_Athena_Commando_F_Farmer",
+    "images": {
+      "background": "https://media.fortniteapi.io/images/512f3f3-655766f-3ea6758-83a2a11/background.png",
+      "featured": "https://media.fortniteapi.io/images/512f3f3-655766f-3ea6758-83a2a11/full_featured.png",
+      "full_background": "https://media.fortniteapi.io/images/512f3f3-655766f-3ea6758-83a2a11/background_full.ru.png",
+      "full_size": "https://media.fortniteapi.io/images/512f3f3-655766f-3ea6758-83a2a11/featured.png",
+      "icon": "https://media.fortniteapi.io/images/512f3f3-655766f-3ea6758-83a2a11/transparent.png"
+    },
+    "index": 31,
+    "name": "Ромашка",
+    "map": "https://fortnitefun.ru/wp-content/uploads/2020/12/%D0%BF%D0%B5%D1%80%D1%81%D0%BE%D0%BD%D0%B0%D0%B6-%D1%80%D0%BE%D0%BC%D0%B0%D1%88%D0%BA%D0%B0-%D0%B2-%D1%84%D0%BE%D1%80%D1%82%D0%BD%D0%B0%D0%B9%D1%82.jpg",
+    "offers": []
+  },
+  {
+    "description": {
+      "index": "Стальной фермер обитает на возвышенности, рядом с фруктовым садом. Просто бегите в сторону сена, которое видно издалека, и вы его не пропустите.",
+      "secondary": "\n\nИз ништяков фермер предлагает купить кукурузы или капусты стоимостью 10 слитков."
+    },
+    "id": "CID_714_Athena_Commando_M_AnarchyAcresFarmer",
+    "images": {
+      "background": "https://media.fortniteapi.io/images/3d5ac12994eda76e64ef7c54ce97c87b/background.png",
+      "featured": "https://media.fortniteapi.io/images/3d5ac12994eda76e64ef7c54ce97c87b/full_featured.png",
+      "full_background": "https://media.fortniteapi.io/images/3d5ac12994eda76e64ef7c54ce97c87b/background_full.ru.png",
+      "full_size": "https://media.fortniteapi.io/images/3d5ac12994eda76e64ef7c54ce97c87b/featured.png",
+      "icon": "https://media.fortniteapi.io/images/3d5ac12994eda76e64ef7c54ce97c87b/transparent.png"
+    },
+    "index": 32,
+    "name": "Стальной фермер",
+    "map": "https://fortnitefun.ru/wp-content/uploads/2020/12/%D0%BF%D0%B5%D1%80%D1%81%D0%BE%D0%BD%D0%B0%D0%B6-%D1%81%D1%82%D0%B0%D0%BB%D1%8C%D0%BD%D0%BE%D0%B9-%D1%84%D0%B5%D1%80%D0%BC%D0%B5%D1%80-%D0%B2-%D1%84%D0%BE%D1%80%D1%82%D0%BD%D0%B0%D0%B9%D1%82.jpg",
+    "offers": []
+  },
+  {
+    "description": {
+      "index": "Собакен находится в [Приятном парке](https://fortnitefun.ru/pleasant-park/), в доме, около заправки.",
+      "secondary": "\n\nСобакена можно лишь нанять за 100 слитков. Вот и все, чем он может оказаться дополнительно полезен."
+    },
+    "id": "CID_419_Athena_Commando_M_Pug",
+    "images": {
+      "background": "https://media.fortniteapi.io/images/ec72faa4d3b15d6b40726cd424122b1e/background.png",
+      "featured": "https://media.fortniteapi.io/images/ec72faa4d3b15d6b40726cd424122b1e/full_featured.png",
+      "full_background": "https://media.fortniteapi.io/images/ec72faa4d3b15d6b40726cd424122b1e/background_full.ru.png",
+      "full_size": "https://media.fortniteapi.io/images/ec72faa4d3b15d6b40726cd424122b1e/featured.png",
+      "icon": "https://media.fortniteapi.io/images/ec72faa4d3b15d6b40726cd424122b1e/transparent.png"
+    },
+    "index": 33,
+    "name": "Собакен",
+    "map": "https://fortnitefun.ru/wp-content/uploads/2020/12/%D0%BF%D0%B5%D1%80%D1%81%D0%BE%D0%BD%D0%B0%D0%B6-%D1%81%D0%BE%D0%B1%D0%B0%D0%BA%D0%B5%D0%BD-%D0%B2-%D1%84%D0%BE%D1%80%D1%82%D0%BD%D0%B0%D0%B9%D1%82-1.jpg",
+    "offers": []
+  },
+  {
+    "description": {
+      "index": "Данный НПС находится в [Укромном уголке](https://fortnitefun.ru/ukromnyj-ugol-catty-corner/).",
+      "secondary": "\n\nКак и здоровяк, он предложит вам несколько заданий, а так же сразиться с ним. За дуэль вы можете получить эпический автомат. У него также можно улучшить оружие."
+    },
+    "id": "CID_776_Athena_Commando_M_ProfessorPup",
+    "images": {
+      "background": "https://media.fortniteapi.io/images/3895ea70119b12fdeedae70d4a0b1b5e/background.png",
+      "featured": null,
+      "full_background": "https://media.fortniteapi.io/images/3895ea70119b12fdeedae70d4a0b1b5e/background_full.ru.png",
+      "full_size": "https://media.fortniteapi.io/images/3895ea70119b12fdeedae70d4a0b1b5e/featured.png",
+      "icon": "https://media.fortniteapi.io/images/3895ea70119b12fdeedae70d4a0b1b5e/transparent.png"
+    },
+    "index": 34,
+    "name": "Робокот",
+    "map": "https://fortnitefun.ru/wp-content/uploads/2020/12/%D0%BF%D0%B5%D1%80%D1%81%D0%BE%D0%BD%D0%B0%D0%B6-%D1%80%D0%BE%D0%B1%D0%BE%D0%BA%D0%BE%D1%82-%D0%B2-%D1%84%D0%BE%D1%80%D1%82%D0%BD%D0%B0%D0%B9%D1%82.jpg",
+    "offers": []
+  },
+  {
+    "description": {
+      "index": "Персонаж Бургермен обитает в даррбургере или в мобильном кафе.",
+      "secondary": "\n\nОн улучшает оружие."
+    },
+    "id": "CID_185_Athena_Commando_M_DurrburgerHero",
+    "images": {
+      "background": "https://media.fortniteapi.io/images/f86b3d5-a88f224-dad1a85-638e91d/background.png",
+      "featured": "https://media.fortniteapi.io/images/f86b3d5-a88f224-dad1a85-638e91d/full_featured.png",
+      "full_background": "https://media.fortniteapi.io/images/f86b3d5-a88f224-dad1a85-638e91d/background_full.ru.png",
+      "full_size": "https://media.fortniteapi.io/images/f86b3d5-a88f224-dad1a85-638e91d/featured.png",
+      "icon": "https://media.fortniteapi.io/images/f86b3d5-a88f224-dad1a85-638e91d/transparent.png"
+    },
+    "index": 35,
+    "name": "Бургермен",
+    "map": "https://fortnitefun.ru/wp-content/uploads/2020/12/%D0%BF%D0%B5%D1%80%D1%81%D0%BE%D0%BD%D0%B0%D0%B6-%D0%B1%D1%83%D1%80%D0%B3%D0%B5%D1%80%D0%BC%D0%B5%D0%BD-%D0%B2-%D1%84%D0%BE%D1%80%D1%82%D0%BD%D0%B0%D0%B9%D1%82-1.jpg",
+    "offers": []
+  },
+  {
+    "description": {
+      "index": "Синьор Помидор может быть найден в пиццерии у сада или в мобильном кафе.",
+      "secondary": "\n\nОн улучшает оружие."
+    },
+    "id": "CID_185_Athena_Commando_M_DurrburgerHero",
+    "images": {
+      "background": "https://media.fortniteapi.io/images/ec64d5a-790c4d5-b518571-d20deae/background.v2.png",
+      "featured": "https://media.fortniteapi.io/images/ec64d5a-790c4d5-b518571-d20deae/full_featured.png",
+      "full_background": "https://media.fortniteapi.io/images/ec64d5a-790c4d5-b518571-d20deae/background_full.v2.ru.png",
+      "full_size": "https://media.fortniteapi.io/images/ec64d5a-790c4d5-b518571-d20deae/full_featured.png",
+      "icon": "https://media.fortniteapi.io/images/ec64d5a-790c4d5-b518571-d20deae/transparent.png"
+    },
+    "index": 36,
+    "name": "Синьор Помидор",
+    "map": "https://fortnitefun.ru/wp-content/uploads/2020/12/%D0%BF%D0%B5%D1%80%D1%81%D0%BE%D0%BD%D0%B0%D0%B6-%D1%81%D0%B8%D0%BD%D1%8C%D0%BE%D1%80-%D0%BF%D0%BE%D0%BC%D0%B8%D0%B4%D0%BE%D1%80-%D0%B2-%D1%84%D0%BE%D1%80%D1%82%D0%BD%D0%B0%D0%B9%D1%82-1.jpg",
+    "offers": []
+  },
+  {
+    "description": {
+      "index": "Затворник Джоунси. Данный персонаж находится в Ладном лагере и ничего, кроме одного задания он не предлагает.",
+      "secondary": "\n\nДа и вообще, джоунси в данной местности странный тип, к которому лишний раз подходить не хочется. К нему если и следует лететь, то чтобы купить данные о другом персонаже — Бигфут."
+    },
+    "id": "CID_409_Athena_Commando_M_BunkerMan",
+    "images": {
+      "background": "https://media.fortniteapi.io/images/e67475a13c9e175102842ec42e7db8d8/background.png",
+      "featured": null,
+      "full_background": "https://media.fortniteapi.io/images/e67475a13c9e175102842ec42e7db8d8/background_full.ru.png",
+      "full_size": "https://media.fortniteapi.io/images/e67475a13c9e175102842ec42e7db8d8/featured.png",
+      "icon": "https://media.fortniteapi.io/images/e67475a13c9e175102842ec42e7db8d8/transparent.png"
+    },
+    "index": 37,
+    "name": "Затворник Джоунси",
+    "map": "https://fortnitefun.ru/wp-content/uploads/2020/12/%D0%B1%D0%BE%D1%81%D1%81-%D0%B7%D0%B0%D1%82%D0%B2%D0%BE%D1%80%D0%BD%D0%B8%D0%BA-%D0%B4%D0%B6%D0%BE%D1%83%D0%BD%D1%81%D0%B8-%D0%B2-%D1%84%D0%BE%D1%80%D1%82%D0%BD%D0%B0%D0%B9%D1%82.jpg",
+    "offers": []
+  },
+  {
+    "description": {
+      "index": "Бигфут ходит по [Рыдающей роще](https://fortnitefun.ru/rydajushhaja-roshha-weeping-woods/) и выглядит как большая обезьяна. Кстати, его поиски могут превратиться в поиски Росомахи из прошлого сезона, ведь его вообще найти в этой роще невозможно. И все потому, что шанс его спавна 1 к 5!",
+      "secondary": "\n\nИ за все наши муки поиска бигфут предлагает рыбу из эпицентра. Да, просто рыбу из простого эпицентра. Если вы ее скушаете, вы будете перемещаться, как после розовых камней."
+    },
+    "id": "CID_463_Athena_Commando_M_Hairy",
+    "images": {
+      "background": "https://media.fortniteapi.io/images/8f227905f8f190434750999cd3b10fe9/background.png",
+      "featured": "https://media.fortniteapi.io/images/8f227905f8f190434750999cd3b10fe9/full_featured.png",
+      "full_background": "https://media.fortniteapi.io/images/8f227905f8f190434750999cd3b10fe9/background_full.ru.png",
+      "full_size": "https://media.fortniteapi.io/images/8f227905f8f190434750999cd3b10fe9/featured.png",
+      "icon": "https://media.fortniteapi.io/images/8f227905f8f190434750999cd3b10fe9/transparent.png"
+    },
+    "index": 38,
+    "name": "Бигфут",
+    "map": "https://fortnitefun.ru/wp-content/uploads/2020/12/%D0%BF%D0%B5%D1%80%D1%81%D0%BE%D0%BD%D0%B0%D0%B6-%D0%B1%D0%B8%D0%B3%D1%84%D1%83%D1%82-%D0%B2-%D1%84%D0%BE%D1%80%D1%82%D0%BD%D0%B0%D0%B9%D1%82.jpg",
+    "offers": []
+  },
+  {
+    "description": {
+      "index": "Погром — это персонаж, который относится к боссам 15 сезона фортнайт.",
+      "secondary": "\n\nБосса Погром можно найти на Гидростанции 16. Из него выпадает легенадарный автомат."
+    },
+    "id": "CID_262_Athena_Commando_M_MadCommander",
+    "images": {
+      "background": "https://media.fortniteapi.io/images/c07a61b-9076449-feccbc6-1f6b878/background.png",
+      "featured": "https://media.fortniteapi.io/images/c07a61b-9076449-feccbc6-1f6b878/full_featured.png",
+      "full_background": "https://media.fortniteapi.io/images/c07a61b-9076449-feccbc6-1f6b878/background_full.ru.png",
+      "full_size": "https://media.fortniteapi.io/images/c07a61b-9076449-feccbc6-1f6b878/featured.png",
+      "icon": "https://media.fortniteapi.io/images/c07a61b-9076449-feccbc6-1f6b878/transparent.png"
+    },
+    "index": 39,
+    "name": "Погром",
+    "map": "https://fortnitefun.ru/wp-content/uploads/2020/12/%D0%B1%D0%BE%D1%81%D1%81-%D0%BF%D0%BE%D0%B3%D1%80%D0%BE%D0%BC-%D0%B2-%D1%84%D0%BE%D1%80%D1%82%D0%BD%D0%B0%D0%B9%D1%82.jpg",
+    "offers": []
+  },
+  {
+    "description": {
+      "index": "Карась обитает в [Коралловой крепости](https://fortnitefun.ru/korallovaja-krepost-coral-castle/). Он постоянно ходит по локации, но не выходит за её пределы.",
+      "secondary": "\n\nКарась полезен тем, что он смотрит на вас рыбьим взором и тем, что у него можно улучшить оружие. Помимо этого, его можно нанять за 100 слитков. Тогда персонаж последует за вами и будет союзником.\n\nС наступлением патча 15.30 у Карася можно купить экзотическое оружие Залповый квадромет."
+    },
+    "id": "CID_315_Athena_Commando_M_TeriyakiFish",
+    "images": {
+      "background": "https://media.fortniteapi.io/images/117f54c-2985b28-ee59013-a625629/background.png",
+      "featured": "https://media.fortniteapi.io/images/117f54c-2985b28-ee59013-a625629/full_featured.png",
+      "full_background": "https://media.fortniteapi.io/images/117f54c-2985b28-ee59013-a625629/background_full.ru.png",
+      "full_size": "https://media.fortniteapi.io/images/117f54c-2985b28-ee59013-a625629/featured.png",
+      "icon": "https://media.fortniteapi.io/images/117f54c-2985b28-ee59013-a625629/transparent.png"
+    },
+    "index": 40,
+    "name": "Карась",
+    "map": "https://fortnitefun.ru/wp-content/uploads/2020/12/%D0%BF%D0%B5%D1%80%D1%81%D0%BE%D0%BD%D0%B0%D0%B6-%D0%BA%D0%B0%D1%80%D0%B0%D1%81%D1%8C-%D0%B2-%D1%84%D0%BE%D1%80%D1%82%D0%BD%D0%B0%D0%B9%D1%82.jpg",
+    "offers": []
+  },
+  {
+    "description": {
+      "index": "Снегназовец находится на юге карты, пусть и локация больше северная. Точное местоположение смотрите на карте.",
+      "secondary": "\n\nПерсонаж Снегназовец продает новое экзотическое оружие гранатомет «Ниже нуля». Стоит оно 1455 слитков, что на порядок выше, чем другие пушки."
+    },
+    "id": "CID_969_Athena_Commando_M_SnowmanFashion",
+    "images": {
+      "background": "https://media.fortniteapi.io/images/0bfedb08babf0d79f346fce7208e0819/background.png",
+      "featured": "https://media.fortniteapi.io/images/0bfedb08babf0d79f346fce7208e0819/full_featured.png",
+      "full_background": "https://media.fortniteapi.io/images/0bfedb08babf0d79f346fce7208e0819/background_full.ru.png",
+      "full_size": "https://media.fortniteapi.io/images/0bfedb08babf0d79f346fce7208e0819/featured.png",
+      "icon": "https://media.fortniteapi.io/images/0bfedb08babf0d79f346fce7208e0819/transparent.png"
+    },
+    "index": 41,
+    "name": "Снегназовец",
+    "map": "https://fortnitefun.ru/wp-content/uploads/2020/12/%D0%BF%D0%B5%D1%80%D1%81%D0%BE%D0%BD%D0%B0%D0%B6-%D1%81%D0%BD%D0%B5%D0%B3%D0%BD%D0%B0%D0%B7%D0%BE%D0%B2%D0%B5%D1%86-%D0%B2-%D1%84%D0%BE%D1%80%D1%82%D0%BD%D0%B0%D0%B9%D1%82.jpg",
+    "offers": []
+  },
+  {
+    "description": {
+      "index": "Хищник находится в [Тайное твердыне](https://fortnitefun.ru/tajnaja-tverdynja-stealthy-stronghold/). Он гуляет по всей локации, застать его в каком-то определенном месте нельзя.",
+      "secondary": "\n\nС босса Хищника выпадает напульсник, делающий героя невидимым на несколько секунд."
+    },
+    "id": null,
+    "images": {
+      "background": "https://media.fortniteapi.io/images/ae8b3df9557b5bfc267d686c78b9d17e/background.v2.png",
+      "featured": "https://media.fortniteapi.io/images/ae8b3df9557b5bfc267d686c78b9d17e/full_featured.png",
+      "full_background": "https://media.fortniteapi.io/images/ae8b3df9557b5bfc267d686c78b9d17e/background_full.v2.ru.png",
+      "full_size": "https://media.fortniteapi.io/images/ae8b3df9557b5bfc267d686c78b9d17e/full_featured.png",
+      "icon": "https://media.fortniteapi.io/images/ae8b3df9557b5bfc267d686c78b9d17e/transparent.png"
+    },
+    "index": 42,
+    "name": "Хищник",
+    "map": "https://fortnitefun.ru/wp-content/uploads/2020/12/%D0%B1%D0%BE%D1%81%D1%81-%D1%85%D0%B8%D1%89%D0%BD%D0%B8%D0%BA-%D0%B2-%D1%84%D0%BE%D1%80%D1%82%D0%BD%D0%B0%D0%B9%D1%82.jpg",
+    "offers": []
+  }
+]

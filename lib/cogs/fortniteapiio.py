@@ -197,5 +197,51 @@ class FortniteAPIio(Cog):
         await page.start()
 
 
+    @command(name=cmd["npc"]["name"], aliases=cmd["npc"]["aliases"], 
+            brief=cmd["npc"]["brief"],
+            description=cmd["npc"]["description"],
+            usage=cmd["npc"]["usage"],
+            help=cmd["npc"]["help"],
+            hidden=cmd["npc"]["hidden"], enabled=True)
+    async def show_fortnite_characters_command(self, ctx, number: int = 0):
+        async with aiofiles.open('./data/characters.json', mode='r', encoding='utf-8') as f:
+            data = json.loads(await f.read())
+
+        if number == 0:
+            npc_embeds = []
+            for count, entry in enumerate(data):
+                embed = Embed(
+                    title=f"{choice(['🔵','🟦','🔷'])} {entry['name']} | {str(count+1)}",
+                    color=Color.blue(),
+                    description=entry['description']['index'] + entry['description']['secondary'],
+                )
+                embed.set_thumbnail(url=entry['images']['icon'])
+                embed.set_image(url=entry['map'])
+
+                npc_embeds.append(embed)
+
+            message = await ctx.send(embed=npc_embeds[0])
+            page = Paginator(self.bot, message, only=ctx.author, embeds=npc_embeds)
+            await page.start()
+            return
+
+        else:
+            if number > len(data) or number < 0:
+                embed = Embed(title='Некорректный номер NPC!', color= Color.red())
+                await ctx.message.reply(embed=embed)
+                return
+                
+            number-=1
+            embed = Embed(
+                    title=f"{choice(['🔵','🟦','🔷'])} {data[number]['name']} | {str(number+1)}",
+                    color=Color.blue(),
+                    description=data[number]['description']['index'] + data[number]['description']['secondary']
+                )
+            embed.set_thumbnail(url=data[number]['images']['icon'])
+            embed.set_image(url=data[number]['map'])
+
+            await ctx.send(embed=embed)
+
+
 def setup(bot):
     bot.add_cog(FortniteAPIio(bot))
