@@ -45,7 +45,7 @@
         },
         "extractasset":{
             "name": "extractasset",
-            "aliases": ["fnextract", "fnexport", "exportasset"],
+            "aliases": ["fnextract", "fnexport", "exportasset", "export"],
             "brief": "Извлекает asset из файлов игры.",
             "description": "Extract an asset from Fortnite's files.",
             "usage": "extractasset <path> [*params]",
@@ -373,7 +373,6 @@
             "hidden": false
         }
     },
-
     "help":
     {
         "help":{
@@ -391,7 +390,37 @@
             "hidden": false
         }
     },
-
+    "moderation":
+    {
+        "kick":{
+            "name": "kick",
+            "aliases": ["кик", "выгнать"],
+            "brief": "Кик участника.",
+            "description": "Выгоняет участника с сервера.",
+            "usage": "kick <members> [reason]",
+            "help": "Кикает участника с сервера. Доступно только администраторам.\n\n**Кулдаун:** отсутсвует.",
+            "required_level": 0,
+            "has_cooldown": false,
+            "cooldown_rate": 0,
+            "cooldown_per_second": 0,
+            "cooldown_type": "None",
+            "hidden": false
+        },
+        "ban":{
+            "name": "ban",
+            "aliases": ["бан"],
+            "brief": "Бан участника.",
+            "description": "Банит участника на сервере.",
+            "usage": "ban <members> [delete_days] [reason]",
+            "help": "Банит участника на сервере, а также удаляет все его сообщения за прошедшие 24 часа. Доступно только администраторам.\n\n**Кулдаун:** отсутсвует.",
+            "required_level": 0,
+            "has_cooldown": false,
+            "cooldown_rate": 0,
+            "cooldown_per_second": 0,
+            "cooldown_type": "None",
+            "hidden": false
+        }
+    },
     "nekos":
     {
         "anipic":{
