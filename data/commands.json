@@ -419,6 +419,20 @@
             "cooldown_per_second": 0,
             "cooldown_type": "None",
             "hidden": false
+        },
+        "purge":{
+            "name": "purge",
+            "aliases": ["delete", "пудж", "удали"],
+            "brief": "Удаление указанного количества сообщений.",
+            "description": "Бот удаляет сообщения в указанном количестве.",
+            "usage": "purge [limit]",
+            "help": "Бот удаляет сообщения в указанном количестве. Доступно только администраторам.\n\n**Кулдаун:** отсутсвует.",
+            "required_level": 0,
+            "has_cooldown": false,
+            "cooldown_rate": 0,
+            "cooldown_per_second": 0,
+            "cooldown_type": "None",
+            "hidden": false
         }
     },
     "nekos":

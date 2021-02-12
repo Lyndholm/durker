@@ -54,13 +54,25 @@ class Bot(BotBase):
         self.cogs_ready = Ready()
         self.guild = None
         self.scheduler = AsyncIOScheduler()
+        self.channels_with_message_counting = [
+            546404724216430602, #админка
+            686499834949140506, #гвардия
+            698568751968419850, #спонсорка
+            721480135043448954, #общение
+            546408250158088192, #поддержка
+            644523860326219776, #медиа
+            546700132390010882, #ваши-вопросы
+            546700132390010882, #заявки-на-рассмотрение
+            809519845707743272  #spam (dev server)
+        ] 
 
         db.autosave(self.scheduler)
 
         super().__init__(command_prefix=PREFIX,
                          case_insensitive=True,
                          owner_ids=OWNER_IDS,
-                         intents=Intents.all())
+                         intents=Intents.all()
+                        )
 
     @logger.catch
     def setup(self):
