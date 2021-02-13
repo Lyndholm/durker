@@ -253,9 +253,9 @@ class Audit(Cog):
             roles_removed, roles_added, _ = self.list_diff(before.roles, after.roles)
 
             if added := [r.mention for r in roles_added]:
-                embed.add_field(name="Добавлены роли:", value=" ".join(added))
+                embed.add_field(name="Добавлены роли:", value=" ".join(added), inline=False)
             if removed := [r.mention for r in roles_removed]:
-                embed.add_field(name="Удалены роли:", value=" ".join(removed))
+                embed.add_field(name="Удалены роли:", value=" ".join(removed), inline=False)
 
             async for entry in after.guild.audit_logs(action=AuditLogAction.member_role_update, limit=1):
                 if int((datetime.utcnow() - entry.created_at).total_seconds()) <= 5:

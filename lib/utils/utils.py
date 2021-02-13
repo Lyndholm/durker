@@ -57,6 +57,7 @@ def delete_user_from_db(user_id: int):
 
     for table in tables:
         db.execute(f"DELETE FROM {table} WHERE user_id = {user_id}")
+        db.commit()
 
 
 def dump_user_data_in_json(member: discord.Member):

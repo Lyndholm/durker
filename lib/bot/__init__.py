@@ -40,7 +40,7 @@ class Ready(object):
 
     def ready_up(self, cog):
         setattr(self, cog, True)
-        print(f"{cog.title()} cog ready")
+        print(f"{cog.capitalize()} cog ready")
 
     def all_ready(self):
         return all([getattr(self, cog) for cog in COGS])
@@ -64,7 +64,7 @@ class Bot(BotBase):
             546700132390010882, #ваши-вопросы
             546700132390010882, #заявки-на-рассмотрение
             809519845707743272  #spam (dev server)
-        ] 
+        ]
 
         db.autosave(self.scheduler)
 
@@ -107,6 +107,7 @@ class Bot(BotBase):
     @logger.catch
     async def on_ready(self):
         if not self.ready:
+            self.guild = self.get_guild(GUILD_ID)
             self.scheduler.start()
 
             print("\nLogged in as:", bot.user)
@@ -128,7 +129,7 @@ class Bot(BotBase):
             self.ready = True
 
             self.load_extension("jishaku")
-            print("jishaku loaded")
+            print("Jishaku loaded")
                 
             
             print("\nReady to use!\n")
@@ -216,10 +217,10 @@ class Bot(BotBase):
             embed = Embed(
                 title=':exclamation: Ошибка!', 
                 description=f"{ctx.author.mention}\nНевозможно выполнить указанную команду."
-                             "Возможно, вы используете неправильный канал, у вас недостаточный уровень или отсутсвуют права на выполнение запрошенной команды.", 
+                             "\nВозможно, вы используете неправильный канал, у вас недостаточный уровень или отсутсвуют права на выполнение запрошенной команды.", 
                 color=Color.red()
             )
-            await ctx.send(embed=embed, delete_after = 30)
+            await ctx.send(embed=embed, delete_after = 15)
 
         else:
             channel = self.get_channel(id=AUDIT_LOG_CHANNEL)
