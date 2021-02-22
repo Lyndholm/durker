@@ -5,6 +5,14 @@ from typing import List
 from ..utils import constants
 from ..db import db
 
+radio_whitelisted_users = [
+    384728793895665675, #tvoya_pechal
+    342783617983840257, #lexenus
+    479499525921308703, #cactus
+    375722626636578816, #lyndholm
+    195637386221191170, #nednar
+]
+
 
 def is_channel(channel: int):
     """
@@ -48,6 +56,16 @@ def required_level(level:int):
     """
     def predicate(ctx):
         rec = db.fetchone(["level"], "leveling", 'user_id', ctx.author.id)
-        return True if int(rec[0]) >= level else False
+        return int(rec[0]) >= level
+
+    return commands.check(predicate)
+
+
+def can_manage_radio():
+    """
+    A check() that checks if member can manage radio (use radio commands).
+    """
+    def predicate(ctx):
+        return ctx.author.id in radio_whitelisted_users
 
     return commands.check(predicate)

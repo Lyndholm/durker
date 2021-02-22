@@ -3,9 +3,10 @@ from datetime import datetime
 from glob import glob
 from os import getenv
 
+from apscheduler.triggers.cron import CronTrigger
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from discord import Color, Embed, Intents
-from discord.ext.commands import Bot as BotBase, Context
+from discord.ext.commands import Bot as BotBase, Context, ExtensionAlreadyLoaded, ExtensionNotLoaded
 from discord.ext.commands import (CommandNotFound, CommandOnCooldown, DisabledCommand, 
                                 NoPrivateMessage, PrivateMessageOnly)
 from discord.ext.commands.errors import CheckFailure, CheckAnyFailure, MissingPermissions
@@ -66,6 +67,7 @@ class Bot(BotBase):
             809519845707743272  #spam (dev server)
         ]
 
+        self.load_music_cogs(self.scheduler)
         db.autosave(self.scheduler)
 
         super().__init__(command_prefix=PREFIX,
@@ -93,6 +95,50 @@ class Bot(BotBase):
         print("Running bot...")
         super().run(self.TOKEN, reconnect=True)
 
+    @logger.catch
+    async def load_mein_radio_cog_scheduler(self):
+        try:
+            try:
+                self.unload_extension("lib.cogs.music.gachi_radio")
+                self.unload_extension("lib.cogs.music.music_player")
+            except ExtensionNotLoaded:
+                pass
+            self.load_extension("lib.cogs.music.mein_radio")
+        except ExtensionAlreadyLoaded:
+            pass
+
+    @logger.catch
+    async def load_gachi_radio_cog_scheduler(self):
+        try:
+            try:
+                self.unload_extension("lib.cogs.music.mein_radio")
+                self.unload_extension("lib.cogs.music.music_player")
+            except ExtensionNotLoaded:
+                pass
+            self.load_extension("lib.cogs.music.gachi_radio")
+        except ExtensionAlreadyLoaded:
+            pass
+
+    @logger.catch
+    async def load_music_player_cog_scheduler(self):
+        try:
+            try:
+                self.unload_extension("lib.cogs.music.mein_radio")
+                self.unload_extension("lib.cogs.music.gachi_radio")
+            except ExtensionNotLoaded:
+                pass
+            self.load_extension("lib.cogs.music.music_player")
+        except ExtensionAlreadyLoaded:
+            pass
+
+    @logger.catch
+    def load_music_cogs(self, sched):
+        sched.add_job(self.load_mein_radio_cog_scheduler, CronTrigger(day_of_week=0, hour=3))
+        sched.add_job(self.load_mein_radio_cog_scheduler, CronTrigger(day_of_week=2, hour=3))
+        sched.add_job(self.load_mein_radio_cog_scheduler, CronTrigger(day_of_week=4, hour=3))
+        sched.add_job(self.load_gachi_radio_cog_scheduler, CronTrigger(day_of_week=1, hour=3))
+        sched.add_job(self.load_gachi_radio_cog_scheduler, CronTrigger(day_of_week=3, hour=3))
+        sched.add_job(self.load_music_player_cog_scheduler, CronTrigger(day_of_week=5, hour=3))
 
     @logger.catch
     async def process_commands(self, message):
@@ -236,7 +282,7 @@ class Bot(BotBase):
                 else:
                     embed = Embed(
                         title=f'Ошибка при выполнении команды {ctx.command}.', 
-                        description=f'`{ctx.command.signature}`\n{exc}', 
+                        description=f'`{ctx.command.signature if ctx.command.signature else None}`\n{exc}', 
                         color=Color.red()
                     )
                     if isinstance(ctx.channel, DMChannel):
@@ -245,7 +291,7 @@ class Bot(BotBase):
             except:
                 embed = Embed(
                     title=f'Ошибка при выполнении команды {ctx.command}.', 
-                    description=f'`{ctx.command.signature}`\n{exc}', 
+                    description=f'`{ctx.command.signature if ctx.command.signature else None}`\n{exc}',
                     color=Color.red()
                 )
                 if isinstance(ctx.channel, DMChannel):

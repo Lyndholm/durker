@@ -10,4 +10,5 @@ buttons
 pillow
 coloredlogs
 requests
+wavelink
 git+https://github.com/Rapptz/discord-ext-menus

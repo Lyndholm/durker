@@ -192,7 +192,10 @@ class Audit(Cog):
                         
                         if hasattr(author, "bot") and author.bot:
                             return
-                    embed.add_field(name='Автор:', value=f'**{author.display_name}** ({author.mention})')
+                    try:
+                        embed.add_field(name='Автор:', value=f'**{author.display_name}** ({author.mention})')
+                    except UnboundLocalError:
+                        embed.add_field(name='Автор:', value=f'**{data.get("author", None)}**')
                     embed.add_field(name="Канал", value=channel.mention)
                     embed.add_field(name=f"Jump url:", value=f"[Click](https://discordapp.com/channels/{guild.id}/{channel.id}/{payload.message_id})")
                     embed.set_footer(text=f"ID сообщения: {payload.message_id}")
