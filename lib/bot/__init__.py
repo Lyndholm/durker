@@ -283,7 +283,8 @@ class Bot(BotBase):
                     embed = Embed(
                         title=f'Ошибка при выполнении команды {ctx.command}.', 
                         description=f'`{ctx.command.signature if ctx.command.signature else None}`\n{exc}', 
-                        color=Color.red()
+                        color=Color.red(),
+                        timestamp=datetime.utcnow()
                     )
                     if isinstance(ctx.channel, DMChannel):
                         embed.add_field(name="Additional info:", value="Exception occured in DMChannel.")
@@ -292,7 +293,8 @@ class Bot(BotBase):
                 embed = Embed(
                     title=f'Ошибка при выполнении команды {ctx.command}.', 
                     description=f'`{ctx.command.signature if ctx.command.signature else None}`\n{exc}',
-                    color=Color.red()
+                    color=Color.red(),
+                    timestamp=datetime.utcnow()
                 )
                 if isinstance(ctx.channel, DMChannel):
                     embed.add_field(name="Additional info:", value="Exception occured in DMChannel.")

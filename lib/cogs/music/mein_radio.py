@@ -11,6 +11,8 @@ import wavelink
 from discord.ext import commands, menus
 from discord.ext.commands.errors import CheckFailure
 from ...utils.checks import can_manage_radio, radio_whitelisted_users, is_channel
+from ...db import db
+
 
 # URL matching REGEX...
 URL_REG = re.compile(r'https?://(?:www\.)?.+')
@@ -128,7 +130,7 @@ class Player(wavelink.Player):
 
         embed = discord.Embed(title=f'Радио FNFUN | {channel.name}', colour=0x00ff00)
         embed.description = f'**Сейчас играет:**\n```ini\n{track.author} — {track.title}\n```'
-        embed.set_thumbnail(url=track.thumb if track.thumb else "https://cdn.discordapp.com/attachments/774698479981297664/774700936958312468/placeholder.png")
+        embed.set_thumbnail(url=track.thumb if track.thumb else "https://cdn.discordapp.com/attachments/774698479981297664/813684421370314772/radio_placeholder.jpg")
 
         try:
             embed.add_field(name='Продолжительность', value=str(datetime.timedelta(milliseconds=int(track.length))))
@@ -737,6 +739,55 @@ class MeinRadio(commands.Cog, wavelink.WavelinkMixin):
             else:
                 player.dj = m
                 return await ctx.send(f'{member.mention} стал диджеем.')
+
+    @commands.command(name="to_delete", aliases=['удоли'], 
+            brief="Сделайте заявку на удаление трека, который сейчас играет, из пелейлиста радио.",
+            description="Формирует заявку на удаление трека, который сейчас играет, из плейлиста радио.",
+            usage="to_delete <track> <reason>",
+            help="Возможность предложить удалить трек из плейлиста радио.\n\n**Работает в канале:** <#546411393239220233>\n**Кулдаун:** отсутсвует.\n**Необходимый уровень:** 0",
+            hidden=False, enabled=True)
+    @is_channel(MUSIC_COMMANDS_CHANNEL)
+    async def to_delete_song_command(self, ctx, *, reason: str = None):
+        player: Player = self.bot.wavelink.get_player(guild_id=ctx.guild.id, cls=Player, context=ctx)
+        track = player.current
+        if not track:
+            return await ctx.send(f'Радио сейчас не играет. Заявки на удаление треков не принимаются.')
+
+        if reason is None:
+            return await ctx.send(f'Пожалуйста, укажите причину, по которой вы хотите удалить трек `{player.current.author} — {player.current.title}` из плейлиста `MeinRadio`.')
+
+        reason = reason.replace('`', '­')
+        date = datetime.datetime.now()
+        song = f"{player.current.author} — {player.current.title}"
+        db.insert("song_suggestions", 
+                {"suggestion_author_id": ctx.author.id, 
+                "suggestion_type": "delete",
+                "suggested_song": song,
+                "suggestion_comment": reason,
+                "created_at": date})
+
+        cursor = db.get_cursor()
+        cursor.execute("SELECT suggestion_id FROM song_suggestions where suggestion_author_id = %s and suggested_song = %s and created_at = %s", (ctx.author.id,song,date,))
+        rec = cursor.fetchone()
+
+        embed = discord.Embed(
+            title = "✅ Выполнено",
+            color = discord.Color.red(),
+            timestamp = datetime.datetime.utcnow(),
+            description = f'Заявка на удаление трека `{track}` отправлена администрации.\nНомер вашей заявки: {rec[0]}\n'
+                        "**Пожалуйста, разрешите личные сообщения от участников сервера, чтобы вы могли получить ответ на заявку.**"
+        )
+        await ctx.send(embed=embed)
+
+        for i in [375722626636578816, 195637386221191170]:
+            embed = discord.Embed(
+                title = "Новая заявка",
+                color = discord.Color.red(),
+                timestamp = datetime.datetime.utcnow(),
+                description = f"**Заявка на удаление трека из плейлиста.**\n\n**Номер заявки:** {rec[0]}\n"
+                            f"**Трек:** {song}\n**Причина удаления:** {reason}\n**Заявка сформирована:** {date.strftime('%d.%m.%Y %H:%M:%S')}"
+            )
+            await self.bot.get_user(i).send(embed=embed)
 
 
 def setup(bot: commands.Bot):

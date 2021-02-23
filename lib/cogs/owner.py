@@ -7,7 +7,8 @@ from discord.ext.commands import is_owner, dm_only
 from datetime import datetime
 
 from ..utils.utils import load_commands_from_json
-
+from ..utils.checks import can_manage_suggestions
+from ..db import db
 
 cmd = load_commands_from_json("owner")
 
@@ -238,6 +239,71 @@ class Owner(Cog):
                                 f'**Updated:** {datetime.fromtimestamp(data.get("lastUpdated", 0)).strftime("%d.%m.%Y %H:%M:%S")}'
                 )
                 await ctx.send(embed=embed)
+
+
+    async def pass_suggesion_decision(self, ctx, suggestion_id: int = None, decision: bool = None, comment: str = 'Отсутсвует'):
+        answer_text = f"Ваша заявка **№{suggestion_id}** {'одобрена' if decision else 'отклонена'}.\n" + f"Комментарий администратора: {comment}"
+        attachments = ''
+        if ctx.message.attachments:
+            nl = '\n'
+            attachments_url = [attachment for attachment in ctx.message.attachments]
+            attachments += f"\n{nl.join([url.proxy_url for url in attachments_url])}"
+
+        rec = db.fetchone(["curator_id", "curator_decision", "closed_at"], "song_suggestions", "suggestion_id", suggestion_id)
+        if rec[0] is None:
+            data =  db.fetchone(["suggestion_author_id", "suggestion_type", "suggested_song"], "song_suggestions", "suggestion_id", suggestion_id)
+            date = datetime.now()
+            db.execute("UPDATE song_suggestions SET curator_id = %s, curator_decision = %s, curator_comment = %s, closed_at = %s  WHERE suggestion_id = %s",
+                        ctx.author.id, True if decision else False, comment+attachments, date, suggestion_id)
+            db.commit()
+
+            embed = Embed(
+                title = "Ответ на заявку",
+                timestamp = datetime.utcnow(),
+                color = Color.green() if decision else Color.red(),
+                description = answer_text
+            )
+            if ctx.message.attachments:
+                embed.set_thumbnail(url=ctx.message.attachments[0].proxy_url)
+
+            await self.bot.get_user(data[0]).send(embed=embed)
+            await ctx.message.add_reaction('✅')
+
+        else:
+            embed = Embed(
+                title="Заявка закрыта",
+                color=Color.orange(),
+                description=f"Администратор <@{rec[0]}> {'одобрил' if rec[1] else 'отклонил'} это предложение {rec[2].strftime('%d.%m.%Y %H:%M:%S')}."
+            )
+            return await ctx.send(embed=embed)
+
+    @command(name=cmd["approve"]["name"], aliases=cmd["approve"]["aliases"], 
+            brief=cmd["approve"]["brief"],
+            description=cmd["approve"]["description"],
+            usage=cmd["approve"]["usage"],
+            help=cmd["approve"]["help"],
+            hidden=cmd["approve"]["hidden"], enabled=True)
+    @dm_only()
+    @can_manage_suggestions()
+    async def approve_suggestion_command(self, ctx, suggestion_id: int = None, *, comment: str = 'Отсутсвует.'):
+        if suggestion_id is None:
+            return await ctx.send('Укажите номер заявки.')
+
+        await self.pass_suggesion_decision(ctx, suggestion_id, True, comment)
+        
+    @command(name=cmd["reject"]["name"], aliases=cmd["reject"]["aliases"], 
+            brief=cmd["reject"]["brief"],
+            description=cmd["reject"]["description"],
+            usage=cmd["reject"]["usage"],
+            help=cmd["reject"]["help"],
+            hidden=cmd["reject"]["hidden"], enabled=True)
+    @dm_only()
+    @can_manage_suggestions()
+    async def reject_suggestion_command(self, ctx, suggestion_id: int = None, *, comment: str = 'Отсутсвует.'):
+        if suggestion_id is None:
+            return await ctx.send('Укажите номер заявки.')
+
+        await self.pass_suggesion_decision(ctx, suggestion_id, False, comment)
 
 
 def setup(bot):

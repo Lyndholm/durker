@@ -72,6 +72,23 @@
             "hidden": false
         }
     },
+    "commands":
+    {
+        "suggest":{
+            "name": "suggest",
+            "aliases": ["предложить"],
+            "brief": "Предложите трек, который хотите добавить в пелейлист радио.",
+            "description": "Формирует заявку на добавление трека в плейлист.",
+            "usage": "suggest <track>",
+            "help": "Возможность предложить добавить указанный трек в плейлист радио.\n\n**Работает в канале:** <#546411393239220233>\n**Кулдаун:** отсутсвует.\n**Необходимый уровень:** 0",
+            "required_level": 0,
+            "has_cooldown": false,
+            "cooldown_rate": 0,
+            "cooldown_per_second": 0,
+            "cooldown_type": "None",
+            "hidden": false
+        }
+    },
     "covid":
     {
         "covid":{
@@ -593,6 +610,34 @@
             "description": "Fetch the current bearer token.",
             "usage": "bearer",
             "help": "Fetch the current bearer token.",
+            "required_level": 0,
+            "has_cooldown": false,
+            "cooldown_rate": 0,
+            "cooldown_per_second": 0,
+            "cooldown_type": "None",
+            "hidden": true
+        },
+        "approve":{
+            "name": "approve",
+            "aliases": ["одобрить"],
+            "brief": "Одобряет заявку на добавление/удаление трека в плейлист.",
+            "description": "Одобряет заявку на добавление/удаление трека в плейлист.",
+            "usage": "approve <suggestion id> [comment]",
+            "help": "Одобряет заявку на добавление/удаление трека в плейлист радио. Работает в личных сообщениях. Доступно только <@195637386221191170> и <@375722626636578816>",
+            "required_level": 0,
+            "has_cooldown": false,
+            "cooldown_rate": 0,
+            "cooldown_per_second": 0,
+            "cooldown_type": "None",
+            "hidden": true
+        },
+        "reject":{
+            "name": "reject",
+            "aliases": ["отказать"],
+            "brief": "Отклоняет заявку на добавление/удаление трека в плейлист.",
+            "description": "Отклоняет заявку на добавление/удаление трека в плейлист.",
+            "usage": "reject <suggestion id> [comment]",
+            "help": "Отклоняет заявку на добавление/удаление трека в плейлист радио. Работает в личных сообщениях. Доступно только <@195637386221191170> и <@375722626636578816>",
             "required_level": 0,
             "has_cooldown": false,
             "cooldown_rate": 0,

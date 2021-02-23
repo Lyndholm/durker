@@ -172,8 +172,8 @@ class FortniteAPIcom(Cog):
                         return
                     else:
                         embed = Embed(
-                            title=':exclamation: Ошибка!', 
-                            description=str(data["status"]) + "\n```txt\n" + data["error"] + "```", 
+                            title=':exclamation: Ошибка!',
+                            description=str(data["status"]) + "\n```txt\n" + data["error"] + "```",
                             color=Color.red(),
                             timestamp=datetime.utcnow())
                         await ctx.send(embed=embed)

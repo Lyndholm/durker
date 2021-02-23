@@ -85,6 +85,24 @@ ALTER TABLE public.reactions
     OWNER to postgres;
 
 
+CREATE TABLE public.song_suggestions
+(
+    suggestion_id bigserial,
+    suggestion_type text,
+    suggestion_author_id bigint,
+    suggested_song text,
+    suggestion_comment text,
+    curator_id bigint,
+    curator_decision boolean,
+    curator_comment text,
+    created_at timestamp without time zone DEFAULT (now())::timestamp without time zone,
+    closed_at timestamp without time zone
+);
+
+ALTER TABLE public.song_suggestions
+    OWNER to postgres;
+
+
 CREATE TABLE public.users_info
 (
     user_id bigint,

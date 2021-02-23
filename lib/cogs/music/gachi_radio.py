@@ -128,7 +128,7 @@ class Player(wavelink.Player):
 
         embed = discord.Embed(title=f'FNFUN Gym | {channel.name}', colour=0xc68642)
         embed.description = f'♂️ **Slave:**\n```ini\n{track.author} — {track.title}\n```'
-        embed.set_thumbnail(url=track.thumb if track.thumb else "https://cdn.discordapp.com/attachments/774698479981297664/774700936958312468/placeholder.png")
+        embed.set_thumbnail(url=track.thumb if track.thumb else "https://cdn.discordapp.com/attachments/774698479981297664/813684421370314772/radio_placeholder.jpg")
 
         try:
             embed.add_field(name='♂️ Длительность fisting ♂️', value=str(datetime.timedelta(milliseconds=int(track.length))), inline=False)

@@ -69,3 +69,13 @@ def can_manage_radio():
         return ctx.author.id in radio_whitelisted_users
 
     return commands.check(predicate)
+
+
+def can_manage_suggestions():
+    """
+    A check() that checks if member can manage radio suggestions.
+    """
+    def predicate(ctx):
+        return ctx.author.id in [375722626636578816, 195637386221191170]
+
+    return commands.check(predicate)
