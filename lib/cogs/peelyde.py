@@ -54,7 +54,7 @@ class PeelyDE(Cog):
             usage=cmd["fnseason"]["usage"],
             help=cmd["fnseason"]["help"],
             hidden=cmd["fnseason"]["hidden"], enabled=True)
-    async def show_battle_royal_season_data_command(self, ctx, mode:str="current", language:str="ru"):  
+    async def show_battle_royal_season_data_command(self, ctx):
         embed = Embed(
             title="Королевская битва",
             color=Color.random(),
