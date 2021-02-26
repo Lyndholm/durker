@@ -84,7 +84,7 @@ class Audit(Cog):
                 
                     embed = Embed(title="Сообщение было удалено [raw message delete event]",
                                 description="Удаленноё сообщение не найдено в кэше, отображение о нём полной информации невозможно.", 
-                                color=Color.red(), timestamp=datetime.now())
+                                color=Color.red(), timestamp=datetime.utcnow())
                     embed.add_field(name="Канал:", value=channel.mention)
                     embed.add_field(name="ID сообщения:", value=payload.message_id)
                     await log_channel.send(embed=embed)
@@ -102,7 +102,7 @@ class Audit(Cog):
                 log_channel = messages[0].guild.get_channel(AUDIT_LOG_CHANNEL)
 
                 embed = Embed(title=f"Несколько ({len(messages)}) сообщений были удалены. Подробности в прикреплённом файле.", 
-                            color=Color.red(), timestamp=datetime.now())
+                            color=Color.red(), timestamp=datetime.utcnow())
                 async with aiofiles.open(f'./data/audit/bulk-deleted-messages/{messages[0].id}.log', mode='w', encoding='utf-8') as f:
                     nl = '\n'
                     time = datetime.now().strftime("%d.%m.%Y %H:%M:%S")
@@ -136,7 +136,7 @@ class Audit(Cog):
                 
                     embed = Embed(title=f"Несколько {len(payload.message_ids)} сообщений были удалены [raw bulk message delete event]",
                                 description="Несколько сообщений были удалены, они не найдены в кэше, отображение полной информации невозможно.", 
-                                color=Color.red(), timestamp=datetime.now())
+                                color=Color.red(), timestamp=datetime.utcnow())
                     embed.add_field(name="ID удаленных сообщений:", value=f"```{', '.join([str(m.id) for m in payload.message_ids])}```", inline=False)
                     embed.add_field(name="Канал:", value=channel.mention)
                     await log_channel.send(embed=embed)
@@ -158,7 +158,7 @@ class Audit(Cog):
                         diff = d.compare(before.clean_content.splitlines(), after.clean_content.splitlines())
                         diff_str = "\n".join([x for x in diff if not x.startswith("? ")]).replace("`", "`­")
 
-                        embed = Embed(title=f"Сообщение было отредактировано", color=Color.blurple(), timestamp=datetime.now())
+                        embed = Embed(title=f"Сообщение было отредактировано", color=Color.blurple(), timestamp=datetime.utcnow())
                         embed.description = f"```diff\n{diff_str[:2030]}\n```"
                         embed.add_field(name='Автор:', value=f'**{after.author.display_name}** ({after.author.mention})', inline=True)
                         embed.add_field(name="Канал:", value=before.channel.mention)
@@ -208,7 +208,7 @@ class Audit(Cog):
     @Cog.listener()
     async def on_member_join(self, member):
         embed = Embed(title=f"Новый участник на сервере.", description=f"Пользователь **{member.display_name}** ({member.mention}) присоединился к серверу, но пока что не принял правила. Пользователь в процессе верификации.",
-                    color=Color.dark_red(), timestamp=datetime.now())
+                    color=Color.dark_red(), timestamp=datetime.utcnow())
         await self.bot.get_channel(AUDIT_LOG_CHANNEL).send(embed=embed)
 
 

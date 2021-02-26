@@ -3,7 +3,8 @@ from discord.utils import get
 from discord.ext.commands import Cog
 from discord.ext.commands import command
 from discord.errors import HTTPException, NotFound
-
+from datetime import datetime
+from ..db import db
 
 class Voice(Cog):
     def __init__(self, bot):
@@ -55,6 +56,16 @@ class Voice(Cog):
         except NotFound:
             return
 
+    def update_member_invoce_time(self, member_id: int):
+        rec = db.fetchone(["entered_at"], "voice_activity", "user_id", member_id)
+        time_diff = (datetime.now() - rec[0]).seconds
+        time = db.fetchone(["invoice_time"], "users_stats", "user_id", member_id)[0]
+        db.execute("UPDATE users_stats SET invoice_time = %s WHERE user_id = %s",
+                    time + time_diff, member_id)
+        db.commit()
+        db.execute(f"DELETE FROM voice_activity WHERE user_id = {member_id}")
+        db.commit()
+
     @Cog.listener()
     async def on_voice_state_update(self, member: Member, before: VoiceState, after: VoiceState):
         if after.channel is not None:
@@ -77,6 +88,27 @@ class Voice(Cog):
                         await self.overwrite_text_channel_perms(member, v, False)
                     else:
                         await self.overwrite_text_channel_perms(member, v, True)
+
+        ### Voice time count
+        if after.channel is not None:
+            if after.channel.id != 774672094281465856:
+                rec = db.fetchone(["entered_at"], "voice_activity", "user_id", member.id)
+                if rec is None:
+                    db.insert("voice_activity", 
+                    {"user_id": member.id, 
+                    "entered_at": datetime.now()}
+                    )
+
+        if after.channel is None:
+            rec = db.fetchone(["entered_at"], "voice_activity", "user_id", member.id)
+            if rec is not None:
+                self.update_member_invoce_time(member.id)
+        
+        if before.channel is not None and after.channel is not None:
+            if after.channel.id == 774672094281465856:
+                rec = db.fetchone(["entered_at"], "voice_activity", "user_id", member.id)
+                if rec is not None:
+                    self.update_member_invoce_time(member.id)
 
 def setup(bot):
     bot.add_cog(Voice(bot))

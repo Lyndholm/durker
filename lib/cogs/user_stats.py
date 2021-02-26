@@ -90,9 +90,12 @@ class UserStats(Cog):
 
         embed.add_field(name=':calendar_spiral: Количество дней на сервере:',
                         value=(datetime.now() - target.joined_at).days, inline=True)
-
-        embed.add_field(name=f":grinning: Роли ({len(target.roles) - 1})",
+        if len(target.roles) > 1:
+            embed.add_field(name=f":grinning: Роли ({len(target.roles) - 1})",
                         value=" ".join([role.mention for role in target.roles[1:]]), inline=True)
+        else:
+            embed.add_field(name=f":grinning: Роли ({len(target.roles)})",
+                                    value=" ".join([role.mention for role in target.roles]), inline=True)
 
         embed.add_field(name=":sunglasses: Наивысшая роль:", value=target.top_role.mention, inline=True)
 
@@ -138,7 +141,7 @@ class UserStats(Cog):
                             value=f"{int(25000 - vbucks_count)} в-баксов", inline=True)
 
         embed.add_field(name=":speaker: Время, проведенное в голосовых каналах:",
-                        value=timedelta(seconds=user_stats[4]), inline=True)
+                        value=timedelta(seconds=user_stats[3]), inline=True)
 
         embed.add_field(name=":coin: FUN-коинов:", value=casino[0] + casino[1], inline=True)
 

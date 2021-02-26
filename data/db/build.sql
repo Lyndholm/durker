@@ -134,3 +134,13 @@ CREATE TABLE public.users_stats
 
 ALTER TABLE public.users_stats
     OWNER to postgres;
+
+
+CREATE TABLE public.voice_activity
+(
+    user_id bigint,
+    entered_at timestamp without time zone
+);
+
+ALTER TABLE public.voice_activity
+    OWNER to postgres;
