@@ -1,11 +1,12 @@
 from discord import Member, Embed, Color
+from discord.utils import get
 from discord.ext.commands import Cog
 from discord.ext.commands import command, guild_only
 from datetime import datetime, timedelta
 from asyncio.exceptions import TimeoutError
 
 from ..db import db
-from ..utils.utils import load_commands_from_json
+from ..utils.utils import load_commands_from_json, russian_plural
 
 
 cmd = load_commands_from_json("user_stats")
@@ -313,6 +314,45 @@ class UserStats(Cog):
             )
             await msg.edit(embed=embed)
 
+
+    @command(name=cmd["amount"]["name"], aliases=cmd["amount"]["aliases"], 
+        brief=cmd["amount"]["brief"],
+        description=cmd["amount"]["description"],
+        usage=cmd["amount"]["usage"],
+        help=cmd["amount"]["help"],
+        hidden=cmd["amount"]["hidden"], enabled=True)
+    @guild_only()
+    async def amount_command(self, ctx):
+        activity_role_1 = get(ctx.guild.roles, name='Работяга') 
+        activity_role_2 = get(ctx.guild.roles, name='Олд')
+        activity_role_3 = get(ctx.guild.roles, name='Капитан')
+        activity_role_4 = get(ctx.guild.roles, name='Ветеран')
+        msg_counter = db.fetchone(["messages_count"], "users_stats", 'user_id', ctx.author.id)[0]
+        desc = f"Ваше количество сообщений: **{msg_counter}**"
+
+        embed = Embed(color=ctx.author.color)
+        embed.set_author(name=f"Количество сообщений {ctx.author.display_name}", icon_url=ctx.author.avatar_url)
+        embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/774698479981297664/814988530219614249/message.png")
+
+        if activity_role_1 not in ctx.author.roles:
+            desc += f"\n\nДо роли {activity_role_1.mention} осталось **{750-msg_counter}** {russian_plural(750-msg_counter,['сообщение','сообщения','сообщений'])}"
+            if old := (datetime.now() - ctx.author.joined_at).days <= 7:
+                desc += f" и **{old+1}** {russian_plural(old+1,['день','дня','дней'])} пребывания на сервере."
+        elif activity_role_2 not in ctx.author.roles:
+            desc += f"\n\nДо роли {activity_role_2.mention} осталось **{3500-msg_counter}** {russian_plural(3500-msg_counter,['сообщение','сообщения','сообщений'])}"
+            if old := (datetime.now() - ctx.author.joined_at).days <= 30:
+                desc += f" и **{old+1}** {russian_plural(old+1,['день','дня','дней'])} пребывания на сервере."
+        elif activity_role_3 not in ctx.author.roles:
+            desc += f"\n\nДо роли {activity_role_3.mention} осталось **{10000-msg_counter}** {russian_plural(10000-msg_counter,['сообщение','сообщения','сообщений'])}"
+            if old := (datetime.now() - ctx.author.joined_at).days <= 90:
+                desc += f" и **{old+1}** {russian_plural(old+1,['день','дня','дней'])} пребывания на сервере."
+        elif activity_role_4 not in ctx.author.roles:
+            desc += f"\n\nДо роли {activity_role_4.mention} осталось **{25000-msg_counter}** {russian_plural(25000-msg_counter,['сообщение','сообщения','сообщений'])}"
+            if old := (datetime.now() - ctx.author.joined_at).days <= 180:
+                desc += f" и **{old+1}** {russian_plural(old+1,['день','дня','дней'])} пребывания на сервере."
+
+        embed.description = desc
+        await ctx.send(embed=embed)
 
 def setup(bot):
     bot.add_cog(UserStats(bot))
