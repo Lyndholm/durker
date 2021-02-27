@@ -250,24 +250,28 @@ class Owner(Cog):
             attachments += f"\n{nl.join([url.proxy_url for url in attachments_url])}"
 
         rec = db.fetchone(["curator_id", "curator_decision", "closed_at"], "song_suggestions", "suggestion_id", suggestion_id)
-        if rec[0] is None:
-            data =  db.fetchone(["suggestion_author_id", "suggestion_type", "suggested_song"], "song_suggestions", "suggestion_id", suggestion_id)
-            date = datetime.now()
-            db.execute("UPDATE song_suggestions SET curator_id = %s, curator_decision = %s, curator_comment = %s, closed_at = %s  WHERE suggestion_id = %s",
-                        ctx.author.id, True if decision else False, comment+attachments, date, suggestion_id)
-            db.commit()
+        try:
+            if rec[0] is None:
+                data =  db.fetchone(["suggestion_author_id", "suggestion_type", "suggested_song"], "song_suggestions", "suggestion_id", suggestion_id)
+                date = datetime.now()
+                db.execute("UPDATE song_suggestions SET curator_id = %s, curator_decision = %s, curator_comment = %s, closed_at = %s  WHERE suggestion_id = %s",
+                            ctx.author.id, True if decision else False, comment+attachments, date, suggestion_id)
+                db.commit()
 
-            embed = Embed(
-                title = "Ответ на заявку",
-                timestamp = datetime.utcnow(),
-                color = Color.green() if decision else Color.red(),
-                description = answer_text
-            )
-            if ctx.message.attachments:
-                embed.set_thumbnail(url=ctx.message.attachments[0].proxy_url)
+                embed = Embed(
+                    title = "Ответ на заявку",
+                    timestamp = datetime.utcnow(),
+                    color = Color.green() if decision else Color.red(),
+                    description = answer_text
+                )
+                if ctx.message.attachments:
+                    embed.set_thumbnail(url=ctx.message.attachments[0].proxy_url)
 
-            await self.bot.get_user(data[0]).send(embed=embed)
-            await ctx.message.add_reaction('✅')
+                await self.bot.get_user(data[0]).send(embed=embed)
+                await ctx.message.add_reaction('✅')
+
+        except TypeError:
+            await ctx.message.add_reaction('❌')
 
         else:
             embed = Embed(

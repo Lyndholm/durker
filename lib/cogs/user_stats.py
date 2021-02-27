@@ -328,10 +328,10 @@ class UserStats(Cog):
         activity_role_3 = get(ctx.guild.roles, name='Капитан')
         activity_role_4 = get(ctx.guild.roles, name='Ветеран')
         msg_counter = db.fetchone(["messages_count"], "users_stats", 'user_id', ctx.author.id)[0]
-        desc = f"Ваше количество сообщений: **{msg_counter}**"
+        desc = f"{ctx.author.mention}, ваше количество сообщений: **{msg_counter}**"
 
         embed = Embed(color=ctx.author.color)
-        embed.set_author(name=f"Количество сообщений {ctx.author.display_name}", icon_url=ctx.author.avatar_url)
+        embed.set_author(name="Количество сообщений", icon_url=ctx.author.avatar_url)
         embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/774698479981297664/814988530219614249/message.png")
 
         if activity_role_1 not in ctx.author.roles:
@@ -353,6 +353,84 @@ class UserStats(Cog):
 
         embed.description = desc
         await ctx.send(embed=embed)
+
+
+    @command(name=cmd["myrep"]["name"], aliases=cmd["myrep"]["aliases"], 
+        brief=cmd["myrep"]["brief"],
+        description=cmd["myrep"]["description"],
+        usage=cmd["myrep"]["usage"],
+        help=cmd["myrep"]["help"],
+        hidden=cmd["myrep"]["hidden"], enabled=True)
+    @guild_only()
+    async def myrep_command(self, ctx):
+        rep_rank = db.fetchone(["rep_rank"], "users_stats", 'user_id', ctx.author.id)[0]
+        desc = f"{ctx.author.mention}, количество ваших очков репутации: **{rep_rank}**"
+
+        embed = Embed(color=ctx.author.color)
+        embed.set_author(name="Очки репутации", icon_url=ctx.author.avatar_url)
+        if rep_rank <= 0:
+            desc += f"\n\nВаш ранг: **Отсутствует**"
+            embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/774698479981297664/815298656462700634/no_rank.png")
+        elif 1 <= rep_rank <= 1499:
+            desc += f"\n\nВаш ранг: **Бронза**"
+            embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/774698479981297664/815298685498949662/rank_bronze.png")
+        elif 1500 <= rep_rank <= 2999:
+            desc += f"\n\nВаш ранг: **Серебро**"
+            embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/774698479981297664/815298847705792522/rank_silver.png")
+        elif 3000 <= rep_rank <= 4499:
+            desc += f"\n\nВаш ранг: **Золото**"
+            embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/774698479981297664/815298881285652550/rank_gold.png")
+        elif 4500 <= rep_rank <= 6999:
+            desc += f"\n\nВаш ранг: **Платина**"
+            embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/774698479981297664/815298909161259028/rank_platinum.png")
+        elif 7000 <= rep_rank <= 9999:
+            desc += f"\n\nВаш ранг: **Алмаз**"
+            embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/774698479981297664/815298936734220349/rank_diamond.png")
+        elif 10000 <= rep_rank <= 14999:
+            desc += f"\n\nВаш ранг: **Мастер**"
+            embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/774698479981297664/815298973065543680/rank_master.png")
+        elif 15000 <= rep_rank <= 19999:
+            desc += f"\n\nВаш ранг: **Элита**"
+            embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/774698479981297664/815298996959445042/rank_grandmaster.png")
+        elif rep_rank > 20000:
+            desc += f"\n\nВаш ранг: **Совершенство**"
+            embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/774698479981297664/815299017948004402/rank_perfection.png")
+
+        embed.description = desc
+        await ctx.send(embed=embed)
+
+
+    @command(name=cmd["rep"]["name"], aliases=cmd["rep"]["aliases"], 
+        brief=cmd["rep"]["brief"],
+        description=cmd["rep"]["description"],
+        usage=cmd["rep"]["usage"],
+        help=cmd["rep"]["help"],
+        hidden=cmd["rep"]["hidden"], enabled=True)
+    @guild_only()
+    async def how_rep_sys_works_command(self, ctx):
+        embed = Embed(
+            title="Репутация: что это, для чего нужна, как зарабатывать.",
+            color=ctx.author.color,
+            description="На сервере работает система репутации.\n"
+            "У каждого участника есть свой уровень репутации. "
+            "Репутация отображает активность пользователя; его манеру общения и то, как он соблюдает правила."
+            "\n\nРепутацию можно заработать разными способами, наиболее распространённые:"
+            "\n— Активное общение в чате\n— Получение ролей\n— Открытие достижений | `+achievements`\n— Повышение уровня | `+rank`"
+            "\n\nРепутацию можно и потерять. Использование нецензурной лексики, муты, предупреждения от администраторов уменьшают уровень репутации."
+            "\n\nВ зависимости от количества репутации меняется ранг участника."
+            " Существуют 8 рангов репутации:"
+            "\n— **Бронза** (1 - 1499)"
+            "\n— **Серебро** (1500 - 2999)"
+            "\n— **Золото** (3000 - 4499)"
+            "\n— **Платина** (4500 - 6999)"
+            "\n— **Алмаз** (7000 - 9999)"
+            "\n— **Мастер** (10000 - 14999)"
+            "\n— **Элита** (15000 - 19999)"
+            "\n— **Совершенство** (20000 и больше)"
+        )
+        embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/774698479981297664/815282991668133888/reputation.png")
+        await ctx.send(embed=embed)
+
 
 def setup(bot):
     bot.add_cog(UserStats(bot))
