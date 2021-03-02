@@ -1,6 +1,6 @@
 from datetime import datetime
-from discord import Embed, Color
-from discord.ext.commands import Cog
+from discord import Embed, Color, Member
+from discord.ext.commands import Cog, Greedy
 from discord.ext.commands import command
 
 from ..utils.utils import load_commands_from_json
@@ -61,6 +61,62 @@ class Commands(Cog):
             )
             await self.bot.get_user(i).send(embed=embed)
 
+    @command(name=cmd["support"]["name"], aliases=cmd["support"]["aliases"], 
+            brief=cmd["support"]["brief"],
+            description=cmd["support"]["description"],
+            usage=cmd["support"]["usage"],
+            help=cmd["support"]["help"],
+            hidden=cmd["support"]["hidden"], enabled=True)
+    async def redirect_to_support_channel_command(self, ctx, targets: Greedy[Member]):
+        await ctx.message.delete()
+
+        content = " ".join([member.mention for member in targets])
+        embed = Embed(
+            title="Поддержка автора",
+            color=ctx.author.color
+        )
+        embed.add_field(
+            name="Сделали покупку с нашим тегом автора?",
+            value="Присылайте скриншот в канал <#546408250158088192>. За это вы получите роль <@&731241570967486505>",
+            inline=False
+        )
+        embed.add_field(
+        name="Больше ролей",
+        value="Потратив с тегом 10 000 и 25 000 в-баксов, вы получите роль <@&730017005029294121> и <@&774686818356428841> соответственно.",
+        inline=False
+        )
+        embed.add_field(
+        name="История покупок",
+        value="Узнать количество потраченных с тегом в-баксов можно в канале <#604621910386671616> по команде `+me`\nПросмотреть историю покупок: `+purchases`",
+        inline=False
+        )
+        embed.add_field(
+        name="P.S.",
+        value="Новичкам недоступен просмотр истории канала <#546408250158088192>, но это не мешает отправлять скрины поддержки.",
+        inline=False
+        )
+        embed.add_field(
+        name="P.S.S.",
+        value="Все покупки засчитываются вручную. Время засчитывания может составлять от пары минут до нескольких дней. Это зависит от нагруженности модератора.",
+        inline=False
+        )
+
+        await ctx.send(content=content, embed=embed, delete_after=120)
+
+    @command(name=cmd["question"]["name"], aliases=cmd["question"]["aliases"], 
+            brief=cmd["question"]["brief"],
+            description=cmd["question"]["description"],
+            usage=cmd["question"]["usage"],
+            help=cmd["question"]["help"],
+            hidden=cmd["question"]["hidden"], enabled=True)
+    async def redirect_to_question_channel_command(self, ctx, targets: Greedy[Member]):
+        await ctx.message.delete()
+        await ctx.send(
+            f"{' '.join([member.mention for member in targets])}\nВопросы по игре следует задавать в канале <#546700132390010882>."
+            " Так они не потеряются в общем чате, вследствие чего их увидет большее количество людей. Участники сервера постараются дать вам ответ.\n"
+            "Также в этом канале вы можете задать вопрос администрации сервера.", 
+            delete_after=120
+        )
 
 def setup(bot):
     bot.add_cog(Commands(bot))

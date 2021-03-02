@@ -87,6 +87,34 @@
             "cooldown_per_second": 0,
             "cooldown_type": "None",
             "hidden": false
+        },
+        "support":{
+            "name": "support",
+            "aliases": ["поддержка"],
+            "brief": "Перенаправляет человека в канал <#546408250158088192>.",
+            "description": "Перенаправляет человека в канал со скринщотами покупок.",
+            "usage": "support [members]",
+            "help": "Перенаправляет человека в канал со скринщотами покупок.\n\n**Кулдаун:** отсутсвует.\n**Необходимый уровень:** 0",
+            "required_level": 0,
+            "has_cooldown": false,
+            "cooldown_rate": 0,
+            "cooldown_per_second": 0,
+            "cooldown_type": "None",
+            "hidden": false
+        },
+        "question":{
+            "name": "question",
+            "aliases": ["вопросы"],
+            "brief": "Перенаправляет человека в канал <#546700132390010882>.",
+            "description": "Перенаправляет человека в канал с вопросами.",
+            "usage": "question [members]",
+            "help": "Перенаправляет человека в канал <#546700132390010882>, если он задал вопрос в неподходящем канале.\n\n**Кулдаун:** отсутсвует.\n**Необходимый уровень:** 0",
+            "required_level": 0,
+            "has_cooldown": false,
+            "cooldown_rate": 0,
+            "cooldown_per_second": 0,
+            "cooldown_type": "None",
+            "hidden": false
         }
     },
     "covid":
