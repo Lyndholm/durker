@@ -68,7 +68,7 @@ class Commands(Cog):
             help=cmd["support"]["help"],
             hidden=cmd["support"]["hidden"], enabled=True)
     async def redirect_to_support_channel_command(self, ctx, targets: Greedy[Member]):
-        content = " ".join([member.mention for member in targets])
+        content = " ".join([member.mention for member in targets]) or ctx.author.mention
         embed = Embed(
             title="Поддержка автора",
             color=ctx.author.color
@@ -99,7 +99,7 @@ class Commands(Cog):
         inline=False
         )
 
-        await ctx.send(content=content, embed=embed, delete_after=120)
+        await ctx.send(content=content, embed=embed, delete_after=90)
 
     @command(name=cmd["question"]["name"], aliases=cmd["question"]["aliases"], 
             brief=cmd["question"]["brief"],
@@ -108,11 +108,12 @@ class Commands(Cog):
             help=cmd["question"]["help"],
             hidden=cmd["question"]["hidden"], enabled=True)
     async def redirect_to_question_channel_command(self, ctx, targets: Greedy[Member]):
+        users = " ".join([member.mention for member in targets]) or ctx.author.mention
         await ctx.send(
-            f"{' '.join([member.mention for member in targets])}\nВопросы по игре следует задавать в канале <#546700132390010882>."
+            f"{users}\nВопросы по игре следует задавать в канале <#546700132390010882>."
             " Так они не потеряются в общем чате, вследствие чего их увидет большее количество людей. Участники сервера постараются дать вам ответ.\n"
             "Также в этом канале вы можете задать вопрос администрации сервера.", 
-            delete_after=120
+            delete_after=90
         )
 
 def setup(bot):
