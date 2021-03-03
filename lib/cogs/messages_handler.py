@@ -38,7 +38,8 @@ class MessagesHandler(Cog):
             await self.invoke_command(message, 'rep')
 
         if message.clean_content.lower() in self.question_filter:
-            await self.invoke_command(message, 'question')
+            if message.channel.id != 546700132390010882
+                await self.invoke_command(message, 'question')
 
 
 def setup(bot):

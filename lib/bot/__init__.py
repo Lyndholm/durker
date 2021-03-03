@@ -175,6 +175,7 @@ class Bot(BotBase):
             self.ready = True
 
             self.load_extension("jishaku")
+            self.get_command("jishaku").hidden = True
             print("Jishaku loaded")
                 
             
