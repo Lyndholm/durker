@@ -117,6 +117,24 @@
             "hidden": false
         }
     },
+    "contests":
+    {
+        "giveaway":
+        {
+            "name": "giveaway",
+            "aliases": ["розыгрыш"],
+            "brief": "Команда для проведения розыгрышей.",
+            "description": "Проведение розыгрышей с автоматическим подведением итогов.",
+            "usage": "giveaway <mins> <description>",
+            "help": "Бот инициализирует процесс проведения розыгрыша. Через указанное время (в минутах) автоматически определяется победитель.\n\nДоступно только разработчику бота.",
+            "required_level": 0,
+            "has_cooldown": false,
+            "cooldown_rate": 0,
+            "cooldown_per_second": 0,
+            "cooldown_type": "None",
+            "hidden": true
+        }
+    },
     "covid":
     {
         "covid":{
