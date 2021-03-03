@@ -1,7 +1,9 @@
+import re
 from typing import Optional
 from asyncio import sleep
 from datetime import datetime, timedelta
-from discord import Embed, Color, Member
+from discord import Embed, Color, Member, Message, Invite, PartialInviteGuild
+from discord.utils import get
 from discord.errors import NotFound
 from discord.ext.commands import Cog, Greedy
 from discord.ext.commands import CheckFailure
@@ -17,6 +19,7 @@ cmd = load_commands_from_json("moderation")
 class Moderation(Cog):
     def __init__(self, bot):
         self.bot = bot
+        self.DISCORD_INVITE = r'discord(?:\.com|app\.com|\.gg)[\/invite\/]?(?:[a-zA-Z0-9\-]{2,32})'
         self.pominki_url = "https://cdn.discordapp.com/attachments/774698479981297664/809142415310979082/RoflanPominki.png"
 
     @command(name=cmd["kick"]["name"], aliases=cmd["kick"]["aliases"], 
@@ -312,6 +315,32 @@ class Moderation(Cog):
 
         await self.unmute(ctx, targets)
 
+    def find_discord_invites(self, message: Message) -> bool:
+        regex = re.compile(self.DISCORD_INVITE)
+        invites = regex.findall(message.clean_content)
+
+        return True if invites else False
+
+    @Cog.listener()
+    async def on_message(self, message):
+        ### Find discord invites in message content
+        if self.find_discord_invites(message):
+            regex = re.compile(self.DISCORD_INVITE)
+            guild_invite = await self.bot.fetch_invite(url=regex.search(message.clean_content).group(0))
+            if message.guild:
+                helper_role = get(message.guild.roles, name='Часовой')
+                if message.author.guild_permissions.administrator or helper_role in message.author.roles:
+                    pass
+                else: 
+                    if isinstance(guild_invite, Invite):
+                        if guild_invite.guild.id != self.bot.guild.id:
+                            await message.delete()
+                            await message.author.ban(reason="Автомодерация: Ссылки и приглашения")
+
+                    elif isinstance(guild_invite, PartialInviteGuild):
+                        if guild_invite.id != self.bot.guild.id:
+                            await message.delete()
+                            await message.author.ban(reason="Автомодерация: Ссылки и приглашения")
 
     @Cog.listener()
     async def on_ready(self):
