@@ -22,12 +22,12 @@ class Contests(Cog):
             hidden=cmd["giveaway"]["hidden"], enabled=True)
     @guild_only()
     @is_owner()
-    async def create_giveaway(self, ctx, mins: int, *, description: str):
+    async def create_giveaway(self, ctx, mins: int, *, description: str = "Розыгрыш."):
         await ctx.message.delete()
 
         embed = Embed(
             title="🎁 Розыгрыш",
-            description=description + "\n\nНажмите на реакцию ✅ под сообщением, чтобы принять участие!",
+            description=description + "\n\n**Нажмите на реакцию ✅ под сообщением, чтобы принять участие!**",
             color=ctx.author.color,
             timestamp=datetime.utcnow()
         ).add_field(
