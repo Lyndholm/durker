@@ -690,6 +690,48 @@
             "cooldown_per_second": 0,
             "cooldown_type": "None",
             "hidden": true
+        },
+        "blacklist":{
+            "name": "blacklist",
+            "aliases": ["blockuser"],
+            "brief": "Блокировка пользователя для ограничения доступа к боту.",
+            "description": "Блокирует пользователю доступ к командам бота.",
+            "usage": "blacklist <user>",
+            "help": "Добавляет пользователя в чёрный список, блокирует ему доступ к командам. Доступно только разработчику бота.",
+            "required_level": 0,
+            "has_cooldown": false,
+            "cooldown_rate": 0,
+            "cooldown_per_second": 0,
+            "cooldown_type": "None",
+            "hidden": true
+        },
+        "whitelist":{
+            "name": "whitelist",
+            "aliases": ["unblockuser"],
+            "brief": "Убирает пользователя из чёрного списка.",
+            "description": "Снимает блокировку пользователя.",
+            "usage": "blacklist <user>",
+            "help": "Убирает пользователя из чёрного списка, возвращает ему доступ к командам. Доступно только разработчику бота.",
+            "required_level": 0,
+            "has_cooldown": false,
+            "cooldown_rate": 0,
+            "cooldown_per_second": 0,
+            "cooldown_type": "None",
+            "hidden": true
+        },
+        "shutdown":{
+            "name": "shutdown",
+            "aliases": ["logout"],
+            "brief": "Отключение бота.",
+            "description": "Отключает бота от сети.",
+            "usage": "shutdown",
+            "help": "Завершает все служебные процессы бота и отключает его. Доступно только разработчику бота.",
+            "required_level": 0,
+            "has_cooldown": false,
+            "cooldown_rate": 0,
+            "cooldown_per_second": 0,
+            "cooldown_type": "None",
+            "hidden": true
         }
     },
     "user_stats":

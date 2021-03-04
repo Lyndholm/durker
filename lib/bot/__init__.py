@@ -66,6 +66,11 @@ class Bot(BotBase):
             546700132390010882, #заявки-на-рассмотрение
             809519845707743272  #spam (dev server)
         ]
+        try:
+            with open('./data/banlist.txt', 'r', encoding='utf-8') as f:
+                self.banlist = [int(line.strip()) for line in f.readlines()]
+        except FileNotFoundError:
+            self.banlist = []
 
         self.load_music_cogs(self.scheduler)
         db.autosave(self.scheduler)
@@ -145,10 +150,12 @@ class Bot(BotBase):
         ctx = await self.get_context(message, cls=Context)
 
         if ctx.command is not None:
-            if self.ready:
-                await self.invoke(ctx)
+            if message.author.id in self.banlist:
+                return
+            elif not self.ready:
+                await ctx.send("Бот не готов принимать сообщения и обрабатывать команды. Пожалуйста, подождите.", delete_after=60)    
             else:
-                await ctx.send("Бот не готов принимать сообщения и обрабатывать команды. Пожалуйста, подождите.", delete_after=60)
+                await self.invoke(ctx)
 
     @logger.catch
     async def on_ready(self):

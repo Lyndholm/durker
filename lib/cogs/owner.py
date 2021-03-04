@@ -1,7 +1,8 @@
 import time
+import aiofiles
 from aiohttp import ClientSession
-from discord import Embed, Color
-from discord.ext.commands import Cog
+from discord import Embed, Color, User
+from discord.ext.commands import Cog, Greedy
 from discord.ext.commands import command
 from discord.ext.commands import is_owner, dm_only
 from datetime import datetime
@@ -309,6 +310,66 @@ class Owner(Cog):
 
         await self.pass_suggesion_decision(ctx, suggestion_id, False, comment)
 
+
+    @command(name=cmd["blacklist"]["name"], aliases=cmd["blacklist"]["aliases"], 
+            brief=cmd["blacklist"]["brief"],
+            description=cmd["blacklist"]["description"],
+            usage=cmd["blacklist"]["usage"],
+            help=cmd["blacklist"]["help"],
+            hidden=cmd["blacklist"]["hidden"], enabled=True)
+    @dm_only()
+    @is_owner()
+    async def blacklist_user_command(self, ctx, targets: Greedy[User]):
+        if not targets:
+            return await ctx.message.add_reaction('❌')
+
+        self.bot.banlist.extend([user.id for user in targets])
+
+        async with aiofiles.open('./data/banlist.txt', 'a', encoding='utf-8') as f:
+            await f.writelines([f"{user.id}\n" for user in targets])
+
+        await ctx.message.add_reaction('✅')
+
+
+    @command(name=cmd["whitelist"]["name"], aliases=cmd["whitelist"]["aliases"], 
+            brief=cmd["whitelist"]["brief"],
+            description=cmd["whitelist"]["description"],
+            usage=cmd["whitelist"]["usage"],
+            help=cmd["whitelist"]["help"],
+            hidden=cmd["whitelist"]["hidden"], enabled=True)
+    @dm_only()
+    @is_owner()
+    async def whitelist_user_command(self, ctx, targets: Greedy[User]):
+        if not targets:
+            return await ctx.message.add_reaction('❌')
+
+        async with aiofiles.open('./data/banlist.txt', 'w', encoding='utf-8') as f:
+            await f.write("".join([f"{user}\n" for user in self.bot.banlist if user not in [u.id for u in targets]]))
+
+        for target in targets:
+            try:
+                self.bot.banlist.remove(target.id)
+            except ValueError:
+                pass
+
+        await ctx.message.add_reaction('✅')
+
+
+    @command(name=cmd["shutdown"]["name"], aliases=cmd["shutdown"]["aliases"], 
+            brief=cmd["shutdown"]["brief"],
+            description=cmd["shutdown"]["description"],
+            usage=cmd["shutdown"]["usage"],
+            help=cmd["shutdown"]["help"],
+            hidden=cmd["shutdown"]["hidden"], enabled=True)
+    @dm_only()
+    @is_owner()
+    async def shutdown_command(self, ctx):
+        async with aiofiles.open('./data/banlist.txt', 'w', encoding='utf-8') as f:
+            await f.writelines([f"{user}\n" for user in self.bot.banlist])
+
+        db.commit()
+        self.bot.scheduler.shutdown()
+        await self.bot.logout()
 
 def setup(bot):
     bot.add_cog(Owner(bot))
