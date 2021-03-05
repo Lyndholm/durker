@@ -19,8 +19,10 @@ cmd = load_commands_from_json("moderation")
 class Moderation(Cog):
     def __init__(self, bot):
         self.bot = bot
-        self.DISCORD_INVITE = r'discord(?:\.com|app\.com|\.gg)[\/invite\/]?(?:[a-zA-Z0-9\-]{2,32})'
         self.pominki_url = "https://cdn.discordapp.com/attachments/774698479981297664/809142415310979082/RoflanPominki.png"
+        self.DISCORD_INVITE_REGEX = r'discord(?:\.com|app\.com|\.gg)[\/invite\/]?(?:[a-zA-Z0-9\-]{2,32})'
+        self.EMOJI_REGEX = r'<(?P<animated>a?):(?P<name>[a-zA-Z0-9_]{2,32}):(?P<id>[0-9]{18,22})>'
+        self.UNICODE_EMOJI_REGEX = r'[\U00010000-\U0010ffff]'
 
     @command(name=cmd["kick"]["name"], aliases=cmd["kick"]["aliases"], 
             brief=cmd["kick"]["brief"],
@@ -316,7 +318,7 @@ class Moderation(Cog):
         await self.unmute(ctx, targets)
 
     def find_discord_invites(self, message: Message) -> bool:
-        regex = re.compile(self.DISCORD_INVITE)
+        regex = re.compile(self.DISCORD_INVITE_REGEX)
         invites = regex.findall(message.clean_content)
 
         return True if invites else False
@@ -325,7 +327,7 @@ class Moderation(Cog):
     async def on_message(self, message):
         ### Find discord invites in message content
         if self.find_discord_invites(message):
-            regex = re.compile(self.DISCORD_INVITE)
+            regex = re.compile(self.DISCORD_INVITE_REGEX)
             guild_invite = await self.bot.fetch_invite(url=regex.search(message.clean_content).group(0))
             if message.guild:
                 if message.author.guild_permissions.administrator or self.helper_role in message.author.roles:
@@ -334,12 +336,24 @@ class Moderation(Cog):
                     if isinstance(guild_invite, Invite):
                         if guild_invite.guild.id != self.bot.guild.id:
                             await message.delete()
-                            await message.author.ban(reason="Автомодерация: Ссылки и приглашения")
+                            return await message.author.ban(reason="Автомодерация: Ссылки и приглашения")
 
                     elif isinstance(guild_invite, PartialInviteGuild):
                         if guild_invite.id != self.bot.guild.id:
                             await message.delete()
-                            await message.author.ban(reason="Автомодерация: Ссылки и приглашения")
+                            return await message.author.ban(reason="Автомодерация: Ссылки и приглашения")
+
+        ### Emoji anti-spam
+        if message.guild and message.content and not message.author.bot:
+            emoji = re.findall(self.EMOJI_REGEX, message.content)
+            unicode_emoji = re.findall(self.UNICODE_EMOJI_REGEX, message.content)
+            if (len(emoji) + len(unicode_emoji)) > 10:
+                if message.author.guild_permissions.administrator or self.helper_role in message.author.roles:
+                    pass
+                else:
+                    await message.delete()
+                    await message.channel.send(f'{message.author.mention}, побереги свои эмоции!', delete_after=10)
+
 
     @Cog.listener()
     async def on_ready(self):
