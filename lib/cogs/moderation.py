@@ -9,7 +9,7 @@ from discord.ext.commands import Cog, Greedy
 from discord.ext.commands import CheckFailure
 from discord.ext.commands import command, has_permissions, bot_has_permissions, has_any_role, guild_only
 
-from ..utils.constants import MODERATION_PUBLIC_CHANNEL, AUDIT_LOG_CHANNEL, MUTE_ROLE_ID
+from ..utils.constants import MODERATION_PUBLIC_CHANNEL, AUDIT_LOG_CHANNEL, MUTE_ROLE_ID, HELPER_ROLE_ID
 from ..utils.utils import load_commands_from_json, russian_plural
 from ..db import db
 
@@ -328,8 +328,7 @@ class Moderation(Cog):
             regex = re.compile(self.DISCORD_INVITE)
             guild_invite = await self.bot.fetch_invite(url=regex.search(message.clean_content).group(0))
             if message.guild:
-                helper_role = get(message.guild.roles, name='Часовой')
-                if message.author.guild_permissions.administrator or helper_role in message.author.roles:
+                if message.author.guild_permissions.administrator or self.helper_role in message.author.roles:
                     pass
                 else: 
                     if isinstance(guild_invite, Invite):
@@ -348,6 +347,7 @@ class Moderation(Cog):
             self.moderation_channel = self.bot.get_channel(MODERATION_PUBLIC_CHANNEL)
             self.audit_channel = self.bot.get_channel(AUDIT_LOG_CHANNEL)
             self.mute_role = self.bot.guild.get_role(MUTE_ROLE_ID)
+            self.helper_role = self.bot.guild.get_role(HELPER_ROLE_ID)
             self.bot.cogs_ready.ready_up("moderation")
 
 
