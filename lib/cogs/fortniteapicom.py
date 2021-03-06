@@ -37,11 +37,36 @@ class FortniteAPIcom(Cog):
     async def search_fortnite_cosmetic_command(self, ctx, *, args: str = None):
         if args is not None:
             parser = Arguments(add_help=False, allow_abbrev=False)
-            parser.add_argument('-name', nargs='+')
             parser.add_argument('-lang', nargs='+')
-            parser.add_argument('-rarity', nargs='+')
-            parser.add_argument('-unseenFor', nargs='+')
+            parser.add_argument('-searchLang', nargs='+')
+            parser.add_argument('-matchMethod', nargs='+')
             parser.add_argument('-id', nargs='+')
+            parser.add_argument('-name', nargs='+')
+            parser.add_argument('-description', nargs='+')
+            parser.add_argument('-type', nargs='+')
+            parser.add_argument('-displayType', nargs='+')
+            parser.add_argument('-backendType', nargs='+')
+            parser.add_argument('-rarity', nargs='+')
+            parser.add_argument('-displayRarity', nargs='+')
+            parser.add_argument('-backendRarity', nargs='+')
+            parser.add_argument('-hasSeries', nargs='+')
+            parser.add_argument('-series', nargs='+')
+            parser.add_argument('-backendSeries', nargs='+')
+            parser.add_argument('-hasSet', nargs='+')
+            parser.add_argument('-set', nargs='+')
+            parser.add_argument('-setText', nargs='+')
+            parser.add_argument('-backendSet', nargs='+')
+            parser.add_argument('-hasIntroduction', nargs='+')
+            parser.add_argument('-introductionChapter', nargs='+')
+            parser.add_argument('-introductionSeason', nargs='+')
+            parser.add_argument('-hasFeaturedImage', nargs='+')
+            parser.add_argument('-hasVariants', nargs='+')
+            parser.add_argument('-hasGameplayTags', nargs='+')
+            parser.add_argument('-gameplayTag', nargs='+')
+            parser.add_argument('-added', nargs='+')
+            parser.add_argument('-addedSince', nargs='+')
+            parser.add_argument('-unseenFor', nargs='+')
+            parser.add_argument('-lastAppearance', nargs='+')
 
             try:
                 args = parser.parse_args(shlex.split(args))
@@ -50,6 +75,24 @@ class FortniteAPIcom(Cog):
                 return
 
             parameter = "?"
+
+            if args.lang:
+                parameter += f"&language={args.lang[0].lower()}"
+            else:
+                parameter += "&language=ru"
+
+            if args.searchLang:
+                parameter += f"&searchLanguage={args.searchLang[0].lower()}"
+            else:
+                parameter += "&searchLanguage=ru"
+
+            if args.matchMethod:
+                parameter += f"&matchMethod={args.matchMethod[0].lower()}"
+            else:
+                parameter += "&matchMethod=contains"
+
+            if args.id:
+                parameter += f"&id={args.id[0].lower()}"
 
             if args.name:
                 name = ""
@@ -60,128 +103,239 @@ class FortniteAPIcom(Cog):
                         name += f"{i}"
                 parameter += f"&name={name}"
 
-            if args.lang:
-                parameter += f"&language={args.lang[0].lower()}"
-            else:
-                parameter += "&language=ru"
+            if args.description:
+                description = ""
+                for i in args.description:
+                    if i != args.description[len(args.description) - 1]:
+                        description += f"{i}+"
+                    else:
+                        description += f"{i}"
+                parameter += f"&description={description}"
+
+            if args.type:
+                parameter += f"&type={args.type[0].lower()}"
+
+            if args.displayType:
+                parameter += f"&displayType={args.displayType[0].lower()}"
+
+            if args.backendType:
+                parameter += f"&backendType={args.backendType[0].lower()}"
 
             if args.rarity:
                 parameter += f"&rarity={args.rarity[0].lower()}"
 
+            if args.displayRarity:
+                parameter += f"&displayRarity={args.displayRarity[0].lower()}"
+
+            if args.backendRarity:
+                parameter += f"&backendRarity={args.backendRarity[0].lower()}"
+
+            if args.hasSeries:
+                parameter += f"&hasSeries={args.hasSeries[0].lower()}"
+
+            if args.series:
+                series = ""
+                for i in args.series:
+                    if i != args.series[len(args.series) - 1]:
+                        series += f"{i}+"
+                    else:
+                        series += f"{i}"
+                parameter += f"&series={series}"
+
+            if args.backendSeries:
+                parameter += f"&backendSeries={args.backendSeries[0].lower()}"
+
+            if args.hasSet:
+                parameter += f"&hasSet={args.hasSet[0].lower()}"
+
+            if args.set:
+                item_set = ""
+                for i in args.set:
+                    if i != args.set[len(args.set) - 1]:
+                        item_set += f"{i}+"
+                    else:
+                        item_set += f"{i}"
+                parameter += f"&set={item_set}"
+
+            if args.setText:
+                setText = ""
+                for i in args.setText:
+                    if i != args.setText[len(args.setText) - 1]:
+                        setText += f"{i}+"
+                    else:
+                        setText += f"{i}"
+                parameter += f"&setText={setText}"
+
+            if args.backendSet:
+                parameter += f"&backendSet={args.backendSet[0].lower()}"
+
+            if args.hasIntroduction:
+                parameter += f"&hasIntroduction={args.hasIntroduction[0].lower()}"
+
+            if args.introductionChapter:
+                parameter += f"&introductionChapter={args.introductionChapter[0].lower()}"
+
+            if args.introductionSeason:
+                parameter += f"&introductionSeason={args.introductionSeason[0].lower()}"
+
+            if args.hasFeaturedImage:
+                parameter += f"&hasFeaturedImage={args.hasFeaturedImage[0].lower()}"
+
+            if args.hasVariants:
+                parameter += f"&hasVariants={args.hasVariants[0].lower()}"
+
+            if args.hasGameplayTags:
+                parameter += f"&hasGameplayTags={args.hasGameplayTags[0].lower()}"
+
+            if args.gameplayTag:
+                parameter += f"&gameplayTag={args.gameplayTag[0].lower()}"
+
+            if args.added:
+                parameter += f"&added={args.added[0].lower()}"
+
+            if args.addedSince:
+                parameter += f"&addedSince={args.addedSince[0].lower()}"
+
             if args.unseenFor:
                 parameter += f"&unseenFor={args.unseenFor[0].lower()}"
 
-            if args.id:
-                parameter += f"&id={args.id[0].lower()}"
+            if args.lastAppearance:
+                parameter += f"&lastAppearance={args.lastAppearance[0].lower()}"
 
             async with ClientSession() as session:
-                async with session.get(
-                        url=f"https://fortnite-api.com/v2/cosmetics/br/search{parameter}&matchMethod=contains") as r:
-                    data = await r.json()
-
+                async with session.get(url=f"https://fortnite-api.com/v2/cosmetics/br/search{parameter}") as r:
+                    response_data = await r.json()
                     if r.status == 404:
                         embed = Embed(
                             title='Предмет не найден.', 
-                            description=f"```txt\n" + data["error"] + "```", 
+                            description=f"```txt\n" + response_data["error"] + "```", 
                             color=Color.red(),
                             timestamp=datetime.utcnow())
                         return await ctx.send(embed=embed)
 
                     elif r.status == 200:
-                        i = data["data"]
-                        embed = Embed(color=Color.random())
-                        embed.set_author(name=i["name"])
+                        data = response_data
 
-                        if i["images"]["icon"]:
-                            embed.set_thumbnail(url=i["images"]["icon"])
-                        elif i["images"]["smallIcon"]:
-                            embed.set_thumbnail(url=i["images"]["smallIcon"])
-                        elif i["images"]["featured"]:
-                            embed.set_thumbnail(url=i["images"]["featured"])
-                        elif i["images"]["other"]:
-                            embed.set_thumbnail(url=i["images"]["other"])
-                        else:
-                            embed.set_thumbnail(url=PLACEHOLDER)
-
-                        try:
-                            embed.add_field(name="ID:", value=i["id"] + " (**" + str(len(i["id"])) + "**)",
-                                            inline=False)
-                        except:
-                            pass
-                        try:
-                            embed.add_field(name="Описание:", value=i["description"], inline=False)
-                        except:
-                            pass
-                        try:
-                            embed.add_field(name="Редкость:", value=i["rarity"]["displayValue"], inline=False)
-                        except:
-                            pass
-                        try:
-                            embed.add_field(name="Первое появление:", value=i["introduction"]["text"], inline=False)
-                        except:
-                            pass
-                        try:
-                            hist = "```\n"
-                            for i2 in i["shopHistory"]:
-                                i2 = i2.split("T")
-                                i2 = i2[0].split("-")
-                                hist += f"{i2[2]}.{i2[1]}.{i2[0]}\n"
-                            hist += "```"
-                            embed.add_field(name="Появления в магазине:", value=hist[:1024], inline=False)
-                        except:
-                            pass
-                        variants = False
-                        try:
-                            if i["variants"]:
-                                variants = True
-                        except Exception as ex:
-                            #print(ex)
-                            pass
-
-                        if variants is True:
-                            embed.set_footer(text="Нажмите на реакцию, чтобы увидеть дополнительные стили.")
-
-                        msg = await ctx.send(embed=embed)
-                        if variants is True:
-                            await msg.add_reaction("✅")
-                            try:
-                                p = await self.bot.wait_for("raw_reaction_add", timeout=120,
-                                                            check=lambda p: p.user_id == ctx.author.id and str(
-                                                                p.emoji) == "✅" and p.channel_id == ctx.channel.id)
-                            except TimeoutError:
-                                await msg.clear_reactions()
-                                return
-
-                            if i["variants"]:
-                                variants_embeds = []
-                                for i2 in i["variants"]:
-                                    for i3 in i2["options"]:
-                                        embed = Embed(
-                                            title=i2["channel"] + " | " + i2["type"].title(),
-                                            color=Color.green(),
-                                            timestamp=datetime.utcnow()
-                                        )
-                                        embed.add_field(name=i3["name"], value=i3.get("unlockRequirements", "Стиль открыт по умолчанию."), inline=False)
-                                        embed.set_image(url=i3.get("image", PLACEHOLDER))
-                                        variants_embeds.append(embed)
-                                        
-                            variants_msg = await msg.reply(embed=variants_embeds[0], mention_author=False)
-                            page = Paginator(self.bot, variants_msg, only=ctx.author, embeds=variants_embeds)
-                            await page.start()
-
-                        return
                     else:
                         embed = Embed(
                             title=':exclamation: Ошибка!',
-                            description=str(data["status"]) + "\n```txt\n" + data["error"] + "```",
+                            description=str(response_data["status"]) + "\n```txt\n" + response_data["error"] + "```",
                             color=Color.red(),
                             timestamp=datetime.utcnow())
-                        await ctx.send(embed=embed)
-                        return
+                        return await ctx.send(embed=embed)
+                        
+            i = data["data"]
+            embed = Embed(color=Color.random())
+            embed.set_author(name=i["name"])
+
+            if i["images"]["icon"]:
+                embed.set_thumbnail(url=i["images"]["icon"])
+            elif i["images"]["smallIcon"]:
+                embed.set_thumbnail(url=i["images"]["smallIcon"])
+            elif i["images"]["featured"]:
+                embed.set_thumbnail(url=i["images"]["featured"])
+            elif i["images"]["other"]:
+                embed.set_thumbnail(url=i["images"]["other"])
+            else:
+                embed.set_thumbnail(url=PLACEHOLDER)
+
+            try:
+                embed.add_field(name="ID:", value=i["id"] + " (**" + str(len(i["id"])) + "**)",
+                                inline=False)
+            except:
+                pass
+            try:
+                embed.add_field(name="Описание:", value=i["description"], inline=False)
+            except:
+                pass
+            try:
+                embed.add_field(name="Редкость:", value=i["rarity"]["displayValue"], inline=False)
+            except:
+                pass
+            try:
+                embed.add_field(name="Дополнительная информация:", value=i["introduction"]["text"], inline=False)
+            except:
+                pass
+            try:
+                hist = "```\n"
+                for i2 in i["shopHistory"]:
+                    i2 = i2.split("T")
+                    i2 = i2[0].split("-")
+                    hist += f"{i2[2]}.{i2[1]}.{i2[0]}\n"
+                hist += "```"
+                embed.add_field(name="Появления в магазине:", value=hist[:1024], inline=False)
+            except:
+                pass
+            variants = False
+            try:
+                if i["variants"]:
+                    variants = True
+            except Exception as ex:
+                #print(ex)
+                pass
+
+            if variants is True:
+                embed.set_footer(text="Нажмите на реакцию, чтобы увидеть дополнительные стили.")
+
+            msg = await ctx.send(embed=embed)
+            if variants is True:
+                await msg.add_reaction("✅")
+                try:
+                    p = await self.bot.wait_for(
+                        "raw_reaction_add", timeout=60, check=lambda p: 
+                        p.user_id == ctx.author.id 
+                        and str(p.emoji) == "✅" 
+                        and p.channel_id == ctx.channel.id
+                        and p.message_id == msg.id
+                    )
+
+                except TimeoutError:
+                    await msg.clear_reactions()
+                    return
+
+                if i["variants"]:
+                    variants_embeds = []
+                    for i2 in i["variants"]:
+                        for i3 in i2["options"]:
+                            embed = Embed(
+                                title=i2["channel"] + " | " + i2["type"].title(),
+                                color=Color.green(),
+                                timestamp=datetime.utcnow()
+                            )
+                            embed.add_field(name=i3["name"], value=i3.get("unlockRequirements", "Стиль открыт по умолчанию."), inline=False)
+                            embed.set_image(url=i3.get("image", PLACEHOLDER))
+                            variants_embeds.append(embed)
+                            
+                variants_msg = await msg.reply(embed=variants_embeds[0], mention_author=False)
+                page = Paginator(self.bot, variants_msg, only=ctx.author, embeds=variants_embeds)
+                return await page.start()
+
         else:
             await ctx.send(
-                "Пожалуйста, введите аргументы корректно.\n\n```+searchcosmetic -name Renegade Raider -lang ru -rarity "
-                "epic -unseenFor 120```")
+                "Пожалуйста, введите аргументы корректно.\n\n```+searchcosmetic -name Рейдер-Изгой -rarity epic```")
+
+    @command(name=cmd["searchparams"]["name"], aliases=cmd["searchparams"]["aliases"], 
+            brief=cmd["searchparams"]["brief"],
+            description=cmd["searchparams"]["description"],
+            usage=cmd["searchparams"]["usage"],
+            help=cmd["searchparams"]["help"],
+            hidden=cmd["searchparams"]["hidden"], enabled=True)
+    async def cosmetics_search_params_command(self, ctx):
+        params_embeds = []
+        params_images = (
+            'https://cdn.discordapp.com/attachments/774698479981297664/817861711813148752/cosmetics_search_params_1.png',
+            'https://cdn.discordapp.com/attachments/774698479981297664/817861722312146984/cosmetics_search_params_2.png',
+            'https://cdn.discordapp.com/attachments/774698479981297664/817861887441109012/cosmetics_search_params_3.png',
+            'https://cdn.discordapp.com/attachments/774698479981297664/817861907868287026/cosmetics_search_params_4.png',
+            'https://cdn.discordapp.com/attachments/774698479981297664/817861931984879627/cosmetics_search_params_5.png'
+        )
+
+        for image in params_images:
+            params_embeds.append(Embed(title="Параметры поиска косметических предметов Fortnite", color=Color.orange()).set_image(url=image))
+
+        message = await ctx.send(embed=params_embeds[0])
+        page = Paginator(self.bot, message, only=ctx.author, embeds=params_embeds)
+        await page.start()
 
 
     @command(name=cmd["news"]["name"], aliases=cmd["news"]["aliases"], 
@@ -228,8 +382,7 @@ class FortniteAPIcom(Cog):
 
                     message = await ctx.send(embed=embeds[0])
                     page = Paginator(self.bot, message, only=ctx.author, embeds=embeds)
-                    await page.start()
-                    return
+                    return await page.start()
 
                 await ctx.send(embed=embed)            
 
