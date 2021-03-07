@@ -355,6 +355,28 @@ class Owner(Cog):
         await ctx.message.add_reaction('✅')
 
 
+    @command(name=cmd["echo"]["name"], aliases=cmd["echo"]["aliases"], 
+            brief=cmd["echo"]["brief"],
+            description=cmd["echo"]["description"],
+            usage=cmd["echo"]["usage"],
+            help=cmd["echo"]["help"],
+            hidden=cmd["echo"]["hidden"], enabled=True)
+    @dm_only()
+    @is_owner()
+    async def echo_command(self, ctx, channel_id: int = None, *, content: str = '_ _'):
+        try:
+            channel = self.bot.get_channel(channel_id)
+        except:
+            return await ctx.message.add_reaction('❌')
+
+        if channel and content:
+            await channel.send(
+                content=content,
+                files=[await attachment.to_file() for attachment in ctx.message.attachments] if ctx.message.attachments else None
+            )
+            await ctx.message.add_reaction('✅')
+
+
     @command(name=cmd["shutdown"]["name"], aliases=cmd["shutdown"]["aliases"], 
             brief=cmd["shutdown"]["brief"],
             description=cmd["shutdown"]["description"],

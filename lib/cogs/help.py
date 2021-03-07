@@ -35,8 +35,9 @@ class HelpMenu(ListPageSource):
         len_data = len(self.entries)
 
         embed = Embed(title="Dungeon Durker Help", description="Help меню.", color=self.ctx.author.color)
-        embed.set_thumbnail(url=self.ctx.guild.icon_url)
         embed.set_footer(text=f"{offset:,} - {min(len_data, offset+self.per_page-1):,} из {len_data:,} команд.")
+        if self.ctx.guild:
+            embed.set_thumbnail(url=self.ctx.guild.icon_url)
 
         for name, value in fields:
             embed.add_field(name=name, value=value, inline=False)

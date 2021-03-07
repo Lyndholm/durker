@@ -733,6 +733,20 @@
             "cooldown_type": "None",
             "hidden": true
         },
+        "echo":{
+            "name": "echo",
+            "aliases": ["say"],
+            "brief": "Отправка собщений от имени бота.",
+            "description": "Отправляет собщение от имени бота в указанный канал.",
+            "usage": "echo <channel> <content>",
+            "help": "Отправляет сообщение от имени бота в указанный канал. Возможна отправка медиафайлов (не более 8 мб). Доступно только разработчику бота.",
+            "required_level": 0,
+            "has_cooldown": false,
+            "cooldown_rate": 0,
+            "cooldown_per_second": 0,
+            "cooldown_type": "None",
+            "hidden": true
+        },
         "shutdown":{
             "name": "shutdown",
             "aliases": ["logout"],
