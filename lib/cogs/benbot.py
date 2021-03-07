@@ -189,7 +189,10 @@ class BenBot(Cog):
                     color=Color.gold(),
                     timestamp=datetime.utcnow()
                 )
-                sections_dict = data["channels"]["client-events"]["states"][0]["state"]["sectionStoreEnds"]
+                try:
+                    sections_dict = data["channels"]["client-events"]["states"][1]["state"]["sectionStoreEnds"]
+                except (IndexError, KeyError):
+                    sections_dict = data["channels"]["client-events"]["states"][0]["state"]["sectionStoreEnds"]
 
                 var = "Дата напротив каждой категории обозначает время, до которого раздел будет существовать. Время указано в **UTC**.\n\n"
                 for key, value in sections_dict.items():
