@@ -175,6 +175,8 @@ class Bot(BotBase):
                                 insert_new_user_in_db(member)
 
             
+            db.execute("DELETE FROM voice_activity;")
+            db.commit()
 
             while not self.cogs_ready.all_ready():
                 await sleep(0.5)

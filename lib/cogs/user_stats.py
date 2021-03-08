@@ -115,7 +115,7 @@ class UserStats(Cog):
         embed.add_field(name="<:durka:745936793148588083>  Получено путёвок в дурку:", value=durka_stats[0],
                         inline=True)
 
-        embed.add_field(name=":face_with_symbols_over_mouth: Количество триггеров мат-фильтра:", value=len(moderation_stats[2]["user_profanity_story"]),
+        embed.add_field(name=":face_with_symbols_over_mouth: Количество триггеров мат-фильтра:", value=moderation_stats[2],
                         inline=True)
 
         embed.add_field(name=":moneybag:  Потрачено в-баксов с тегом FNFUN:",

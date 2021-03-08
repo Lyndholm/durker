@@ -762,6 +762,54 @@
             "hidden": true
         }
     },
+    "profanity":
+    {
+        "swear":
+        {
+            "name": "swear",
+            "aliases": ["свир", "свеар"],
+            "brief": "Наказание за обход мат-фильтра.",
+            "description": "Наказание за обход мат-фильтра с помощью не предусмотренных способов.",
+            "usage": "swear <member>",
+            "help": "Уменьшает репутацию пользователя при обходе мат-фильтра с помощью не предусмотренных способов.\nДоступно Часовым и выше.\n\n**Кулдаун:** отсутсвует.\n**Необходимый уровень:** 0",
+            "required_level": 0,
+            "has_cooldown": false,
+            "cooldown_rate": 0,
+            "cooldown_per_second": 0,
+            "cooldown_type": "None",
+            "hidden": true
+        },
+        "addprofanity":
+        {
+            "name": "addprofanity",
+            "aliases": ["addswears", "addcurses", "addfoo"],
+            "brief": "Добавление слов в мат-фильтр.",
+            "description": "Добавляет слова в фильтр.",
+            "usage": "addprofanity <words>",
+            "help": "Обновляет мат-фильтр. Добавляет указанные слова в словарь.\nДоступно только разработчику бота.",
+            "required_level": 0,
+            "has_cooldown": false,
+            "cooldown_rate": 0,
+            "cooldown_per_second": 0,
+            "cooldown_type": "None",
+            "hidden": true
+        },
+        "delprofanity":
+        {
+            "name": "delprofanity",
+            "aliases": ["delswears", "delcurses", "delfoo"],
+            "brief": "Удаление слов из мат-фильтра.",
+            "description": "Удаляет слова из фильтра.",
+            "usage": "delprofanity <words>",
+            "help": "Обновляет мат-фильтр. Удаляет указанные слова из словаря.\nДоступно только разработчику бота.",
+            "required_level": 0,
+            "has_cooldown": false,
+            "cooldown_rate": 0,
+            "cooldown_per_second": 0,
+            "cooldown_type": "None",
+            "hidden": true
+        }
+    },
     "user_stats":
     {
         "profile":

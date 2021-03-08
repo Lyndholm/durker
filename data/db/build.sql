@@ -125,7 +125,7 @@ CREATE TABLE public.users_stats
     last_message_date timestamp without time zone DEFAULT (now())::timestamp without time zone,
     rep_rank bigint DEFAULT 0,
     lost_reputation bigint DEFAULT 0,
-    profanity_triggers json DEFAULT '{"user_profanity_story":[]}'::json,
+    profanity_triggers bigint DEFAULT 0,
     invoice_time bigint DEFAULT 0,
     purchases json DEFAULT '{"vbucks_purchases":[],"realMoney_purchases":[]}'::json,
     mutes_story json DEFAULT '{"user_mute_story":[]}'::json,
