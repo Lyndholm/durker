@@ -8,6 +8,7 @@ from better_profanity import profanity
 
 from ..db import db
 from ..utils.utils import load_commands_from_json, russian_plural, edit_user_reputation, find_n_term_of_arithmetic_progression
+from ..utils.decorators import listen_for_guilds
 
 
 cmd = load_commands_from_json("profanity")
@@ -52,6 +53,7 @@ class Profanity(Cog):
         await channel.send(reply)
 
     @Cog.listener()
+    @listen_for_guilds()
     @logger.catch
     async def on_message(self, message):
         content = message.clean_content.replace("*", "")

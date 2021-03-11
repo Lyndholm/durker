@@ -11,6 +11,7 @@ from discord.ext.commands import command, has_permissions, bot_has_permissions, 
 
 from ..utils.constants import MODERATION_PUBLIC_CHANNEL, AUDIT_LOG_CHANNEL, MUTE_ROLE_ID, HELPER_ROLE_ID
 from ..utils.utils import load_commands_from_json, russian_plural
+from ..utils.decorators import listen_for_guilds
 from ..db import db
 
 cmd = load_commands_from_json("moderation")
@@ -324,27 +325,28 @@ class Moderation(Cog):
         return True if invites else False
 
     @Cog.listener()
+    @listen_for_guilds()
     async def on_message(self, message):
         ### Find discord invites in message content
         if self.find_discord_invites(message):
             regex = re.compile(self.DISCORD_INVITE_REGEX)
             guild_invite = await self.bot.fetch_invite(url=regex.search(message.clean_content).group(0))
-            if message.guild:
-                if message.author.guild_permissions.administrator or self.helper_role in message.author.roles:
-                    pass
-                else: 
-                    if isinstance(guild_invite, Invite):
-                        if guild_invite.guild.id != self.bot.guild.id:
-                            await message.delete()
-                            return await message.author.ban(reason="Автомодерация: Ссылки и приглашения")
 
-                    elif isinstance(guild_invite, PartialInviteGuild):
-                        if guild_invite.id != self.bot.guild.id:
-                            await message.delete()
-                            return await message.author.ban(reason="Автомодерация: Ссылки и приглашения")
+            if message.author.guild_permissions.administrator or self.helper_role in message.author.roles:
+                pass
+            else: 
+                if isinstance(guild_invite, Invite):
+                    if guild_invite.guild.id != self.bot.guild.id:
+                        await message.delete()
+                        return await message.author.ban(reason="Автомодерация: Ссылки и приглашения")
+
+                elif isinstance(guild_invite, PartialInviteGuild):
+                    if guild_invite.id != self.bot.guild.id:
+                        await message.delete()
+                        return await message.author.ban(reason="Автомодерация: Ссылки и приглашения")
 
         ### Emoji anti-spam
-        if message.guild and message.content and not message.author.bot:
+        if message.content and not message.author.bot:
             emoji = re.findall(self.EMOJI_REGEX, message.content)
             unicode_emoji = re.findall(self.UNICODE_EMOJI_REGEX, message.content)
             if (len(emoji) + len(unicode_emoji)) > 10:

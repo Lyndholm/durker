@@ -1,6 +1,7 @@
 from discord import Message
 from discord.ext.commands import Cog
 from discord.ext.commands import command
+from ..utils.decorators import listen_for_guilds
 import aiofiles
 
 
@@ -33,6 +34,7 @@ class MessagesHandler(Cog):
            self.bot.cogs_ready.ready_up("messages_handler")
 
     @Cog.listener()
+    @listen_for_guilds()
     async def on_message(self, message):
         if message.clean_content.lower() in self.rep_filter:
             await self.invoke_command(message, 'rep')

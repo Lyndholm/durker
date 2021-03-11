@@ -19,7 +19,8 @@ class Audit(Cog):
     @Cog.listener()
     async def on_ready(self):
         if not self.bot.ready:
-           self.bot.cogs_ready.ready_up("audit_logging")
+            self.bot.cogs_ready.ready_up("audit_logging")
+            self.log_channel = self.bot.get_channel(AUDIT_LOG_CHANNEL)
 
     @staticmethod
     def list_diff(l1: List, l2: List) -> Tuple[List, List, List]:
@@ -30,14 +31,13 @@ class Audit(Cog):
     async def on_message_delete(self, message: Message):
         if not isinstance(message.channel, DMChannel):
             await asleep(1)
-            log_channel = message.guild.get_channel(AUDIT_LOG_CHANNEL)
 
             if message.channel.id == ADMINS_CHANNEL or message.channel.id == GVARDIYA_CHANNEL:
                 return
             else:
-                if message.channel == log_channel and message.author == self.bot.user:
+                if message.channel == self.log_channel and message.author == self.bot.user:
                     for embed in message.embeds:
-                        await log_channel.send("Нельзя удалять сообщения бота в аудите!", embed=embed)
+                        await self.log_channel.send("Нельзя удалять сообщения бота в аудите!", embed=embed)
                     return
                 elif message.author.bot:
                     return
@@ -68,7 +68,7 @@ class Audit(Cog):
 
                 embed.set_footer(text = f"ID сообщения: {message.id}")
 
-                await log_channel.send(embed=embed)
+                await self.log_channel.send(embed=embed)
 
 
     @Cog.listener()
@@ -81,14 +81,12 @@ class Audit(Cog):
                 if channel.id == ADMINS_CHANNEL or channel.id == GVARDIYA_CHANNEL:
                     return
                 else:
-                    log_channel = guild.get_channel(AUDIT_LOG_CHANNEL)
-                
                     embed = Embed(title="Сообщение было удалено [raw message delete event]",
                                 description="Удаленноё сообщение не найдено в кэше, отображение о нём полной информации невозможно.", 
                                 color=Color.red(), timestamp=datetime.utcnow())
                     embed.add_field(name="Канал:", value=channel.mention)
                     embed.add_field(name="ID сообщения:", value=payload.message_id)
-                    await log_channel.send(embed=embed)
+                    await self.log_channel.send(embed=embed)
 
             except AttributeError:
                 pass
@@ -100,8 +98,6 @@ class Audit(Cog):
             if messages[0].channel.id == ADMINS_CHANNEL or messages[0].channel.id == GVARDIYA_CHANNEL:
                 return
             else:
-                log_channel = messages[0].guild.get_channel(AUDIT_LOG_CHANNEL)
-
                 embed = Embed(title=f"Несколько ({len(messages)}) сообщений были удалены. Подробности в прикреплённом файле.", 
                             color=Color.red(), timestamp=datetime.utcnow())
                 async with aiofiles.open(f'./data/audit/bulk-deleted-messages/{messages[0].id}.log', mode='w', encoding='utf-8') as f:
@@ -120,7 +116,7 @@ class Audit(Cog):
 
                 embed.add_field(name="Канал:", value=f"{messages[0].channel.name} ({messages[0].channel.mention})")
 
-                await log_channel.send(embed=embed, file=File(f'./data/audit/bulk-deleted-messages/{messages[0].id}.log'))
+                await self.log_channel.send(embed=embed, file=File(f'./data/audit/bulk-deleted-messages/{messages[0].id}.log'))
 
 
     @Cog.listener()
@@ -133,14 +129,12 @@ class Audit(Cog):
                 if channel.id == ADMINS_CHANNEL or channel.id == GVARDIYA_CHANNEL:
                     return
                 else:
-                    log_channel = guild.get_channel(AUDIT_LOG_CHANNEL)
-                
                     embed = Embed(title=f"Несколько {len(payload.message_ids)} сообщений были удалены [raw bulk message delete event]",
                                 description="Несколько сообщений были удалены, они не найдены в кэше, отображение полной информации невозможно.", 
                                 color=Color.red(), timestamp=datetime.utcnow())
                     embed.add_field(name="ID удаленных сообщений:", value=f"```{', '.join([str(m.id) for m in payload.message_ids])}```", inline=False)
                     embed.add_field(name="Канал:", value=channel.mention)
-                    await log_channel.send(embed=embed)
+                    await self.log_channel.send(embed=embed)
 
             except AttributeError:
                 pass
@@ -149,7 +143,6 @@ class Audit(Cog):
     @Cog.listener()
     async def on_message_edit(self, before: Message, after: Message):
         if not isinstance (after.channel, DMChannel):
-            log_channel = after.guild.get_channel(AUDIT_LOG_CHANNEL)
             if not before.author.bot:
                 if before.content != after.content:
                     if before.channel.id == ADMINS_CHANNEL or before.channel.id == GVARDIYA_CHANNEL:
@@ -165,7 +158,7 @@ class Audit(Cog):
                         embed.add_field(name="Канал:", value=before.channel.mention)
                         embed.add_field(name=f"Jump url:", value=f"[Click]({before.jump_url})")
                         embed.set_footer(text=f"ID сообщения: {after.id}")
-                        await log_channel.send(embed=embed)
+                        await self.log_channel.send(embed=embed)
 
 
     @Cog.listener()
@@ -178,7 +171,6 @@ class Audit(Cog):
                     return
                 else:
                     guild = channel.guild
-                    log_channel = guild.get_channel(AUDIT_LOG_CHANNEL)
                     data = payload.data
 
                     embed = Embed(title="Сообщение было отредактировано [raw message edit event]", color=Color.blurple(), timestamp=datetime.utcnow())
@@ -200,7 +192,7 @@ class Audit(Cog):
                     embed.add_field(name="Канал", value=channel.mention)
                     embed.add_field(name=f"Jump url:", value=f"[Click](https://discordapp.com/channels/{guild.id}/{channel.id}/{payload.message_id})")
                     embed.set_footer(text=f"ID сообщения: {payload.message_id}")
-                    await log_channel.send(embed=embed)
+                    await self.log_channel.send(embed=embed)
 
             except AttributeError:
                 pass
@@ -215,28 +207,24 @@ class Audit(Cog):
 
     @Cog.listener()
     async def on_member_remove(self, member: Member):
-        log_channel = member.guild.get_channel(AUDIT_LOG_CHANNEL)
-
         server_age = (datetime.utcnow() - member.joined_at).total_seconds()
         embed = Embed(title = "Пользователь покинул сервер", color=Color.red())
         embed.add_field(name="Пользователь:", value=f"**{member.display_name}** ({member.mention})")
         embed.add_field(name="Время, проведённое на сервере:", value=f"{timedelta(seconds=server_age)}")
         embed.set_footer(text=f"ID пользователя: {member.id}")
 
-        async for entry in log_channel.guild.audit_logs(action=AuditLogAction.kick, limit=1):
+        async for entry in self.log_channel.guild.audit_logs(action=AuditLogAction.kick, limit=1):
             if int((datetime.utcnow() - entry.created_at).total_seconds()) <= 5:
                 embed.title = "Пользователь был кикнут с сервера"
                 embed.add_field(name="Модератор:", value=entry.user.mention)
                 if entry.reason:
                     embed.add_field(name="Причина:", value=entry.reason, inline=False)
 
-        await log_channel.send(embed=embed)
+        await self.log_channel.send(embed=embed)
 
 
     @Cog.listener()
     async def on_member_update(self, before: Member, after: Member):
-        log_channel = after.guild.get_channel(AUDIT_LOG_CHANNEL)
-
         if before.pending is True and after.pending is False:
             acc_age = (datetime.utcnow() - after.created_at).total_seconds()
 
@@ -248,7 +236,7 @@ class Audit(Cog):
             embed.set_footer(text=f"ID пользователя: {after.id}")
             embed.set_thumbnail(url=after.avatar_url)
 
-            await log_channel.send(embed=embed)
+            await self.log_channel.send(embed=embed)
         
         if before.roles != after.roles:   
             embed = Embed(description = f"Роли участника **{after.display_name}** ({after.mention}) были изменены", 
@@ -266,7 +254,7 @@ class Audit(Cog):
                     embed.add_field(name="Модератор", value = entry.user.mention)
 
             embed.set_footer(text = f"ID участника: {after.id}")
-            await log_channel.send(embed=embed)
+            await self.log_channel.send(embed=embed)
 
         if before.display_name != after.display_name:
             embed = Embed(description = f"Никнейм участника **{before.display_name}** ({before.mention}) был изменен", 
@@ -274,57 +262,52 @@ class Audit(Cog):
             embed.add_field(name = "Старый никнейм:", value = before.display_name)
             embed.add_field(name = "Новый никнейм:", value = after.display_name)
             embed.set_footer(text = f"ID участника: {after.id}")
-            await log_channel.send(embed=embed)
+            await self.log_channel.send(embed=embed)
 
 
     @Cog.listener()
     async def on_member_ban(self, guild: Guild, user: Union[User, Member]):
         await asleep(2)
-        log_channel = guild.get_channel(AUDIT_LOG_CHANNEL)
 
         embed = Embed(title="Бан участника", description=f"Пользователь **{user.display_name}** ({user.mention}) был забанен.",
                     color=Color.red(), timestamp=datetime.utcnow())
         embed.set_footer(text=f"ID пользователя: {user.id}")
 
-        async for entry in log_channel.guild.audit_logs(action=AuditLogAction.ban, limit=1):
+        async for entry in self.log_channel.guild.audit_logs(action=AuditLogAction.ban, limit=1):
             if int((datetime.utcnow() - entry.created_at).total_seconds()) <= 5:
                 embed.add_field(name="Модератор:", value=entry.user.mention)
                 if entry.reason:
                     embed.add_field(name="Причина:", value=entry.reason)
 
-        await log_channel.send(embed=embed)
+        await self.log_channel.send(embed=embed)
 
 
     @Cog.listener()
     async def on_member_unban(self, guild: Guild, user: User):
-        log_channel = guild.get_channel(AUDIT_LOG_CHANNEL)
-
         embed = Embed(title="Разбан пользователя", description=f"Пользователь **{user.display_name}** ({user.mention}) был разбанен.",
                 color=Color.dark_green(), timestamp=datetime.utcnow())
         embed.set_footer(text=f"ID пользователя: {user.id}")
 
-        async for entry in log_channel.guild.audit_logs(action=AuditLogAction.unban, limit=1):
+        async for entry in self.log_channel.guild.audit_logs(action=AuditLogAction.unban, limit=1):
             if int((datetime.utcnow() - entry.created_at).total_seconds()) <= 5:
                 embed.add_field(name="Модератор:", value=entry.user.mention)
 
-        await log_channel.send(embed=embed)
+        await self.log_channel.send(embed=embed)
 
 
     @Cog.listener()
     async def on_voice_state_update(self, member: Member, before: VoiceState, after: VoiceState):
-        log_channel = member.guild.get_channel(AUDIT_LOG_CHANNEL)
-
         if before.channel is None:
             embed = Embed(description = f"Участник **{member.display_name}** ({member.mention}) зашел в голосовой канал :loud_sound: **{after.channel.name}**",
                         color=Color.purple(), timestamp=datetime.utcnow())
             embed.set_footer(text = f"ID участника: {member.id}")
-            await log_channel.send(embed=embed)
+            await self.log_channel.send(embed=embed)
               
         if after.channel is None:
             embed = Embed(description = f"Участник **{member.display_name}** ({member.mention}) покинул голосовой канал :loud_sound: **{before.channel.name}**",
                     color=Color.purple(), timestamp=datetime.utcnow())
             embed.set_footer(text = f"ID участника: {member.id}")
-            await log_channel.send(embed=embed)
+            await self.log_channel.send(embed=embed)
             
         if before.channel is not None and after.channel is not None:
             if before.channel.id != after.channel.id:
@@ -333,7 +316,7 @@ class Audit(Cog):
                 embed.add_field(name = "Новый канал:", value = f"**{after.channel.name}** (#{after.channel.name})", inline=True)
                 embed.add_field(name = "Предыдущий канал:", value = f"**{before.channel.name}** ({before.channel.mention})", inline=True)
                 embed.set_footer(text = f"ID участника: {member.id}")
-                await log_channel.send(embed=embed)
+                await self.log_channel.send(embed=embed)
 
 
 def setup(bot):
