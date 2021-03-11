@@ -1,4 +1,4 @@
-from random import choice
+from random import sample
 from discord import Embed, Color
 from discord.ext.commands import Cog
 from discord.ext.commands import command, guild_only, is_owner
@@ -22,7 +22,7 @@ class Contests(Cog):
             hidden=cmd["giveaway"]["hidden"], enabled=True)
     @guild_only()
     @is_owner()
-    async def create_giveaway(self, ctx, mins: int, *, description: str = "Розыгрыш."):
+    async def create_giveaway(self, ctx, mins: int = None, winners: int = 1, *, description: str = "Розыгрыш."):
         await ctx.message.delete()
 
         embed = Embed(
@@ -45,21 +45,21 @@ class Contests(Cog):
 
         self.giveaways.append((message.channel.id, message.id))
         self.bot.scheduler.add_job(self.complete_giveaway, "date", run_date=datetime.now()+timedelta(minutes=mins),
-                                args=[message.channel.id, message.id])
+                                args=[message.channel.id, message.id, embed, winners])
         await message.add_reaction('✅')
 
-    async def complete_giveaway(self, channel_id, message_id):
+    async def complete_giveaway(self, channel_id, message_id, embed, winners_count):
         message = await self.bot.get_channel(channel_id).fetch_message(message_id)
 
-        if len(entrants := [user for user in await message.reactions[0].users().flatten() if not user.bot]):
-            winner = choice(entrants)
-            await message.clear_reactions()
-            await message.reply(f'🎁 Розыгрыш завершён.\n🎉 **Победитель:** {winner.mention}')
+        if len(entrants := [user for user in await message.reactions[0].users().flatten() if not user.bot]) >= winners_count:
+            winners = sample(entrants, winners_count)
+            await message.reply(f'🎁 Розыгрыш завершён.\n🎉 **{"Победитель" if len(winners)==1 else "Победители"}:** {" ".join([w.mention for w in winners])}')
             self.giveaways.remove((message.channel.id, message.id))
         else:
-            await message.clear_reactions()
             await message.reply('Недостаточно участников для подведения итогов. Розыгрыш завершён.')
             self.giveaways.remove((message.channel.id, message.id))
+
+        await message.edit(embed=embed.set_footer(text="Розыгрыш завершён."))
 
     @Cog.listener()
     async def on_ready(self):
