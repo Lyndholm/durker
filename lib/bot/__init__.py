@@ -7,7 +7,7 @@ from apscheduler.triggers.cron import CronTrigger
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from discord import Color, Embed, Intents
 from discord.ext.commands import Bot as BotBase, Context, ExtensionAlreadyLoaded, ExtensionNotLoaded
-from discord.ext.commands import (CommandNotFound, CommandOnCooldown, DisabledCommand, 
+from discord.ext.commands import (CommandNotFound, CommandOnCooldown, DisabledCommand,
                                 NoPrivateMessage, PrivateMessageOnly)
 from discord.ext.commands.errors import CheckFailure, CheckAnyFailure, MissingPermissions
 from discord.channel import DMChannel
@@ -153,7 +153,7 @@ class Bot(BotBase):
             if message.author.id in self.banlist:
                 return
             elif not self.ready:
-                await ctx.send("Бот не готов принимать сообщения и обрабатывать команды. Пожалуйста, подождите.", delete_after=60)    
+                await ctx.send("Бот не готов принимать сообщения и обрабатывать команды. Пожалуйста, подождите.", delete_after=60)
             else:
                 await self.invoke(ctx)
 
@@ -174,7 +174,7 @@ class Bot(BotBase):
                             if rec := db.fetchone(["user_id"], "users_info", "user_id", member.id) is None:
                                 insert_new_user_in_db(member)
 
-            
+
             db.execute("DELETE FROM voice_activity;")
             db.commit()
 
@@ -186,8 +186,8 @@ class Bot(BotBase):
             self.load_extension("jishaku")
             self.get_command("jishaku").hidden = True
             print("Jishaku loaded")
-                
-            
+
+
             print("\nReady to use!\n")
             #await self.get_user(OWNER_IDS[0]).send("I am online!\nReady to use!")
 
@@ -204,24 +204,24 @@ class Bot(BotBase):
     async def on_command_error(self, ctx, exc):
         if isinstance(exc, CommandNotFound):
             embed = Embed(
-                title=':exclamation: Ошибка!', 
-                description=f'Команда `{ctx.message.clean_content}` не найдена.', 
+                title=':exclamation: Ошибка!',
+                description=f'Команда `{ctx.message.clean_content}` не найдена.',
                 color=Color.red()
             )
             await ctx.send(embed=embed, delete_after = 10)
 
         elif isinstance(exc, CommandOnCooldown):
             embed = Embed(
-                title=f"{str(exc.cooldown.type).split('.')[-1]} cooldown", 
-                description=f"Команда на откате. Ожидайте {int(exc.retry_after)+1} {russian_plural(int(exc.retry_after)+1,['секунду','секунды','секунд'])}.", 
+                title=f"{str(exc.cooldown.type).split('.')[-1]} cooldown",
+                description=f"Команда на откате. Ожидайте {int(exc.retry_after)+1} {russian_plural(int(exc.retry_after)+1,['секунду','секунды','секунд'])}.",
                 color=Color.red()
             )
             await ctx.send(embed=embed, delete_after = 10)
 
         elif isinstance(exc, DisabledCommand):
             embed = Embed(
-                title=':exclamation: Ошибка!', 
-                description=f"Команда `{ctx.command}` отключена.", 
+                title=':exclamation: Ошибка!',
+                description=f"Команда `{ctx.command}` отключена.",
                 color=Color.red
             )
             await ctx.send(embed=embed, delete_after = 10)
@@ -229,8 +229,8 @@ class Bot(BotBase):
         elif isinstance(exc, NoPrivateMessage):
             try:
                 embed = Embed(
-                    title=':exclamation: Ошибка!', 
-                    description=f"Команда `{ctx.command}` не может быть использована в личных сообщениях.", 
+                    title=':exclamation: Ошибка!',
+                    description=f"Команда `{ctx.command}` не может быть использована в личных сообщениях.",
                     color=Color.red()
                 )
                 await ctx.author.send(embed=embed, delete_after = 30)
@@ -239,41 +239,41 @@ class Bot(BotBase):
 
         elif isinstance(exc, PrivateMessageOnly):
             embed = Embed(
-                title=':exclamation: Ошибка!', 
-                description=f"Команда `{ctx.command}` работает только в личных сообщениях. Она не может быть использована на сервере.", 
+                title=':exclamation: Ошибка!',
+                description=f"Команда `{ctx.command}` работает только в личных сообщениях. Она не может быть использована на сервере.",
                 color=Color.red()
             )
             await ctx.send(embed=embed, delete_after = 30)
 
         elif isinstance(exc, MissingPermissions):
             embed = Embed(
-                title=':exclamation: Ошибка!', 
-                description=f"У бота недостаточно прав для выполнения действия.", 
+                title=':exclamation: Ошибка!',
+                description=f"У бота недостаточно прав для выполнения действия.",
                 color=Color.red()
             )
             await ctx.send(embed=embed, delete_after = 30)
 
         elif isinstance(exc, Forbidden):
             embed = Embed(
-                title=':exclamation: Ошибка!', 
-                description=f"Недостаточно прав для выполнения действия.", 
+                title=':exclamation: Ошибка!',
+                description=f"Недостаточно прав для выполнения действия.",
                 color=Color.red()
             )
             await ctx.send(embed=embed, delete_after = 30)
 
         elif isinstance(exc, HTTPException):
             embed = Embed(
-                title=':exclamation: Ошибка!', 
-                description=f"Невозможно отправить сообщение. Возможно, превышен лимит символов.", 
+                title=':exclamation: Ошибка!',
+                description=f"Невозможно отправить сообщение. Возможно, превышен лимит символов.",
                 color=Color.red()
             )
             await ctx.send(embed=embed, delete_after = 30)
 
         elif isinstance(exc, CheckFailure) or isinstance(exc, CheckAnyFailure):
             embed = Embed(
-                title=':exclamation: Ошибка!', 
+                title=':exclamation: Ошибка!',
                 description=f"{ctx.author.mention}\nНевозможно выполнить указанную команду."
-                             "\nВозможно, вы используете неправильный канал, у вас недостаточный уровень или отсутсвуют права на выполнение запрошенной команды.", 
+                             "\nВозможно, вы используете неправильный канал, у вас недостаточный уровень или отсутсвуют права на выполнение запрошенной команды.",
                 color=Color.red()
             )
             await ctx.send(embed=embed, delete_after = 15)
@@ -283,16 +283,16 @@ class Bot(BotBase):
             try:
                 if hasattr(ctx.command, 'on_error'):
                     embed = Embed(
-                        title="Error.", 
-                        description="Something went wrong, an error occured.\nCheck logs.", 
-                        timestamp=datetime.utcnow(), 
+                        title="Error.",
+                        description="Something went wrong, an error occured.\nCheck logs.",
+                        timestamp=datetime.utcnow(),
                         color=Color.red()
                     )
                     await dev.send(embed=embed)
                 else:
                     embed = Embed(
-                        title=f'Ошибка при выполнении команды {ctx.command}.', 
-                        description=f'`{ctx.command.signature if ctx.command.signature else None}`\n{exc}', 
+                        title=f'Ошибка при выполнении команды {ctx.command}.',
+                        description=f'`{ctx.command.signature if ctx.command.signature else None}`\n{exc}',
                         color=Color.red(),
                         timestamp=datetime.utcnow()
                     )
@@ -301,7 +301,7 @@ class Bot(BotBase):
                     await channel.send(embed=embed)
             except:
                 embed = Embed(
-                    title=f'Ошибка при выполнении команды {ctx.command}.', 
+                    title=f'Ошибка при выполнении команды {ctx.command}.',
                     description=f'`{ctx.command.signature if ctx.command.signature else None}`\n{exc}',
                     color=Color.red(),
                     timestamp=datetime.utcnow()

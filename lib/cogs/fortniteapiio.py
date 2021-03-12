@@ -24,7 +24,7 @@ class FortniteAPIio(Cog):
         if not self.bot.ready:
            self.bot.cogs_ready.ready_up("fortniteapiio")
 
-    @command(name=cmd["map"]["name"], aliases=cmd["map"]["aliases"], 
+    @command(name=cmd["map"]["name"], aliases=cmd["map"]["aliases"],
             brief=cmd["map"]["brief"],
             description=cmd["map"]["description"],
             usage=cmd["map"]["usage"],
@@ -41,7 +41,7 @@ class FortniteAPIio(Cog):
         await ctx.send(embed=embed)
 
 
-    @command(name=cmd["fnach"]["name"], aliases=cmd["fnach"]["aliases"], 
+    @command(name=cmd["fnach"]["name"], aliases=cmd["fnach"]["aliases"],
             brief=cmd["fnach"]["brief"],
             description=cmd["fnach"]["description"],
             usage=cmd["fnach"]["usage"],
@@ -58,7 +58,7 @@ class FortniteAPIio(Cog):
                     return
 
                 data = await r.json()
-            
+
                 for i in range(0, len(data["achievements"]), 10):
                     for j in range(i, i+10):
                         try:
@@ -81,7 +81,7 @@ class FortniteAPIio(Cog):
         await page.start()
 
 
-    @command(name=cmd["fish"]["name"], aliases=cmd["fish"]["aliases"], 
+    @command(name=cmd["fish"]["name"], aliases=cmd["fish"]["aliases"],
             brief=cmd["fish"]["brief"],
             description=cmd["fish"]["description"],
             usage=cmd["fish"]["usage"],
@@ -125,7 +125,7 @@ class FortniteAPIio(Cog):
                 embed = Embed(title='Некорректный номер рыбки!', color= Color.red())
                 await ctx.message.reply(embed=embed)
                 return
-                
+
             number-=1
             embed = Embed(
                     title=f"{choice(['🐟','🐠','🐡'])} {data['fish'][number]['name']} | {str(number+1)}",
@@ -149,7 +149,7 @@ class FortniteAPIio(Cog):
             await ctx.send(embed=embed)
 
 
-    @command(name=cmd["challenges"]["name"], aliases=cmd["challenges"]["aliases"], 
+    @command(name=cmd["challenges"]["name"], aliases=cmd["challenges"]["aliases"],
             brief=cmd["challenges"]["brief"],
             description=cmd["challenges"]["description"],
             usage=cmd["challenges"]["usage"],
@@ -181,13 +181,13 @@ class FortniteAPIio(Cog):
 
                 for count, challenge in enumerate(item['challenges']):
                     embed.add_field(
-                        name=f"Этап {count+1}", 
-                        value=f"{challenge['progress_total']} | Награда: {challenge['xp']} XP", 
+                        name=f"Этап {count+1}",
+                        value=f"{challenge['progress_total']} | Награда: {challenge['xp']} XP",
                         inline=False)
                     xp_total+=challenge['xp']
                 embed.add_field(
-                        name=f"Всего опыта за задание", 
-                        value=f"{xp_total} XP", 
+                        name=f"Всего опыта за задание",
+                        value=f"{xp_total} XP",
                         inline=False)
                 xp_total = 0
                 quest_embeds.append(embed)
@@ -197,7 +197,7 @@ class FortniteAPIio(Cog):
         await page.start()
 
 
-    @command(name=cmd["npc"]["name"], aliases=cmd["npc"]["aliases"], 
+    @command(name=cmd["npc"]["name"], aliases=cmd["npc"]["aliases"],
             brief=cmd["npc"]["brief"],
             description=cmd["npc"]["description"],
             usage=cmd["npc"]["usage"],
@@ -230,7 +230,7 @@ class FortniteAPIio(Cog):
                 embed = Embed(title='Некорректный номер NPC!', color= Color.red())
                 await ctx.message.reply(embed=embed)
                 return
-                
+
             number-=1
             embed = Embed(
                     title=f"{choice(['🔵','🟦','🔷'])} {data[number]['name']} | {str(number+1)}",

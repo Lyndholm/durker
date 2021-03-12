@@ -1,4 +1,4 @@
-{   
+{
     "benbot":
     {
         "benbotstatus":{
@@ -905,7 +905,7 @@
     },
     "peelyde":
     {
-        "upcoming": 
+        "upcoming":
         {
             "name": "upcoming",
             "aliases": ["fnupcoming","fnleaks"],
@@ -920,7 +920,7 @@
             "cooldown_type": "None",
             "hidden": false
         },
-        "fnseason": 
+        "fnseason":
         {
             "name": "fnseason",
             "aliases": ["seasonfn","fortseason"],

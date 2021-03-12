@@ -45,7 +45,7 @@ def insert_new_user_in_db(member: discord.Member):
     for table in tables:
         db.insert(f"{table}", {"user_id": member.id})
 
-    db.insert("users_info", {"user_id": member.id, 
+    db.insert("users_info", {"user_id": member.id,
                             "nickname": member.display_name,
                             "mention": member.mention})
 

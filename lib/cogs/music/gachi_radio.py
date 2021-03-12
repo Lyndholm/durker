@@ -235,12 +235,12 @@ class GachiRadio(commands.Cog, wavelink.WavelinkMixin):
         context = await self.bot.get_context(context_message)
 
         return context
-        
+
     async def launch_gachi_radio(self):
         context = await self.fetch_context(708601604353556491, 808087298632843294)
         player: Player = self.bot.wavelink.get_player(
-            guild_id=context.message.guild.id, 
-            cls=Player, 
+            guild_id=context.message.guild.id,
+            cls=Player,
             context=context
         )
         player.queue._queue.clear()
@@ -272,7 +272,7 @@ class GachiRadio(commands.Cog, wavelink.WavelinkMixin):
 
         if not player.is_playing:
             await player.do_next()
-        
+
 
     @commands.Cog.listener()
     async def on_ready(self):

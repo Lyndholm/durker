@@ -15,13 +15,13 @@ class FortniteTracker(Cog):
     def __init__(self, bot):
         self.bot = bot
         self.headers = {"TRN-Api-Key": getenv("TRN_API_KEY")}
-    
+
     @Cog.listener()
     async def on_ready(self):
         if not self.bot.ready:
            self.bot.cogs_ready.ready_up("fortnitetracker")
 
-    @command(name=cmd["fnstats"]["name"], aliases=cmd["fnstats"]["aliases"], 
+    @command(name=cmd["fnstats"]["name"], aliases=cmd["fnstats"]["aliases"],
             brief=cmd["fnstats"]["brief"],
             description=cmd["fnstats"]["description"],
             usage=cmd["fnstats"]["usage"],
@@ -127,7 +127,7 @@ class FortniteTracker(Cog):
                     stats_embed.set_image(url=data["data"]["image"])
                     #print(data["data"]["image"])
                     await main_message.edit(embed=stats_embed)
-                
+
 
         elif prefered_api == "fortnitetracker":
             if str(platform_react.emoji) == '⌨️':

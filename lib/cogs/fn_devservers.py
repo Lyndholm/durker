@@ -67,7 +67,7 @@ class FortniteDevServers(Cog):
            self.bot.cogs_ready.ready_up("fn_devservers")
 
 
-    @command(name=cmd["fndev"]["name"], aliases=cmd["fndev"]["aliases"], 
+    @command(name=cmd["fndev"]["name"], aliases=cmd["fndev"]["aliases"],
             brief=cmd["fndev"]["brief"],
             description=cmd["fndev"]["description"],
             usage=cmd["fndev"]["usage"],
@@ -141,6 +141,6 @@ class FortniteDevServers(Cog):
             page = Paginator(self.bot, msg, only=ctx.author, embeds=servers_embeds)
             await page.start()
 
-        
+
 def setup(bot):
     bot.add_cog(FortniteDevServers(bot))

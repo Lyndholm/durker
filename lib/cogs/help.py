@@ -19,7 +19,7 @@ def syntax(command):
     for key, value in command.params.items():
         if key not in ("self", "ctx"):
             params.append(f"[{key}]" if "NoneType" in str(value) else f"<{key}>")
-    
+
     params = " ".join(params)
     return f"```{cmd_and_aliases} {params}```"
 
@@ -57,7 +57,7 @@ class Help(Cog):
     def __init__(self, bot):
         self.bot = bot
         self.bot.remove_command("help")
-    
+
     @Cog.listener()
     async def on_ready(self):
         if not self.bot.ready:
@@ -68,7 +68,7 @@ class Help(Cog):
         embed.add_field(name="Синтаксис:", value=syntax(command))
         await ctx.send(embed=embed)
 
-    @command(name=cmd["help"]["name"], aliases=cmd["help"]["aliases"], 
+    @command(name=cmd["help"]["name"], aliases=cmd["help"]["aliases"],
             brief=cmd["help"]["brief"],
             description=cmd["help"]["description"],
             usage=cmd["help"]["usage"],
@@ -77,7 +77,7 @@ class Help(Cog):
     async def help_command(self, ctx, cmd: Optional[str]):
         if cmd is None:
             commands_list = []
-            
+
             for command in self.bot.commands:
                 if not command.hidden:
                     commands_list.append(command)

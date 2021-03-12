@@ -24,7 +24,7 @@ class BenBot(Cog):
         if not self.bot.ready:
            self.bot.cogs_ready.ready_up("benbot")
 
-    @command(name=cmd["benbotstatus"]["name"], aliases=cmd["benbotstatus"]["aliases"], 
+    @command(name=cmd["benbotstatus"]["name"], aliases=cmd["benbotstatus"]["aliases"],
             brief=cmd["benbotstatus"]["brief"],
             description=cmd["benbotstatus"]["description"],
             usage=cmd["benbotstatus"]["usage"],
@@ -38,7 +38,7 @@ class BenBot(Cog):
                 if r.status != 200:
                     await ctx.send(f"""```json\n{await r.text()}```""")
                     return
-                
+
                 data = await r.json()
                 await ctx.send(
                     embed=Embed(title="BenBot Status", color=Color.random())
@@ -60,7 +60,7 @@ class BenBot(Cog):
                 )
 
 
-    @command(name=cmd["aes"]["name"], aliases=cmd["aes"]["aliases"], 
+    @command(name=cmd["aes"]["name"], aliases=cmd["aes"]["aliases"],
             brief=cmd["aes"]["brief"],
             description=cmd["aes"]["description"],
             usage=cmd["aes"]["usage"],
@@ -88,10 +88,10 @@ class BenBot(Cog):
 
                 message = await ctx.send(embed=aes_embeds[0])
                 page = Paginator(self.bot, message, only=ctx.author, embeds=aes_embeds)
-                await page.start()  
+                await page.start()
 
 
-    @command(name=cmd["cosmeticinfo"]["name"], aliases=cmd["cosmeticinfo"]["aliases"], 
+    @command(name=cmd["cosmeticinfo"]["name"], aliases=cmd["cosmeticinfo"]["aliases"],
             brief=cmd["cosmeticinfo"]["brief"],
             description=cmd["cosmeticinfo"]["description"],
             usage=cmd["cosmeticinfo"]["usage"],
@@ -135,7 +135,7 @@ class BenBot(Cog):
                 await ctx.send(embed=embed)
 
 
-    @command(name=cmd["extractasset"]["name"], aliases=cmd["extractasset"]["aliases"], 
+    @command(name=cmd["extractasset"]["name"], aliases=cmd["extractasset"]["aliases"],
             brief=cmd["extractasset"]["brief"],
             description=cmd["extractasset"]["description"],
             usage=cmd["extractasset"]["usage"],
@@ -170,7 +170,7 @@ class BenBot(Cog):
                     )
 
 
-    @command(name=cmd["shopsections"]["name"], aliases=cmd["shopsections"]["aliases"], 
+    @command(name=cmd["shopsections"]["name"], aliases=cmd["shopsections"]["aliases"],
             brief=cmd["shopsections"]["brief"],
             description=cmd["shopsections"]["description"],
             usage=cmd["shopsections"]["usage"],

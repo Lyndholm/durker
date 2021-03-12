@@ -22,7 +22,7 @@ class Eval(Cog):
         if not self.bot.ready:
            self.bot.cogs_ready.ready_up("eval")
 
-    @command(name=cmd["eval"]["name"], aliases=cmd["eval"]["aliases"], 
+    @command(name=cmd["eval"]["name"], aliases=cmd["eval"]["aliases"],
             brief=cmd["eval"]["brief"],
             description=cmd["eval"]["description"],
             usage=cmd["eval"]["usage"],

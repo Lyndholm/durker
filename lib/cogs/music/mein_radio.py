@@ -85,7 +85,7 @@ class Player(wavelink.Player):
             self.queue._queue.insert(random.randint(500, self.queue.qsize()-1), track)
         except ValueError:
             pass
-        
+
         self.waiting = False
 
         # Invoke our players controller...
@@ -237,12 +237,12 @@ class MeinRadio(commands.Cog, wavelink.WavelinkMixin):
         context = await self.bot.get_context(context_message)
 
         return context
-        
+
     async def launch_mein_radio(self):
         context = await self.fetch_context(708601604353556491, 808087298632843294)
         player: Player = self.bot.wavelink.get_player(
-            guild_id=context.message.guild.id, 
-            cls=Player, 
+            guild_id=context.message.guild.id,
+            cls=Player,
             context=context
         )
         player.queue._queue.clear()
@@ -274,7 +274,7 @@ class MeinRadio(commands.Cog, wavelink.WavelinkMixin):
 
         if not player.is_playing:
             await player.do_next()
-        
+
 
     @commands.Cog.listener()
     async def on_ready(self):
@@ -740,7 +740,7 @@ class MeinRadio(commands.Cog, wavelink.WavelinkMixin):
                 player.dj = m
                 return await ctx.send(f'{member.mention} стал диджеем.')
 
-    @commands.command(name="to_delete", aliases=['удоли'], 
+    @commands.command(name="to_delete", aliases=['удоли'],
             brief="Сделайте заявку на удаление трека, который сейчас играет, из пелейлиста радио.",
             description="Формирует заявку на удаление трека, который сейчас играет, из плейлиста радио.",
             usage="to_delete <track> <reason>",
@@ -759,8 +759,8 @@ class MeinRadio(commands.Cog, wavelink.WavelinkMixin):
         reason = reason.replace('`', '­')
         date = datetime.datetime.now()
         song = f"{player.current.author} — {player.current.title}"
-        db.insert("song_suggestions", 
-                {"suggestion_author_id": ctx.author.id, 
+        db.insert("song_suggestions",
+                {"suggestion_author_id": ctx.author.id,
                 "suggestion_type": "delete",
                 "suggested_song": song,
                 "suggestion_comment": reason,

@@ -38,8 +38,8 @@ class Profanity(Cog):
 
     async def reply_profanity(self, channel: TextChannel, member: Member, lost_rep: int):
         profanity_replies = (
-            f"{member.mention}, будь добр, следи за языком.", 
-            f"Следи за языком, {member.mention}.", 
+            f"{member.mention}, будь добр, следи за языком.",
+            f"Следи за языком, {member.mention}.",
             f"{member.mention}, следи за языком, пожалуйста.",
             f"{member.mention}, думай, что говоришь.",
             f"{member.mention}, общайся, пожалуйста, без нецензурной лексики.",
@@ -68,7 +68,7 @@ class Profanity(Cog):
                     await self.reply_profanity(message.channel, message.author, minus_rep)
 
 
-    @command(name=cmd["swear"]["name"], aliases=cmd["swear"]["aliases"], 
+    @command(name=cmd["swear"]["name"], aliases=cmd["swear"]["aliases"],
             brief=cmd["swear"]["brief"],
             description=cmd["swear"]["description"],
             usage=cmd["swear"]["usage"],
@@ -88,7 +88,7 @@ class Profanity(Cog):
                 await self.reply_profanity(ctx.channel, target, minus_rep)
 
 
-    @command(name=cmd["addprofanity"]["name"], aliases=cmd["addprofanity"]["aliases"], 
+    @command(name=cmd["addprofanity"]["name"], aliases=cmd["addprofanity"]["aliases"],
             brief=cmd["addprofanity"]["brief"],
             description=cmd["addprofanity"]["description"],
             usage=cmd["addprofanity"]["usage"],
@@ -103,9 +103,9 @@ class Profanity(Cog):
 
         profanity.load_censor_words_from_file("./data/profanity.txt")
         await ctx.send("Словарь обновлен!")
-        
 
-    @command(name=cmd["delprofanity"]["name"], aliases=cmd["delprofanity"]["aliases"], 
+
+    @command(name=cmd["delprofanity"]["name"], aliases=cmd["delprofanity"]["aliases"],
             brief=cmd["delprofanity"]["brief"],
             description=cmd["delprofanity"]["description"],
             usage=cmd["delprofanity"]["usage"],

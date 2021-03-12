@@ -22,7 +22,7 @@ cmd = load_commands_from_json("fun")
 class Fun(Cog):
     def __init__(self, bot):
         self.bot = bot
-        self.hug_gifs = ["https://media4.giphy.com/media/PHZ7v9tfQu0o0/giphy.gif", 
+        self.hug_gifs = ["https://media4.giphy.com/media/PHZ7v9tfQu0o0/giphy.gif",
                         "https://i.pinimg.com/originals/f2/80/5f/f2805f274471676c96aff2bc9fbedd70.gif",
                         "https://media.tenor.com/images/b6d0903e0d54e05bb993f2eb78b39778/tenor.gif",
                         "https://thumbs.gfycat.com/AlienatedFearfulJanenschia-small.gif",
@@ -35,7 +35,7 @@ class Fun(Cog):
         if not self.bot.ready:
            self.bot.cogs_ready.ready_up("fun")
 
-    @command(name=cmd["hug"]["name"], aliases=cmd["hug"]["aliases"], 
+    @command(name=cmd["hug"]["name"], aliases=cmd["hug"]["aliases"],
             brief=cmd["hug"]["brief"],
             description=cmd["hug"]["description"],
             usage=cmd["hug"]["usage"],
@@ -56,17 +56,17 @@ class Fun(Cog):
         await ctx.send(embed=embed, delete_after=180)
 
 
-    @command(name=cmd["coin"]["name"], aliases=cmd["coin"]["aliases"], 
+    @command(name=cmd["coin"]["name"], aliases=cmd["coin"]["aliases"],
             brief=cmd["coin"]["brief"],
             description=cmd["coin"]["description"],
             usage=cmd["coin"]["usage"],
             help=cmd["coin"]["help"],
             hidden=cmd["coin"]["hidden"], enabled=True)
     @checks.required_level(cmd["coin"]["required_level"])
-    @check_any(checks.is_any_channel([777979537795055636, 796439346344493107, 708601604353556491]), dm_only())  
+    @check_any(checks.is_any_channel([777979537795055636, 796439346344493107, 708601604353556491]), dm_only())
     async def drop_coin_command(self, ctx):
         robot_choice = choice(["орёл", "решка"])
-                                   
+
         embed = Embed(title=":coin: Орёл или решка", description = "Подбрасываем монетку....", color=Color.red())
         message = await ctx.send(embed=embed)
 
@@ -77,7 +77,7 @@ class Fun(Cog):
         await message.edit(embed=embed_new)
 
 
-    @command(name=cmd["saper"]["name"], aliases=cmd["saper"]["aliases"], 
+    @command(name=cmd["saper"]["name"], aliases=cmd["saper"]["aliases"],
             brief=cmd["saper"]["brief"],
             description=cmd["saper"]["description"],
             usage=cmd["saper"]["usage"],
@@ -197,7 +197,7 @@ class Fun(Cog):
             pass
 
 
-    @command(name=cmd["flags"]["name"], aliases=cmd["flags"]["aliases"], 
+    @command(name=cmd["flags"]["name"], aliases=cmd["flags"]["aliases"],
             brief=cmd["flags"]["brief"],
             description=cmd["flags"]["description"],
             usage=cmd["flags"]["usage"],
@@ -237,7 +237,7 @@ class Fun(Cog):
                         em = Embed(title = "Верно!", color=Color.green())
                         em.set_thumbnail(url=otvet['url'])
                         em.add_field(name = "Правильный ответ:",value = f"{msg.content.title()}")
-                        em.add_field(name = "Ответил:", value = f"{msg.author.mention}")                    
+                        em.add_field(name = "Ответил:", value = f"{msg.author.mention}")
                         await ctx.channel.send(embed = em)
                         count = count + 1
                         await sleep(1)
@@ -266,7 +266,7 @@ class Fun(Cog):
                         return
 
 
-    @command(name=cmd["knb"]["name"], aliases=cmd["knb"]["aliases"], 
+    @command(name=cmd["knb"]["name"], aliases=cmd["knb"]["aliases"],
             brief=cmd["knb"]["brief"],
             description=cmd["knb"]["description"],
             usage=cmd["knb"]["usage"],
@@ -277,19 +277,19 @@ class Fun(Cog):
         robot = ['Камень', 'Ножницы', 'Бумага']
         stone_list = ["stone", "камень","к"]
         paper_list = ["paper", "бумага", "б"]
-        scissors_list = ["scissors", "ножницы","н"]  
-                                   
+        scissors_list = ["scissors", "ножницы","н"]
+
         out = {
-            "icon": None, 
-            "value": None, 
+            "icon": None,
+            "value": None,
             "img": None
             }
-                                   
-        robot_choice = choice(robot)  
-                                   
+
+        robot_choice = choice(robot)
+
         win_list = ["Вы выиграли! :smiley:","Вы проиграли :pensive:", "Ничья! :cowboy:"]
-                                   
-        if item.lower() in stone_list:       
+
+        if item.lower() in stone_list:
             if robot_choice == 'Ножницы':
                 win = win_list[0]
                 out["icon"] = ":scissors:"
@@ -303,35 +303,35 @@ class Fun(Cog):
         elif item.lower() in paper_list:
             if robot_choice == 'Камень':
                 win = win_list[0]
-                out["icon"] = ":rock:"     
+                out["icon"] = ":rock:"
             elif robot_choice == 'Ножницы':
                 win = win_list[1]
-                out["icon"] = ":scissors:"             
+                out["icon"] = ":scissors:"
             else:
                 win = win_list[2]
-                out["icon"] = ":newspaper:"               
+                out["icon"] = ":newspaper:"
 
         elif item.lower() in scissors_list:
             if robot_choice == 'Бумага':
                 win = win_list[0]
-                out["icon"] = ":newspaper:"               
+                out["icon"] = ":newspaper:"
             elif robot_choice == 'Камень':
                 win = win_list[1]
-                out["icon"] = ":rock:"                
+                out["icon"] = ":rock:"
             else:
-                win = win_list[2]  
-                out["icon"] = ":scissors:"     
+                win = win_list[2]
+                out["icon"] = ":scissors:"
         else:
             await ctx.send("Ошибка!", delete_after = 20)
             return
-                
+
         if win == win_list[0]:
             out["img"] = "https://image.flaticon.com/icons/png/512/445/445087.png"
         elif win == win_list[1]:
             out["img"] = "https://cdn.discordapp.com/attachments/774698479981297664/774700936958312468/placeholder.png"
         else:
             out["img"] = "https://cdn.discordapp.com/attachments/774698479981297664/774700936958312468/placeholder.png"
-        
+
         embed = Embed(title="Результат игры", description = win, colour=Color.random(), timestamp=ctx.message.created_at)
         embed.add_field(name="Выбор бота:", value=robot_choice, inline=True)
         embed.add_field(name=f"Выбор {ctx.author.display_name}:", value=item.title(), inline=True)
@@ -346,14 +346,14 @@ class Fun(Cog):
             await ctx.send(embed=embed, delete_after = 20)
 
 
-    @command(name=cmd["8ball"]["name"], aliases=cmd["8ball"]["aliases"], 
+    @command(name=cmd["8ball"]["name"], aliases=cmd["8ball"]["aliases"],
             brief=cmd["8ball"]["brief"],
             description=cmd["8ball"]["description"],
             usage=cmd["8ball"]["usage"],
             help=cmd["8ball"]["help"],
             hidden=cmd["8ball"]["hidden"], enabled=True)
     @guild_only()
-    async def magic_ball_command(self, ctx, *, question: str):           
+    async def magic_ball_command(self, ctx, *, question: str):
         posible_answers = {
             "affirmative": {
                 "color": Color.green(),
@@ -372,14 +372,14 @@ class Fun(Cog):
             "negative":{
                 "color": Color.red(),
                 "answers": [
-                    "**Даже не думай**", "**Мой ответ — «нет»**", "**По моим данным — «нет»**", "**Перспективы не очень хорошие**", 
+                    "**Даже не думай**", "**Мой ответ — «нет»**", "**По моим данным — «нет»**", "**Перспективы не очень хорошие**",
                     "**Весьма сомнительно**"
                 ]
             }
         }
-        
+
         answer_category = choice(list(posible_answers.keys()))
-        
+
         if question.strip()[-1] == "?":
             embed = Embed(description=choice(posible_answers[answer_category]["answers"]), color=posible_answers[answer_category]["color"])
             embed.set_author(name="Магический шар", icon_url="https://upload.wikimedia.org/wikipedia/commons/e/eb/Magic_eight_ball.png")
@@ -395,7 +395,7 @@ class Fun(Cog):
             await ctx.send(embed=embed, delete_after = 30)
 
 
-    @command(name=cmd["randint"]["name"], aliases=cmd["randint"]["aliases"], 
+    @command(name=cmd["randint"]["name"], aliases=cmd["randint"]["aliases"],
             brief=cmd["randint"]["brief"],
             description=cmd["randint"]["description"],
             usage=cmd["randint"]["usage"],
@@ -404,7 +404,7 @@ class Fun(Cog):
     async def randint_command(self, ctx, a: int, b: int):
         embed = Embed(title="Генератор случайных чисел", description=f"Случайное целое число: **{randint(a,b)}**", color=Color.random())
         await ctx.send(embed=embed)
-    
+
     @randint_command.error
     async def randint_command_error(self, ctx, exc):
         if isinstance(exc, MissingRequiredArgument):

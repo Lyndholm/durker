@@ -19,13 +19,13 @@ class PeelyDE(Cog):
            self.bot.cogs_ready.ready_up("peelyde")
 
 
-    @command(name=cmd["upcoming"]["name"], aliases=cmd["upcoming"]["aliases"], 
+    @command(name=cmd["upcoming"]["name"], aliases=cmd["upcoming"]["aliases"],
             brief=cmd["upcoming"]["brief"],
             description=cmd["upcoming"]["description"],
             usage=cmd["upcoming"]["usage"],
             help=cmd["upcoming"]["help"],
             hidden=cmd["upcoming"]["hidden"], enabled=True)
-    async def show_fortnite_upcoming_items_command(self, ctx, mode:str="current", language:str="ru"):  
+    async def show_fortnite_upcoming_items_command(self, ctx, mode:str="current", language:str="ru"):
         embed = Embed(
             title="Fortnite upcoming items",
             color=Color.random(),
@@ -46,9 +46,9 @@ class PeelyDE(Cog):
             else:
                 embed.set_image(url="https://api.peely.de/cdn/current/leaks.png")
                 await ctx.send(embed=embed)
-    
 
-    @command(name=cmd["fnseason"]["name"], aliases=cmd["fnseason"]["aliases"], 
+
+    @command(name=cmd["fnseason"]["name"], aliases=cmd["fnseason"]["aliases"],
             brief=cmd["fnseason"]["brief"],
             description=cmd["fnseason"]["description"],
             usage=cmd["fnseason"]["usage"],

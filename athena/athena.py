@@ -73,7 +73,7 @@ class Athena:
         Return True if image sucessfully saved.
         """
 
-        try:   
+        try:
             if itemShop["featured"] is not None:
                 featured = itemShop["featured"]["entries"]
 
@@ -85,7 +85,7 @@ class Athena:
 
             else:
                 daily = []
-            
+
 
             if (len(featured) >= 0):
                 rowsDaily = 3
@@ -101,8 +101,8 @@ class Athena:
                 width = ((340 * 6) + 10)
                 height = max(ceil(len(featured) / 3), ceil(len(daily) / 3))
                 dailyStartX = 1055
-                cardStartY = 350  
-                
+                cardStartY = 350
+
             if (len(featured) >= 24) and (len(daily) >= 18):
                 rowsDaily = 6
                 rowsFeatured = 6
@@ -157,7 +157,7 @@ class Athena:
         #canvas.text(ImageUtil.CenterX(self, textWidth, shopImage.width, 30), "Магазин предметов Fortnite", (255, 255, 255), font=font)
         #textWidth, _ = font.getsize(date.upper())
         #canvas.text(ImageUtil.CenterX(self, textWidth, shopImage.width, 240), date.upper(), (255, 255, 255), font=font)
-        
+
         #canvas.text((20, 240), "Рекомендуемые предметы", (255, 255, 255), font=font, anchor=None, spacing=4, align="left")
         #textWidth, _ = font.getsize("Ежедневный магазин")
         #canvas.text((shopImage.width - (textWidth + 20), 240), "Ежедневный магазин", (255, 255, 255), font=font, anchor=None, spacing=4, align="right")
@@ -320,10 +320,10 @@ class Athena:
             # Ensure that the item name does not overflow
             font, textWidth, change = ImageUtil.FitTextX(self, itemName, 50, 250)
         canvas.text(ImageUtil.CenterX(self, textWidth, card.width, (377 + (change / 2))), itemName, (255, 255, 255), font=font)
-      
+
         font = ImageUtil.Font(self, 40)
         textWidth, _ = font.getsize(f"{rarity.upper()} {category.upper()}")
-        
+
         change = 0
         if textWidth >= 270:
             # Ensure that the item rarity/type does not overflow

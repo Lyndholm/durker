@@ -14,7 +14,7 @@ class Contests(Cog):
         self.bot = bot
         self.giveaways = []
 
-    @command(name=cmd["giveaway"]["name"], aliases=cmd["giveaway"]["aliases"], 
+    @command(name=cmd["giveaway"]["name"], aliases=cmd["giveaway"]["aliases"],
             brief=cmd["giveaway"]["brief"],
             description=cmd["giveaway"]["description"],
             usage=cmd["giveaway"]["usage"],

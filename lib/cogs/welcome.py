@@ -52,7 +52,7 @@ class Welcome(Cog):
 
             finally:
                 insert_new_user_in_db(after)
-                
+
                 embed = Embed(description=f"Привет, **{after.display_name}** ({after.mention})!\nДобро пожаловать на сервер **{after.guild.name}** :tada::hugging:!",
                             color=Color.green(), timestamp=datetime.now())
                 embed.set_author(name=f"Новый участник на сервере!", icon_url=f"{after.guild.icon_url}")

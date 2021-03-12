@@ -25,13 +25,13 @@ class Nekos(Cog):
         if not self.bot.ready:
            self.bot.cogs_ready.ready_up("nekos")
 
-    @command(name=cmd["anipic"]["name"], aliases=cmd["anipic"]["aliases"], 
+    @command(name=cmd["anipic"]["name"], aliases=cmd["anipic"]["aliases"],
             brief=cmd["anipic"]["brief"],
             description=cmd["anipic"]["description"],
             usage=cmd["anipic"]["usage"],
             help=cmd["anipic"]["help"],
             hidden=cmd["anipic"]["hidden"], enabled=True)
-    async def random_anime_picture_command(self, ctx):  
+    async def random_anime_picture_command(self, ctx):
         embed = Embed(color=Color.random(), timestamp=ctx.message.created_at)
         embed.set_footer(text=f'{ctx.author.name}', icon_url=ctx.author.avatar_url)
 

@@ -32,7 +32,7 @@ class Voice(Cog):
             await self.delete_temporary_channels(voice_channel, text_channel)
 
         await self.bot.wait_for(
-                'voice_state_update', 
+                'voice_state_update',
                 check = lambda x,y,z: len(voice_channel.members) == 0
             )
         try:
@@ -94,8 +94,8 @@ class Voice(Cog):
             if after.channel.id != 774672094281465856:
                 rec = db.fetchone(["entered_at"], "voice_activity", "user_id", member.id)
                 if rec is None:
-                    db.insert("voice_activity", 
-                    {"user_id": member.id, 
+                    db.insert("voice_activity",
+                    {"user_id": member.id,
                     "entered_at": datetime.now()}
                     )
 
@@ -103,7 +103,7 @@ class Voice(Cog):
             rec = db.fetchone(["entered_at"], "voice_activity", "user_id", member.id)
             if rec is not None:
                 self.update_member_invoce_time(member.id)
-        
+
         if before.channel is not None and after.channel is not None:
             if after.channel.id == 774672094281465856:
                 rec = db.fetchone(["entered_at"], "voice_activity", "user_id", member.id)

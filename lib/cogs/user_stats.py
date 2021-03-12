@@ -21,7 +21,7 @@ class UserStats(Cog):
         if not self.bot.ready:
            self.bot.cogs_ready.ready_up("user_stats")
 
-    @command(name=cmd["profile"]["name"], aliases=cmd["profile"]["aliases"], 
+    @command(name=cmd["profile"]["name"], aliases=cmd["profile"]["aliases"],
         brief=cmd["profile"]["brief"],
         description=cmd["profile"]["description"],
         usage=cmd["profile"]["usage"],
@@ -52,11 +52,11 @@ class UserStats(Cog):
         biography = db.fetchone(["brief_biography"], "users_info", 'user_id', target.id)
 
         purchases = db.fetchone(["purchases"], "users_stats", 'user_id', target.id)
- 
-        user_stats = db.fetchone(["achievements_list", "messages_count", "rep_rank", "invoice_time", "lost_reputation"], 
+
+        user_stats = db.fetchone(["achievements_list", "messages_count", "rep_rank", "invoice_time", "lost_reputation"],
                                 "users_stats", 'user_id', target.id)
 
-        moderation_stats = db.fetchone(["mutes_story", "warns_story", "profanity_triggers"], 
+        moderation_stats = db.fetchone(["mutes_story", "warns_story", "profanity_triggers"],
                                     "users_stats", 'user_id', target.id)
 
         total_mute_time = sum(moderation_stats[0]['user_mute_story'][i]['mute_time'] for i in range(len(moderation_stats[0]['user_mute_story'])))
@@ -164,8 +164,8 @@ class UserStats(Cog):
 
         await ctx.send(embed=embed)
 
-    
-    @command(name=cmd["setbio"]["name"], aliases=cmd["setbio"]["aliases"], 
+
+    @command(name=cmd["setbio"]["name"], aliases=cmd["setbio"]["aliases"],
         brief=cmd["setbio"]["brief"],
         description=cmd["setbio"]["description"],
         usage=cmd["setbio"]["usage"],
@@ -196,8 +196,8 @@ class UserStats(Cog):
                                     description=f"{ctx.author.mention}, время на выбор вышло, дейсвтие оменено.")
                         await msg.reply(embed=embed)
                         return
-                        
-                    
+
+
                     else:
                         if str(react.emoji) == r_list[0]:
                             embed = Embed(title=':white_check_mark: Действие отменено', color = Color.green(), timestamp = datetime.utcnow(),
@@ -241,7 +241,7 @@ class UserStats(Cog):
                 raise e
 
 
-    @command(name=cmd["setprivacy"]["name"], aliases=cmd["setprivacy"]["aliases"], 
+    @command(name=cmd["setprivacy"]["name"], aliases=cmd["setprivacy"]["aliases"],
         brief=cmd["setprivacy"]["brief"],
         description=cmd["setprivacy"]["description"],
         usage=cmd["setprivacy"]["usage"],
@@ -251,7 +251,7 @@ class UserStats(Cog):
     async def set_user_profile_privacy_command(self, ctx):
         r_list = ['🟩', '🟥', '❌']
         embed = Embed(
-            color = Color.magenta(), 
+            color = Color.magenta(),
             description = f"Пожалуйста, выберите тип вашего профиля:\n\n"
                 "🟩 — Открытый, просматривать его могут все пользователи в любое время.\n🟥 — Закрытый, просматровать профиль можете только вы."
                 "\n\n❌ — выход."
@@ -271,13 +271,13 @@ class UserStats(Cog):
                         description=f"{ctx.author.mention}, время на выбор вышло, дейсвтие оменено.")
             await msg.reply(embed=embed)
             return
-        
+
 
         if str(react.emoji) == r_list[2]:
             await msg.delete()
             embed = Embed(
                 title='❌ Действие отменено',
-                сolor = Color.dark_red(), 
+                сolor = Color.dark_red(),
                 timestamp = datetime.utcnow()
             )
             await ctx.message.reply(embed=embed)
@@ -291,8 +291,8 @@ class UserStats(Cog):
             db.commit()
 
             embed = Embed(
-                title=':white_check_mark: Выполнено!', 
-                color = Color.green(), 
+                title=':white_check_mark: Выполнено!',
+                color = Color.green(),
                 timestamp = datetime.utcnow(),
                 description = f"**{ctx.author.display_name}**, ваши настройки приватности обновлены.\nТип вашего профиля: **Открытый**"
             )
@@ -307,15 +307,15 @@ class UserStats(Cog):
             db.commit()
 
             embed = Embed(
-                title=':white_check_mark: Выполнено!', 
-                color = Color.red(), 
+                title=':white_check_mark: Выполнено!',
+                color = Color.red(),
                 timestamp = datetime.utcnow(),
                 description = f"**{ctx.author.display_name}**, ваши настройки приватности обновлены.\nТип вашего профиля: **Закрытый**"
             )
             await msg.edit(embed=embed)
 
 
-    @command(name=cmd["amount"]["name"], aliases=cmd["amount"]["aliases"], 
+    @command(name=cmd["amount"]["name"], aliases=cmd["amount"]["aliases"],
         brief=cmd["amount"]["brief"],
         description=cmd["amount"]["description"],
         usage=cmd["amount"]["usage"],
@@ -323,7 +323,7 @@ class UserStats(Cog):
         hidden=cmd["amount"]["hidden"], enabled=True)
     @guild_only()
     async def amount_command(self, ctx):
-        activity_role_1 = get(ctx.guild.roles, name='Работяга') 
+        activity_role_1 = get(ctx.guild.roles, name='Работяга')
         activity_role_2 = get(ctx.guild.roles, name='Олд')
         activity_role_3 = get(ctx.guild.roles, name='Капитан')
         activity_role_4 = get(ctx.guild.roles, name='Ветеран')
@@ -355,7 +355,7 @@ class UserStats(Cog):
         await ctx.send(embed=embed)
 
 
-    @command(name=cmd["myrep"]["name"], aliases=cmd["myrep"]["aliases"], 
+    @command(name=cmd["myrep"]["name"], aliases=cmd["myrep"]["aliases"],
         brief=cmd["myrep"]["brief"],
         description=cmd["myrep"]["description"],
         usage=cmd["myrep"]["usage"],
@@ -400,7 +400,7 @@ class UserStats(Cog):
         await ctx.send(embed=embed)
 
 
-    @command(name=cmd["rep"]["name"], aliases=cmd["rep"]["aliases"], 
+    @command(name=cmd["rep"]["name"], aliases=cmd["rep"]["aliases"],
         brief=cmd["rep"]["brief"],
         description=cmd["rep"]["description"],
         usage=cmd["rep"]["usage"],

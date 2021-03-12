@@ -18,13 +18,13 @@ class Owner(Cog):
     def __init__(self, bot):
         self.bot = bot
         self.modified_commands = {}
-    
+
     @Cog.listener()
     async def on_ready(self):
         if not self.bot.ready:
            self.bot.cogs_ready.ready_up("owner")
 
-    @command(name=cmd["loadcog"]["name"], aliases=cmd["loadcog"]["aliases"], 
+    @command(name=cmd["loadcog"]["name"], aliases=cmd["loadcog"]["aliases"],
             brief=cmd["loadcog"]["brief"],
             description=cmd["loadcog"]["description"],
             usage=cmd["loadcog"]["usage"],
@@ -43,7 +43,7 @@ class Owner(Cog):
             await ctx.send(embed=embed)
 
 
-    @command(name=cmd["unloadcog"]["name"], aliases=cmd["unloadcog"]["aliases"], 
+    @command(name=cmd["unloadcog"]["name"], aliases=cmd["unloadcog"]["aliases"],
             brief=cmd["unloadcog"]["brief"],
             description=cmd["unloadcog"]["description"],
             usage=cmd["unloadcog"]["usage"],
@@ -62,7 +62,7 @@ class Owner(Cog):
             await ctx.send(embed=embed)
 
 
-    @command(name=cmd["reloadcog"]["name"], aliases=cmd["reloadcog"]["aliases"], 
+    @command(name=cmd["reloadcog"]["name"], aliases=cmd["reloadcog"]["aliases"],
             brief=cmd["reloadcog"]["brief"],
             description=cmd["reloadcog"]["description"],
             usage=cmd["reloadcog"]["usage"],
@@ -82,7 +82,7 @@ class Owner(Cog):
             await ctx.send(embed=embed)
 
 
-    @command(name=cmd["disablecmd"]["name"], aliases=cmd["disablecmd"]["aliases"], 
+    @command(name=cmd["disablecmd"]["name"], aliases=cmd["disablecmd"]["aliases"],
             brief=cmd["disablecmd"]["brief"],
             description=cmd["disablecmd"]["description"],
             usage=cmd["disablecmd"]["usage"],
@@ -106,7 +106,7 @@ class Owner(Cog):
             await ctx.send(embed=embed)
 
 
-    @command(name=cmd["enablecmd"]["name"], aliases=cmd["enablecmd"]["aliases"], 
+    @command(name=cmd["enablecmd"]["name"], aliases=cmd["enablecmd"]["aliases"],
             brief=cmd["enablecmd"]["brief"],
             description=cmd["enablecmd"]["description"],
             usage=cmd["enablecmd"]["usage"],
@@ -130,9 +130,9 @@ class Owner(Cog):
         except Exception as e:
             embed = Embed(title=':exclamation: Ошибка!', description=f'{type(e).__name__} - {e}', color = Color.red())
             await ctx.send(embed=embed)
-    
 
-    @command(name=cmd["disabledcmds"]["name"], aliases=cmd["disabledcmds"]["aliases"], 
+
+    @command(name=cmd["disabledcmds"]["name"], aliases=cmd["disabledcmds"]["aliases"],
             brief=cmd["disabledcmds"]["brief"],
             description=cmd["disabledcmds"]["description"],
             usage=cmd["disabledcmds"]["usage"],
@@ -149,7 +149,7 @@ class Owner(Cog):
         await ctx.send(embed=embed)
 
 
-    @command(name=cmd["fnping"]["name"], aliases=cmd["fnping"]["aliases"], 
+    @command(name=cmd["fnping"]["name"], aliases=cmd["fnping"]["aliases"],
             brief=cmd["fnping"]["brief"],
             description=cmd["fnping"]["description"],
             usage=cmd["fnping"]["usage"],
@@ -216,7 +216,7 @@ class Owner(Cog):
         inline = True
 
 
-    @command(name=cmd["bearer"]["name"], aliases=cmd["bearer"]["aliases"], 
+    @command(name=cmd["bearer"]["name"], aliases=cmd["bearer"]["aliases"],
             brief=cmd["bearer"]["brief"],
             description=cmd["bearer"]["description"],
             usage=cmd["bearer"]["usage"],
@@ -230,7 +230,7 @@ class Owner(Cog):
                 if r.status != 200:
                     await ctx.send(f"""```json\n{await r.text()}```""")
                     return
-                
+
                 data = await r.json()
                 embed = Embed(
                     title="Bearer token",
@@ -282,7 +282,7 @@ class Owner(Cog):
             )
             return await ctx.send(embed=embed)
 
-    @command(name=cmd["approve"]["name"], aliases=cmd["approve"]["aliases"], 
+    @command(name=cmd["approve"]["name"], aliases=cmd["approve"]["aliases"],
             brief=cmd["approve"]["brief"],
             description=cmd["approve"]["description"],
             usage=cmd["approve"]["usage"],
@@ -295,8 +295,8 @@ class Owner(Cog):
             return await ctx.send('Укажите номер заявки.')
 
         await self.pass_suggesion_decision(ctx, suggestion_id, True, comment)
-        
-    @command(name=cmd["reject"]["name"], aliases=cmd["reject"]["aliases"], 
+
+    @command(name=cmd["reject"]["name"], aliases=cmd["reject"]["aliases"],
             brief=cmd["reject"]["brief"],
             description=cmd["reject"]["description"],
             usage=cmd["reject"]["usage"],
@@ -311,7 +311,7 @@ class Owner(Cog):
         await self.pass_suggesion_decision(ctx, suggestion_id, False, comment)
 
 
-    @command(name=cmd["blacklist"]["name"], aliases=cmd["blacklist"]["aliases"], 
+    @command(name=cmd["blacklist"]["name"], aliases=cmd["blacklist"]["aliases"],
             brief=cmd["blacklist"]["brief"],
             description=cmd["blacklist"]["description"],
             usage=cmd["blacklist"]["usage"],
@@ -331,7 +331,7 @@ class Owner(Cog):
         await ctx.message.add_reaction('✅')
 
 
-    @command(name=cmd["whitelist"]["name"], aliases=cmd["whitelist"]["aliases"], 
+    @command(name=cmd["whitelist"]["name"], aliases=cmd["whitelist"]["aliases"],
             brief=cmd["whitelist"]["brief"],
             description=cmd["whitelist"]["description"],
             usage=cmd["whitelist"]["usage"],
@@ -355,7 +355,7 @@ class Owner(Cog):
         await ctx.message.add_reaction('✅')
 
 
-    @command(name=cmd["echo"]["name"], aliases=cmd["echo"]["aliases"], 
+    @command(name=cmd["echo"]["name"], aliases=cmd["echo"]["aliases"],
             brief=cmd["echo"]["brief"],
             description=cmd["echo"]["description"],
             usage=cmd["echo"]["usage"],
@@ -377,7 +377,7 @@ class Owner(Cog):
             await ctx.message.add_reaction('✅')
 
 
-    @command(name=cmd["shutdown"]["name"], aliases=cmd["shutdown"]["aliases"], 
+    @command(name=cmd["shutdown"]["name"], aliases=cmd["shutdown"]["aliases"],
             brief=cmd["shutdown"]["brief"],
             description=cmd["shutdown"]["description"],
             usage=cmd["shutdown"]["usage"],

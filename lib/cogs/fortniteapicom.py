@@ -28,7 +28,7 @@ class FortniteAPIcom(Cog):
         if not self.bot.ready:
            self.bot.cogs_ready.ready_up("fortniteapicom")
 
-    @command(name=cmd["searchcosmetic"]["name"], aliases=cmd["searchcosmetic"]["aliases"], 
+    @command(name=cmd["searchcosmetic"]["name"], aliases=cmd["searchcosmetic"]["aliases"],
             brief=cmd["searchcosmetic"]["brief"],
             description=cmd["searchcosmetic"]["description"],
             usage=cmd["searchcosmetic"]["usage"],
@@ -207,8 +207,8 @@ class FortniteAPIcom(Cog):
                     response_data = await r.json()
                     if r.status == 404:
                         embed = Embed(
-                            title='Предмет не найден.', 
-                            description=f"```txt\n" + response_data["error"] + "```", 
+                            title='Предмет не найден.',
+                            description=f"```txt\n" + response_data["error"] + "```",
                             color=Color.red(),
                             timestamp=datetime.utcnow())
                         return await ctx.send(embed=embed)
@@ -223,7 +223,7 @@ class FortniteAPIcom(Cog):
                             color=Color.red(),
                             timestamp=datetime.utcnow())
                         return await ctx.send(embed=embed)
-                        
+
             i = data["data"]
             embed = Embed(color=Color.random())
             embed.set_author(name=i["name"])
@@ -282,9 +282,9 @@ class FortniteAPIcom(Cog):
                 await msg.add_reaction("✅")
                 try:
                     p = await self.bot.wait_for(
-                        "raw_reaction_add", timeout=60, check=lambda p: 
-                        p.user_id == ctx.author.id 
-                        and str(p.emoji) == "✅" 
+                        "raw_reaction_add", timeout=60, check=lambda p:
+                        p.user_id == ctx.author.id
+                        and str(p.emoji) == "✅"
                         and p.channel_id == ctx.channel.id
                         and p.message_id == msg.id
                     )
@@ -305,7 +305,7 @@ class FortniteAPIcom(Cog):
                             embed.add_field(name=i3["name"], value=i3.get("unlockRequirements", "Стиль открыт по умолчанию."), inline=False)
                             embed.set_image(url=i3.get("image", PLACEHOLDER))
                             variants_embeds.append(embed)
-                            
+
                 variants_msg = await msg.reply(embed=variants_embeds[0], mention_author=False)
                 page = Paginator(self.bot, variants_msg, only=ctx.author, embeds=variants_embeds)
                 return await page.start()
@@ -314,7 +314,7 @@ class FortniteAPIcom(Cog):
             await ctx.send(
                 "Пожалуйста, введите аргументы корректно.\n\n```+searchcosmetic -name Рейдер-Изгой -rarity epic```")
 
-    @command(name=cmd["searchparams"]["name"], aliases=cmd["searchparams"]["aliases"], 
+    @command(name=cmd["searchparams"]["name"], aliases=cmd["searchparams"]["aliases"],
             brief=cmd["searchparams"]["brief"],
             description=cmd["searchparams"]["description"],
             usage=cmd["searchparams"]["usage"],
@@ -338,7 +338,7 @@ class FortniteAPIcom(Cog):
         await page.start()
 
 
-    @command(name=cmd["news"]["name"], aliases=cmd["news"]["aliases"], 
+    @command(name=cmd["news"]["name"], aliases=cmd["news"]["aliases"],
             brief=cmd["news"]["brief"],
             description=cmd["news"]["description"],
             usage=cmd["news"]["usage"],
@@ -374,7 +374,7 @@ class FortniteAPIcom(Cog):
                     for i in range(len(data["data"]["messages"])):
                         content = data["data"]["messages"][i]
                         embed = Embed(
-                            title=content["title"] + " | " + content["adspace"], 
+                            title=content["title"] + " | " + content["adspace"],
                             description=content["body"],
                             color=Color.random())
                         embed.set_image(url=content["image"])
@@ -384,10 +384,10 @@ class FortniteAPIcom(Cog):
                     page = Paginator(self.bot, message, only=ctx.author, embeds=embeds)
                     return await page.start()
 
-                await ctx.send(embed=embed)            
+                await ctx.send(embed=embed)
 
 
-    @command(name=cmd["creatorcode"]["name"], aliases=cmd["creatorcode"]["aliases"], 
+    @command(name=cmd["creatorcode"]["name"], aliases=cmd["creatorcode"]["aliases"],
             brief=cmd["creatorcode"]["brief"],
             description=cmd["creatorcode"]["description"],
             usage=cmd["creatorcode"]["usage"],
@@ -435,7 +435,7 @@ class FortniteAPIcom(Cog):
                     await ctx.send(f"```json\n{r.text}```")
 
 
-    @command(name=cmd["shop"]["name"], aliases=cmd["shop"]["aliases"], 
+    @command(name=cmd["shop"]["name"], aliases=cmd["shop"]["aliases"],
             brief=cmd["shop"]["brief"],
             description=cmd["shop"]["description"],
             usage=cmd["shop"]["usage"],
@@ -452,9 +452,9 @@ class FortniteAPIcom(Cog):
         )
         embed.set_image(url="attachment://itemshop.jpg")
         try:
-            await ctx.send(embed=embed, file=shop_img)         
+            await ctx.send(embed=embed, file=shop_img)
         except HTTPException:
-            embed = Embed(title=':exclamation: HTTPException', 
+            embed = Embed(title=':exclamation: HTTPException',
             description =f"Если вы видите это сообщение, значит, вес изображения с магазином превышает 8 Мб, вследствие чего его невозможно отправить.\n"
                         "Пожалуйста, сообщите об этом <@375722626636578816>",
             color= Color.red())

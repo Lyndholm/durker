@@ -19,7 +19,7 @@ class Covid(Cog):
         if not self.bot.ready:
            self.bot.cogs_ready.ready_up("covid")
 
-    @command(name=cmd["covid"]["name"], aliases=cmd["covid"]["aliases"], 
+    @command(name=cmd["covid"]["name"], aliases=cmd["covid"]["aliases"],
             brief=cmd["covid"]["brief"],
             description=cmd["covid"]["description"],
             usage=cmd["covid"]["usage"],
@@ -41,7 +41,7 @@ class Covid(Cog):
                                         title=f'Статистика Коронавируса | {country.upper()}',
                                         description=f"Дата обновления статистики: **{date}**",
                                         color = Color.red())
-                                    
+
                                     embed.add_field(name=f'Заболеваний:', value=f'{item["cases"]:,}')
 
                                     embed.add_field(name=f'Заболеваний за сутки:', value=f'+{item["todayCases"]:,}')
@@ -57,12 +57,12 @@ class Covid(Cog):
                                     embed.add_field(name=f'Погибло:', value=f'{item["deaths"]:,}')
 
                                     embed.add_field(name=f'Погибло за сутки:', value=f'{item["todayDeaths"]:,}')
-                                    
+
                                     embed.add_field(name=f'Проведено тестов:', value=f'{item["tests"]:,}')
 
                                     embed.set_thumbnail(url=item["countryInfo"]['flag'])
 
-                                    await ctx.send(embed=embed) 
+                                    await ctx.send(embed=embed)
 
                         else:
                             embed = Embed(title=':exclamation: Внимание!', description =f"Что-то пошло не так. API вернуло: {r.status}", color = Color.red())

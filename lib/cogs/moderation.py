@@ -25,7 +25,7 @@ class Moderation(Cog):
         self.EMOJI_REGEX = r'<(?P<animated>a?):(?P<name>[a-zA-Z0-9_]{2,32}):(?P<id>[0-9]{18,22})>'
         self.UNICODE_EMOJI_REGEX = r'[\U00010000-\U0010ffff]'
 
-    @command(name=cmd["kick"]["name"], aliases=cmd["kick"]["aliases"], 
+    @command(name=cmd["kick"]["name"], aliases=cmd["kick"]["aliases"],
             brief=cmd["kick"]["brief"],
             description=cmd["kick"]["description"],
             usage=cmd["kick"]["usage"],
@@ -39,7 +39,7 @@ class Moderation(Cog):
 
         if not len(targets):
             embed = Embed(
-                description=f"{ctx.author.mention}, укажите пользователя/пользователей, которых необходимо выгнать с сервера.", 
+                description=f"{ctx.author.mention}, укажите пользователя/пользователей, которых необходимо выгнать с сервера.",
                 color=Color.red()
             )
             await ctx.send(embed=embed, delete_after=15)
@@ -48,8 +48,8 @@ class Moderation(Cog):
             for target in targets:
                 if ctx.guild.me.top_role.position < target.top_role.position:
                     embed = Embed(
-                        title='Неудачная попытка кикнуть участника', 
-                        description=f"Пользователь {ctx.author.mention} пытался выгнать {target.mention}\nПричина кика: {reason}", 
+                        title='Неудачная попытка кикнуть участника',
+                        description=f"Пользователь {ctx.author.mention} пытался выгнать {target.mention}\nПричина кика: {reason}",
                         color=Color.red()
                     )
                     await self.audit_channel.send(embed=embed)
@@ -68,14 +68,14 @@ class Moderation(Cog):
                 fields = [("Пользователь", f"{target.display_name} ({target.mention})", False),
                           ("Администратор", ctx.author.mention, False),
                           ("Причина", reason.capitalize(), False)]
-                
+
                 for name, value, inline in fields:
                     embed.add_field(name=name, value=value, inline=inline)
 
                 await self.moderation_channel.send(embed=embed)
 
 
-    @command(name=cmd["ban"]["name"], aliases=cmd["ban"]["aliases"], 
+    @command(name=cmd["ban"]["name"], aliases=cmd["ban"]["aliases"],
             brief=cmd["ban"]["brief"],
             description=cmd["ban"]["description"],
             usage=cmd["ban"]["usage"],
@@ -91,7 +91,7 @@ class Moderation(Cog):
 
         if not len(targets):
             embed = Embed(
-                description=f"{ctx.author.mention}, укажите пользователя/пользователей, которых необходимо забанить.", 
+                description=f"{ctx.author.mention}, укажите пользователя/пользователей, которых необходимо забанить.",
                 color=Color.red()
             )
             await ctx.send(embed=embed, delete_after=15)
@@ -100,8 +100,8 @@ class Moderation(Cog):
             for target in targets:
                 if ctx.guild.me.top_role.position < target.top_role.position:
                     embed = Embed(
-                        title='Неудачная попытка забанить участника', 
-                        description=f"Пользователь {ctx.author.mention} пытался забанить {target.mention}\nПричина бана: {reason}", 
+                        title='Неудачная попытка забанить участника',
+                        description=f"Пользователь {ctx.author.mention} пытался забанить {target.mention}\nПричина бана: {reason}",
                         color=Color.red()
                     )
                     await self.audit_channel.send(embed=embed)
@@ -119,14 +119,14 @@ class Moderation(Cog):
                 fields = [("Пользователь", f"{target.display_name} ({target.mention})", False),
                           ("Администратор", ctx.author.mention, False),
                           ("Причина", reason.capitalize(), False)]
-                
+
                 for name, value, inline in fields:
                     embed.add_field(name=name, value=value, inline=inline)
 
                 await self.moderation_channel.send(embed=embed)
 
 
-    @command(name=cmd["purge"]["name"], aliases=cmd["purge"]["aliases"], 
+    @command(name=cmd["purge"]["name"], aliases=cmd["purge"]["aliases"],
             brief=cmd["purge"]["brief"],
             description=cmd["purge"]["description"],
             usage=cmd["purge"]["usage"],
@@ -154,7 +154,7 @@ class Moderation(Cog):
             async for message in ctx.channel.history(limit=limit):
                 if message.author not in users:
                     users[message.author.id] = 0
-                    
+
             async for message in ctx.channel.history(limit=limit):
                 users[message.author.id] += 1
 
@@ -194,7 +194,7 @@ class Moderation(Cog):
             await self.bot.get_user(375722626636578816).send(embed=embed)
 
 
-    @command(name=cmd["mute"]["name"], aliases=cmd["mute"]["aliases"], 
+    @command(name=cmd["mute"]["name"], aliases=cmd["mute"]["aliases"],
             brief=cmd["mute"]["brief"],
             description=cmd["mute"]["description"],
             usage=cmd["mute"]["usage"],
@@ -209,7 +209,7 @@ class Moderation(Cog):
 
         if not len(targets):
             embed = Embed(
-                description=f"{ctx.author.mention}, укажите пользователя/пользователей, которых необходимо замутить.", 
+                description=f"{ctx.author.mention}, укажите пользователя/пользователей, которых необходимо замутить.",
                 color=Color.red()
             )
             await ctx.send(embed=embed, delete_after=15)
@@ -225,10 +225,10 @@ class Moderation(Cog):
                 role_ids = ",".join([str(r.id) for r in target.roles])
                 managed_roles = [r for r in target.roles if r.managed]
                 end_time = datetime.now() + timedelta(hours=float(hours)) if hours else None
-                
+
                 await target.edit(roles=[self.mute_role] + managed_roles)
 
-                db.insert("mutes", {"user_id": target.id, 
+                db.insert("mutes", {"user_id": target.id,
                        "role_ids": role_ids,
                        "mute_end_time": end_time})
 
@@ -243,7 +243,7 @@ class Moderation(Cog):
                           ("Причина", reason.capitalize(), False),
                           ("Срок мута", f"{hours} {russian_plural(int(hours),['час','часа','часов'])}" if hours else "Бессрочно", False),
                           ("Администратор", ctx.author.mention, False)]
-                
+
                 for name, value, inline in fields:
                     embed.add_field(name=name, value=value, inline=inline)
 
@@ -255,9 +255,9 @@ class Moderation(Cog):
             else:
                 embed = Embed(
                     title="Внимание!",
-                    color=Color.red(), 
+                    color=Color.red(),
                     description=f"Участник `{target.display_name}` ({target.mention}) уже замьючен!"
-                )            
+                )
                 await ctx.send(embed=embed, delete_after=10)
                 return
 
@@ -289,14 +289,14 @@ class Moderation(Cog):
 
                 fields = [("Пользователь", f"{target.display_name} ({target.mention})", False),
                           ("Причина", reason.capitalize(), False)]
-                
+
                 for name, value, inline in fields:
                     embed.add_field(name=name, value=value, inline=inline)
 
                 await self.moderation_channel.send(embed=embed)
 
 
-    @command(name=cmd["unmute"]["name"], aliases=cmd["unmute"]["aliases"], 
+    @command(name=cmd["unmute"]["name"], aliases=cmd["unmute"]["aliases"],
             brief=cmd["unmute"]["brief"],
             description=cmd["unmute"]["description"],
             usage=cmd["unmute"]["usage"],
@@ -310,7 +310,7 @@ class Moderation(Cog):
 
         if not len(targets):
             embed = Embed(
-                description=f"{ctx.author.mention}, укажите пользователя/пользователей, которых необходимо размутить.", 
+                description=f"{ctx.author.mention}, укажите пользователя/пользователей, которых необходимо размутить.",
                 color=Color.red()
             )
             await ctx.send(embed=embed, delete_after=15)
@@ -334,7 +334,7 @@ class Moderation(Cog):
 
             if message.author.guild_permissions.administrator or self.helper_role in message.author.roles:
                 pass
-            else: 
+            else:
                 if isinstance(guild_invite, Invite):
                     if guild_invite.guild.id != self.bot.guild.id:
                         await message.delete()
