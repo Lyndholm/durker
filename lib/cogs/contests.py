@@ -1,4 +1,4 @@
-from random import sample
+from random import sample, shuffle
 from discord import Embed, Color
 from discord.ext.commands import Cog
 from discord.ext.commands import command, guild_only, is_owner
@@ -24,6 +24,8 @@ class Contests(Cog):
     @is_owner()
     async def create_giveaway(self, ctx, mins: int = None, winners: int = 1, *, description: str = "Розыгрыш."):
         await ctx.message.delete()
+        if winners <= 0:
+            return
 
         embed = Embed(
             title="🎁 Розыгрыш",
@@ -52,8 +54,15 @@ class Contests(Cog):
         message = await self.bot.get_channel(channel_id).fetch_message(message_id)
 
         if len(entrants := [user for user in await message.reactions[0].users().flatten() if not user.bot]) >= winners_count:
+            shuffle(entrants)
             winners = sample(entrants, winners_count)
-            await message.reply(f'🎁 Розыгрыш завершён.\n🎉 **{"Победитель" if len(winners)==1 else "Победители"}:** {" ".join([w.mention for w in winners])}')
+            if winners_count <= 1:
+                await message.reply(f'🎁 Розыгрыш завершён.\n🎉 **Победитель:** {" ".join([w.mention for w in winners])}')
+            else:
+                reply_string = ''
+                for c, w in enumerate(winners):
+                    reply_string += f'\n**{c+1}.** {w.mention}'
+                await message.reply(f'🎁 Розыгрыш завершён.\n🎉 Победители:{reply_string}')
             self.giveaways.remove((message.channel.id, message.id))
         else:
             await message.reply('Недостаточно участников для подведения итогов. Розыгрыш завершён.')
