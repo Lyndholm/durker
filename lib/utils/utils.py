@@ -99,7 +99,7 @@ def dump_user_data_in_json(member: discord.Member):
     time_now = datetime.now().strftime("%d.%m.%Y %H.%M.%S")
 
     with open(f"./data/users_backup/{member.id} [{time_now}].json", "w") as f:
-        json.dump(data, f, indent=4, sort_keys=True, ensure_ascii=False)
+        json.dump(data, f, indent=2, sort_keys=True, ensure_ascii=False)
 
 
 def clean_code(content: str) -> str:

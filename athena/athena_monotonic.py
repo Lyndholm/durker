@@ -108,48 +108,27 @@ class Athena:
         """
 
         try:
-            if itemShop["featured"] is not None:
-                featured = sorted(itemShop["featured"]["entries"], key=lambda item: self.item_priority(self, item["items"][0]["rarity"]["value"].lower()))
-            else:
-                featured = []
+            featured = sorted(itemShop["featured"]["entries"], key=lambda item: self.item_priority(self, item["items"][0]["rarity"]["value"].lower()))
+            daily = sorted(itemShop["daily"]["entries"], key=lambda item: self.item_priority(self, item["items"][0]["rarity"]["value"].lower()))
 
-            if itemShop["daily"] is not None:
-                daily = sorted(itemShop["daily"]["entries"], key=lambda item: self.item_priority(self, item["items"][0]["rarity"]["value"].lower()))
-            else:
-                daily = []
+            shop = featured + daily
+            shop_array = sorted(shop, key=lambda item: self.item_priority(self, item["items"][0]["rarity"]["value"].lower()))
 
-
-            if (len(featured) >= 0):
-                rowsDaily = 3
-                rowsFeatured = 6
-                width = ((340 * 9) + 10)
-                height = max(ceil(len(featured) / 6), ceil(len(daily) / 3))
-                dailyStartX = 2075
-                cardStartY = 450
-
-            if (len(featured) <= 18):
-                rowsDaily = 3
-                rowsFeatured = 3
+            if (len(shop_array) >= 0):
                 width = ((340 * 6) + 10)
-                height = max(ceil(len(featured) / 3), ceil(len(daily) / 3))
-                dailyStartX = 1055
-                cardStartY = 350
 
-            if (len(featured) >= 24) and (len(daily) >= 18):
-                rowsDaily = 6
-                rowsFeatured = 6
-                width = ((340 * 12) - 25)
-                height = max(ceil(len(featured) / 6), ceil(len(daily) / 6))
-                dailyStartX = 2075
-                cardStartY = 450
+            if (len(shop_array) <= 18):
+                width = ((340 * 6) + 10)
 
-            if (len(featured) >= 42) :
-                rowsDaily = 4
-                rowsFeatured = 9
-                width = ((340 * 13) + 5)
-                height = max(ceil(len(featured) / 9), ceil(len(daily) / 4))
-                dailyStartX = 3095
-                cardStartY = 650
+            if (len(shop_array) >= 36):
+                width = ((340 * 9) - 70)
+
+            if (len(shop_array) >= 42):
+                width = ((340 * 12) - 90)
+
+            rows = 12
+            height = ceil(len(shop_array) / 12)
+            cardStartY = 600
 
         except Exception as e:
             log.critical(f"Failed to parse Item Shop Featured and Daily items, {e}")
@@ -161,7 +140,7 @@ class Athena:
         shopImage = Image.new("RGBA", (width, (530 * height) + cardStartY))
 
         try:
-            background = ImageUtil.Open(self, f"background.png")
+            background = ImageUtil.Open(self, f"monotonic_background.png")
             background = ImageUtil.RatioResize(
                 self, background, shopImage.width, shopImage.height
             )
@@ -176,59 +155,26 @@ class Athena:
                 (34, 37, 40), [0, 0, shopImage.size[0], shopImage.size[1]])
 
 
-        #logo = ImageUtil.Open(self, "logo.png")
-        #logo = ImageUtil.RatioResize(self, logo, 20, 250)
-        #shopImage.paste(
-        #    logo, ImageUtil.CenterX(self, logo.width, shopImage.width, 5), logo
-        #)
-
-        #canvas = ImageDraw.Draw(shopImage)
-        #font = ImageUtil.Font(self, 80)
-
-        #textWidth, _ = font.getsize("Магазин предметов Fortnite")
-        #canvas.text(ImageUtil.CenterX(self, textWidth, shopImage.width, 30), "Магазин предметов Fortnite", (255, 255, 255), font=font)
-        #textWidth, _ = font.getsize(date.upper())
-        #canvas.text(ImageUtil.CenterX(self, textWidth, shopImage.width, 240), date.upper(), (255, 255, 255), font=font)
-
-        #canvas.text((20, 240), "Рекомендуемые предметы", (255, 255, 255), font=font, anchor=None, spacing=4, align="left")
-        #textWidth, _ = font.getsize("Ежедневный магазин")
-        #canvas.text((shopImage.width - (textWidth + 20), 240), "Ежедневный магазин", (255, 255, 255), font=font, anchor=None, spacing=4, align="right")
-
         # Track grid position
         i = 0
 
-        for item in featured:
+        for item in shop_array:
             card = Athena.GenerateCard(self, item)
 
             if card is not None:
                 shopImage.paste(
                     card,
                     (
-                        (20 + ((i % rowsFeatured) * (310 + 20))),
-                        (cardStartY + ((i // rowsFeatured) * (510 + 20))),
+                        (20 + ((i % rows) * (310 + 20))),
+                        (cardStartY + ((i // rows) * (510 + 20))),
                     ),
                     card,
                 )
 
                 i += 1
 
-        # Reset grid position
+        #Reset grid position
         i = 0
-
-        for item in daily:
-            card = Athena.GenerateCard(self, item)
-
-            if card is not None:
-                shopImage.paste(
-                    card,
-                    (
-                        (dailyStartX + ((i % rowsDaily) * (310 + 20))),
-                        (cardStartY + ((i // rowsDaily) * (510 + 20))),
-                    ),
-                    card,
-                )
-
-                i += 1
 
         try:
             shopImage.save("athena/itemshop.png")

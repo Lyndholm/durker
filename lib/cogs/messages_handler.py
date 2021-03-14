@@ -1,6 +1,5 @@
 from discord import Message
 from discord.ext.commands import Cog
-from discord.ext.commands import command
 from ..utils.decorators import listen_for_guilds
 import aiofiles
 

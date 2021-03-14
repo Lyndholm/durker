@@ -1,7 +1,6 @@
 from discord import Member, VoiceState, TextChannel, VoiceChannel
 from discord.utils import get
 from discord.ext.commands import Cog
-from discord.ext.commands import command
 from discord.errors import HTTPException, NotFound
 from datetime import datetime
 from ..db import db

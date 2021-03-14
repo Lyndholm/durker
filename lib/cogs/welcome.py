@@ -1,7 +1,6 @@
 from discord import Embed, Color, Member, Forbidden
 from discord.utils import get
 from discord.ext.commands import Cog
-from discord.ext.commands import command
 from datetime import datetime
 from ..utils.constants import WELCOME_CHANNEL, GOODBYE_CHANNEL, AUDIT_LOG_CHANNEL, MUTE_ROLE_ID
 from ..utils.utils import insert_new_user_in_db, dump_user_data_in_json, delete_user_from_db

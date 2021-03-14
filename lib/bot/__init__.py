@@ -78,7 +78,8 @@ class Bot(BotBase):
         super().__init__(command_prefix=PREFIX,
                          case_insensitive=True,
                          owner_ids=OWNER_IDS,
-                         intents=Intents.all()
+                         intents=Intents.all(),
+                         max_messages=5000
                         )
 
     @logger.catch
