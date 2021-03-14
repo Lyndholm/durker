@@ -263,10 +263,10 @@ class Moderation(Cog):
 
         if len(unmutes):
             await sleep(int(hours)*3600)
-            await self.unmute(ctx, targets, "Время мута истекло.")
+            await self.unmute_members(ctx, targets, "Время мута истекло.")
 
 
-    async def unmute(self, ctx, targets, reason = "Мут снят вручную администратором."):
+    async def unmute_members(self, ctx, targets, reason = "Мут снят вручную администратором."):
         for target in targets:
             if self.mute_role in target.roles:
                 role_ids = db.fetchone(["role_ids"], "mutes", "user_id", target.id)[0]
@@ -316,7 +316,7 @@ class Moderation(Cog):
             await ctx.send(embed=embed, delete_after=15)
             return
 
-        await self.unmute(ctx, targets)
+        await self.unmute_members(ctx, targets)
 
     def find_discord_invites(self, message: Message) -> bool:
         regex = re.compile(self.DISCORD_INVITE_REGEX)
