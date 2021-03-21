@@ -156,7 +156,7 @@ class FortniteAPIio(Cog):
             help=cmd["challenges"]["help"],
             hidden=cmd["challenges"]["hidden"], enabled=True)
     async def show_fortnite_rare_challenges_command(self, ctx, language: str = "ru"):
-        QUEST_ID = "Quest_S15_Milestone"
+        QUEST_ID = "Quest_S16_Milestone"
         quest_embeds = []
         xp_total = 0
         async with ClientSession(headers=self.headers) as session:
@@ -204,11 +204,21 @@ class FortniteAPIio(Cog):
             help=cmd["npc"]["help"],
             hidden=cmd["npc"]["hidden"], enabled=True)
     async def show_fortnite_characters_command(self, ctx, number: int = 0):
-        async with aiofiles.open('./data/characters.json', mode='r', encoding='utf-8') as f:
+        async with aiofiles.open('./data/characters_s16.json', mode='r', encoding='utf-8') as f:
             data = json.loads(await f.read())
 
         if number == 0:
             npc_embeds = []
+            embed = Embed(
+                title="Все персонажи и боссы в 16 сезоне фортнайт",
+                color=Color.random(),
+                description="Персонажей на карте 16 сезона фортнайт суммарно 46. Это аж на 6 больше, чем в начале прошлого сезона!\n"
+                            "Среди них присутствует 4 босса (к ним стражи охраняющие свои башни не относятся). После смерти боссы становятся персонажами, которые также предлагают что-то к покупке.\n"
+                            "Сразу отметим, что некоторых персонажей очень сложно найти. Они либо через раз спавнятся, либо вообще появляются только в командной потасовке, или наоборот, в обыкновенных режимах. Поэтому, если какого-то персонажа вы найти не можете, смените режим, возможно, это вам поможет."
+            )
+            embed.set_image(url="https://fortnitefun.ru/wp-content/uploads/2021/03/%D0%B2%D1%81%D0%B5-%D0%BF%D0%B5%D1%80%D1%81%D0%BE%D0%BD%D0%B0%D0%B6%D0%B8.jpg")
+            npc_embeds.append(embed)
+
             for count, entry in enumerate(data):
                 embed = Embed(
                     title=f"{choice(['🔵','🟦','🔷'])} {entry['name']} | {str(count+1)}",

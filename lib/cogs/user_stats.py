@@ -80,7 +80,7 @@ class UserStats(Cog):
                             inline=False)
         else:
             embed.add_field(name=':pencil: О себе:', value=biography[0] if biography[0] else "Вы ничего не написали о себе. "
-                                                                                            "Сделать это можно по команде `_setbio <ваша биография>`",
+                                                                                            "Сделать это можно по команде `+setbio <ваша биография>`",
                             inline=False)
 
         embed.add_field(name=':calendar: Аккаунт создан:', value=target.created_at.strftime("%d.%m.%Y %H:%M"),
