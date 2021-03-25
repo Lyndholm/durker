@@ -1,15 +1,17 @@
+from random import choice, randint
+
 import aiofiles
-from loguru import logger
-from random import choice
-from discord import TextChannel, Member
-from discord.ext.commands import Cog
-from discord.ext.commands import command, has_any_role, guild_only, dm_only, is_owner
 from better_profanity import profanity
+from discord import Member, TextChannel, File
+from discord.ext.commands import (Cog, command, dm_only, guild_only,
+                                  has_any_role, is_owner)
+from loguru import logger
 
 from ..db import db
-from ..utils.utils import load_commands_from_json, russian_plural, edit_user_reputation, find_n_term_of_arithmetic_progression
 from ..utils.decorators import listen_for_guilds
-
+from ..utils.utils import (edit_user_reputation,
+                           find_n_term_of_arithmetic_progression,
+                           load_commands_from_json, russian_plural)
 
 cmd = load_commands_from_json("profanity")
 profanity.load_censor_words_from_file("./data/profanity.txt")
@@ -46,11 +48,17 @@ class Profanity(Cog):
             f"{member.mention}, уменьши количество нецензурной лексики.",
             f"{member.mention}, общайся, пожалуйста, без мата.",
             f"{member.mention}, выбирай выражения.",
-            f"{member.mention}, меньше мата, пожалуйста."
-            f"{member.mention}, пожалуйста, давай общаться без мата."
+            f"{member.mention}, меньше мата, пожалуйста.",
+            f"{member.mention}, пожалуйста, давай общаться без мата.",
+            f"{member.mention}, у нас обсценная лексика не приветсвуется.",
+            f"{member.mention}, не используй, пожалуйста, обсценную лексику.",
+            f"{member.mention}, на сервере нет места брани.",
         )
         reply = choice(profanity_replies) + f"\nТвоя репутация была уменьшена на **{lost_rep}** {russian_plural(lost_rep, ['единицы','единицы','единиц'])}."
-        await channel.send(reply)
+        if 10 <= randint(1, 100) <= 25:
+            await channel.send(reply, file=File('./data/images/bez-mata.jpg'))
+        else:
+            await channel.send(reply)
 
     @Cog.listener()
     @listen_for_guilds()
