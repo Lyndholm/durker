@@ -274,10 +274,10 @@ class Bot(BotBase):
             embed = Embed(
                 title=':exclamation: Ошибка!',
                 description=f"{ctx.author.mention}\nНевозможно выполнить указанную команду."
-                             "\nВозможно, вы используете неправильный канал, у вас недостаточный уровень или отсутсвуют права на выполнение запрошенной команды.",
+                             "\nВозможно, вы используете неправильный канал, у вас недостаточный уровень или отсутствуют права на выполнение запрошенного метода.",
                 color=Color.red()
             )
-            await ctx.send(embed=embed, delete_after = 15)
+            await ctx.send(embed=embed, delete_after = 10)
 
         else:
             channel = self.get_channel(id=AUDIT_LOG_CHANNEL)

@@ -42,12 +42,12 @@ class Audit(Cog):
                 elif message.author.bot:
                     return
 
-                embed = Embed(title="Сообщение было удалено", color=Color.red(), timestamp=datetime.now())
+                embed = Embed(title="Сообщение было удалено", color=Color.red(), timestamp=datetime.utcnow())
 
                 if message.system_content:
-                    embed.description = f"**Удалённое сообщение:**```{message.clean_content.replace('`', '`­')[:2020]}\n```"
+                    embed.description = f"**Удалённое сообщение:**\n```{message.clean_content.replace('`', '`­')[:2020]}\n```"
                 elif message.content:
-                    embed.description =  f"**Удалённое сообщение:**```{message.clean_content.replace('`', '`­')[:2020]}\n```"
+                    embed.description =  f"**Удалённое сообщение:**\n```{message.clean_content.replace('`', '`­')[:2020]}\n```"
 
                 if message.attachments:
                     attachments_url = [attachment for attachment in message.attachments]

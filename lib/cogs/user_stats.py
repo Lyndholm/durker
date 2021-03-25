@@ -59,7 +59,8 @@ class UserStats(Cog):
         moderation_stats = db.fetchone(["mutes_story", "warns_story", "profanity_triggers"],
                                     "users_stats", 'user_id', target.id)
 
-        total_mute_time = sum(moderation_stats[0]['user_mute_story'][i]['mute_time'] for i in range(len(moderation_stats[0]['user_mute_story'])))
+        total_mute_time = sum(moderation_stats[0]['user_mute_story'][i]['mute_time'] for i in range(len(moderation_stats[0]['user_mute_story']))) + \
+            sum(moderation_stats[1]['user_warn_story'][i]['mute_time'] for i in range(len(moderation_stats[1]['user_warn_story'])))
 
         vbucks_count = sum(purchases[0]['vbucks_purchases'][i]['price'] for i in range(len(purchases[0]['vbucks_purchases'])))
 
@@ -148,7 +149,7 @@ class UserStats(Cog):
 
         embed.add_field(name=":warning: Количество предупреждений:", value=len(moderation_stats[1]["user_warn_story"]), inline=True)
 
-        embed.add_field(name=":speak_no_evil: Количество мутов:", value=len(moderation_stats[0]["user_mute_story"]), inline=True)
+        embed.add_field(name=":speak_no_evil: Количество мутов:", value=(len(moderation_stats[0]["user_mute_story"]) + len(moderation_stats[1]["user_warn_story"])), inline=True)
 
         embed.add_field(name=":timer: Время, проведенное в муте:", value=timedelta(seconds=total_mute_time),
                         inline=True)
