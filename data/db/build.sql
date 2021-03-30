@@ -27,7 +27,7 @@ ALTER TABLE public.casino
 CREATE TABLE public.durka_stats
 (
     user_id bigint,
-    available_durka_uses smallint DEFAULT 3,
+    available_durka_calls smallint DEFAULT 3,
     received_durka_calls bigint DEFAULT 0,
     sent_durka_calls bigint DEFAULT 0
 );

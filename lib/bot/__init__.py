@@ -3,21 +3,24 @@ from datetime import datetime
 from glob import glob
 from os import getenv
 
-from apscheduler.triggers.cron import CronTrigger
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
+from apscheduler.triggers.cron import CronTrigger
 from discord import Color, Embed, Intents
-from discord.ext.commands import Bot as BotBase, Context, ExtensionAlreadyLoaded, ExtensionNotLoaded
-from discord.ext.commands import (CommandNotFound, CommandOnCooldown, DisabledCommand,
-                                NoPrivateMessage, PrivateMessageOnly)
-from discord.ext.commands.errors import CheckFailure, CheckAnyFailure, MissingPermissions
 from discord.channel import DMChannel
-from discord.errors import HTTPException, Forbidden
-
+from discord.errors import Forbidden, HTTPException
+from discord.ext.commands import Bot as BotBase
+from discord.ext.commands import (CommandNotFound, CommandOnCooldown, Context,
+                                  DisabledCommand, ExtensionAlreadyLoaded,
+                                  ExtensionNotLoaded, NoPrivateMessage,
+                                  PrivateMessageOnly)
+from discord.ext.commands.errors import (CheckAnyFailure, CheckFailure,
+                                         MissingPermissions)
 from loguru import logger
 
 from ..db import db
-from ..utils.constants import GUILD_ID, AUDIT_LOG_CHANNEL
-from ..utils.utils import russian_plural, insert_new_user_in_db
+from ..utils.constants import AUDIT_LOG_CHANNEL, GUILD_ID
+from ..utils.utils import (cooldown_timer_str, insert_new_user_in_db,
+                           russian_plural)
 
 logger.add("logs/{time:DD-MM-YYYY---HH-mm-ss}.log",
            format="{time:DD-MM-YYYY HH:mm:ss} | {level} | {message}",
@@ -203,94 +206,105 @@ class Bot(BotBase):
         print("Bot disconnected")
 
     async def on_command_error(self, ctx, exc):
-        if isinstance(exc, CommandNotFound):
-            embed = Embed(
-                title=':exclamation: Ошибка!',
-                description=f'Команда `{ctx.message.clean_content}` не найдена.',
-                color=Color.red()
-            )
-            await ctx.send(embed=embed, delete_after = 10)
-
-        elif isinstance(exc, CommandOnCooldown):
-            embed = Embed(
-                title=f"{str(exc.cooldown.type).split('.')[-1]} cooldown",
-                description=f"Команда на откате. Ожидайте {int(exc.retry_after)+1} {russian_plural(int(exc.retry_after)+1,['секунду','секунды','секунд'])}.",
-                color=Color.red()
-            )
-            await ctx.send(embed=embed, delete_after = 10)
-
-        elif isinstance(exc, DisabledCommand):
-            embed = Embed(
-                title=':exclamation: Ошибка!',
-                description=f"Команда `{ctx.command}` отключена.",
-                color=Color.red
-            )
-            await ctx.send(embed=embed, delete_after = 10)
-
-        elif isinstance(exc, NoPrivateMessage):
-            try:
+        if not ctx.command.has_error_handler():
+            if isinstance(exc, CommandNotFound):
                 embed = Embed(
                     title=':exclamation: Ошибка!',
-                    description=f"Команда `{ctx.command}` не может быть использована в личных сообщениях.",
+                    description=f'Команда `{ctx.message.clean_content}` не найдена.',
                     color=Color.red()
                 )
-                await ctx.author.send(embed=embed, delete_after = 30)
-            except HTTPException:
-                pass
+                await ctx.send(embed=embed, delete_after = 10)
 
-        elif isinstance(exc, PrivateMessageOnly):
-            embed = Embed(
-                title=':exclamation: Ошибка!',
-                description=f"Команда `{ctx.command}` работает только в личных сообщениях. Она не может быть использована на сервере.",
-                color=Color.red()
-            )
-            await ctx.send(embed=embed, delete_after = 30)
+            elif isinstance(exc, CommandOnCooldown):
+                embed = Embed(
+                    title=f"{str(exc.cooldown.type).split('.')[-1]} cooldown",
+                    description=f"Команда на откате. Ожидайте {cooldown_timer_str(exc.retry_after)}",
+                    color=Color.red()
+                )
+                await ctx.send(embed=embed, delete_after = 10)
 
-        elif isinstance(exc, MissingPermissions):
-            embed = Embed(
-                title=':exclamation: Ошибка!',
-                description=f"У бота недостаточно прав для выполнения действия.",
-                color=Color.red()
-            )
-            await ctx.send(embed=embed, delete_after = 30)
+            elif isinstance(exc, DisabledCommand):
+                embed = Embed(
+                    title=':exclamation: Ошибка!',
+                    description=f"Команда `{ctx.command}` отключена.",
+                    color=Color.red
+                )
+                await ctx.send(embed=embed, delete_after = 10)
 
-        elif isinstance(exc, Forbidden):
-            embed = Embed(
-                title=':exclamation: Ошибка!',
-                description=f"Недостаточно прав для выполнения действия.",
-                color=Color.red()
-            )
-            await ctx.send(embed=embed, delete_after = 30)
-
-        elif isinstance(exc, HTTPException):
-            embed = Embed(
-                title=':exclamation: Ошибка!',
-                description=f"Невозможно отправить сообщение. Возможно, превышен лимит символов.",
-                color=Color.red()
-            )
-            await ctx.send(embed=embed, delete_after = 30)
-
-        elif isinstance(exc, CheckFailure) or isinstance(exc, CheckAnyFailure):
-            embed = Embed(
-                title=':exclamation: Ошибка!',
-                description=f"{ctx.author.mention}\nНевозможно выполнить указанную команду."
-                             "\nВозможно, вы используете неправильный канал, у вас недостаточный уровень или отсутствуют права на выполнение запрошенного метода.",
-                color=Color.red()
-            )
-            await ctx.send(embed=embed, delete_after = 10)
-
-        else:
-            channel = self.get_channel(id=AUDIT_LOG_CHANNEL)
-            try:
-                if hasattr(ctx.command, 'on_error'):
+            elif isinstance(exc, NoPrivateMessage):
+                try:
                     embed = Embed(
-                        title="Error.",
-                        description="Something went wrong, an error occured.\nCheck logs.",
-                        timestamp=datetime.utcnow(),
+                        title=':exclamation: Ошибка!',
+                        description=f"Команда `{ctx.command}` не может быть использована в личных сообщениях.",
                         color=Color.red()
                     )
-                    await dev.send(embed=embed)
-                else:
+                    await ctx.author.send(embed=embed, delete_after = 30)
+                except HTTPException:
+                    pass
+
+            elif isinstance(exc, PrivateMessageOnly):
+                embed = Embed(
+                    title=':exclamation: Ошибка!',
+                    description=f"Команда `{ctx.command}` работает только в личных сообщениях. Она не может быть использована на сервере.",
+                    color=Color.red()
+                )
+                await ctx.send(embed=embed, delete_after = 30)
+
+            elif isinstance(exc, MissingPermissions):
+                embed = Embed(
+                    title=':exclamation: Ошибка!',
+                    description=f"У бота недостаточно прав для выполнения действия.",
+                    color=Color.red()
+                )
+                await ctx.send(embed=embed, delete_after = 30)
+
+            elif isinstance(exc, Forbidden):
+                embed = Embed(
+                    title=':exclamation: Ошибка!',
+                    description=f"Недостаточно прав для выполнения действия.",
+                    color=Color.red()
+                )
+                await ctx.send(embed=embed, delete_after = 30)
+
+            elif isinstance(exc, HTTPException):
+                embed = Embed(
+                    title=':exclamation: Ошибка!',
+                    description=f"Невозможно отправить сообщение. Возможно, превышен лимит символов.",
+                    color=Color.red()
+                )
+                await ctx.send(embed=embed, delete_after = 30)
+
+            elif isinstance(exc, CheckFailure) or isinstance(exc, CheckAnyFailure):
+                embed = Embed(
+                    title=':exclamation: Ошибка!',
+                    description=f"{ctx.author.mention}\nНевозможно выполнить указанную команду."
+                                "\nВозможно, вы используете неправильный канал, у вас недостаточный уровень или отсутствуют права на выполнение запрошенного метода.",
+                    color=Color.red()
+                )
+                await ctx.send(embed=embed, delete_after = 10)
+
+            else:
+                channel = self.get_channel(id=AUDIT_LOG_CHANNEL)
+                try:
+                    if hasattr(ctx.command, 'on_error'):
+                        embed = Embed(
+                            title="Error.",
+                            description="Something went wrong, an error occured.\nCheck logs.",
+                            timestamp=datetime.utcnow(),
+                            color=Color.red()
+                        )
+                        await dev.send(embed=embed)
+                    else:
+                        embed = Embed(
+                            title=f'Ошибка при выполнении команды {ctx.command}.',
+                            description=f'`{ctx.command.signature if ctx.command.signature else None}`\n{exc}',
+                            color=Color.red(),
+                            timestamp=datetime.utcnow()
+                        )
+                        if isinstance(ctx.channel, DMChannel):
+                            embed.add_field(name="Additional info:", value="Exception occured in DMChannel.")
+                        await channel.send(embed=embed)
+                except:
                     embed = Embed(
                         title=f'Ошибка при выполнении команды {ctx.command}.',
                         description=f'`{ctx.command.signature if ctx.command.signature else None}`\n{exc}',
@@ -300,18 +314,8 @@ class Bot(BotBase):
                     if isinstance(ctx.channel, DMChannel):
                         embed.add_field(name="Additional info:", value="Exception occured in DMChannel.")
                     await channel.send(embed=embed)
-            except:
-                embed = Embed(
-                    title=f'Ошибка при выполнении команды {ctx.command}.',
-                    description=f'`{ctx.command.signature if ctx.command.signature else None}`\n{exc}',
-                    color=Color.red(),
-                    timestamp=datetime.utcnow()
-                )
-                if isinstance(ctx.channel, DMChannel):
-                    embed.add_field(name="Additional info:", value="Exception occured in DMChannel.")
-                await channel.send(embed=embed)
-            finally:
-                raise exc
+                finally:
+                    raise exc
 
 
     @logger.catch

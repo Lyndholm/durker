@@ -72,7 +72,7 @@ def dump_user_data_in_json(member: discord.Member):
 
     cursor.execute("SELECT * FROM durka_stats where user_id = %s", (member.id,))
     rec = cursor.fetchone()
-    data["durka_stats"] = {"available_durka_uses":rec[1],"received_durka_calls":rec[2],"sent_durka_calls":rec[3]}
+    data["durka_stats"] = {"available_durka_calls":rec[1],"received_durka_calls":rec[2],"sent_durka_calls":rec[3]}
 
     cursor.execute("SELECT * FROM leveling where user_id = %s", (member.id,))
     rec = cursor.fetchone()
@@ -123,3 +123,21 @@ def edit_user_reputation(user_id: int = None, action: str = None, value: int = N
     elif action == '=':
         db.execute(f"UPDATE users_stats SET rep_rank = {value} WHERE user_id = {user_id}")
     db.commit()
+
+
+def cooldown_timer_str(retry_after: float) -> str:
+    """Return a string with cooldown timer"""
+    seconds = round(retry_after, 2)
+    hours, remainder = divmod(int(seconds), 3600)
+    minutes, seconds = divmod(remainder, 60)
+    hours_plural = russian_plural(int(hours),['час','часа','часов'])
+    minutes_plural = russian_plural(int(minutes),['минуту','минуты','минут'])
+    seconds_plural = russian_plural(int(seconds+1),['секунду','секунды','секунд'])
+    time_str = ''
+    if hours:
+        time_str += f"**{hours} {hours_plural}** "
+    if minutes:
+        time_str += f"**{minutes} {minutes_plural}** "
+    time_str += f"**{seconds+1} {seconds_plural}**."
+
+    return time_str

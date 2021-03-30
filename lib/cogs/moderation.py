@@ -573,7 +573,7 @@ class Moderation(Cog):
                 color=Color.random(),
                 description=f"Удалено сообщений: {len(deleted)}\nУдаление выполнено пользователем {ctx.author.mention}"
             )
-            await ctx.channel.send(embed=embed, delete_after=5)
+            await ctx.send(embed=embed, delete_after=5)
 
             embed.title = "purge command invoked"
             embed.description = f"Удалено сообщений: {len(deleted)}\nУдаление выполнено пользователем: {ctx.author.mention}\nКанал: {ctx.channel.mention}"
@@ -593,7 +593,7 @@ class Moderation(Cog):
                 color=Color.random(),
                 description=f"Удалено сообщений: {len(deleted)}\nУдаление выполнено пользователем {ctx.message.author.mention}"
             )
-            await ctx.channel.send(embed=embed, delete_after=5)
+            await ctx.send(embed=embed, delete_after=5)
 
             embed.title = "purge (with targets) command invoked "
             embed.description = f"Удалено сообщений: {len(deleted)}\nУдаление выполнено пользователем: {ctx.author.mention}\nКанал: {ctx.channel.mention}"

@@ -238,7 +238,7 @@ class Fun(Cog):
                         em.set_thumbnail(url=otvet['url'])
                         em.add_field(name = "Правильный ответ:",value = f"{msg.content.title()}")
                         em.add_field(name = "Ответил:", value = f"{msg.author.mention}")
-                        await ctx.channel.send(embed = em)
+                        await ctx.send(embed = em)
                         count = count + 1
                         await sleep(1)
                         if count == 11:

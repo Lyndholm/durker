@@ -428,6 +428,7 @@ class UserStats(Cog):
             "\n— **Мастер** (10000 - 14999)"
             "\n— **Элита** (15000 - 19999)"
             "\n— **Совершенство** (20000 и больше)"
+            "\n\nУзнать свой уровень репутации можно по команде `+myrep`"
         )
         embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/774698479981297664/815282991668133888/reputation.png")
         await ctx.send(embed=embed)
