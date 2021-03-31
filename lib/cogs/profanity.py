@@ -1,8 +1,7 @@
 from random import choice, randint
 
 import aiofiles
-from better_profanity import profanity
-from discord import Member, TextChannel, File
+from discord import File, Member, TextChannel
 from discord.ext.commands import (Cog, command, dm_only, guild_only,
                                   has_any_role, is_owner)
 from loguru import logger
@@ -14,7 +13,6 @@ from ..utils.utils import (edit_user_reputation,
                            load_commands_from_json, russian_plural)
 
 cmd = load_commands_from_json("profanity")
-profanity.load_censor_words_from_file("./data/profanity.txt")
 
 
 class Profanity(Cog):
@@ -66,7 +64,7 @@ class Profanity(Cog):
     async def on_message(self, message):
         content = message.clean_content.replace("*", "")
 
-        if isinstance(message.channel, TextChannel) and not message.author.bot and profanity.contains_profanity(content):
+        if isinstance(message.channel, TextChannel) and not message.author.bot and self.bot.profanity.contains_profanity(content):
             if message.author.id not in self.whitelisted_users:
                 if message.channel.id not in self.whitelisted_channels:
                     self.increase_user_profanity_counter(message.author.id)
@@ -109,7 +107,7 @@ class Profanity(Cog):
         async with aiofiles.open(f'./data/profanity.txt', mode='a', encoding='utf-8') as f:
             await f.write("".join([f"{w}\n" for w in words]))
 
-        profanity.load_censor_words_from_file("./data/profanity.txt")
+        self.bot.profanity.load_censor_words_from_file("./data/profanity.txt")
         await ctx.send("Словарь обновлен!")
 
 
@@ -130,7 +128,7 @@ class Profanity(Cog):
         async with aiofiles.open(f'./data/profanity.txt', mode='w', encoding='utf-8') as f:
             await f.write("".join([f"{w}\n" for w in stored if w not in words]))
 
-        profanity.load_censor_words_from_file("./data/profanity.txt")
+        self.bot.profanity.load_censor_words_from_file("./data/profanity.txt")
         await ctx.send("Словарь обновлен!")
 
 

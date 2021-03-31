@@ -5,6 +5,7 @@ from os import getenv
 
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from apscheduler.triggers.cron import CronTrigger
+from better_profanity import Profanity
 from discord import Color, Embed, Intents
 from discord.channel import DMChannel
 from discord.errors import Forbidden, HTTPException
@@ -58,6 +59,7 @@ class Bot(BotBase):
         self.cogs_ready = Ready()
         self.guild = None
         self.scheduler = AsyncIOScheduler()
+        self.profanity = Profanity()
         self.channels_with_message_counting = [
             546404724216430602, #админка
             686499834949140506, #гвардия
@@ -166,7 +168,7 @@ class Bot(BotBase):
         if not self.ready:
             self.guild = self.get_guild(GUILD_ID)
             self.scheduler.start()
-
+            self.profanity.load_censor_words_from_file("./data/profanity.txt")
             print("\nLogged in as:", bot.user)
             print("ID:", bot.user.id)
             print("\nAvailable guilds:")
