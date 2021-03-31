@@ -75,6 +75,9 @@ class MessagesHandler(Cog):
                     datetime.now(), user_id)
         db.commit()
 
+    def decrease_user_messages_counter(self, user_id: int):
+        db.execute(f"UPDATE users_stats SET messages_count = messages_count - 1 WHERE user_id = {user_id}")
+        db.commit()
 
     @Cog.listener()
     async def on_ready(self):
@@ -97,6 +100,12 @@ class MessagesHandler(Cog):
         if message.channel.id == 639925210849476608 and message.author.id != 479499525921308703:
             await message.add_reaction('\N{THUMBS UP SIGN}')
             await message.add_reaction('\N{THUMBS DOWN SIGN}')
+
+    @Cog.listener()
+    @listen_for_guilds()
+    async def on_message_delete(self, message):
+        if await self.can_message_be_counted(message):
+            self.decrease_user_messages_counter(message.author.id)
 
 
 def setup(bot):
