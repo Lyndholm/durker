@@ -1,3 +1,5 @@
+from datetime import datetime
+
 import aiofiles
 from discord import Message, TextChannel
 from discord.ext.commands import Cog
@@ -69,6 +71,8 @@ class MessagesHandler(Cog):
 
     def increase_user_messages_counter(self, user_id: int):
         db.execute(f"UPDATE users_stats SET messages_count = messages_count + 1 WHERE user_id = {user_id}")
+        db.execute("UPDATE users_stats SET last_message_date = %s WHERE user_id = %s",
+                    datetime.now(), user_id)
         db.commit()
 
 
