@@ -34,18 +34,24 @@ class PeelyDE(Cog):
         embed.set_footer(text=f'{ctx.author.name}', icon_url=ctx.author.avatar_url)
 
         async with ClientSession() as session:
-            if mode.lower() == "all":
+            if mode.lower() == "full":
                 async with session.get(f'https://api.peely.de/cdn/current/leaks?lang={language}') as r:
                     if r.status != 200:
                         await ctx.send(f"""```json\n{await r.text()}```""")
                         return
 
-                    f = File(BytesIO(await r.read()), filename="fn_upcoming.png")
-                    embed.set_image(url="attachment://fn_upcoming.png")
+                    f = File(BytesIO(await r.read()), filename="fn_upcoming_full.png")
+                    embed.set_image(url="attachment://fn_upcoming_full.png")
                     await ctx.send(embed=embed, file=f)
             else:
-                embed.set_image(url="https://api.peely.de/cdn/current/leaks.png")
-                await ctx.send(embed=embed)
+                async with session.get(f'https://api.peely.de/cdn/current/leaks.png') as r:
+                    if r.status != 200:
+                        await ctx.send(f"""```json\n{await r.text()}```""")
+                        return
+
+                    f = File(BytesIO(await r.read()), filename="fn_upcoming_current.png")
+                    embed.set_image(url="attachment://fn_upcoming_current.png")
+                    await ctx.send(embed=embed, file=f)
 
 
     @command(name=cmd["fnseason"]["name"], aliases=cmd["fnseason"]["aliases"],

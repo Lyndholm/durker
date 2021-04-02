@@ -39,7 +39,7 @@ class BackgroundTasks(Cog):
                 data = await r.json()
                 new_hash = data['data']['hash']
                 new_len = len(data['data']['featured']['entries']) + len(data['data']['daily']['entries'])
-                async with aiofiles.open('athena/cache.json', mode='r', encoding='utf-8') as f:
+                async with aiofiles.open('athena/athena_cache.json', mode='r', encoding='utf-8') as f:
                     cached_data = json.loads(await f.read())
                     cached_hash = cached_data['hash']
                     cached_len = cached_data['len']
@@ -48,7 +48,7 @@ class BackgroundTasks(Cog):
             date = datetime.now().strftime("%d.%m.%Y %H:%M:%S")
             cache = {"hash": new_hash, "date":date, "len": new_len}
 
-            async with aiofiles.open('athena/cache.json', 'w', encoding='utf-8') as f:
+            async with aiofiles.open('athena/athena_cache.json', 'w', encoding='utf-8') as f:
                 await f.write(json.dumps(cache, indent=2, sort_keys=True, ensure_ascii=False))
 
             await self.create_item_shop_image(data=cache)
