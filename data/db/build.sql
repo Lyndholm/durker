@@ -52,7 +52,7 @@ CREATE TABLE public.leveling
     user_id bigint,
     level bigint DEFAULT 0,
     xp bigint DEFAULT 0,
-    total_xp bigint DEFAULT 0,
+    xp_total bigint DEFAULT 0,
     xp_lock timestamp without time zone DEFAULT (now())::timestamp without time zone
 );
 

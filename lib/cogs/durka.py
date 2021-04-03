@@ -9,8 +9,7 @@ from discord.ext.commands.cooldowns import BucketType
 from loguru import logger
 
 from ..db import db
-from ..utils.utils import (cooldown_timer_str, load_commands_from_json,
-                           russian_plural)
+from ..utils.utils import cooldown_timer_str, load_commands_from_json
 
 cmd = load_commands_from_json("durka")
 

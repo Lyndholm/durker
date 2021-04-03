@@ -20,8 +20,7 @@ from loguru import logger
 
 from ..db import db
 from ..utils.constants import AUDIT_LOG_CHANNEL, GUILD_ID
-from ..utils.utils import (cooldown_timer_str, insert_new_user_in_db,
-                           russian_plural)
+from ..utils.utils import cooldown_timer_str, insert_new_user_in_db
 
 logger.add("logs/{time:DD-MM-YYYY---HH-mm-ss}.log",
            format="{time:DD-MM-YYYY HH:mm:ss} | {level} | {message}",

@@ -76,7 +76,7 @@ def dump_user_data_in_json(member: discord.Member):
 
     cursor.execute("SELECT * FROM leveling where user_id = %s", (member.id,))
     rec = cursor.fetchone()
-    data["leveling"] = {"level":rec[1],"xp":rec[2],"total_xp":rec[3]}
+    data["leveling"] = {"level":rec[1],"xp":rec[2],"xp_total":rec[3]}
 
     cursor.execute("SELECT * FROM users_info where user_id = %s", (member.id,))
     rec = cursor.fetchone()

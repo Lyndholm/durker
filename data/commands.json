@@ -498,6 +498,23 @@
             "hidden": false
         }
     },
+    "leveling":
+    {
+        "rank":{
+            "name": "rank",
+            "aliases": ["lvl", "level", "уровень", "ранг"],
+            "brief": "Статистика уровней.",
+            "description": "Просмотр своей статистики уровней.",
+            "usage": "rank",
+            "help": "Отображает статистику уровней пользователя. Работает только на сервере.\n\n**Кулдаун:** отсутствует.",
+            "required_level": 0,
+            "has_cooldown": false,
+            "cooldown_rate": 0,
+            "cooldown_per_second": 0,
+            "cooldown_type": "None",
+            "hidden": false
+        }
+    },
     "moderation":
     {
         "kick":{
