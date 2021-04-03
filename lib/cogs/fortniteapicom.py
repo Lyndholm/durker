@@ -57,12 +57,14 @@ class FortniteAPIcom(Cog):
             parser.add_argument('-setText', nargs='+')
             parser.add_argument('-backendSet', nargs='+')
             parser.add_argument('-hasIntroduction', nargs='+')
+            parser.add_argument('-backendIntroduction', nargs='+')
             parser.add_argument('-introductionChapter', nargs='+')
             parser.add_argument('-introductionSeason', nargs='+')
             parser.add_argument('-hasFeaturedImage', nargs='+')
             parser.add_argument('-hasVariants', nargs='+')
             parser.add_argument('-hasGameplayTags', nargs='+')
             parser.add_argument('-gameplayTag', nargs='+')
+            parser.add_argument('-dynamicPakId', nargs='+')
             parser.add_argument('-added', nargs='+')
             parser.add_argument('-addedSince', nargs='+')
             parser.add_argument('-unseenFor', nargs='+')
@@ -172,6 +174,9 @@ class FortniteAPIcom(Cog):
             if args.hasIntroduction:
                 parameter += f"&hasIntroduction={args.hasIntroduction[0].lower()}"
 
+            if args.backendIntroduction:
+                parameter += f"&backendIntroduction={args.backendIntroduction[0].lower()}"
+
             if args.introductionChapter:
                 parameter += f"&introductionChapter={args.introductionChapter[0].lower()}"
 
@@ -189,6 +194,9 @@ class FortniteAPIcom(Cog):
 
             if args.gameplayTag:
                 parameter += f"&gameplayTag={args.gameplayTag[0].lower()}"
+
+            if args.dynamicPakId:
+                parameter += f"&dynamicPakId={args.dynamicPakId[0].lower()}"
 
             if args.added:
                 parameter += f"&added={args.added[0].lower()}"
