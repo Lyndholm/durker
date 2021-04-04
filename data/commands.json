@@ -928,6 +928,39 @@
             "hidden": true
         }
     },
+    "reactions":
+    {
+        "addreactionrole":
+        {
+            "name": "addreactionrole",
+            "aliases": ["addreactrole", "addreaction", "addreact"],
+            "brief": "Добавление роли за реакцию.",
+            "description": "Добавляет в базу данных реакцию, за которую выдаётся роль.",
+            "usage": "addreactionrole <channel> <message id> <emoji> <role>",
+            "help": "Добавляет к сообщению реакция, за нажатие на которую будет выдаваться указанная роль.\nДоступно только администраторам сервера.\n\n**Кулдаун:** отсутствует.\n**Необходимый уровень:** 0",
+            "required_level": 0,
+            "has_cooldown": false,
+            "cooldown_rate": 0,
+            "cooldown_per_second": 0,
+            "cooldown_type": "None",
+            "hidden": true
+        },
+        "removereactionrole":
+        {
+            "name": "removereactionrole",
+            "aliases": ["removereactrole", "removereaction", "removereact"],
+            "brief": "Удаление роли за реакцию.",
+            "description": "Удаляет из базы данных реакцию, за которую выдаётся роль.",
+            "usage": "removereactionrole <message id> <emoji>",
+            "help": "Удаляет под сообщением и из базы данных реакцию, за которую выдаётся роль.\nДоступно только администраторам сервера.\n\n**Кулдаун:** отсутствует.\n**Необходимый уровень:** 0",
+            "required_level": 0,
+            "has_cooldown": false,
+            "cooldown_rate": 0,
+            "cooldown_per_second": 0,
+            "cooldown_type": "None",
+            "hidden": true
+        }
+    },
     "user_stats":
     {
         "profile":
