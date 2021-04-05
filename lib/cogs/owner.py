@@ -391,7 +391,7 @@ class Owner(Cog):
 
         db.commit()
         self.bot.scheduler.shutdown()
-        await self.bot.logout()
+        await self.bot.close()
 
 def setup(bot):
     bot.add_cog(Owner(bot))

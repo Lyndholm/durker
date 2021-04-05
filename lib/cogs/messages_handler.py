@@ -3,6 +3,7 @@ from datetime import datetime
 import aiofiles
 from discord import Message, TextChannel
 from discord.ext.commands import Cog
+from discord.utils import remove_markdown
 
 from ..db import db
 from ..utils.decorators import listen_for_guilds
@@ -52,7 +53,7 @@ class MessagesHandler(Cog):
         await self.bot.invoke(ctx)
 
     async def can_message_be_counted(self, message: Message) -> bool:
-        message_content = message.clean_content.replace("*", "")
+        message_content = remove_markdown(message.clean_content)
         ctx = await self.bot.get_context(message)
 
         if not message.author.bot and isinstance(message.channel, TextChannel):

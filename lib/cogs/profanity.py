@@ -4,6 +4,7 @@ import aiofiles
 from discord import File, Member, TextChannel
 from discord.ext.commands import (Cog, command, dm_only, guild_only,
                                   has_any_role, is_owner)
+from discord.utils import remove_markdown
 from loguru import logger
 
 from ..db import db
@@ -62,7 +63,7 @@ class Profanity(Cog):
     @listen_for_guilds()
     @logger.catch
     async def on_message(self, message):
-        content = message.clean_content.replace("*", "")
+        content = remove_markdown(message.clean_content)
 
         if isinstance(message.channel, TextChannel) and not message.author.bot and self.bot.profanity.contains_profanity(content):
             if message.author.id not in self.whitelisted_users:

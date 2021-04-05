@@ -4,6 +4,7 @@ from random import randint
 
 from discord import Embed, Message, TextChannel
 from discord.ext.commands import Cog, command, guild_only
+from discord.utils import remove_markdown
 
 from ..db import db
 from ..utils.decorators import listen_for_guilds
@@ -39,7 +40,7 @@ class Leveling(Cog):
         )
 
     async def can_message_be_counted(self, message: Message) -> bool:
-        message_content = message.clean_content.replace("*", "")
+        message_content = remove_markdown(message.clean_content)
         ctx = await self.bot.get_context(message)
 
         if not message.author.bot and isinstance(message.channel, TextChannel):
