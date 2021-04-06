@@ -6,12 +6,13 @@ from math import floor
 from typing import Optional
 
 import aiofiles
-from discord import Color, Embed, Invite, Member, Message, PartialInviteGuild
+from discord import (Color, Embed, Invite, Member, Message, Object,
+                     PartialInviteGuild)
 from discord.errors import NotFound
-from discord.ext.commands import (CheckFailure, Cog, Greedy,
-                                  bot_has_permissions, command, guild_only,
-                                  has_any_role, has_permissions)
-from discord.utils import get
+from discord.ext.commands import (BadArgument, CheckFailure, Cog, Converter,
+                                  Greedy, bot_has_permissions, command,
+                                  guild_only, has_any_role, has_permissions)
+from discord.utils import get, find
 from jishaku.functools import executor_function
 
 from ..db import db
@@ -22,6 +23,24 @@ from ..utils.utils import (edit_user_reputation, load_commands_from_json,
                            russian_plural)
 
 cmd = load_commands_from_json("moderation")
+
+
+class BannedUser(Converter):
+    async def convert(self, ctx, arg):
+        if ctx.guild.me.guild_permissions.ban_members:
+            if arg.isdigit():
+                try:
+                    return (await ctx.guild.fetch_ban(Object(id=int(arg)))).user
+                except NotFound:
+                    raise BadArgument
+
+        banned = [i.user for i in await ctx.guild.bans()]
+        if banned:
+            user = find(lambda u: str(u) == arg, banned)
+            if user is not None:
+                return user
+            else:
+                raise BadArgument
 
 
 class Moderation(Cog):
@@ -52,9 +71,11 @@ class Moderation(Cog):
             )
             embed.set_thumbnail(url=self.pominki_url)
 
-            fields = [("Пользователь", f"{target.display_name} ({target.mention})", False),
-                        ("Администратор", message.author.mention, False),
-                        ("Причина", reason.capitalize(), False)]
+            fields = [
+                ("Пользователь", f"{target.display_name} ({target.mention})", False),
+                ("Администратор", message.author.mention, False),
+                ("Причина", reason.capitalize(), False)
+            ]
 
             for name, value, inline in fields:
                 embed.add_field(name=name, value=value, inline=inline)
@@ -75,7 +96,6 @@ class Moderation(Cog):
 
         if not len(targets):
             await ctx.send(f"{ctx.author.mention}, укажите пользователей, которых необходимо выгнать с сервера.", delete_after=10)
-
         else:
             await self.kick_members(ctx.message, targets, reason)
 
@@ -100,9 +120,11 @@ class Moderation(Cog):
             )
             embed.set_thumbnail(url=self.pominki_url)
 
-            fields = [("Пользователь", f"{target.display_name} ({target.mention})", False),
-                        ("Администратор", message.author.mention, False),
-                        ("Причина", reason.capitalize(), False)]
+            fields = [
+                ("Пользователь", f"{target.display_name} ({target.mention})", False),
+                ("Администратор", message.author.mention, False),
+                ("Причина", reason.capitalize(), False)
+            ]
 
             for name, value, inline in fields:
                 embed.add_field(name=name, value=value, inline=inline)
@@ -125,9 +147,48 @@ class Moderation(Cog):
 
         if not len(targets):
             await ctx.send(f"{ctx.author.mention}, укажите пользователей, которых необходимо забанить.", delete_after=10)
-
         else:
-            await self.ban_members(ctx.message, targets, reason)
+            await self.ban_members(ctx.message, targets, delete_days, reason)
+
+    async def unban_members(self, message, targets, reason):
+        for target in targets:
+            await message.guild.unban(target, reason=reason)
+
+            embed = Embed(
+                title="Пользователь разбанен",
+                color=Color.green(),
+                timestamp=datetime.utcnow()
+            )
+            embed.set_thumbnail(url=target.avatar_url)
+
+            fields = [
+                ("Пользователь", f"{target.name} ({target.mention})", False),
+                ("Администратор", message.author.mention, False),
+                ("Причина", reason.capitalize(), False)
+            ]
+
+            for name, value, inline in fields:
+                embed.add_field(name=name, value=value, inline=inline)
+
+            await self.moderation_channel.send(embed=embed)
+
+    @command(name=cmd["unban"]["name"], aliases=cmd["unban"]["aliases"],
+            brief=cmd["unban"]["brief"],
+            description=cmd["unban"]["description"],
+            usage=cmd["unban"]["usage"],
+            help=cmd["unban"]["help"],
+            hidden=cmd["unban"]["hidden"], enabled=True)
+    @guild_only()
+    @bot_has_permissions(ban_members=True)
+    @has_permissions(ban_members=True)
+    async def unban_members_command(self, ctx, targets: Greedy[BannedUser], *,
+                                    reason: Optional[str] = "Не указана"):
+        await ctx.message.delete()
+
+        if not len(targets):
+            await ctx.send(f"{ctx.author.mention}, укажите пользователей, которых необходимо разбанить.", delete_after=10)
+        else:
+            await self.unban_members(ctx.message, targets, reason)
 
 
     async def mute_members(self, message, targets, time, reason, mute_type):
@@ -139,9 +200,11 @@ class Moderation(Cog):
                 timestamp=datetime.utcnow()
             )
             embed.set_thumbnail(url=self.pominki_url)
-            fields = [("Причина", reason.capitalize(), True),
-                    time_field,
-                    ("Администратор", message.author.mention, True)]
+            fields = [
+                ("Причина", reason.capitalize(), True),
+                time_field,
+                ("Администратор", message.author.mention, True)
+            ]
 
             if mute_type == "mute":
                 fields.insert(0, ("Пользователь", f"{target.display_name} ({target.mention})", False))
@@ -402,10 +465,12 @@ class Moderation(Cog):
                 timestamp=datetime.utcnow()
             )
             embed.set_thumbnail(url="https://media1.tenor.com/images/ef7a7efecb259c77e77720ce991b5c4a/tenor.gif")
-            fields = [("Причина", reason.capitalize(), True),
-                    time_field,
-                    ("Общее количество предупреждений", len(warns), True),
-                    ("Администратор", message.author.mention, True)]
+            fields = [
+                ("Причина", reason.capitalize(), True),
+                time_field,
+                ("Общее количество предупреждений", len(warns), True),
+                ("Администратор", message.author.mention, True)
+            ]
 
             for name, value, inline in fields:
                 embed.add_field(name=name, value=value, inline=inline)

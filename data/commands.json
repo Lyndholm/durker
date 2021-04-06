@@ -545,6 +545,20 @@
             "cooldown_type": "None",
             "hidden": false
         },
+        "unban":{
+          "name": "unban",
+          "aliases": ["анбан", "разбан"],
+          "brief": "Разбан пользователя.",
+          "description": "Снимает у пользователя бан на сервере.",
+          "usage": "unban <members> [reason]",
+          "help": "Отзывает бан участника на сервере.\nКоманда доступна только администраторам.\n\n**Кулдаун:** отсутствует.",
+          "required_level": 0,
+          "has_cooldown": false,
+          "cooldown_rate": 0,
+          "cooldown_per_second": 0,
+          "cooldown_type": "None",
+          "hidden": false
+      },
         "purge":{
             "name": "purge",
             "aliases": ["delete", "пудж", "удали"],
