@@ -1,6 +1,6 @@
+import os
 from asyncio import sleep
 from datetime import datetime
-from glob import glob
 from os import getenv
 
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
@@ -34,7 +34,7 @@ TOKEN = getenv('DISCORD_BOT_TOKEN')
 PREFIX = "+"
 GUILD = 490181820353347584
 OWNER_IDS = [375722626636578816]
-COGS = [path.split("\\")[-1][:-3] for path in glob("./lib/cogs/*.py")]
+COGS = [path[:-3] for path in os.listdir('./lib/cogs') if path[-3:] == '.py']
 
 
 class Ready(object):
