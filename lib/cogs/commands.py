@@ -1,11 +1,15 @@
-from datetime import datetime
-from discord import Embed, Color, Member
-from discord.ext.commands import Cog, Greedy
-from discord.ext.commands import command
+from datetime import datetime, timedelta
+from platform import python_version
+from time import time
 
-from ..utils.utils import load_commands_from_json
-from ..utils.checks import is_channel
+from discord import Color, Embed, Member
+from discord import __version__ as discord_version
+from discord.ext.commands import Cog, Greedy, command, guild_only
+from psutil import Process, cpu_percent, virtual_memory
+
 from ..db import db
+from ..utils.checks import is_channel
+from ..utils.utils import load_commands_from_json
 
 cmd = load_commands_from_json("commands")
 
@@ -115,6 +119,53 @@ class Commands(Cog):
             "Также в этом канале вы можете задать вопрос администрации сервера.",
             delete_after=90
         )
+
+    @command(name=cmd["info"]["name"], aliases=cmd["info"]["aliases"],
+            brief=cmd["info"]["brief"],
+            description=cmd["info"]["description"],
+            usage=cmd["info"]["usage"],
+            help=cmd["info"]["help"],
+            hidden=cmd["info"]["hidden"], enabled=True)
+    @guild_only()
+    async def show_bot_info_command(self, ctx):
+        embed = Embed(
+            title="Информация о боте",
+            color=ctx.author.color,
+            timestamp=datetime.utcnow()).set_thumbnail(url=ctx.guild.me.avatar_url)
+
+        proc = Process()
+        with proc.oneshot():
+            uptime = timedelta(seconds=int(time()-proc.create_time()))
+            cpu_usage = cpu_percent()
+            ram_total = virtual_memory().total / (1024**2)
+            ram_of_total = proc.memory_percent()
+            ram_usage = ram_total * (ram_of_total / 100)
+
+        embed.description = \
+            "Dungeon Durker - многофункциональный Discord бот, имеющий большое количество полезных утилит и команд. " \
+            "Бот создан специально для [сервера](https://discord.gg/XpM58CK) [FortniteFun](https://fortnitefun.ru/). "\
+            "Он призван занять должность менеджера сервера, облегчить взаимодействие с пользователями, автоматизировать рутинную работу.\n" \
+            "Модерация (автоматическая и ручная); аудит; cистема уровней, достижений, репутации; выдача ролей; кастомные команды; " \
+            "взаимодействие с различными API — всё это и не только присутствует в этом боте.\n" \
+            "▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬\n" \
+            "**Информация о проекте**\n" \
+            "▫️ **Название:** Dungeon Durker\n" \
+            f"▫️ **Версия:** {self.bot.VERSION}\n" \
+            "▫️ **Автор:** Lyndholm#7200\n" \
+            "▫️ **Веб сайт:** [click](https://youtu.be/dQw4w9WgXcQ)\n" \
+            "▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬\n" \
+            "**Статистика сервера**\n" \
+            "▫️ **OS Info:** Debian GNU/Linux 10\n" \
+            f"▫️ **Python Version:** {python_version()}\n" \
+            f"▫️ **Discord.py Version:** {discord_version}\n" \
+            f"▫️ **Uptime:** {uptime}\n" \
+            f"▫️ **CPU Usage:** {cpu_usage}%\n" \
+            f"▫️ **RAM Usage:** {round(ram_of_total)}% | {round(ram_usage)}/{round(ram_total)} MB\n" \
+            f"▫️ **Ping:** {self.bot.latency*1000:,.0f} ms\n" \
+            "▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬"
+
+        await ctx.send(embed=embed)
+
 
 def setup(bot):
     bot.add_cog(Commands(bot))

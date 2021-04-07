@@ -115,7 +115,21 @@
             "cooldown_per_second": 0,
             "cooldown_type": "None",
             "hidden": false
-        }
+        },
+        "info":{
+          "name": "info",
+          "aliases": ["about", "инфо"],
+          "brief": "Информация о Dungeon Durker.",
+          "description": "Информация о проекте Dungeon Durker.",
+          "usage": "info",
+          "help": "Отображает основную информацию о проекте Dungeon Durker, предоставляет описание бота.\n\n**Кулдаун:** отсутствует.\n**Необходимый уровень:** 0",
+          "required_level": 0,
+          "has_cooldown": false,
+          "cooldown_rate": 0,
+          "cooldown_per_second": 0,
+          "cooldown_type": "None",
+          "hidden": false
+      }
     },
     "contests":
     {
@@ -773,6 +787,21 @@
             "description": "Формирует список отключенных команд.",
             "usage": "disabledcmds",
             "help": "Формирует список отключенных команд. Работает только в личных сообщениях. Доступно только разработчику бота.",
+            "required_level": 0,
+            "has_cooldown": false,
+            "cooldown_rate": 0,
+            "cooldown_per_second": 0,
+            "cooldown_type": "None",
+            "hidden": true
+        },
+        "ping":
+        {
+            "name": "ping",
+            "aliases": ["пинг"],
+            "brief": "Отображает время ответа Discord API.",
+            "description": "Get the response time for Discord API.",
+            "usage": "ping",
+            "help": "Отображает время ответа Discord API, пинг бота. Работает только в личных сообщениях. Доступно только разработчику бота.",
             "required_level": 0,
             "has_cooldown": false,
             "cooldown_rate": 0,

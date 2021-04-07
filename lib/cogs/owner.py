@@ -148,6 +148,19 @@ class Owner(Cog):
         embed = Embed(title=':arrow_down: Отключённые команды.', description="\n".join(disabled_cmds) if disabled_cmds else "Все команды работают в штатном режиме.", color = Color.red())
         await ctx.send(embed=embed)
 
+    @command(name=cmd["ping"]["name"], aliases=cmd["ping"]["aliases"],
+            brief=cmd["ping"]["brief"],
+            description=cmd["ping"]["description"],
+            usage=cmd["ping"]["usage"],
+            help=cmd["ping"]["help"],
+            hidden=cmd["ping"]["hidden"], enabled=True)
+    @dm_only()
+    @is_owner()
+    async def ping_bot_command(self, ctx):
+        start = time.monotonic()
+        message = await ctx.send(f'🏓 DWSP latency: {self.bot.latency*1000:,.0f} ms.')
+        end = time.monotonic()
+        await message.edit(content=f'🏓 DWSP latency: {self.bot.latency*1000:,.0f} ms.\n📶 Responce time: {(end-start)*1000:,.0f} ms.')
 
     @command(name=cmd["fnping"]["name"], aliases=cmd["fnping"]["aliases"],
             brief=cmd["fnping"]["brief"],
