@@ -512,6 +512,91 @@
             "hidden": false
         }
     },
+    "leaderboard_achievements":
+    {
+        "achievementboard":{
+            "name": "achievementboard",
+            "aliases": ["ab", "achboard"],
+            "brief": "Рейтинг по достижениям.",
+            "description": "Рейтинг по количеству полученных на сервере достижений.",
+            "usage": "achboard",
+            "help": "Отображает список лидеров по количеству полученных на сервере достижений. Работает только в канале <#604621910386671616>.\n\n**Кулдаун:** отсутствует.",
+            "required_level": 0,
+            "has_cooldown": false,
+            "cooldown_rate": 0,
+            "cooldown_per_second": 0,
+            "cooldown_type": "None",
+            "hidden": false
+        }
+    },
+    "leaderboard_leveling":
+    {
+        "levelboard":{
+            "name": "levelboard",
+            "aliases": ["lb", "lvlboard"],
+            "brief": "Рейтинг по уровню.",
+            "description": "Рейтинг по уровню на сервере.",
+            "usage": "levelboard",
+            "help": "Отображает список лидеров по уровню на сервере. Работает только в канале <#604621910386671616>.\n\n**Кулдаун:** отсутствует.",
+            "required_level": 0,
+            "has_cooldown": false,
+            "cooldown_rate": 0,
+            "cooldown_per_second": 0,
+            "cooldown_type": "None",
+            "hidden": false
+        }
+    },
+    "leaderboard_messages":
+    {
+        "messageboard":{
+            "name": "messageboard",
+            "aliases": ["mb", "msgboard"],
+            "brief": "Рейтинг по сообщениям.",
+            "description": "Рейтинг по количеству написанных сообщений.",
+            "usage": "messageboard",
+            "help": "Отображает список лидеров по количеству написанных сообщений. Работает только в канале <#604621910386671616>.\n\n**Кулдаун:** отсутствует.",
+            "required_level": 0,
+            "has_cooldown": false,
+            "cooldown_rate": 0,
+            "cooldown_per_second": 0,
+            "cooldown_type": "None",
+            "hidden": false
+        }
+    },
+    "leaderboard_reputation":
+    {
+        "reputationboard":{
+            "name": "reputationboard",
+            "aliases": ["rb", "repboard"],
+            "brief": "Рейтинг по репутации.",
+            "description": "Рейтинг по количеству репутации.",
+            "usage": "repboard",
+            "help": "Отображает список лидеров по количеству репутации. Работает только в канале <#604621910386671616>.\n\n**Кулдаун:** отсутствует.",
+            "required_level": 0,
+            "has_cooldown": false,
+            "cooldown_rate": 0,
+            "cooldown_per_second": 0,
+            "cooldown_type": "None",
+            "hidden": false
+        }
+    },
+    "leaderboard_vbucks":
+    {
+        "vbucksboard":{
+            "name": "vbucksboard",
+            "aliases": ["vb", "$board"],
+            "brief": "Рейтинг по в-баксам.",
+            "description": "Рейтинг по количеству потраченных в-баксов.",
+            "usage": "vbucksboard",
+            "help": "Отображает список лидеров по количеству в-баксов, которые участники потратили с нашим тегом FNFUN. Работает только в канале <#604621910386671616>.\n\n**Кулдаун:** отсутствует.",
+            "required_level": 0,
+            "has_cooldown": false,
+            "cooldown_rate": 0,
+            "cooldown_per_second": 0,
+            "cooldown_type": "None",
+            "hidden": false
+        }
+    },
     "leveling":
     {
         "rank":{
@@ -1009,7 +1094,7 @@
         "profile":
         {
             "name": "profile",
-            "aliases": ["я","stats", "me"],
+            "aliases": ["stats"],
             "brief": "Отображает карточку пользователя с его статистикой на сервере.",
             "description": "Возможность просмотреть статистику на сервере.",
             "usage": "profile [member]",

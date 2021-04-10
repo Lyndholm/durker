@@ -130,10 +130,6 @@ class UserStats(Cog):
             embed.add_field(name=":date: Дата последней покупки с тегом FNFUN:",
                             value=purchases[0]['vbucks_purchases'][-1]['date'].strftime("%d.%m.%Y %H:%M"))
 
-        if len(purchases[0]['realMoney_purchases']) > 0:
-            embed.add_field(name=":money_with_wings: Поддержка автора в рублях:",
-                            value=realMoney, inline=True)
-
         if kapitalist not in target.roles:
             embed.add_field(name=f":moneybag: До роли `{kapitalist.name}` осталось: ",
                             value=f"{int(10000 - vbucks_count)} в-баксов", inline=True)
@@ -141,6 +137,10 @@ class UserStats(Cog):
         if magnat not in target.roles and kapitalist in target.roles:
             embed.add_field(name=f":moneybag: До роли `{magnat.name}` осталось: ",
                             value=f"{int(25000 - vbucks_count)} в-баксов", inline=True)
+
+        if len(purchases[0]['realMoney_purchases']) > 0:
+            embed.add_field(name=":money_with_wings: Поддержка автора в рублях:",
+                            value=realMoney, inline=True)
 
         embed.add_field(name=":speaker: Время, проведенное в голосовых каналах:",
                         value=timedelta(seconds=user_stats[3]), inline=True)
@@ -161,7 +161,7 @@ class UserStats(Cog):
             embed.timestamp = datetime.utcnow()
             embed.set_footer(text=f"Запрос от: {ctx.author}", icon_url=ctx.author.avatar_url)
         else:
-            embed.set_footer(text="Карточка сформирована " + datetime.now().strftime("%d.%m.%Y %H:%M:%S"))
+            embed.set_footer(text='Данные актуальны на ' + datetime.now().strftime("%d.%m.%Y %H:%M:%S") + ' МСК')
 
         await ctx.send(embed=embed)
 

@@ -73,6 +73,13 @@ def field(command, *values):
     if (fetch := cursor.fetchone()) is not None:
         return fetch[0]
 
+def records(command, *values):
+    """
+    Returns records from fetchall() method
+    """
+    cursor.execute(command, tuple(values))
+    return cursor.fetchall()
+
 
 def column(command, *values):
     """
