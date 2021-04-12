@@ -1,12 +1,12 @@
 import json
 import logging
+from datetime import datetime
 from math import ceil
 from sys import exit
 from time import sleep
 
 import coloredlogs
 from PIL import Image, ImageDraw
-
 from util import ImageUtil, Utility
 
 log = logging.getLogger(__name__)
@@ -234,7 +234,7 @@ class Athena:
             shopImage.save("athena/itemshop.png")
             shopImageJPG = Image.open('athena/itemshop.png')
             shopImageJPG = shopImageJPG.convert("RGB")
-            shopImageJPG.save("athena/itemshop.jpg", optimize=True, quality=80)
+            shopImageJPG.save("athena/itemshop.jpg", optimize=True, quality=90)
             log.info("Generated Item Shop image [png & jpg]")
 
             return True
@@ -249,7 +249,11 @@ class Athena:
             rarity = item["items"][0]["rarity"]["value"].lower()
             category = item["items"][0]["type"]["value"].lower()
             price = item["finalPrice"]
-
+            if len(item["items"][0]["shopHistory"]) >= 2:
+                last_shop_occurrence = item["items"][0]["shopHistory"][-2]
+                date_diff = str((datetime.utcnow() - datetime.strptime(last_shop_occurrence, "%Y-%m-%dT%H:%M:%SZ")).days)
+            else:
+                date_diff = 'НОВИНКА'
 
             if (item["items"][0]["images"]["featured"]):
                 icon = item["items"][0]["images"]["featured"]
@@ -332,12 +336,31 @@ class Athena:
         vbucks = ImageUtil.Open(self, "vbucks.png")
         vbucks = ImageUtil.RatioResize(self, vbucks, 40, 40)
 
-        font = ImageUtil.Font(self, 40)
-        price = str(f"{price:,}")
-        textWidth, _ = font.getsize(price)
+        if date_diff.isdigit():
+            font = ImageUtil.Font(self, 40)
+            price = str(f"{item['finalPrice']:,}")
+            textWidth, _ = font.getsize(price)
+            canvas.text(ImageUtil.CenterX(self, ((textWidth - 5) - vbucks.width), card.width - 125, 435), price, (255, 255, 255), font=font)
+            card.paste(vbucks,ImageUtil.CenterX(self, (vbucks.width + (textWidth + 80)), card.width - 50, 438),vbucks)
 
-        canvas.text(ImageUtil.CenterX(self, ((textWidth - 5) - vbucks.width), card.width, 435), price, (255, 255, 255), font=font)
-        card.paste(vbucks,ImageUtil.CenterX(self, (vbucks.width + (textWidth + 5)), card.width, 438),vbucks)
+            font = ImageUtil.Font(self, 30)
+            date_diff = f'{date_diff} д.'
+            textWidth, _ = font.getsize(date_diff)
+            canvas.text(ImageUtil.CenterX(self, ((textWidth - 115) - vbucks.width - 115), card.width - 105, 440), date_diff, (255, 255, 255), font=font)
+        else:
+            font = ImageUtil.Font(self, 40)
+            price = str(f"{item['finalPrice']:,}")
+            textWidth, _ = font.getsize(price)
+            canvas.text(ImageUtil.CenterX(self, ((textWidth - 5) - vbucks.width), card.width, 435), price, (255, 255, 255), font=font)
+            card.paste(vbucks,ImageUtil.CenterX(self, (vbucks.width + (textWidth + 5)), card.width, 438),vbucks)
+
+            font = ImageUtil.Font(self, 30)
+            new = 'НОВИНКА'
+            textWidth, _ = font.getsize(new)
+            label = ImageUtil.Open(self, "label.png")
+            label = ImageUtil.RatioResize(self, label, 50, 50)
+            card.paste(label,ImageUtil.CenterX(self, 0, 0, 0),label)
+            canvas.text(ImageUtil.CenterX(self, 10, 37, 7), new, (255, 255, 255), font=font)
 
         font = ImageUtil.Font(self, 40)
         itemName = name.upper().replace(" OUTFIT", "").replace(" PICKAXE", "").replace(" BUNDLE", "")
