@@ -158,6 +158,20 @@
         "cooldown_type": "guild",
         "hidden": false
       },
+      "avatar":{
+        "name": "avatar",
+        "aliases": ["аватар"],
+        "brief": "Аватар пользователя.",
+        "description": "Показывает фото профиля указанного участника сервера.",
+        "usage": "avatar <member>",
+        "help": "Бот показывает фото профиля указанного участника сервера.\n\n**Кулдаун:** 5 минут, действует на определённого пользователя.\n**Необходимый уровень:** 10",
+        "required_level": 10,
+        "has_cooldown": true,
+        "cooldown_rate": 1,
+        "cooldown_per_second": 300,
+        "cooldown_type": "member",
+        "hidden": false
+      },
         "info":{
           "name": "info",
           "aliases": ["about", "инфо"],

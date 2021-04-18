@@ -1,6 +1,7 @@
 from datetime import datetime, timedelta
 from platform import python_version
 from time import time
+from typing import Optional
 
 from discord import Color, Embed, File, Member
 from discord import __version__ as discord_version
@@ -157,6 +158,29 @@ class Commands(Cog):
     async def sac_command(self, ctx):
         await ctx.send('<:UseCodeFNFUN:681878310107480068> Лучший тег автора: **FNFUN** <:UseCodeFNFUN:681878310107480068>',
                         file=File('./data/images/fnfun.png'))
+
+    @command(name=cmd["avatar"]["name"], aliases=cmd["avatar"]["aliases"],
+            brief=cmd["avatar"]["brief"],
+            description=cmd["avatar"]["description"],
+            usage=cmd["avatar"]["usage"],
+            help=cmd["avatar"]["help"],
+            hidden=cmd["avatar"]["hidden"], enabled=True)
+    @guild_only()
+    @required_level(cmd["avatar"]["required_level"])
+    @cooldown(cmd["avatar"]["cooldown_rate"], cmd["avatar"]["cooldown_per_second"], BucketType.member)
+    async def display_member_avatar(self, ctx, member: Optional[Member]):
+        await ctx.message.delete()
+        if not member:
+            await ctx.send(f'{ctx.author.mention}, укажите пользователя, чей аватар вы хотите увидеть.', delete_after=10)
+            ctx.command.reset_cooldown(ctx)
+            return
+
+        embed = Embed(
+            title=f'Аватар {member.display_name}',
+            color=member.color,
+            timestamp=datetime.utcnow()
+        ).set_image(url=member.avatar_url).set_footer(text=f'Запрос от {ctx.author}', icon_url=ctx.author.avatar_url)
+        await ctx.send(embed=embed)
 
     @command(name=cmd["info"]["name"], aliases=cmd["info"]["aliases"],
             brief=cmd["info"]["brief"],
