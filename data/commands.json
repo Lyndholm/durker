@@ -116,6 +116,48 @@
             "cooldown_type": "None",
             "hidden": false
         },
+        "ppo":{
+          "name": "ppo",
+          "aliases": ["ппо"],
+          "brief": "ППО это who?",
+          "description": "Расшифровка ППО.",
+          "usage": "ппо",
+          "help": "Расшифровка аббревиатуры ППО.\n\n**Кулдаун:** 10 минут, действует на весь сервер.\n**Необходимый уровень:** 3",
+          "required_level": 3,
+          "has_cooldown": true,
+          "cooldown_rate": 1,
+          "cooldown_per_second": 600,
+          "cooldown_type": "guild",
+          "hidden": false
+      },
+      "sp":{
+        "name": "sp",
+        "aliases": ["сп"],
+        "brief": "СП это who?",
+        "description": "Расшифровка СП.",
+        "usage": "сп",
+        "help": "Расшифровка аббревиатуры СП.\n\n**Кулдаун:** 10 минут, действует на весь сервер.\n**Необходимый уровень:** 3",
+        "required_level": 3,
+        "has_cooldown": true,
+        "cooldown_rate": 1,
+        "cooldown_per_second": 600,
+        "cooldown_type": "guild",
+        "hidden": false
+      },
+      "code":{
+        "name": "code",
+        "aliases": ["тег", "код", "тегавтора", "sac"],
+        "brief": "Наш тег автора",
+        "description": "Наш тег: FNFUN.",
+        "usage": "code",
+        "help": "Используйте наш тег автора **FNFUN** в магазине предметов Fortnite.\n\n**Кулдаун:** 1 минута, действует на весь сервер.\n**Необходимый уровень:** 0",
+        "required_level": 0,
+        "has_cooldown": true,
+        "cooldown_rate": 1,
+        "cooldown_per_second": 60,
+        "cooldown_type": "guild",
+        "hidden": false
+      },
         "info":{
           "name": "info",
           "aliases": ["about", "инфо"],

@@ -2,13 +2,14 @@ from datetime import datetime, timedelta
 from platform import python_version
 from time import time
 
-from discord import Color, Embed, Member
+from discord import Color, Embed, File, Member
 from discord import __version__ as discord_version
-from discord.ext.commands import Cog, Greedy, command, guild_only
+from discord.ext.commands import (BucketType, Cog, Greedy, command, cooldown,
+                                  guild_only)
 from psutil import Process, cpu_percent, virtual_memory
 
 from ..db import db
-from ..utils.checks import is_channel
+from ..utils.checks import is_channel, required_level
 from ..utils.utils import load_commands_from_json
 
 cmd = load_commands_from_json("commands")
@@ -119,6 +120,43 @@ class Commands(Cog):
             "Также в этом канале вы можете задать вопрос администрации сервера.",
             delete_after=90
         )
+
+    @command(name=cmd["ppo"]["name"], aliases=cmd["ppo"]["aliases"],
+            brief=cmd["ppo"]["brief"],
+            description=cmd["ppo"]["description"],
+            usage=cmd["ppo"]["usage"],
+            help=cmd["ppo"]["help"],
+            hidden=cmd["ppo"]["hidden"], enabled=True)
+    @guild_only()
+    @required_level(cmd["ppo"]["required_level"])
+    @cooldown(cmd["ppo"]["cooldown_rate"], cmd["ppo"]["cooldown_per_second"], BucketType.guild)
+    async def ppo_command(self, ctx):
+        await ctx.send('Понял Принял Обработал')
+
+    @command(name=cmd["sp"]["name"], aliases=cmd["sp"]["aliases"],
+            brief=cmd["sp"]["brief"],
+            description=cmd["sp"]["description"],
+            usage=cmd["sp"]["usage"],
+            help=cmd["sp"]["help"],
+            hidden=cmd["sp"]["hidden"], enabled=True)
+    @guild_only()
+    @required_level(cmd["sp"]["required_level"])
+    @cooldown(cmd["sp"]["cooldown_rate"], cmd["sp"]["cooldown_per_second"], BucketType.guild)
+    async def sp_command(self, ctx):
+        await ctx.send('СП=справедливо=<:Spravedlivo:681858765158351124>')
+
+    @command(name=cmd["code"]["name"], aliases=cmd["code"]["aliases"],
+            brief=cmd["code"]["brief"],
+            description=cmd["code"]["description"],
+            usage=cmd["code"]["usage"],
+            help=cmd["code"]["help"],
+            hidden=cmd["code"]["hidden"], enabled=True)
+    @guild_only()
+    @required_level(cmd["code"]["required_level"])
+    @cooldown(cmd["code"]["cooldown_rate"], cmd["code"]["cooldown_per_second"], BucketType.guild)
+    async def sac_command(self, ctx):
+        await ctx.send('<:UseCodeFNFUN:681878310107480068> Лучший тег автора: **FNFUN** <:UseCodeFNFUN:681878310107480068>',
+                        file=File('./data/images/fnfun.png'))
 
     @command(name=cmd["info"]["name"], aliases=cmd["info"]["aliases"],
             brief=cmd["info"]["brief"],
