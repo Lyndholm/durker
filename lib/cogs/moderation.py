@@ -3,6 +3,7 @@ import re
 from asyncio import sleep
 from datetime import datetime, timedelta
 from math import floor
+from random import randint, choice
 from typing import Optional
 
 import aiofiles
@@ -745,6 +746,37 @@ class Moderation(Cog):
             embed.title = "purge (with targets) command invoked "
             embed.description = f"Удалено сообщений: {len(deleted)}\nУдаление выполнено пользователем: {ctx.author.mention}\nКанал: {ctx.channel.mention}"
             await self.bot.get_user(375722626636578816).send(embed=embed)
+
+
+    async def hat_replies(self, ctx, target, lost_rep):
+        replies = (
+            f'{target.mention} получил по шапке.',
+            f'{target.mention}, для мута рановато, но по шапке ты получил.',
+            f'{target.mention}, дружище, как с шапкой дела обстоят?',
+            f'{target.mention}, шапка в порядке?',
+            f'{target.mention}, проверь шапку.',
+            f'{target.mention}, так и до мута недалеко.',
+            f'{target.mention}, пока ты только по шапке получил, но скоро и мут заработаешь.',
+        )
+        reply = choice(replies) + f"\nТвоя репутация была уменьшена на **{lost_rep}** {russian_plural(lost_rep, ['единицу','единицы','единиц'])}."
+        await ctx.send(reply)
+
+    @command(name=cmd["hat"]["name"], aliases=cmd["hat"]["aliases"],
+            brief=cmd["hat"]["brief"],
+            description=cmd["hat"]["description"],
+            usage=cmd["hat"]["usage"],
+            help=cmd["hat"]["help"],
+            hidden=cmd["hat"]["hidden"], enabled=True)
+    @guild_only()
+    @has_any_role(790664227706241068,606928001669791755)
+    async def hat_command(self, ctx, targets: Greedy[Member]):
+        if not targets:
+            return
+
+        for target in targets:
+            lost_rep = randint(50, 150)
+            edit_user_reputation(target.id, '-', lost_rep)
+            await self.hat_replies(ctx, target, lost_rep)
 
 
     def find_discord_invites(self, message: Message) -> bool:

@@ -713,7 +713,7 @@
           "cooldown_per_second": 0,
           "cooldown_type": "None",
           "hidden": false
-      },
+        },
         "purge":{
             "name": "purge",
             "aliases": ["delete", "пудж", "удали"],
@@ -728,6 +728,20 @@
             "cooldown_type": "None",
             "hidden": false
         },
+        "hat":{
+          "name": "hat",
+          "aliases": ["шапка", "пошапке", "slap", "hit"],
+          "brief": "Даёт по шапке.",
+          "description": "Не даёт мут, но снимает от 50 до 150 очков репутации.",
+          "usage": "шапка <members>",
+          "help": "Не даёт мут, но снимает от 50 до 150 очков репутации. Для ситуаций, когда мутить ещё рано, но по шапке дать стоит.\n\nКоманда доступна Часовым и выше.\n\n**Кулдаун:** отсутствует.",
+          "required_level": 0,
+          "has_cooldown": false,
+          "cooldown_rate": 0,
+          "cooldown_per_second": 0,
+          "cooldown_type": "None",
+          "hidden": false
+      },
         "mute":{
             "name": "mute",
             "aliases": ["мут", "мьют"],

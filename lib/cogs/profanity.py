@@ -53,7 +53,7 @@ class Profanity(Cog):
             f"{member.mention}, не используй, пожалуйста, обсценную лексику.",
             f"{member.mention}, на сервере нет места брани.",
         )
-        reply = choice(profanity_replies) + f"\nТвоя репутация была уменьшена на **{lost_rep}** {russian_plural(lost_rep, ['единицы','единицы','единиц'])}."
+        reply = choice(profanity_replies) + f"\nТвоя репутация была уменьшена на **{lost_rep}** {russian_plural(lost_rep, ['единицу','единицы','единиц'])}."
         if 10 <= randint(1, 100) <= 25:
             await channel.send(reply, file=File('./data/images/bez-mata.jpg'))
         else:
