@@ -811,6 +811,34 @@
           "cooldown_per_second": 0,
           "cooldown_type": "None",
           "hidden": false
+        },
+        "readrole":{
+          "name": "readrole",
+          "aliases": ["читающий", "ридрол"],
+          "brief": "Правила нужно знать!",
+          "description": "Отправляет пользователей изучать правила сервера и описание ролей.",
+          "usage": "readrole <members>",
+          "help": "Бот отправляет пользователей изучать правила сервера и описание ролей. На время изучения (5 минут) у пользователя отнимаются все роли, по истечении срока они возвращаются автоматически.\n\nКоманда доступна Часовым и выше.\n\n**Кулдаун:** отсутствует.",
+          "required_level": 0,
+          "has_cooldown": false,
+          "cooldown_rate": 0,
+          "cooldown_per_second": 0,
+          "cooldown_type": "None",
+          "hidden": false
+        },
+        "removereadrole":{
+          "name": "removereadrole",
+          "aliases": ["нечитающий"],
+          "brief": "Забирает у пользователя роль Читающего.",
+          "description": "Завершает процесс изучения пользователем основных каналов сервера.",
+          "usage": "нечитающий <members>",
+          "help": "Бот завершает процесс изучения пользователем основных каналов сервера. Забирает у участника роль Читающего, возвращает ему отнятые ранее роли.\n\nКоманда доступна Часовым и выше.\n\n**Кулдаун:** отсутствует.",
+          "required_level": 0,
+          "has_cooldown": false,
+          "cooldown_rate": 0,
+          "cooldown_per_second": 0,
+          "cooldown_type": "None",
+          "hidden": false
         }
     },
     "nekos":

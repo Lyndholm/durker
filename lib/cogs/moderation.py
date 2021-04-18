@@ -12,12 +12,13 @@ from discord.errors import NotFound
 from discord.ext.commands import (BadArgument, CheckFailure, Cog, Converter,
                                   Greedy, bot_has_permissions, command,
                                   guild_only, has_any_role, has_permissions)
-from discord.utils import get, find
+from discord.utils import find, get
 from jishaku.functools import executor_function
 
 from ..db import db
 from ..utils.constants import (AUDIT_LOG_CHANNEL, HELPER_ROLE_ID,
-                               MODERATION_PUBLIC_CHANNEL, MUTE_ROLE_ID)
+                               MODERATION_PUBLIC_CHANNEL, MUTE_ROLE_ID,
+                               READ_ROLE_ID)
 from ..utils.decorators import listen_for_guilds
 from ..utils.utils import (edit_user_reputation, load_commands_from_json,
                            russian_plural)
@@ -46,6 +47,7 @@ class BannedUser(Converter):
 class Moderation(Cog):
     def __init__(self, bot):
         self.bot = bot
+        self.reading_members = {}
         self.pominki_url = "https://cdn.discordapp.com/attachments/774698479981297664/809142415310979082/RoflanPominki.png"
         self.DISCORD_INVITE_REGEX = r'discord(?:\.com|app\.com|\.gg)[\/invite\/]?(?:[a-zA-Z0-9\-]{2,32})'
         self.EMOJI_REGEX = r'<(?P<animated>a?):(?P<name>[a-zA-Z0-9_]{2,32}):(?P<id>[0-9]{18,22})>'
@@ -60,7 +62,7 @@ class Moderation(Cog):
                     color=Color.red()
                 )
                 await self.audit_channel.send(embed=embed)
-                return
+                continue
 
             await target.kick(reason=reason)
 
@@ -109,7 +111,7 @@ class Moderation(Cog):
                     color=Color.red()
                 )
                 await self.audit_channel.send(embed=embed)
-                return
+                continue
 
             await target.ban(delete_message_days=delete_days, reason=reason)
 
@@ -232,7 +234,7 @@ class Moderation(Cog):
         for target in targets:
             if self.mute_role not in target.roles:
                 if message.guild.me.top_role.position < target.top_role.position or target.id == message.author.id:
-                    return
+                    continue
 
                 role_ids = ",".join([str(r.id) for r in target.roles])
                 managed_roles = [r for r in target.roles if r.managed]
@@ -321,7 +323,7 @@ class Moderation(Cog):
                 try:
                     await target.edit(roles=roles)
                 except NotFound:
-                    return
+                    continue
 
                 embed = Embed(
                     title="Участник размьючен",
@@ -597,6 +599,86 @@ class Moderation(Cog):
         await self.unmute_members(ctx, targets, reason)
 
 
+    async def readrole_members(self, ctx, targets):
+      for target in targets:
+        if self.read_role not in target.roles:
+            if ctx.message.guild.me.top_role.position < target.top_role.position or target.id == ctx.message.author.id:
+                continue
+
+            self.reading_members[target.id] = target.roles
+            await target.edit(roles=[self.read_role] + [r for r in target.roles if r.managed])
+
+            embed = Embed(
+                title="Правила нужно знать!",
+                color=Color.orange(),
+                timestamp=datetime.utcnow(),
+                description=f'**Пользователь `{target.display_name}` ({target.mention}) отправлен изучать правила сервера и описание ролей.**'
+            ).set_thumbnail(url='https://avatanplus.ru/files/resources/original/574d7c1e7098b15506acd6fd.png')
+
+            fields = [('Администратор', ctx.author.mention, True),
+                      ('Срок', '5 минут', True)]
+            for name, value, inline in fields:
+                embed.add_field(name=name, value=value, inline=inline)
+
+            edit_user_reputation(target.id, '-', 100)
+            await self.moderation_channel.send(embed=embed)
+
+    @command(name=cmd["readrole"]["name"], aliases=cmd["readrole"]["aliases"],
+            brief=cmd["readrole"]["brief"],
+            description=cmd["readrole"]["description"],
+            usage=cmd["readrole"]["usage"],
+            help=cmd["readrole"]["help"],
+            hidden=cmd["readrole"]["hidden"], enabled=True)
+    @guild_only()
+    @bot_has_permissions(manage_roles=True)
+    @has_any_role(790664227706241068,606928001669791755)
+    async def readrole_command(self, ctx, targets: Greedy[Member]):
+        await ctx.message.delete()
+        if not len(targets):
+            await ctx.send(f"{ctx.author.mention}, укажите пользователей, которых необходимо отправить читать правила.", delete_after=10)
+            return
+
+        await self.readrole_members(ctx, targets)
+        await sleep(300)
+        await self.remove_readrole_members(ctx, targets)
+
+
+    async def remove_readrole_members(self, ctx, targets):
+      for target in targets:
+        if self.read_role in target.roles:
+            roles = self.reading_members.get(target.id, ctx.guild.default_role)
+            try:
+                await target.edit(roles=roles)
+            except NotFound:
+                continue
+            del self.reading_members[target.id]
+
+            embed = Embed(
+                title="Изучение правил завершено.",
+                color=Color.green(),
+                timestamp=datetime.utcnow(),
+                description=f'**Пользователь `{target.display_name}` ({target.mention}) завершил изучение правил и описания ролей сервера.**'
+            ).set_thumbnail(url='https://cdn.discordapp.com/emojis/703210723337306132.png')
+            await self.moderation_channel.send(embed=embed)
+
+    @command(name=cmd["removereadrole"]["name"], aliases=cmd["removereadrole"]["aliases"],
+            brief=cmd["removereadrole"]["brief"],
+            description=cmd["removereadrole"]["description"],
+            usage=cmd["removereadrole"]["usage"],
+            help=cmd["removereadrole"]["help"],
+            hidden=cmd["removereadrole"]["hidden"], enabled=True)
+    @guild_only()
+    @bot_has_permissions(manage_roles=True)
+    @has_any_role(790664227706241068,606928001669791755)
+    async def remove_readrole_command(self, ctx, targets: Greedy[Member]):
+        await ctx.message.delete()
+        if not len(targets):
+            await ctx.send(f"{ctx.author.mention}, укажите пользователей, которым необходимо завершить изучение правил.", delete_after=10)
+            return
+
+        await self.remove_readrole_members(ctx, targets)
+
+
     @command(name=cmd["purge"]["name"], aliases=cmd["purge"]["aliases"],
             brief=cmd["purge"]["brief"],
             description=cmd["purge"]["description"],
@@ -710,6 +792,7 @@ class Moderation(Cog):
             self.moderation_channel = self.bot.get_channel(MODERATION_PUBLIC_CHANNEL)
             self.audit_channel = self.bot.get_channel(AUDIT_LOG_CHANNEL)
             self.mute_role = self.bot.guild.get_role(MUTE_ROLE_ID)
+            self.read_role = self.bot.guild.get_role(READ_ROLE_ID)
             self.helper_role = self.bot.guild.get_role(HELPER_ROLE_ID)
             self.bot.cogs_ready.ready_up("moderation")
 
