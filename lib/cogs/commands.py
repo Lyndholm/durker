@@ -1,12 +1,14 @@
 from datetime import datetime, timedelta
+from os import listdir
 from platform import python_version
+from random import choice, randint
 from time import time
 from typing import Optional
 
 from discord import Color, Embed, File, Member
 from discord import __version__ as discord_version
-from discord.ext.commands import (BucketType, Cog, Greedy, command, cooldown,
-                                  guild_only)
+from discord.ext.commands import (BucketType, Cog, Greedy, check_any, command,
+                                  cooldown, guild_only, has_any_role)
 from psutil import Process, cpu_percent, virtual_memory
 
 from ..db import db
@@ -73,6 +75,9 @@ class Commands(Cog):
             usage=cmd["support"]["usage"],
             help=cmd["support"]["help"],
             hidden=cmd["support"]["hidden"], enabled=True)
+    @guild_only()
+    @required_level(cmd["support"]["required_level"])
+    @cooldown(cmd["support"]["cooldown_rate"], cmd["support"]["cooldown_per_second"], BucketType.member)
     async def redirect_to_support_channel_command(self, ctx, targets: Greedy[Member]):
         content = " ".join([member.mention for member in targets]) or ctx.author.mention
         embed = Embed(
@@ -106,6 +111,8 @@ class Commands(Cog):
         )
 
         await ctx.send(content=content, embed=embed, delete_after=90)
+        if ctx.author.top_role.position >= 28:
+            ctx.command.reset_cooldown(ctx)
 
     @command(name=cmd["question"]["name"], aliases=cmd["question"]["aliases"],
             brief=cmd["question"]["brief"],
@@ -113,14 +120,78 @@ class Commands(Cog):
             usage=cmd["question"]["usage"],
             help=cmd["question"]["help"],
             hidden=cmd["question"]["hidden"], enabled=True)
+    @guild_only()
+    @required_level(cmd["question"]["required_level"])
+    @cooldown(cmd["question"]["cooldown_rate"], cmd["question"]["cooldown_per_second"], BucketType.member)
     async def redirect_to_question_channel_command(self, ctx, targets: Greedy[Member]):
         users = " ".join([member.mention for member in targets]) or ctx.author.mention
         await ctx.send(
-            f"{users}\nВопросы по игре следует задавать в канале <#546700132390010882>."
-            " Так они не потеряются в общем чате, вследствие чего их увидет большее количество людей. Участники сервера постараются дать вам ответ.\n"
-            "Также в этом канале вы можете задать вопрос администрации сервера.",
+            f'{users}\nВопросы по игре следует задавать в канале <#546700132390010882>.'
+            ' Так они не потеряются в общем чате, вследствие чего их увидет большее количество людей. '
+            'Участники сервера постараются дать вам ответ.\n'
+            'Также в этом канале вы можете задать вопрос администрации сервера.',
             delete_after=90
         )
+        if ctx.author.top_role.position >= 28:
+            ctx.command.reset_cooldown(ctx)
+
+    @command(name=cmd["media"]["name"], aliases=cmd["media"]["aliases"],
+            brief=cmd["media"]["brief"],
+            description=cmd["media"]["description"],
+            usage=cmd["media"]["usage"],
+            help=cmd["media"]["help"],
+            hidden=cmd["media"]["hidden"], enabled=True)
+    @guild_only()
+    @check_any(
+        required_level(cmd["media"]["required_level"]),
+        has_any_role(790664227706241068, 686495834241761280))
+    @cooldown(cmd["media"]["cooldown_rate"], cmd["media"]["cooldown_per_second"], BucketType.member)
+    async def redirect_to_media_channel_command(self, ctx, targets: Greedy[Member]):
+        await ctx.message.delete()
+        await ctx.send(' '.join(member.mention for member in targets) +  f' Изображениям и прочим медиафайлам, '
+                       'не относящимся к теме разговора, нет места в чате! Пожалуйста, используйте канал <#644523860326219776>')
+        if ctx.author.top_role.position >= 28:
+            ctx.command.reset_cooldown(ctx)
+
+    async def gachi_poisk_feature(self, ctx, targets):
+        gachi_replies = (
+            ' Slave, ты пишешь не в тот Gym, тебе нужно в next door: <#546416181871902730>. ' \
+            'Поиск в этом канале будет караться изъятием three hundred bucks.',
+
+            ' Эй, приятель. Я думаю, ты ошибся дверью. Клуб по поиску напарников в двух кварталах отсюда. ' \
+            'Отправляйся в <#546416181871902730>',
+
+            ' Leather man, ты зашёл не в тот Gym. Эта качалка не для любителей leather stuff. ' \
+            'Отправляйся в <#546416181871902730>, иначе я покажу тебе, кто здесь boss of this gym.',
+        )
+        images = listdir('./data/images/search_for_players/gachi')
+        await ctx.send(' '.join(member.mention for member in targets) + choice(gachi_replies),
+                       file=File(f'./data/images/search_for_players/gachi/{choice(images)}'))
+
+    @command(name=cmd["poisk"]["name"], aliases=cmd["poisk"]["aliases"],
+            brief=cmd["poisk"]["brief"],
+            description=cmd["poisk"]["description"],
+            usage=cmd["poisk"]["usage"],
+            help=cmd["poisk"]["help"],
+            hidden=cmd["poisk"]["hidden"], enabled=True)
+    @guild_only()
+    @check_any(
+        required_level(cmd["poisk"]["required_level"]),
+        has_any_role(790664227706241068, 686495834241761280))
+    @cooldown(cmd["poisk"]["cooldown_rate"], cmd["poisk"]["cooldown_per_second"], BucketType.member)
+    async def redirect_to_poisk_channel_command(self, ctx, targets: Greedy[Member]):
+        await ctx.message.delete()
+        chance = randint(1, 100)
+        if 50 <= chance <= 60:
+            await self.gachi_poisk_feature(ctx, targets)
+        else:
+            images = listdir('./data/images/search_for_players/common')
+            await ctx.send(
+                ' '.join(member.mention for member in targets) + ' **Данный канал не предназначен для поиска игроков!** '
+                'Пожалуйста, используйте соответствующий канал <#546416181871902730>. Любые сообщения с поиском игроков '
+                'в данном канале будут удалены.', file=File(f'./data/images/search_for_players/common/{choice(images)}'))
+        if ctx.author.top_role.position >= 28:
+            ctx.command.reset_cooldown(ctx)
 
     @command(name=cmd["ppo"]["name"], aliases=cmd["ppo"]["aliases"],
             brief=cmd["ppo"]["brief"],
@@ -132,6 +203,7 @@ class Commands(Cog):
     @required_level(cmd["ppo"]["required_level"])
     @cooldown(cmd["ppo"]["cooldown_rate"], cmd["ppo"]["cooldown_per_second"], BucketType.guild)
     async def ppo_command(self, ctx):
+        await ctx.message.delete()
         await ctx.send('Понял Принял Обработал')
 
     @command(name=cmd["sp"]["name"], aliases=cmd["sp"]["aliases"],
@@ -144,6 +216,7 @@ class Commands(Cog):
     @required_level(cmd["sp"]["required_level"])
     @cooldown(cmd["sp"]["cooldown_rate"], cmd["sp"]["cooldown_per_second"], BucketType.guild)
     async def sp_command(self, ctx):
+        await ctx.message.delete()
         await ctx.send('СП=справедливо=<:Spravedlivo:681858765158351124>')
 
     @command(name=cmd["code"]["name"], aliases=cmd["code"]["aliases"],
@@ -156,6 +229,7 @@ class Commands(Cog):
     @required_level(cmd["code"]["required_level"])
     @cooldown(cmd["code"]["cooldown_rate"], cmd["code"]["cooldown_per_second"], BucketType.guild)
     async def sac_command(self, ctx):
+        await ctx.message.delete()
         await ctx.send('<:UseCodeFNFUN:681878310107480068> Лучший тег автора: **FNFUN** <:UseCodeFNFUN:681878310107480068>',
                         file=File('./data/images/fnfun.png'))
 
