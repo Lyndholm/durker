@@ -1,20 +1,23 @@
 import asyncio
-import async_timeout
 import copy
 import datetime
-import discord
 import math
 import random
 import re
 import typing
+
+import async_timeout
+import discord
 import wavelink
 from discord.ext import commands, menus
 from discord.ext.commands.errors import CheckFailure
-from ...utils.checks import can_manage_radio, radio_whitelisted_users, is_channel
+
+from ...utils.checks import (can_manage_radio, is_channel,
+                             radio_whitelisted_users)
+from ...utils.constants import MUSIC_COMMANDS_CHANNEL
 
 # URL matching REGEX...
 URL_REG = re.compile(r'https?://(?:www\.)?.+')
-MUSIC_COMMANDS_CHANNEL = 708601604353556491
 
 class NoChannelProvided(commands.CommandError):
     """Error raised when no suitable voice channel was supplied."""
@@ -343,7 +346,7 @@ class GachiRadio(commands.Cog, wavelink.WavelinkMixin):
             return
 
         if isinstance(error, NoChannelProvided):
-            return await ctx.send(f':male_sign: Slave {ctx.author.mention} :male_sign:, для начала зайди в :male_sign: gym :male_sign:',
+            return await ctx.send(f'♂️ Slave {ctx.author.mention} ♂️, для начала зайди в ♂️ gym ♂️',
                                     delete_after=15)
 
         if isinstance(error, CheckFailure):
@@ -352,7 +355,7 @@ class GachiRadio(commands.Cog, wavelink.WavelinkMixin):
     async def cog_check(self, ctx: commands.Context):
         """Cog wide check, which disallows commands in DMs."""
         if not ctx.guild:
-            await ctx.send(f":male_sign: Slave {ctx.author.display_name} :male_sign:, ты не можешь использовать оборудование качалки вне :male_sign: gym'a :male_sign:")
+            await ctx.send(f"♂️ Slave {ctx.author.display_name} ♂️, ты не можешь использовать оборудование качалки вне ♂️ gym'a ♂️")
             return False
 
         return True
@@ -366,7 +369,7 @@ class GachiRadio(commands.Cog, wavelink.WavelinkMixin):
 
         if player.context:
             if player.context.channel != ctx.channel:
-                await ctx.send(f':male_sign: Slave {ctx.author.mention} :male_sign:, твой :male_sign: gym :male_sign: для этой тренировки: {player.context.channel.mention}', delete_after=15)
+                await ctx.send(f'♂️ Slave {ctx.author.mention} ♂️, твой ♂️ gym ♂️ для этой тренировки: {player.context.channel.mention}', delete_after=15)
                 #raise IncorrectChannelError
 
         if ctx.command.name == 'connect' and not player.context:
@@ -384,7 +387,7 @@ class GachiRadio(commands.Cog, wavelink.WavelinkMixin):
 
         if player.is_connected:
             if ctx.author not in channel.members:
-                await ctx.send(f':male_sign: Slave {ctx.author.mention} :male_sign:, ты должен быть в качалке `{channel.name}`, чтобы использовать это.', delete_after=15)
+                await ctx.send(f'♂️ Slave {ctx.author.mention} ♂️, ты должен быть в качалке `{channel.name}`, чтобы использовать это.', delete_after=15)
                 #raise IncorrectChannelError
 
     def required(self, ctx: commands.Context):
@@ -422,7 +425,7 @@ class GachiRadio(commands.Cog, wavelink.WavelinkMixin):
 
         await player.connect(channel.id)
 
-    @commands.command(aliases=['ru'], hidden=True, enabled=True)
+    @commands.command(aliases=['p'], hidden=True, enabled=True)
     @can_manage_radio()
     @is_channel(MUSIC_COMMANDS_CHANNEL)
     async def play(self, ctx: commands.Context, *, query: str):
@@ -466,7 +469,7 @@ class GachiRadio(commands.Cog, wavelink.WavelinkMixin):
             return
 
         if self.is_privileged(ctx):
-            await ctx.send(f'**{ctx.author.display_name}** приостановил :male_sign: Fisting :male_sign:', delete_after=10)
+            await ctx.send(f'**{ctx.author.display_name}** приостановил ♂️ Fisting ♂️', delete_after=10)
             player.pause_votes.clear()
 
             return await player.set_pause(True)
@@ -475,11 +478,11 @@ class GachiRadio(commands.Cog, wavelink.WavelinkMixin):
         player.pause_votes.add(ctx.author)
 
         if len(player.pause_votes) >= required:
-            await ctx.send('Голосование успешно заверешно. :male_sign: Fisting :male_sign: приостановлен.', delete_after=10)
+            await ctx.send('Голосование успешно заверешно. ♂️ Fisting ♂️ приостановлен.', delete_after=10)
             player.pause_votes.clear()
             await player.set_pause(True)
         else:
-            await ctx.send(f'**{ctx.author.display_name}** проголосовал за остановку :male_sign: Fisting :male_sign:', delete_after=15)
+            await ctx.send(f'**{ctx.author.display_name}** проголосовал за остановку ♂️ Fisting ♂️', delete_after=15)
 
     @commands.command(hidden=True, enabled=True)
     @can_manage_radio()
@@ -492,7 +495,7 @@ class GachiRadio(commands.Cog, wavelink.WavelinkMixin):
             return
 
         if self.is_privileged(ctx):
-            await ctx.send(f'**{ctx.author.display_name}** продолжил :male_sign: Fisting :male_sign:', delete_after=10)
+            await ctx.send(f'**{ctx.author.display_name}** продолжил ♂️ Fisting ♂️', delete_after=10)
             player.resume_votes.clear()
 
             return await player.set_pause(False)
@@ -501,11 +504,11 @@ class GachiRadio(commands.Cog, wavelink.WavelinkMixin):
         player.resume_votes.add(ctx.author)
 
         if len(player.resume_votes) >= required:
-            await ctx.send('Голосование успешно заверешно. :male_sign: Fisting :male_sign: запущен.', delete_after=10)
+            await ctx.send('Голосование успешно заверешно. ♂️ Fisting ♂️ запущен.', delete_after=10)
             player.resume_votes.clear()
             await player.set_pause(False)
         else:
-            await ctx.send(f'**{ctx.author.display_name}** проголосовал за запуск :male_sign: Fisting :male_sign:', delete_after=10)
+            await ctx.send(f'**{ctx.author.display_name}** проголосовал за запуск ♂️ Fisting ♂️', delete_after=10)
 
     @commands.command(hidden=True, enabled=True)
     @can_manage_radio()
@@ -518,13 +521,13 @@ class GachiRadio(commands.Cog, wavelink.WavelinkMixin):
             return
 
         if self.is_privileged(ctx):
-            await ctx.send(f'**{ctx.author.display_name}** начал :male_sign: fisting :male_sign: следующего :male_sign: slave :male_sign:', delete_after=10)
+            await ctx.send(f'**{ctx.author.display_name}** начал ♂️ fisting ♂️ следующего ♂️ slave ♂️', delete_after=10)
             player.skip_votes.clear()
 
             return await player.stop()
 
         if ctx.author == player.current.requester:
-            await ctx.send(':male_sign: Master :male_sign: начал :male_sign: fisting :male_sign: следующего :male_sign: slave :male_sign:', delete_after=10)
+            await ctx.send('♂️ Master ♂️ начал ♂️ fisting ♂️ следующего ♂️ slave ♂️', delete_after=10)
             player.skip_votes.clear()
 
             return await player.stop()
@@ -533,11 +536,11 @@ class GachiRadio(commands.Cog, wavelink.WavelinkMixin):
         player.skip_votes.add(ctx.author)
 
         if len(player.skip_votes) >= required:
-            await ctx.send('Голосование успешно заверешно. Начат :male_sign: fisting :male_sign: следующего :male_sign: slave :male_sign:', delete_after=10)
+            await ctx.send('Голосование успешно заверешно. Начат ♂️ fisting ♂️ следующего ♂️ slave ♂️', delete_after=10)
             player.skip_votes.clear()
             await player.stop()
         else:
-            await ctx.send(f'**{ctx.author.display_name}** проголосовал за :male_sign: fisting :male_sign: следующего :male_sign: slave :male_sign:', delete_after=10)
+            await ctx.send(f'**{ctx.author.display_name}** проголосовал за ♂️ fisting ♂️ следующего ♂️ slave ♂️', delete_after=10)
 
     @commands.command(hidden=True, enabled=True)
     @can_manage_radio()
@@ -550,17 +553,17 @@ class GachiRadio(commands.Cog, wavelink.WavelinkMixin):
             return
 
         if self.is_privileged(ctx):
-            await ctx.send(f'**{ctx.author.display_name}** приостановил :male_sign: Fisting :male_sign:', delete_after=10)
+            await ctx.send(f'**{ctx.author.display_name}** приостановил ♂️ Fisting ♂️', delete_after=10)
             return await player.teardown()
 
         required = self.required(ctx)
         player.stop_votes.add(ctx.author)
 
         if len(player.stop_votes) >= required:
-            await ctx.send('Голосование успешно заверешно. :male_sign: Fisting :male_sign: приостановлен.', delete_after=10)
+            await ctx.send('Голосование успешно заверешно. ♂️ Fisting ♂️ приостановлен.', delete_after=10)
             await player.teardown()
         else:
-            await ctx.send(f'**{ctx.author.display_name}** проголосовал за остановку :male_sign: Fisting :male_sign:', delete_after=15)
+            await ctx.send(f'**{ctx.author.display_name}** проголосовал за остановку ♂️ Fisting ♂️', delete_after=15)
 
     @commands.command(aliases=['vol'], hidden=True, enabled=True)
     @can_manage_radio()
@@ -592,10 +595,10 @@ class GachiRadio(commands.Cog, wavelink.WavelinkMixin):
             return
 
         if player.queue.qsize() < 3:
-            return await ctx.send(':male_sign: Boss :male_sign: не может навести порядок в :male_sign: leather club :male_sign:. Недостаточно :male_sign: slaves :male_sign:', delete_after=10)
+            return await ctx.send('♂️ Boss ♂️ не может навести порядок в ♂️ leather club ♂️. Недостаточно ♂️ slaves ♂️', delete_after=10)
 
         if self.is_privileged(ctx):
-            await ctx.send(f':male_sign: Boss **{ctx.author.display_name}** :male_sign: навел порядок в :male_sign: leather club :male_sign:', delete_after=10)
+            await ctx.send(f'♂️ Boss **{ctx.author.display_name}** ♂️ навел порядок в ♂️ leather club ♂️', delete_after=10)
             player.shuffle_votes.clear()
             return random.shuffle(player.queue._queue)
 
@@ -603,7 +606,7 @@ class GachiRadio(commands.Cog, wavelink.WavelinkMixin):
         player.shuffle_votes.add(ctx.author)
 
         if len(player.shuffle_votes) >= required:
-            await ctx.send('Голосование успешно заверешно. В :male_sign: leather club :male_sign: наведён порядок.', delete_after=10)
+            await ctx.send('Голосование успешно заверешно. В ♂️ leather club ♂️ наведён порядок.', delete_after=10)
             player.shuffle_votes.clear()
             random.shuffle(player.queue._queue)
         else:
@@ -682,7 +685,7 @@ class GachiRadio(commands.Cog, wavelink.WavelinkMixin):
             return
 
         if player.queue.qsize() == 0:
-            return await ctx.send('В :male_sign: leather club :male_sign: больше нет :male_sign: slaves :male_sign:.', delete_after=10)
+            return await ctx.send('В ♂️ leather club ♂️ больше нет ♂️ slaves ♂️.', delete_after=10)
 
         entries = [f"{index}. {track.author} — {track.title}" for index, track in enumerate(player.queue._queue, 1)]
         pages = PaginatorSource(entries=entries)
@@ -719,17 +722,17 @@ class GachiRadio(commands.Cog, wavelink.WavelinkMixin):
         members = self.bot.get_channel(int(player.channel_id)).members
 
         if member and member not in members:
-            return await ctx.send(f"{member} не в :male_sign: gym'e :male_sign:.", delete_after=10)
+            return await ctx.send(f"{member} не в ♂️ gym'e ♂️.", delete_after=10)
 
         if member and member == player.dj:
-            return await ctx.send(f'{member} уже :male_sign: Boss of this gym :male_sign:)', delete_after=10)
+            return await ctx.send(f'{member} уже ♂️ Boss of this gym ♂️)', delete_after=10)
 
         if len(members) <= 2:
-            return await ctx.send("В :male_sign: gym :male_sign: нет того, кому можно передать права :male_sign: Boss'a :male_sign:", delete_after=10)
+            return await ctx.send("В ♂️ gym ♂️ нет того, кому можно передать права ♂️ Boss'a ♂️", delete_after=10)
 
         if member:
             player.dj = member
-            return await ctx.send(f'{member.mention} стал новым :male_sign: Boss of this gym :male_sign:')
+            return await ctx.send(f'{member.mention} стал новым ♂️ Boss of this gym ♂️')
 
         for m in members:
             if m == player.dj or m.bot:

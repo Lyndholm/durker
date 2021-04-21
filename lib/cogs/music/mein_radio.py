@@ -1,22 +1,24 @@
 import asyncio
-import async_timeout
 import copy
 import datetime
-import discord
 import math
 import random
 import re
 import typing
+
+import async_timeout
+import discord
 import wavelink
 from discord.ext import commands, menus
 from discord.ext.commands.errors import CheckFailure
-from ...utils.checks import can_manage_radio, radio_whitelisted_users, is_channel
-from ...db import db
 
+from ...db import db
+from ...utils.checks import (can_manage_radio, is_channel,
+                             radio_whitelisted_users)
+from ...utils.constants import MUSIC_COMMANDS_CHANNEL
 
 # URL matching REGEX...
 URL_REG = re.compile(r'https?://(?:www\.)?.+')
-MUSIC_COMMANDS_CHANNEL = 708601604353556491
 
 class NoChannelProvided(commands.CommandError):
     """Error raised when no suitable voice channel was supplied."""
@@ -424,7 +426,7 @@ class MeinRadio(commands.Cog, wavelink.WavelinkMixin):
 
         await player.connect(channel.id)
 
-    @commands.command(aliases=['ru'], hidden=True, enabled=True)
+    @commands.command(aliases=['p'], hidden=True, enabled=True)
     @can_manage_radio()
     @is_channel(MUSIC_COMMANDS_CHANNEL)
     async def play(self, ctx: commands.Context, *, query: str):
@@ -758,7 +760,7 @@ class MeinRadio(commands.Cog, wavelink.WavelinkMixin):
 
         reason = reason.replace('`', '­')
         date = datetime.datetime.now()
-        song = f"{player.current.author} — {player.current.title}"
+        song = f"{player.current.author} — {player.current.title} | {player.current.uri}"
         db.insert("song_suggestions",
                 {"suggestion_author_id": ctx.author.id,
                 "suggestion_type": "delete",
@@ -779,14 +781,13 @@ class MeinRadio(commands.Cog, wavelink.WavelinkMixin):
         )
         await ctx.send(embed=embed)
 
-        for i in [375722626636578816, 195637386221191170]:
-            embed = discord.Embed(
+        embed = discord.Embed(
                 title = "Новая заявка",
                 color = discord.Color.red(),
                 timestamp = datetime.datetime.utcnow(),
                 description = f"**Заявка на удаление трека из плейлиста.**\n\n**Номер заявки:** {rec[0]}\n"
-                            f"**Трек:** {song}\n**Причина удаления:** {reason}\n**Заявка сформирована:** {date.strftime('%d.%m.%Y %H:%M:%S')}"
-            )
+                            f"**Трек:** {song}\n**Причина удаления:** {reason}\n**Заявка сформирована:** {date.strftime('%d.%m.%Y %H:%M:%S')}")
+        for i in [375722626636578816, 195637386221191170]:
             await self.bot.get_user(i).send(embed=embed)
 
 

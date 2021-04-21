@@ -1,20 +1,26 @@
 import asyncio
-import async_timeout
 import copy
 import datetime
-import discord
 import math
 import random
 import re
 import typing
+
+import async_timeout
+import discord
 import wavelink
 from discord.ext import commands, menus
 from discord.ext.commands.errors import CheckFailure
+
 from ...utils.checks import is_channel
+from ...utils.constants import MUSIC_COMMANDS_CHANNEL
+from ...utils.utils import load_commands_from_json
 
 # URL matching REGEX...
 URL_REG = re.compile(r'https?://(?:www\.)?.+')
-MUSIC_COMMANDS_CHANNEL = 708601604353556491
+
+cmd = load_commands_from_json('music_player')
+
 
 class NoChannelProvided(commands.CommandError):
     """Error raised when no suitable voice channel was supplied."""
@@ -453,9 +459,17 @@ class MusicPlayer(commands.Cog, wavelink.WavelinkMixin):
         """Check whether the user is an Admin or DJ."""
         player: Player = self.bot.wavelink.get_player(guild_id=ctx.guild.id, cls=Player, context=ctx)
 
-        return player.dj == ctx.author or ctx.author.guild_permissions.kick_members
+        return player.dj == ctx.author or ctx.author.guild_permissions.administrator
 
-    @commands.command(aliases=['summon'], hidden=True)
+    @commands.command(
+        name=cmd["connect"]["name"],
+        aliases=cmd["connect"]["aliases"],
+        brief=cmd["connect"]["brief"],
+        description=cmd["connect"]["description"],
+        usage=cmd["connect"]["usage"],
+        help=cmd["connect"]["help"],
+        hidden=cmd["connect"]["hidden"], enabled=True)
+    @commands.guild_only()
     @is_channel(MUSIC_COMMANDS_CHANNEL)
     async def connect(self, ctx: commands.Context, *, channel: discord.VoiceChannel = None):
         """Connect to a voice channel."""
@@ -470,7 +484,15 @@ class MusicPlayer(commands.Cog, wavelink.WavelinkMixin):
 
         await player.connect(channel.id)
 
-    @commands.command(aliases=['p'], hidden=True)
+    @commands.command(
+        name=cmd["play"]["name"],
+        aliases=cmd["play"]["aliases"],
+        brief=cmd["play"]["brief"],
+        description=cmd["play"]["description"],
+        usage=cmd["play"]["usage"],
+        help=cmd["play"]["help"],
+        hidden=cmd["play"]["hidden"], enabled=True)
+    @commands.guild_only()
     @is_channel(MUSIC_COMMANDS_CHANNEL)
     async def play(self, ctx: commands.Context, *, query: str):
         """Play or queue a song with the given query."""
@@ -502,7 +524,15 @@ class MusicPlayer(commands.Cog, wavelink.WavelinkMixin):
         if not player.is_playing:
             await player.do_next()
 
-    @commands.command(hidden=True)
+    @commands.command(
+        name=cmd["pause"]["name"],
+        aliases=cmd["pause"]["aliases"],
+        brief=cmd["pause"]["brief"],
+        description=cmd["pause"]["description"],
+        usage=cmd["pause"]["usage"],
+        help=cmd["pause"]["help"],
+        hidden=cmd["pause"]["hidden"], enabled=True)
+    @commands.guild_only()
     @is_channel(MUSIC_COMMANDS_CHANNEL)
     async def pause(self, ctx: commands.Context):
         """Pause the currently playing song."""
@@ -527,7 +557,15 @@ class MusicPlayer(commands.Cog, wavelink.WavelinkMixin):
         else:
             await ctx.send(f'**{ctx.author.display_name}** проголосовал за остановку воспроизведения.', delete_after=15)
 
-    @commands.command(hidden=True)
+    @commands.command(
+        name=cmd["resume"]["name"],
+        aliases=cmd["resume"]["aliases"],
+        brief=cmd["resume"]["brief"],
+        description=cmd["resume"]["description"],
+        usage=cmd["resume"]["usage"],
+        help=cmd["resume"]["help"],
+        hidden=cmd["resume"]["hidden"], enabled=True)
+    @commands.guild_only()
     @is_channel(MUSIC_COMMANDS_CHANNEL)
     async def resume(self, ctx: commands.Context):
         """Resume a currently paused player."""
@@ -552,7 +590,15 @@ class MusicPlayer(commands.Cog, wavelink.WavelinkMixin):
         else:
             await ctx.send(f'**{ctx.author.display_name}** проголосовал за запуск плеера.', delete_after=15)
 
-    @commands.command(hidden=True)
+    @commands.command(
+        name=cmd["skip"]["name"],
+        aliases=cmd["skip"]["aliases"],
+        brief=cmd["skip"]["brief"],
+        description=cmd["skip"]["description"],
+        usage=cmd["skip"]["usage"],
+        help=cmd["skip"]["help"],
+        hidden=cmd["skip"]["hidden"], enabled=True)
+    @commands.guild_only()
     @is_channel(MUSIC_COMMANDS_CHANNEL)
     async def skip(self, ctx: commands.Context):
         """Skip the currently playing song."""
@@ -583,7 +629,15 @@ class MusicPlayer(commands.Cog, wavelink.WavelinkMixin):
         else:
             await ctx.send(f'**{ctx.author.display_name}** проголосовал за смену трека.', delete_after=15)
 
-    @commands.command(hidden=True)
+    @commands.command(
+        name=cmd["stop"]["name"],
+        aliases=cmd["stop"]["aliases"],
+        brief=cmd["stop"]["brief"],
+        description=cmd["stop"]["description"],
+        usage=cmd["stop"]["usage"],
+        help=cmd["stop"]["help"],
+        hidden=cmd["stop"]["hidden"], enabled=True)
+    @commands.guild_only()
     @is_channel(MUSIC_COMMANDS_CHANNEL)
     async def stop(self, ctx: commands.Context):
         """Stop the player and clear all internal states."""
@@ -605,7 +659,15 @@ class MusicPlayer(commands.Cog, wavelink.WavelinkMixin):
         else:
             await ctx.send(f'**{ctx.author.display_name}** проголосовал за остановку воспроизведения.', delete_after=15)
 
-    @commands.command(aliases=['vol'], hidden=True)
+    @commands.command(
+        name=cmd["volume"]["name"],
+        aliases=cmd["volume"]["aliases"],
+        brief=cmd["volume"]["brief"],
+        description=cmd["volume"]["description"],
+        usage=cmd["volume"]["usage"],
+        help=cmd["volume"]["help"],
+        hidden=cmd["volume"]["hidden"], enabled=True)
+    @commands.guild_only()
     @is_channel(MUSIC_COMMANDS_CHANNEL)
     async def volume(self, ctx: commands.Context, *, vol: int):
         """Change the players volume, between 1 and 100."""
@@ -623,7 +685,15 @@ class MusicPlayer(commands.Cog, wavelink.WavelinkMixin):
         await player.set_volume(vol)
         await ctx.send(f'Установлена громкость **{vol}%**', delete_after=7)
 
-    @commands.command(aliases=['mix'], hidden=True)
+    @commands.command(
+        name=cmd["shuffle"]["name"],
+        aliases=cmd["shuffle"]["aliases"],
+        brief=cmd["shuffle"]["brief"],
+        description=cmd["shuffle"]["description"],
+        usage=cmd["shuffle"]["usage"],
+        help=cmd["shuffle"]["help"],
+        hidden=cmd["shuffle"]["hidden"], enabled=True)
+    @commands.guild_only()
     @is_channel(MUSIC_COMMANDS_CHANNEL)
     async def shuffle(self, ctx: commands.Context):
         """Shuffle the players queue."""
@@ -651,6 +721,7 @@ class MusicPlayer(commands.Cog, wavelink.WavelinkMixin):
             await ctx.send(f'**{ctx.author.display_name}** проголосовал за перемешивание очереди.', delete_after=15)
 
     @commands.command(hidden=True)
+    @commands.guild_only()
     @is_channel(MUSIC_COMMANDS_CHANNEL)
     async def vol_up(self, ctx: commands.Context):
         """Command used for volume up button."""
@@ -668,6 +739,7 @@ class MusicPlayer(commands.Cog, wavelink.WavelinkMixin):
         await player.set_volume(vol)
 
     @commands.command(hidden=True)
+    @commands.guild_only()
     @is_channel(MUSIC_COMMANDS_CHANNEL)
     async def vol_down(self, ctx: commands.Context):
         """Command used for volume down button."""
@@ -684,7 +756,15 @@ class MusicPlayer(commands.Cog, wavelink.WavelinkMixin):
 
         await player.set_volume(vol)
 
-    @commands.command(aliases=['eq'], hidden=True)
+    @commands.command(
+        name=cmd["equalizer"]["name"],
+        aliases=cmd["equalizer"]["aliases"],
+        brief=cmd["equalizer"]["brief"],
+        description=cmd["equalizer"]["description"],
+        usage=cmd["equalizer"]["usage"],
+        help=cmd["equalizer"]["help"],
+        hidden=cmd["equalizer"]["hidden"], enabled=True)
+    @commands.guild_only()
     @is_channel(MUSIC_COMMANDS_CHANNEL)
     async def equalizer(self, ctx: commands.Context, *, equalizer: str):
         """Change the players equalizer."""
@@ -710,7 +790,15 @@ class MusicPlayer(commands.Cog, wavelink.WavelinkMixin):
         await ctx.send(f'Эквалайзер обновлён: **{equalizer}**', delete_after=10)
         await player.set_eq(eq)
 
-    @commands.command(aliases=['q', 'que'], hidden=True)
+    @commands.command(
+        name=cmd["queue"]["name"],
+        aliases=cmd["queue"]["aliases"],
+        brief=cmd["queue"]["brief"],
+        description=cmd["queue"]["description"],
+        usage=cmd["queue"]["usage"],
+        help=cmd["queue"]["help"],
+        hidden=cmd["queue"]["hidden"], enabled=True)
+    @commands.guild_only()
     @is_channel(MUSIC_COMMANDS_CHANNEL)
     async def queue(self, ctx: commands.Context):
         """Display the players queued songs."""
@@ -728,7 +816,15 @@ class MusicPlayer(commands.Cog, wavelink.WavelinkMixin):
 
         await paginator.start(ctx)
 
-    @commands.command(aliases=['np'])
+    @commands.command(
+        name=cmd["nowplaying"]["name"],
+        aliases=cmd["nowplaying"]["aliases"],
+        brief=cmd["nowplaying"]["brief"],
+        description=cmd["nowplaying"]["description"],
+        usage=cmd["nowplaying"]["usage"],
+        help=cmd["nowplaying"]["help"],
+        hidden=cmd["nowplaying"]["hidden"], enabled=True)
+    @commands.guild_only()
     @is_channel(MUSIC_COMMANDS_CHANNEL)
     async def nowplaying(self, ctx: commands.Context):
         """Update the player controller."""
@@ -739,7 +835,15 @@ class MusicPlayer(commands.Cog, wavelink.WavelinkMixin):
 
         await player.invoke_controller()
 
-    @commands.command(hidden=True)
+    @commands.command(
+        name=cmd["swap_dj"]["name"],
+        aliases=cmd["swap_dj"]["aliases"],
+        brief=cmd["swap_dj"]["brief"],
+        description=cmd["swap_dj"]["description"],
+        usage=cmd["swap_dj"]["usage"],
+        help=cmd["swap_dj"]["help"],
+        hidden=cmd["swap_dj"]["hidden"], enabled=True)
+    @commands.guild_only()
     @is_channel(MUSIC_COMMANDS_CHANNEL)
     async def swap_dj(self, ctx: commands.Context, *, member: discord.Member = None):
         """Swap the current DJ to another member in the voice channel."""
