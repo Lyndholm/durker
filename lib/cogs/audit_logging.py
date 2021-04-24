@@ -251,7 +251,9 @@ class Audit(Cog):
 
             async for entry in after.guild.audit_logs(action=AuditLogAction.member_role_update, limit=1):
                 if int((datetime.utcnow() - entry.created_at).total_seconds()) <= 5:
-                    embed.add_field(name="Модератор", value = entry.user.mention)
+                    embed.add_field(name="Модератор", value = entry.user.mention, inline=False)
+                if entry.reason:
+                    embed.add_field(name="Причина", value = entry.reason, inline=False)
 
             embed.set_footer(text = f"ID участника: {after.id}")
             await self.log_channel.send(embed=embed)

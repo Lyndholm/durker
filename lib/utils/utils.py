@@ -47,6 +47,7 @@ def insert_new_user_in_db(member: discord.Member):
 
     db.insert("users_info", {"user_id": member.id,
                             "nickname": member.display_name,
+                            "joined_at": member.joined_at,
                             "mention": member.mention})
 
 
