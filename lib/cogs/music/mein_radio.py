@@ -742,7 +742,7 @@ class MeinRadio(commands.Cog, wavelink.WavelinkMixin):
                 player.dj = m
                 return await ctx.send(f'{member.mention} стал диджеем.')
 
-    @commands.command(name="to_delete", aliases=['удоли'],
+    @commands.command(name="to_delete", aliases=['удоли', 'удалить', 'убрать', 'radioremove', 'radiodelete'],
             brief="Сделайте заявку на удаление трека, который сейчас играет, из пелейлиста радио.",
             description="Формирует заявку на удаление трека, который сейчас играет, из плейлиста радио.",
             usage="to_delete <track> <reason>",

@@ -283,17 +283,17 @@ class Owner(Cog):
 
                 await self.bot.get_user(data[0]).send(embed=embed)
                 await ctx.message.add_reaction('✅')
-
+            else:
+                embed = Embed(
+                    title="Заявка закрыта",
+                    color=Color.orange(),
+                    description=f"Администратор <@{rec[0]}> {'одобрил' if rec[1] else 'отклонил'} это предложение {rec[2].strftime('%d.%m.%Y %H:%M:%S')}."
+                )
+                await ctx.send(embed=embed)
         except TypeError:
             await ctx.message.add_reaction('❌')
 
-        else:
-            embed = Embed(
-                title="Заявка закрыта",
-                color=Color.orange(),
-                description=f"Администратор <@{rec[0]}> {'одобрил' if rec[1] else 'отклонил'} это предложение {rec[2].strftime('%d.%m.%Y %H:%M:%S')}."
-            )
-            return await ctx.send(embed=embed)
+
 
     @command(name=cmd["approve"]["name"], aliases=cmd["approve"]["aliases"],
             brief=cmd["approve"]["brief"],

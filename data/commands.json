@@ -76,7 +76,7 @@
     {
         "suggest":{
             "name": "suggest",
-            "aliases": ["предложить"],
+            "aliases": ["предложить", "добавить", "radiosuggest", "radioadd"],
             "brief": "Предложите трек, который хотите добавить в пелейлист радио.",
             "description": "Формирует заявку на добавление трека в плейлист.",
             "usage": "suggest <track>",
