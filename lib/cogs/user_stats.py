@@ -64,7 +64,7 @@ class UserStats(Cog):
 
         vbucks_count = sum(purchases[0]['vbucks_purchases'][i]['price'] for i in range(len(purchases[0]['vbucks_purchases'])))
 
-        realMoney = sum(purchases[0]['realMoney_purchases'][i]['price_in_rubles'] for i in range(len(purchases[0]['realMoney_purchases'])))
+        realMoney = sum(purchases[0]['realMoney_purchases'][i]['price'] for i in range(len(purchases[0]['realMoney_purchases'])))
 
         kapitalist = ctx.guild.get_role(730017005029294121)
 
@@ -128,7 +128,7 @@ class UserStats(Cog):
                             value=len(purchases[0]['vbucks_purchases']), inline=True)
 
             embed.add_field(name=":date: Дата последней покупки с тегом FNFUN:",
-                            value=purchases[0]['vbucks_purchases'][-1]['date'].strftime("%d.%m.%Y %H:%M"))
+                            value=purchases[0]['vbucks_purchases'][-1]['date'][:-3])
 
         if kapitalist not in target.roles:
             embed.add_field(name=f":moneybag: До роли `{kapitalist.name}` осталось: ",

@@ -1182,6 +1182,84 @@
             "hidden": true
         }
     },
+    "purchases_handler":
+    {
+        "addvbucks":
+        {
+            "name": "addvbucks",
+            "aliases": [],
+            "brief": "Добавление в-баксов.",
+            "description": "Увеличивает счётчик потраченных в-баксов.",
+            "usage": "addvbucks <user_id> <amount> [item]",
+            "help": "Увеличивает у пользователя счётчик потраченных с тегом в-баксов.\nДоступно только разработчику.\n\n**Кулдаун:** отсутствует.\n**Необходимый уровень:** 0",
+            "required_level": 0,
+            "has_cooldown": false,
+            "cooldown_rate": 0,
+            "cooldown_per_second": 0,
+            "cooldown_type": "None",
+            "hidden": true
+        },
+        "addrubles":
+        {
+            "name": "addrubles",
+            "aliases": [],
+            "brief": "Добавление рублей.",
+            "description": "Увеличивает счётчик потраченных рублей.",
+            "usage": "addrubles <user_id> <amount> [item]",
+            "help": "Увеличивает у пользователя счётчик потраченных рублей на покупки с тегом/донаты автору.\nДоступно только разработчику.\n\n**Кулдаун:** отсутствует.\n**Необходимый уровень:** 0",
+            "required_level": 0,
+            "has_cooldown": false,
+            "cooldown_rate": 0,
+            "cooldown_per_second": 0,
+            "cooldown_type": "None",
+            "hidden": true
+        },
+        "resetpurchases":
+        {
+            "name": "resetpurchases",
+            "aliases": [],
+            "brief": "Сброс покупок.",
+            "description": "Сбрасывает статистику покупок.",
+            "usage": "resetpurchases <user_id> [reason]",
+            "help": "Сбрасывает статистику покупок пользователя, предварительно сделав дамп данных.\nДоступно только разработчику.\n\n**Кулдаун:** отсутствует.\n**Необходимый уровень:** 0",
+            "required_level": 0,
+            "has_cooldown": false,
+            "cooldown_rate": 0,
+            "cooldown_per_second": 0,
+            "cooldown_type": "None",
+            "hidden": true
+        },
+        "purchases":
+        {
+            "name": "purchases",
+            "aliases": ["покупки"],
+            "brief": "Просмотр покупок с тегом.",
+            "description": "Отображает список ваших покупок с тегом.",
+            "usage": "purchases",
+            "help": "Команда для просмотра покупок, которые вы совершили с нашим тегом **FNFUN**. Список пополняется по мере того, как вы присылаете скриншоты покупок в канал <#546408250158088192>\nРаботает только на сервере в канале <#604621910386671616>.\n\n**Кулдаун:** отсутствует.\n**Необходимый уровень:** 0",
+            "required_level": 0,
+            "has_cooldown": false,
+            "cooldown_rate": 0,
+            "cooldown_per_second": 0,
+            "cooldown_type": "None",
+            "hidden": false
+        },
+        "why":
+        {
+            "name": "why",
+            "aliases": ["почему"],
+            "brief": "Правила засчитывания покупок.",
+            "description": "Правила засчитывания покупок с тегом.",
+            "usage": "why",
+            "help": "Правила засчитывания покупок с тегом. Ответы на часто задаваемые вопросы о покупках.\nРаботает только на сервере.\n\n**Кулдаун:** отсутствует.\n**Необходимый уровень:** 0",
+            "required_level": 0,
+            "has_cooldown": false,
+            "cooldown_rate": 0,
+            "cooldown_per_second": 0,
+            "cooldown_type": "None",
+            "hidden": false
+        }
+    },
     "reactions":
     {
         "addreactionrole":
