@@ -163,7 +163,11 @@ class UserStats(Cog):
         else:
             embed.set_footer(text='Данные актуальны на ' + datetime.now().strftime("%d.%m.%Y %H:%M:%S") + ' МСК')
 
-        await ctx.send(embed=embed)
+        await ctx.reply(
+            'После обновления бота от 1 июля 2021 г. статистика '
+            'покупок (по В-Баксам) была сброшена у всех пользователей. '
+            'Ознакомится с причиной вайпа и новыми правилами засчитывания '
+            'покупок можно по команде `+why`.', embed=embed)
 
 
     @command(name=cmd["setbio"]["name"], aliases=cmd["setbio"]["aliases"],

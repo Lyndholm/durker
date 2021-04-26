@@ -1,4 +1,3 @@
-from io import BytesIO
 from aiohttp import ClientSession
 from discord import Embed, Color
 from discord.ext.commands import Cog
