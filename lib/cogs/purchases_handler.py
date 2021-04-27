@@ -228,17 +228,17 @@ class PurchasesHandler(Cog):
         else:
             await message.clear_reactions()
             await message.edit(content=f'{ctx.author.mention}, у вас нет покупок, которые соответствуют требованиям. '
-                'Ознакомиться с правилами засчитывания покупок можно по команде `+why`', embed=None)
+                'Ознакомиться с правилами засчитывания покупок можно по команде `+faq`', embed=None)
 
 
-    @command(name=cmd["why"]["name"], aliases=cmd["why"]["aliases"],
-            brief=cmd["why"]["brief"],
-            description=cmd["why"]["description"],
-            usage=cmd["why"]["usage"],
-            help=cmd["why"]["help"],
-            hidden=cmd["why"]["hidden"], enabled=True)
+    @command(name=cmd["faq"]["name"], aliases=cmd["faq"]["aliases"],
+            brief=cmd["faq"]["brief"],
+            description=cmd["faq"]["description"],
+            usage=cmd["faq"]["usage"],
+            help=cmd["faq"]["help"],
+            hidden=cmd["faq"]["hidden"], enabled=True)
     @guild_only()
-    async def why_command(self, ctx):
+    async def faq_command(self, ctx):
         embeds = []
         embeds.append(Embed(
             title='🛍️ О покупках и правилах их засчитывания',
