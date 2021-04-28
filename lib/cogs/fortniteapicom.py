@@ -64,6 +64,7 @@ class FortniteAPIcom(Cog):
             parser.add_argument('-hasVariants', nargs='+')
             parser.add_argument('-hasGameplayTags', nargs='+')
             parser.add_argument('-gameplayTag', nargs='+')
+            parser.add_argument('-hasDynamicPakId', nargs='+')
             parser.add_argument('-dynamicPakId', nargs='+')
             parser.add_argument('-added', nargs='+')
             parser.add_argument('-addedSince', nargs='+')
@@ -194,6 +195,9 @@ class FortniteAPIcom(Cog):
 
             if args.gameplayTag:
                 parameter += f"&gameplayTag={args.gameplayTag[0].lower()}"
+
+            if args.hasDynamicPakId:
+                parameter += f"&hasDynamicPakId={args.hasDynamicPakId[0].lower()}"
 
             if args.dynamicPakId:
                 parameter += f"&dynamicPakId={args.dynamicPakId[0].lower()}"
