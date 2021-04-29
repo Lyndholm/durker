@@ -9,7 +9,7 @@ from ..utils.utils import load_commands_from_json
 cmd = load_commands_from_json("peelyde")
 
 
-class PeelyDE(Cog):
+class PeelyDE(Cog, name='Fortnite API 4'):
     def __init__(self, bot):
         self.bot = bot
 

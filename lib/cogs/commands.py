@@ -18,7 +18,7 @@ from ..utils.utils import load_commands_from_json
 cmd = load_commands_from_json("commands")
 
 
-class Commands(Cog):
+class Commands(Cog, name='Базовые команды'):
     def __init__(self, bot):
         self.bot = bot
 
@@ -91,12 +91,12 @@ class Commands(Cog):
         )
         embed.add_field(
             name="Больше ролей",
-            value="Потратив с тегом 10 000 и 25 000 в-баксов, вы получите роль <@&730017005029294121> и <@&774686818356428841> соответственно.",
+            value="Потратив с тегом 10 000 и 25 000 В-Баксов, вы получите роль <@&730017005029294121> и <@&774686818356428841> соответственно.",
             inline=False
         )
         embed.add_field(
             name="История покупок",
-            value="Узнать количество потраченных с тегом в-баксов можно в канале <#604621910386671616> по команде `+stats`\nПросмотреть историю покупок: `+purchases`",
+            value="Узнать количество потраченных с тегом В-Баксов можно в канале <#604621910386671616> по команде `+stats`\nПросмотреть историю покупок: `+purchases`",
             inline=False
         )
         embed.add_field(

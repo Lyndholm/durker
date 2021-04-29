@@ -19,7 +19,7 @@ class Arguments(ArgumentParser):
         raise RuntimeError(message)
 
 
-class FortniteAPIcom(Cog):
+class FortniteAPIcom(Cog, name='Fortnite API 2'):
     def __init__(self, bot):
         self.bot = bot
 

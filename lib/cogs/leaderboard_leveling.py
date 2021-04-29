@@ -39,7 +39,7 @@ class LevelsLeaderboardMenu(ListPageSource):
         return await self.write_page(menu, offset, fields)
 
 
-class LevelingLeaderboard(Cog):
+class LevelingLeaderboard(Cog, name='Список лидеров — уровни'):
     def __init__(self, bot):
         self.bot = bot
 

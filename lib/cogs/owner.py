@@ -14,7 +14,7 @@ from ..db import db
 cmd = load_commands_from_json("owner")
 
 
-class Owner(Cog):
+class Owner(Cog, name='Команды разработчика'):
     def __init__(self, bot):
         self.bot = bot
         self.modified_commands = {}

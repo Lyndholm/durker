@@ -39,7 +39,7 @@ class MessagesLeaderboardMenu(ListPageSource):
         return await self.write_page(menu, offset, fields)
 
 
-class MessagesLeaderboard(Cog):
+class MessagesLeaderboard(Cog, name='Список лидеров — сообщения'):
     def __init__(self, bot):
         self.bot = bot
 

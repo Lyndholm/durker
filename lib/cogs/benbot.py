@@ -15,7 +15,7 @@ from ..utils.paginator import Paginator
 cmd = load_commands_from_json("benbot")
 
 
-class BenBot(Cog):
+class BenBot(Cog, name='Fortnite API 1'):
     def __init__(self, bot):
         self.bot = bot
 

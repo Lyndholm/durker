@@ -39,7 +39,7 @@ class AchievementsLeaderboardMenu(ListPageSource):
         return await self.write_page(menu, offset, fields)
 
 
-class AchievementsLeaderboard(Cog):
+class AchievementsLeaderboard(Cog, name='Список лидеров — достижения'):
     def __init__(self, bot):
         self.bot = bot
 

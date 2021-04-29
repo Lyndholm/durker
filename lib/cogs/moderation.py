@@ -45,7 +45,7 @@ class BannedUser(Converter):
                 raise BadArgument
 
 
-class Moderation(Cog):
+class Moderation(Cog, name='Модерация'):
     def __init__(self, bot):
         self.bot = bot
         self.reading_members = {}

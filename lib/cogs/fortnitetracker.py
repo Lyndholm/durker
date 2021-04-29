@@ -11,7 +11,7 @@ from ..utils.utils import load_commands_from_json
 cmd = load_commands_from_json("fortnitetracker")
 
 
-class FortniteTracker(Cog):
+class FortniteTracker(Cog, name='Fortnite Stats'):
     def __init__(self, bot):
         self.bot = bot
         self.headers = {"TRN-Api-Key": getenv("TRN_API_KEY")}

@@ -12,7 +12,7 @@ from ..utils.utils import load_commands_from_json, russian_plural
 cmd = load_commands_from_json("user_stats")
 
 
-class UserStats(Cog):
+class UserStats(Cog, name='Статистика'):
     def __init__(self, bot):
         self.bot = bot
 
@@ -119,7 +119,7 @@ class UserStats(Cog):
         embed.add_field(name=":face_with_symbols_over_mouth: Количество триггеров мат-фильтра:", value=moderation_stats[2],
                         inline=True)
 
-        embed.add_field(name=":moneybag:  Потрачено в-баксов с тегом FNFUN:",
+        embed.add_field(name=":moneybag:  Потрачено В-Баксов с тегом FNFUN:",
                         value=vbucks_count, inline=True)
 
         if len(purchases[0]['vbucks_purchases']) > 0:
@@ -132,11 +132,11 @@ class UserStats(Cog):
 
         if kapitalist not in target.roles:
             embed.add_field(name=f":moneybag: До роли `{kapitalist.name}` осталось: ",
-                            value=f"{int(10000 - vbucks_count)} в-баксов", inline=True)
+                            value=f"{int(10000 - vbucks_count)} В-Баксов", inline=True)
 
         if magnat not in target.roles and kapitalist in target.roles:
             embed.add_field(name=f":moneybag: До роли `{magnat.name}` осталось: ",
-                            value=f"{int(25000 - vbucks_count)} в-баксов", inline=True)
+                            value=f"{int(25000 - vbucks_count)} В-Баксов", inline=True)
 
         if len(purchases[0]['realMoney_purchases']) > 0:
             embed.add_field(name=":money_with_wings: Поддержка автора в рублях:",

@@ -15,7 +15,7 @@ from ..utils.utils import (edit_user_reputation,
 cmd = load_commands_from_json("leveling")
 
 
-class Leveling(Cog):
+class Leveling(Cog, name='Система уровней'):
     def __init__(self, bot):
         self.bot = bot
         self.profanity_whitelisted_users = (

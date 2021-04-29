@@ -5,7 +5,7 @@ from discord.errors import HTTPException, NotFound
 from datetime import datetime
 from ..db import db
 
-class Voice(Cog):
+class Voice(Cog, name='VoiceChannels Management'):
     def __init__(self, bot):
         self.bot = bot
         self.temporary_channels = {}

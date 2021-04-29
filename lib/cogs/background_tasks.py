@@ -23,7 +23,7 @@ ACTIVITIES = cycle([
     '+help | vk.com/fnfun',
     '+help | USE CODE FNFUN'])
 
-class BackgroundTasks(Cog):
+class BackgroundTasks(Cog, name='Фоновые процессы'):
     def __init__(self, bot):
         self.bot = bot
         self.change_bot_activity.start()

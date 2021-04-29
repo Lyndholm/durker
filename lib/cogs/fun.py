@@ -19,7 +19,7 @@ from ..utils.utils import load_commands_from_json
 cmd = load_commands_from_json("fun")
 
 
-class Fun(Cog):
+class Fun(Cog, name='Развлечения'):
     def __init__(self, bot):
         self.bot = bot
         self.hug_gifs = ["https://media4.giphy.com/media/PHZ7v9tfQu0o0/giphy.gif",
@@ -410,22 +410,6 @@ class Fun(Cog):
         if isinstance(exc, MissingRequiredArgument):
             embed = Embed(title=':exclamation: Внимание!', description =f"Пожалуйста, укажите корректный диапазон **целых** чисел.", color = Color.red())
             await ctx.send(embed=embed, delete_after = 30)
-
-
-    @command(name="dice", aliases=["roll"])
-    @cooldown(1, 10, BucketType.user)
-    @guild_only()
-    @is_owner()
-    async def dice_command(self, ctx, dice_string: str):
-        dice, value = (int(term) for term in dice_string.split("d"))
-        rolls = [randint(1, value) for i in range(dice)]
-
-        await ctx.send(" + ".join([str(r) for r in rolls]) + f" = {sum(rolls)}")
-
-    @dice_command.error
-    async def dice_command_error(self, ctx, exc):
-        if isinstance(exc, ValueError):
-            await ctx.send("Пожалуйста, введите корректную комбинацию.", delete_after = 20)
 
 
 def setup(bot):

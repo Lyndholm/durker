@@ -16,7 +16,7 @@ from ..utils.utils import (edit_user_reputation,
 cmd = load_commands_from_json("profanity")
 
 
-class Profanity(Cog):
+class Profanity(Cog, name='Мат-фильтр'):
     def __init__(self, bot):
         self.bot = bot
         self.whitelisted_users = (

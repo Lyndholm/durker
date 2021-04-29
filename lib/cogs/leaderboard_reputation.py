@@ -39,7 +39,7 @@ class ReputationLeaderboardMenu(ListPageSource):
         return await self.write_page(menu, offset, fields)
 
 
-class ReputationLeaderboard(Cog):
+class ReputationLeaderboard(Cog, name='Список лидеров — репутация'):
     def __init__(self, bot):
         self.bot = bot
 

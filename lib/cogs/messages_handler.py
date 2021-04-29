@@ -9,7 +9,7 @@ from ..db import db
 from ..utils.decorators import listen_for_guilds
 
 
-class MessagesHandler(Cog):
+class MessagesHandler(Cog, name='Messages handler'):
     def __init__(self, bot):
         self.bot = bot
         self.rep_filter = []

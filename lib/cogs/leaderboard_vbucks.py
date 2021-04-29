@@ -33,15 +33,15 @@ class VbucksLeaderboardMenu(ListPageSource):
         offset = (menu.current_page*self.per_page) + 1
 
         fields = []
-        table = ('\n'.join(f'🔵 **{idx+offset}.** {self.ctx.guild.get_member(entry[0]).display_name} | В-баксов: **{entry[1]}**'
+        table = ('\n'.join(f'🔵 **{idx+offset}.** {self.ctx.guild.get_member(entry[0]).display_name} | В-Баксов: **{entry[1]}**'
                 for idx, entry in enumerate(entries)))
 
-        fields.append(("Рейтинг по количеству потраченных с тегом в-баксов:", table))
+        fields.append(("Рейтинг по количеству потраченных с тегом В-Баксов:", table))
 
         return await self.write_page(menu, offset, fields)
 
 
-class VbucksLeaderboard(Cog):
+class VbucksLeaderboard(Cog, name='Список лидеров — В-Баксы'):
     def __init__(self, bot):
         self.bot = bot
 

@@ -11,7 +11,7 @@ from ..utils.utils import load_commands_from_json
 cmd = load_commands_from_json('reactions')
 
 
-class ReactionRole(Cog):
+class ReactionRole(Cog, name='Роли за реакции'):
     def __init__(self, bot):
         self.bot = bot
 

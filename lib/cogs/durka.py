@@ -58,7 +58,7 @@ def have_enough_perms_for_calling() -> bool:
     return check(predicate)
 
 
-class Durka(Cog):
+class Durka(Cog, name='Дурка'):
     def __init__(self, bot):
         self.bot = bot
         self.durka_emoji = "<:durka:745936793148588083>"

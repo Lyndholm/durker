@@ -14,7 +14,7 @@ from ..utils.paginator import Paginator
 cmd = load_commands_from_json("fortniteapiio")
 
 
-class FortniteAPIio(Cog):
+class FortniteAPIio(Cog, name='Fortnite API 3'):
     def __init__(self, bot):
         self.bot = bot
         self.headers = {"Authorization": getenv("FORTNITEAPIIO_TOKEN")}

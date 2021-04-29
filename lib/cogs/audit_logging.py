@@ -12,7 +12,7 @@ from typing import List, Tuple, Union
 from ..utils.constants import AUDIT_LOG_CHANNEL, ADMINS_CHANNEL, GVARDIYA_CHANNEL
 
 
-class Audit(Cog):
+class Audit(Cog, name='Система Аудита'):
     def __init__(self, bot):
         self.bot = bot
 

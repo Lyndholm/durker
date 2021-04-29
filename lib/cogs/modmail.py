@@ -3,7 +3,7 @@ from discord import DMChannel, Embed, Color
 from discord.ext.commands import Cog
 from discord.ext.commands import command
 
-class ModMail(Cog):
+class ModMail(Cog, name='ModMail'):
     def __init__(self, bot):
         self.bot = bot
 

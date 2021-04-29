@@ -56,7 +56,7 @@ servers = [
 ]
 
 
-class FortniteDevServers(Cog):
+class FortniteDevServers(Cog, name='Fortnite Dev'):
     def __init__(self, bot):
         self.bot = bot
 

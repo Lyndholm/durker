@@ -12,7 +12,7 @@ from ..utils.utils import load_commands_from_json
 cmd = load_commands_from_json("nekos")
 
 
-class Nekos(Cog):
+class Nekos(Cog, name='Аниме'):
     def __init__(self, bot):
         self.bot = bot
         self.anime_categories = ("waifu", "neko", "megumin")

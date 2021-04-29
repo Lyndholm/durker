@@ -7,7 +7,7 @@ from ..utils.utils import insert_new_user_in_db, dump_user_data_in_json, delete_
 from ..db import db
 
 
-class Welcome(Cog):
+class Welcome(Cog, name='Greetings'):
     def __init__(self, bot):
         self.bot = bot
 

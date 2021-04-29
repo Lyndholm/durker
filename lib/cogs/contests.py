@@ -9,7 +9,7 @@ from ..utils.utils import load_commands_from_json
 cmd = load_commands_from_json("contests")
 
 
-class Contests(Cog):
+class Contests(Cog, name='Контесты'):
     def __init__(self, bot):
         self.bot = bot
         self.giveaways = []
