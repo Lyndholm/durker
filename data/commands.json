@@ -255,7 +255,7 @@
         "durka":{
             "name": "durka",
             "aliases": ["дурка"],
-            "brief": "Вызов дурки.",
+            "brief": "Вызов дурки пользователям.",
             "description": "Вызовите дурку одному или нескольким пользователям.",
             "usage": "durka <members>",
             "help": "Совершите звонок в психиатрическую больницу и вызовите санитаров, которые приедут за шизоидами.\n\n**Кулдаун:** 1 час, действует на определённого пользователя.\nДоступ к команде октрывается при наличии ролей за активность. **Олд** — минимально необходимая роль.",
@@ -586,7 +586,7 @@
             "aliases": ["хелп", "хэлп", "h"],
             "brief": "Help меню.",
             "description": "Отображает все доступные команды бота.",
-            "usage": "help [command]",
+            "usage": "help [command/category]",
             "help": "Помогает разобраться с использованием команд бота. Работает на сервере и в личных сообщениях.\n\n**Кулдаун:** отсутствует.",
             "required_level": 0,
             "has_cooldown": false,
@@ -596,7 +596,7 @@
             "hidden": false
         }
     },
-    "leaderboard_achievements":
+    "leaderboards":
     {
         "achievementboard":{
             "name": "achievementboard",
@@ -611,10 +611,7 @@
             "cooldown_per_second": 0,
             "cooldown_type": "None",
             "hidden": false
-        }
-    },
-    "leaderboard_leveling":
-    {
+        },
         "levelboard":{
             "name": "levelboard",
             "aliases": ["lb", "lvlboard"],
@@ -628,10 +625,7 @@
             "cooldown_per_second": 0,
             "cooldown_type": "None",
             "hidden": false
-        }
-    },
-    "leaderboard_messages":
-    {
+        },
         "messageboard":{
             "name": "messageboard",
             "aliases": ["mb", "msgboard"],
@@ -645,10 +639,7 @@
             "cooldown_per_second": 0,
             "cooldown_type": "None",
             "hidden": false
-        }
-    },
-    "leaderboard_reputation":
-    {
+        },
         "reputationboard":{
             "name": "reputationboard",
             "aliases": ["rb", "repboard"],
@@ -662,10 +653,7 @@
             "cooldown_per_second": 0,
             "cooldown_type": "None",
             "hidden": false
-        }
-    },
-    "leaderboard_vbucks":
-    {
+        },
         "vbucksboard":{
             "name": "vbucksboard",
             "aliases": ["vb", "$board"],
