@@ -13,7 +13,7 @@ from ..utils.utils import Pag, clean_code, load_commands_from_json
 cmd = load_commands_from_json("eval")
 
 
-class Eval(Cog, name='Eval'):
+class Eval(Cog, name='EvalCog'):
     def __init__(self, bot):
         self.bot = bot
 

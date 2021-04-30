@@ -73,7 +73,7 @@ class RealMoneyPurchasesMenu(ListPageSource):
         return await self.write_page(menu, offset, fields)
 
 
-class PurchasesHandler(Cog, name='Покупки'):
+class PurchasesHandler(Cog, name='Покупки и не только'):
     def __init__(self, bot):
         self.bot = bot
 

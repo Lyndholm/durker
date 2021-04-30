@@ -10,7 +10,7 @@ from ..utils.utils import load_commands_from_json
 
 cmd = load_commands_from_json("covid")
 
-class Covid(Cog, name='COVID'):
+class Covid(Cog, name='COVID-19'):
     def __init__(self, bot):
         self.bot = bot
 
