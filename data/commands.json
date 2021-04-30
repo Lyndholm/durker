@@ -583,7 +583,7 @@
     {
         "help":{
             "name": "help",
-            "aliases": ["хелп", "хэлп", "h"],
+            "aliases": ["хелп", "хэлп", "команды", "h"],
             "brief": "Help меню.",
             "description": "Отображает все доступные команды бота.",
             "usage": "help [command/category]",
@@ -1084,7 +1084,7 @@
             "aliases": ["unblockuser"],
             "brief": "Убирает пользователя из чёрного списка.",
             "description": "Снимает блокировку пользователя.",
-            "usage": "blacklist <user>",
+            "usage": "whitelist <user>",
             "help": "Убирает пользователя из чёрного списка, возвращает ему доступ к командам. Доступно только разработчику бота.",
             "required_level": 0,
             "has_cooldown": false,
@@ -1098,7 +1098,7 @@
             "aliases": ["say"],
             "brief": "Отправка собщений от имени бота.",
             "description": "Отправляет собщение от имени бота в указанный канал.",
-            "usage": "echo <channel> <content>",
+            "usage": "echo <channel> <message>",
             "help": "Отправляет сообщение от имени бота в указанный канал. Возможна отправка медиафайлов (не более 8 мб). Доступно только разработчику бота.",
             "required_level": 0,
             "has_cooldown": false,

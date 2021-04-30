@@ -1,72 +1,42 @@
-from discord import Embed, Color
-from discord.utils import get
-from discord.ext.menus import MenuPages, ListPageSource
-from discord.ext.commands import Cog
-from discord.ext.commands import command
-
+import json
+from random import choice
 from typing import Optional
 
-from ..utils.utils import load_commands_from_json
+import aiofiles
+from discord import Color, Embed
+from discord.ext.commands import Cog, Command, command
+from discord.utils import get
+from transliterate import translit
 
+from ..utils.constants import PLACEHOLDER
+from ..utils.lazy_paginator import paginate
+from ..utils.utils import load_commands_from_json
 
 cmd = load_commands_from_json("help")
 
 
-def syntax(command):
-    cmd_and_aliases = "|".join([str(command), *command.aliases])
-    params = []
-
-    for key, value in command.params.items():
-        if key not in ("self", "ctx"):
-            params.append(f"[{key}]" if "NoneType" in str(value) else f"<{key}>")
-
-    params = " ".join(params)
-    return f"```{cmd_and_aliases} {params}```"
-
-
-class HelpMenu(ListPageSource):
-    def __init__(self, ctx, data):
-        self.ctx = ctx
-
-        super().__init__(data, per_page=3)
-
-    async def write_page(self, menu, fields = []):
-        offset = (menu.current_page*self.per_page+1)
-        len_data = len(self.entries)
-
-        embed = Embed(title="Dungeon Durker Help", description="Help меню.", color=self.ctx.author.color)
-        embed.set_footer(text=f"{offset:,} - {min(len_data, offset+self.per_page-1):,} из {len_data:,} команд.")
-        if self.ctx.guild:
-            embed.set_thumbnail(url=self.ctx.guild.icon_url)
-
-        for name, value in fields:
-            embed.add_field(name=name, value=value, inline=False)
-
-        return embed
-
-    async def format_page (self, menu, entries):
-        fields = []
-
-        for entry in entries:
-            fields.append((entry.brief or "Описание отсутсвует.", syntax(entry)))
-
-        return await self.write_page(menu, fields)
-
-
-class Help(Cog):
+class Help(Cog, name='Help меню'):
     def __init__(self, bot):
         self.bot = bot
+        self.help_gifs = []
         self.bot.remove_command("help")
+
+        bot.loop.create_task(self.parse_help_gifs_from_json())
+
+    async def parse_help_gifs_from_json(self):
+        async with aiofiles.open('./data/json/help_gifs.json', mode='r', encoding='utf-8') as f:
+            self.help_gifs = json.loads(await f.read())
+
+    def thumbnail(self, cog_name) -> str:
+        cog = self.bot.get_cog(cog_name)
+        name = cog.__class__.__name__
+        url = choice(self.help_gifs.get(name, [PLACEHOLDER]))
+        return url
 
     @Cog.listener()
     async def on_ready(self):
         if not self.bot.ready:
            self.bot.cogs_ready.ready_up("help")
-
-    async def cmd_help(self, ctx, command):
-        embed = Embed(title=f"Команда: {str(command)}", description=command.help, color=ctx.author.color)
-        embed.add_field(name="Синтаксис:", value=syntax(command))
-        await ctx.send(embed=embed)
 
     @command(name=cmd["help"]["name"], aliases=cmd["help"]["aliases"],
             brief=cmd["help"]["brief"],
@@ -74,30 +44,143 @@ class Help(Cog):
             usage=cmd["help"]["usage"],
             help=cmd["help"]["help"],
             hidden=cmd["help"]["hidden"], enabled=True)
-    async def help_command(self, ctx, cmd: Optional[str]):
+    async def help_command(self, ctx, *, cmd: Optional[str]):
         if cmd is None:
-            commands_list = []
-
-            for command in self.bot.commands:
-                if not command.hidden:
-                    commands_list.append(command)
-
-            menu = MenuPages(source=HelpMenu(ctx, commands_list),
-                             clear_reactions_after=True,
-                             delete_message_after=False,
-                             timeout=60.0)
-
-            await menu.start(ctx)
-
+            embed = self.help_memu(ctx)
+            await paginate(ctx, embed)
         else:
-            command = get(self.bot.commands, name=cmd)
-            if command and not command.hidden:
-                await self.cmd_help(ctx, command)
-            elif command and command.hidden and ctx.author.id == 375722626636578816:
-                await self.cmd_help(ctx, command)
+            thing = ctx.bot.get_cog(cmd) or ctx.bot.get_command(cmd)
+            if isinstance(thing, Command):
+                if not thing.hidden:
+                    await paginate(ctx, self.command_helper(ctx, thing))
+                elif thing.hidden and ctx.author.id == 375722626636578816:
+                    await paginate(ctx, self.command_helper(ctx, thing))
+                else:
+                    embed = Embed(
+                        title=':exclamation: Ошибка!',
+                        description =f"Указанная команда не существует, либо она скрыта или отключена.",
+                        color = Color.red()
+                    )
+                    await ctx.reply(embed=embed, delete_after=15)
+
+            elif isinstance(thing, Cog):
+                await paginate(ctx, self.cog_helper(ctx, thing))
             else:
-                embed = Embed(title=':exclamation: Ошибка!', description =f"Указанная команда не существует, либо она скрыта или отключена.", color = Color.red())
-                await ctx.send(embed=embed, delete_after = 30)
+                await ctx.reply(
+                    'Ничего не найдено. Проверьте правильность написания команды/раздела.',
+                    delete_after=15
+                )
+
+    def chuncks(self, l, n):
+        """Yield successive n-sized chunks from l."""
+        for i in range(0, len(l), n):
+            yield l[i:i + n]
+
+    def help_memu(self, ctx):
+        hidden_cogs = ['модерация']
+        chasovoy = get(ctx.guild.roles, id=686495834241761280)
+
+        commands = []
+        sorted_cogs = sorted(ctx.bot.cogs, key=lambda x: translit(x, 'ru'))
+        cogs = sorted_cogs.copy()
+        for cog in sorted_cogs:
+            if cog.lower() in hidden_cogs:
+                if ctx.author.top_role.position < chasovoy.position:
+                    cogs.remove(cog)
+
+        for cog in cogs:
+            if ctx.author.id == 375722626636578816:
+                cmds = [i for i in ctx.bot.get_cog(cog).get_commands()]
+            else:
+                cmds = [i for i in ctx.bot.get_cog(cog).get_commands() if not i.hidden]
+
+            for cmds_chunks in list(self.chuncks(list(cmds), 5)):
+                embed = Embed(
+                    title=f'Раздел: {cog} | Команд: {len(cmds)}',
+                    color=ctx.author.color
+                ).set_thumbnail(url=self.thumbnail(cog))
+                for cmd in cmds_chunks:
+                    embed.add_field(
+                        name=f'{cmd.brief}',
+                        value=f'```{ctx.prefix}{cmd.signature}```',
+                        inline=False
+                    )
+                commands.append(embed)
+
+            for idx, embed in enumerate(commands, 1):
+                embed.set_footer(
+                    text=f'Страница {idx} из {len(commands)} | {ctx.prefix}help <command> для подробностей о команде'
+                )
+        return commands
+
+    def cog_helper(self, ctx, cog):
+        name = cog.qualified_name or cog.__class__.__name__
+        commands = []
+        if ctx.author.id == 375722626636578816:
+            cmds = [i for i in cog.get_commands()]
+        else:
+            cmds = [i for i in cog.get_commands() if not i.hidden]
+
+        if not cmds:
+            no_entry_embed = Embed(
+                title='⛔ В доступе отказано.',
+                color=Color.red(),
+                description=f'Команды раздела `{name}` скрыты.'
+            )
+            return no_entry_embed
+
+        for cmds_chunks in list(self.chuncks(list(cmds), 5)):
+            embed = Embed(
+                title=f'Раздел: {name} | Команд: {len(cmds)}',
+                color=ctx.author.color
+            ).set_thumbnail(url=self.thumbnail(name))
+            for cmd in cmds_chunks:
+                embed.add_field(
+                    name=f'{cmd.brief}',
+                    value=f'```{ctx.prefix}{cmd.signature}```',
+                    inline=False
+                )
+            commands.append(embed)
+
+        for idx, embed in enumerate(commands, 1):
+            embed.set_footer(
+                text=f'Страница {idx} из {len(commands)} | {ctx.prefix}help <command> для подробностей о команде'
+            )
+        return commands
+
+    def command_helper(self, ctx, cmd):
+        try:
+            commands = []
+            command = [i for i in cmd.commands if not i.hidden]
+
+            for cmd_chunks in list(self.chuncks(list(command), 5)):
+                aliases = '|'.join([*cmd.aliases])
+                embed = Embed(
+                    title=f'{ctx.prefix}{cmd.signature}',
+                    color=ctx.author.color,
+                    description=f'{cmd.help}\n**Алиасы:**\n```{aliases}```'
+                )
+                for c in cmd_chunks:
+                    embed.add_field(
+                        name=f'{c.brief}',
+                        value=f'```{ctx.prefix}{c.signature}```',
+                        inline=False
+                    )
+                commands.append(embed)
+
+            for idx, embed in enumerate(commands, 1):
+                embed.set_footer(
+                    text=f'Страница {idx} из {len(commands)} | {ctx.prefix}help <command> для подробностей о команде'
+                )
+            return commands
+        except AttributeError:
+            aliases = '|'.join([*cmd.aliases])
+            embed = Embed(
+                title=f'{ctx.prefix}{cmd.signature}',
+                color=ctx.author.color,
+                description=f'{cmd.help}\n**Алиасы:**\n```{aliases}```'
+            )
+            return [embed]
 
 
 def setup(bot):

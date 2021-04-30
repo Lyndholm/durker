@@ -258,7 +258,7 @@ class Moderation(Cog, name='Модерация'):
                         target,
                         f"**Шизоид <:durka:684794973358522426> `{target.display_name}` ({target.mention}) <:durka:684794973358522426> в изоляторе. Кукуха чата в безопасности.**",
                         ("Срок мута", "3 часа", True)
-                    )
+                    ).set_thumbnail(url='https://media1.giphy.com/media/pKPbddZ0OSoik/giphy.gif')
                     _extend_mute_story(message, target, 10800, reason)
                     edit_user_reputation(target.id, '-', 250)
                     await self.moderation_channel.send(embed=embed)

@@ -13,4 +13,5 @@ requests
 wavelink
 better-profanity==0.6.1
 psutil
+transliterate
 git+https://github.com/Rapptz/discord-ext-menus
