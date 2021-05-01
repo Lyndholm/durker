@@ -29,20 +29,15 @@ cmd = load_commands_from_json("moderation")
 
 class BannedUser(Converter):
     async def convert(self, ctx, arg):
-        if ctx.guild.me.guild_permissions.ban_members:
-            if arg.isdigit():
-                try:
-                    return (await ctx.guild.fetch_ban(Object(id=int(arg)))).user
-                except NotFound:
-                    raise BadArgument
-
-        banned = [i.user for i in await ctx.guild.bans()]
-        if banned:
-            user = find(lambda u: str(u) == arg, banned)
-            if user is not None:
-                return user
-            else:
-                raise BadArgument
+        ban_list = await ctx.guild.bans()
+        try:
+            member_id = int(arg, base=10)
+            entity = find(lambda u: u.user.id == member_id, ban_list)
+        except ValueError:
+            entity = find(lambda u: str(u.user) == arg, ban_list)
+        if entity is None:
+            raise BadArgument
+        return entity
 
 
 class Moderation(Cog, name='Модерация'):
