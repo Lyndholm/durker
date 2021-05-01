@@ -117,12 +117,29 @@ def find_n_term_of_arithmetic_progression(a1: int, d: int, n: int) -> int:
 
 def edit_user_reputation(user_id: int = None, action: str = None, value: int = None):
     if action == '+':
-        db.execute(f"UPDATE users_stats SET rep_rank = rep_rank + {value} WHERE user_id = {user_id}")
+        db.execute("UPDATE users_stats SET rep_rank = rep_rank + %s WHERE user_id = %s",
+                    value, user_id)
     elif action == '-':
-        db.execute(f"UPDATE users_stats SET rep_rank = rep_rank - {value} WHERE user_id = {user_id}")
-        db.execute(f"UPDATE users_stats SET lost_reputation = lost_reputation + {value} WHERE user_id = {user_id}")
+        db.execute("UPDATE users_stats SET rep_rank = rep_rank - %s WHERE user_id = %s",
+                    value, user_id)
+        db.execute("UPDATE users_stats SET lost_reputation = lost_reputation + %s WHERE user_id = %s",
+                    value, user_id)
     elif action == '=':
-        db.execute(f"UPDATE users_stats SET rep_rank = {value} WHERE user_id = {user_id}")
+        db.execute("UPDATE users_stats SET rep_rank = %s WHERE user_id = %s",
+                    value, user_id)
+    db.commit()
+
+
+def edit_user_messages_count(user_id: int = None, action: str = None, value: int = None):
+    if action == '+':
+        db.execute("UPDATE users_stats SET messages_count = messages_count + %s WHERE user_id = %s",
+                    value, user_id)
+    elif action == '-':
+        db.execute("UPDATE users_stats SET messages_count = messages_count - %s WHERE user_id = %s",
+                    value, user_id)
+    elif action == '=':
+        db.execute("UPDATE users_stats SET messages_count = %s WHERE user_id = %s",
+                    value, user_id)
     db.commit()
 
 

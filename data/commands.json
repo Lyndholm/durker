@@ -1107,6 +1107,34 @@
             "cooldown_type": "None",
             "hidden": true
         },
+        "setrep":{
+          "name": "setrep",
+          "aliases": ["setreputation"],
+          "brief": "Изменение репутации.",
+          "description": "Изменяет репутацию пользователя.",
+          "usage": "setrep <user_id> <action> <value>",
+          "help": "Изменяет репутацию пользователя: увеличивает, уменьшает, делает равным. Доступно только разработчику бота.\nРаботает только в личных сообщениях.",
+          "required_level": 0,
+          "has_cooldown": false,
+          "cooldown_rate": 0,
+          "cooldown_per_second": 0,
+          "cooldown_type": "None",
+          "hidden": true
+        },
+        "setamount":{
+          "name": "setamount",
+          "aliases": ["setmsg", "setmessages"],
+          "brief": "Изменение количества сообщений.",
+          "description": "Изменяет количество сообщений пользователя.",
+          "usage": "setamount <user_id> <action> <value>",
+          "help": "Изменяет количество сообщений пользователя: увеличивает, уменьшает, делает равным. Доступно только разработчику бота.\nРаботает только в личных сообщениях.",
+          "required_level": 0,
+          "has_cooldown": false,
+          "cooldown_rate": 0,
+          "cooldown_per_second": 0,
+          "cooldown_type": "None",
+          "hidden": true
+        },
         "shutdown":{
             "name": "shutdown",
             "aliases": ["logout"],
@@ -1286,7 +1314,7 @@
         "profile":
         {
             "name": "profile",
-            "aliases": ["stats"],
+            "aliases": ["stats", "account", "профиль"],
             "brief": "Отображает профиль пользователя с его статистикой на сервере.",
             "description": "Возможность просмотреть статистику на сервере.",
             "usage": "profile [member]",

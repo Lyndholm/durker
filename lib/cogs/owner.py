@@ -1,15 +1,15 @@
 import time
-import aiofiles
-from aiohttp import ClientSession
-from discord import Embed, Color, User
-from discord.ext.commands import Cog, Greedy
-from discord.ext.commands import command
-from discord.ext.commands import is_owner, dm_only
 from datetime import datetime
 
-from ..utils.utils import load_commands_from_json
-from ..utils.checks import can_manage_suggestions
+import aiofiles
+from aiohttp import ClientSession
+from discord import Color, Embed, User
+from discord.ext.commands import Cog, Greedy, command, dm_only, is_owner
+
 from ..db import db
+from ..utils.checks import can_manage_suggestions
+from ..utils.utils import (edit_user_messages_count, edit_user_reputation,
+                           load_commands_from_json)
 
 cmd = load_commands_from_json("owner")
 
@@ -388,6 +388,44 @@ class Owner(Cog, name='Команды разработчика'):
                 files=[await attachment.to_file() for attachment in ctx.message.attachments] if ctx.message.attachments else None
             )
             await ctx.message.add_reaction('✅')
+
+
+    @command(name=cmd["setrep"]["name"], aliases=cmd["setrep"]["aliases"],
+            brief=cmd["setrep"]["brief"],
+            description=cmd["setrep"]["description"],
+            usage=cmd["setrep"]["usage"],
+            help=cmd["setrep"]["help"],
+            hidden=cmd["setrep"]["hidden"], enabled=True)
+    @dm_only()
+    @is_owner()
+    async def set_reputation_command(self, ctx, user_id: int, action: str, value: int):
+        edit_user_reputation(user_id, action, value)
+        await ctx.reply(embed=Embed(
+            title='Репутация обновлена',
+            color=Color.green(),
+            timestamp=datetime.utcnow(),
+            description=f'Репутация пользователя <@{user_id}> изменена.\n'
+                        f'**Действие:** `{action}`\n**Значение:** `{value}`'
+        ), mention_author=False)
+
+
+    @command(name=cmd["setamount"]["name"], aliases=cmd["setamount"]["aliases"],
+            brief=cmd["setamount"]["brief"],
+            description=cmd["setamount"]["description"],
+            usage=cmd["setamount"]["usage"],
+            help=cmd["setamount"]["help"],
+            hidden=cmd["setamount"]["hidden"], enabled=True)
+    @dm_only()
+    @is_owner()
+    async def set_amount_command(self, ctx, user_id: int, action: str, value: int):
+        edit_user_messages_count(user_id, action, value)
+        await ctx.reply(embed=Embed(
+            title='Сообщения обновлены',
+            color=Color.green(),
+            timestamp=datetime.utcnow(),
+            description=f'Количество сообщений пользователя <@{user_id}> изменено.\n'
+                        f'**Действие:** `{action}`\n**Значение:** `{value}`'
+        ), mention_author=False)
 
 
     @command(name=cmd["shutdown"]["name"], aliases=cmd["shutdown"]["aliases"],
