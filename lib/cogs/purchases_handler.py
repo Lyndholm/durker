@@ -228,7 +228,7 @@ class PurchasesHandler(Cog, name='Покупки и не только'):
         else:
             await message.clear_reactions()
             await message.edit(content=f'{ctx.author.mention}, у вас нет покупок, которые соответствуют требованиям. '
-                'Ознакомиться с правилами засчитывания покупок можно по команде `+faq`', embed=None)
+                f'Ознакомиться с правилами засчитывания покупок можно по команде `{ctx.prefix}faq`', embed=None)
 
 
     @command(name=cmd["faq"]["name"], aliases=cmd["faq"]["aliases"],

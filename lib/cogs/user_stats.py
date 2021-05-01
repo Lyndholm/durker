@@ -81,7 +81,7 @@ class UserStats(Cog, name='Статистика'):
                             inline=False)
         else:
             embed.add_field(name=':pencil: О себе:', value=biography[0] if biography[0] else "Вы ничего не написали о себе. "
-                                                                                            "Сделать это можно по команде `+setbio <ваша биография>`",
+                                                                                            f"Сделать это можно по команде `{ctx.prefix}setbio <ваша биография>`",
                             inline=False)
 
         embed.add_field(name=':calendar: Аккаунт создан:', value=target.created_at.strftime("%d.%m.%Y %H:%M"),
@@ -167,7 +167,7 @@ class UserStats(Cog, name='Статистика'):
             'После обновления бота от 1 июля 2021 г. статистика '
             'покупок (по В-Баксам) была сброшена у всех пользователей. '
             'Ознакомится с причиной вайпа и новыми правилами засчитывания '
-            'покупок можно по команде `+faq`.', embed=embed)
+            f'покупок можно по команде `{ctx.prefix}faq`.', embed=embed)
 
 
     @command(name=cmd["setbio"]["name"], aliases=cmd["setbio"]["aliases"],
@@ -432,7 +432,7 @@ class UserStats(Cog, name='Статистика'):
             "\n— **Мастер** (10000 - 14999)"
             "\n— **Элита** (15000 - 19999)"
             "\n— **Совершенство** (20000 и больше)"
-            "\n\nУзнать свой уровень репутации можно по команде `+myrep`"
+            f"\n\nУзнать свой уровень репутации можно по команде `{ctx.prefix}myrep`"
         )
         embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/774698479981297664/815282991668133888/reputation.png")
         await ctx.send(embed=embed)
