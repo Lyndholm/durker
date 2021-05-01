@@ -1,1621 +1,1843 @@
 {
-    "benbot":
-    {
-        "benbotstatus":{
-            "name": "benbotstatus",
-            "aliases": ["benstatus","pingbenbot"],
-            "brief": "Отображает состояние BenBot API.",
-            "description": "Fetch the current BenBot API Status.",
-            "usage": "benstatus",
-            "help": "Отображает состояние BenBot API. Работает только в личных сообщениях. Доступно только разработчику бота.",
-            "required_level": 0,
-            "has_cooldown": false,
-            "cooldown_rate": 0,
-            "cooldown_per_second": 0,
-            "cooldown_type": "None",
-            "hidden": true
-        },
-        "aes":{
-            "name": "aes",
-            "aliases": ["fnaes"],
-            "brief": "Отображает AES ключи для доступа к файлам игры.",
-            "description": "Fetch the current AES Keys.",
-            "usage": "aes [version]",
-            "help": "Отображает AES ключи для доступа к файлам игры. По умолчанию отображаются ключи для текущей версии игры. В случае необходимости мы можете указать необходимую вам версию.\nРаботает только на сервере.\n\n**Кулдаун:** отсутствует.\n**Необходимый уровень:** 0",
-            "required_level": 0,
-            "has_cooldown": false,
-            "cooldown_rate": 0,
-            "cooldown_per_second": 0,
-            "cooldown_type": "None",
-            "hidden": false
-        },
-        "cosmeticinfo":{
-            "name": "cosmeticinfo",
-            "aliases": ["itemid","fnitem"],
-            "brief": "Отображает информацию о косметическом предмете по его ID.",
-            "description": "Show cosmetic info from a cosmetic ID.",
-            "usage": "cosmeticinfo <ID>",
-            "help": "Отображает информацию о косметическом предмете по его ID.\nРаботает только на сервере.\n\n**Кулдаун:** отсутствует.\n**Необходимый уровень:** 0",
-            "required_level": 0,
-            "has_cooldown": false,
-            "cooldown_rate": 0,
-            "cooldown_per_second": 0,
-            "cooldown_type": "None",
-            "hidden": false
-        },
-        "extractasset":{
-            "name": "extractasset",
-            "aliases": ["fnextract", "fnexport", "exportasset", "export"],
-            "brief": "Извлекает asset из файлов игры.",
-            "description": "Extract an asset from Fortnite's files.",
-            "usage": "extractasset <path> [*params]",
-            "help": "Извлекает asset из файлов игры.\nРаботает только на сервере.\n\n**Кулдаун:** отсутствует.\n**Необходимый уровень:** 0",
-            "required_level": 0,
-            "has_cooldown": false,
-            "cooldown_rate": 0,
-            "cooldown_per_second": 0,
-            "cooldown_type": "None",
-            "hidden": false
-        },
-        "shopsections":{
-            "name": "shopsections",
-            "aliases": ["sectionstore"],
-            "brief": "Отображает категории магазина предметов.",
-            "description": "Возможность просмотреть текущие категории магазина предметов Fortnite.",
-            "usage": "shopsections",
-            "help": "Позволяет просмотреть текущие (возможно, и будущие) категории магазина предметов Fortnite.\nРаботает только на сервере.\n\n**Кулдаун:** отсутствует.\n**Необходимый уровень:** 0",
-            "required_level": 0,
-            "has_cooldown": false,
-            "cooldown_rate": 0,
-            "cooldown_per_second": 0,
-            "cooldown_type": "None",
-            "hidden": false
-        }
+  "benbot": {
+    "benbotstatus": {
+      "name": "benbotstatus",
+      "aliases": [
+        "benstatus",
+        "pingbenbot"
+      ],
+      "brief": "Отображает состояние BenBot API.",
+      "description": "Fetch the current BenBot API Status.",
+      "usage": "benstatus",
+      "help": "Отображает состояние BenBot API. Работает только в личных сообщениях. Доступно только разработчику бота.",
+      "required_level": 0,
+      "has_cooldown": false,
+      "cooldown_rate": 0,
+      "cooldown_per_second": 0,
+      "cooldown_type": "None",
+      "hidden": true
     },
-    "commands":
-    {
-        "suggest":{
-            "name": "suggest",
-            "aliases": ["предложить", "добавить", "radiosuggest", "radioadd"],
-            "brief": "Предложите трек, который хотите добавить в пелейлист радио.",
-            "description": "Формирует заявку на добавление трека в плейлист.",
-            "usage": "suggest <track>",
-            "help": "Возможность предложить добавить указанный трек в плейлист радио.\n\n**Работает в канале:** <#546411393239220233>\n**Кулдаун:** отсутствует.\n**Необходимый уровень:** 0",
-            "required_level": 0,
-            "has_cooldown": false,
-            "cooldown_rate": 0,
-            "cooldown_per_second": 0,
-            "cooldown_type": "None",
-            "hidden": false
-        },
-        "support":{
-            "name": "support",
-            "aliases": ["поддержка"],
-            "brief": "Перенаправление в канал со скриншотами покупок.",
-            "description": "Перенаправляет пользователей в <#546408250158088192>.",
-            "usage": "support [members]",
-            "help": "Перенаправляет пользователей в <#546408250158088192> — канал со скриншотами покупок.\nРаботает только на сервере.\n\n**Кулдаун:** 5 минут, действует на определённого пользователя.\n**Необходимый уровень:** 10",
-            "required_level": 10,
-            "has_cooldown": true,
-            "cooldown_rate": 1,
-            "cooldown_per_second": 300,
-            "cooldown_type": "member",
-            "hidden": false
-        },
-        "question":{
-            "name": "question",
-            "aliases": ["вопросы"],
-            "brief": "Перенаправление в канал с вопросами.",
-            "description": "Перенаправляет пользователей в <#546700132390010882>.",
-            "usage": "question [members]",
-            "help": "Перенаправляет пользователей в <#546700132390010882> — канал с вопросами, если вопрос задан в неподходящем канале.\nРаботает только на сервере.\n\n**Кулдаун:** 5 минут, действует на определённого пользователя.\n**Необходимый уровень:** 10",
-            "required_level": 10,
-            "has_cooldown": true,
-            "cooldown_rate": 1,
-            "cooldown_per_second": 300,
-            "cooldown_type": "member",
-            "hidden": false
-        },
-        "media":{
-          "name": "media",
-          "aliases": ["медиа"],
-          "brief": "Перенаправление в медиа канал.",
-          "description": "Перенаправляет пользователей в <#644523860326219776>.",
-          "usage": "media <members>",
-          "help": "Перенаправляет пользователей <#644523860326219776>, если в чат отправлен медиафайл не по теме разговора.\nРаботает только на сервере.\n\n**Кулдаун:** 5 минут, действует на определённого пользователя.\n**Необходимый уровень:** 10",
-          "required_level": 10,
-          "has_cooldown": true,
-          "cooldown_rate": 1,
-          "cooldown_per_second": 300,
-          "cooldown_type": "member",
-          "hidden": false
-        },
-        "poisk":{
-          "name": "poisk",
-          "aliases": ["поиск"],
-          "brief": "Перенаправление в канал поиска игроков.",
-          "description": "Перенаправляет пользователей в <#546416181871902730>.",
-          "usage": "poisk <members>",
-          "help": "Перенаправляет пользователей <#546416181871902730>, если в неподходящем канале осуществляется поиск напарника для игры.\nРаботает только на сервере.\n\n**Кулдаун:** 5 минут, действует на определённого пользователя.\n**Необходимый уровень:** 10",
-          "required_level": 10,
-          "has_cooldown": true,
-          "cooldown_rate": 1,
-          "cooldown_per_second": 300,
-          "cooldown_type": "member",
-          "hidden": false
-        },
-        "ppo":{
-          "name": "ppo",
-          "aliases": ["ппо"],
-          "brief": "ППО это who?",
-          "description": "Расшифровка ППО.",
-          "usage": "ppo",
-          "help": "Расшифровка аббревиатуры ППО.\n\n**Кулдаун:** 10 минут, действует на весь сервер.\n**Необходимый уровень:** 3",
-          "required_level": 3,
-          "has_cooldown": true,
-          "cooldown_rate": 1,
-          "cooldown_per_second": 600,
-          "cooldown_type": "guild",
-          "hidden": false
-      },
-      "sp":{
-        "name": "sp",
-        "aliases": ["сп"],
-        "brief": "СП это who?",
-        "description": "Расшифровка СП.",
-        "usage": "sp",
-        "help": "Расшифровка аббревиатуры СП.\n\n**Кулдаун:** 10 минут, действует на весь сервер.\n**Необходимый уровень:** 3",
-        "required_level": 3,
-        "has_cooldown": true,
-        "cooldown_rate": 1,
-        "cooldown_per_second": 600,
-        "cooldown_type": "guild",
-        "hidden": false
-      },
-      "code":{
-        "name": "code",
-        "aliases": ["тег", "код", "тегавтора", "sac"],
-        "brief": "Наш тег автора",
-        "description": "Наш тег: FNFUN.",
-        "usage": "code",
-        "help": "Используйте наш тег автора **FNFUN** в магазине предметов Fortnite.\n\n**Кулдаун:** 1 минута, действует на весь сервер.\n**Необходимый уровень:** 0",
-        "required_level": 0,
-        "has_cooldown": true,
-        "cooldown_rate": 1,
-        "cooldown_per_second": 60,
-        "cooldown_type": "guild",
-        "hidden": false
-      },
-      "avatar":{
-        "name": "avatar",
-        "aliases": ["аватар"],
-        "brief": "Аватар пользователя.",
-        "description": "Показывает фото профиля указанного участника сервера.",
-        "usage": "avatar <member>",
-        "help": "Бот показывает фото профиля указанного участника сервера.\n\n**Кулдаун:** 5 минут, действует на определённого пользователя.\n**Необходимый уровень:** 10",
-        "required_level": 10,
-        "has_cooldown": true,
-        "cooldown_rate": 1,
-        "cooldown_per_second": 300,
-        "cooldown_type": "member",
-        "hidden": false
-      },
-        "info":{
-          "name": "info",
-          "aliases": ["about", "инфо"],
-          "brief": "Информация о Dungeon Durker.",
-          "description": "Информация о проекте Dungeon Durker.",
-          "usage": "info",
-          "help": "Отображает основную информацию о проекте Dungeon Durker, предоставляет описание бота.\n\n**Кулдаун:** отсутствует.\n**Необходимый уровень:** 0",
-          "required_level": 0,
-          "has_cooldown": false,
-          "cooldown_rate": 0,
-          "cooldown_per_second": 0,
-          "cooldown_type": "None",
-          "hidden": false
-      }
+    "aes": {
+      "name": "aes",
+      "aliases": [
+        "fnaes"
+      ],
+      "brief": "Отображает AES ключи для доступа к файлам игры.",
+      "description": "Fetch the current AES Keys.",
+      "usage": "aes [version]",
+      "help": "Отображает AES ключи для доступа к файлам игры. По умолчанию отображаются ключи для текущей версии игры. В случае необходимости мы можете указать необходимую вам версию.\nРаботает только на сервере.\n\n**Кулдаун:** отсутствует.\n**Необходимый уровень:** 0",
+      "required_level": 0,
+      "has_cooldown": false,
+      "cooldown_rate": 0,
+      "cooldown_per_second": 0,
+      "cooldown_type": "None",
+      "hidden": false
     },
-    "contests":
-    {
-        "giveaway":
-        {
-            "name": "giveaway",
-            "aliases": ["розыгрыш"],
-            "brief": "Команда для проведения розыгрышей.",
-            "description": "Проведение розыгрышей с автоматическим подведением итогов.",
-            "usage": "giveaway <mins> [winners count] [description]",
-            "help": "Бот инициализирует процесс проведения розыгрыша. Через указанное время (в минутах) автоматически определяется победитель.\n\nДоступно только разработчику бота.",
-            "required_level": 0,
-            "has_cooldown": false,
-            "cooldown_rate": 0,
-            "cooldown_per_second": 0,
-            "cooldown_type": "None",
-            "hidden": true
-        }
+    "cosmeticinfo": {
+      "name": "cosmeticinfo",
+      "aliases": [
+        "itemid",
+        "fnitem"
+      ],
+      "brief": "Отображает информацию о косметическом предмете по его ID.",
+      "description": "Show cosmetic info from a cosmetic ID.",
+      "usage": "cosmeticinfo <ID>",
+      "help": "Отображает информацию о косметическом предмете по его ID.\nРаботает только на сервере.\n\n**Кулдаун:** отсутствует.\n**Необходимый уровень:** 0",
+      "required_level": 0,
+      "has_cooldown": false,
+      "cooldown_rate": 0,
+      "cooldown_per_second": 0,
+      "cooldown_type": "None",
+      "hidden": false
     },
-    "covid":
-    {
-        "covid":{
-            "name": "covid",
-            "aliases": ["ковид","coronastats", "корона"],
-            "brief": "Статистика по коронавирусу.",
-            "description": "Отображение статистики по коронавирусу для конкретной страны.",
-            "usage": "covid <country>",
-            "help": "Бот отображает актуальную статистику по коронавирусу для конкретной страны.\n\n**Кулдаун:** отсутствует.\n**Необходимый уровень:** 0",
-            "required_level": 0,
-            "has_cooldown": false,
-            "cooldown_rate": 0,
-            "cooldown_per_second": 0,
-            "cooldown_type": "None",
-            "hidden": false
-        }
+    "extractasset": {
+      "name": "extractasset",
+      "aliases": [
+        "fnextract",
+        "fnexport",
+        "exportasset",
+        "export"
+      ],
+      "brief": "Извлекает asset из файлов игры.",
+      "description": "Extract an asset from Fortnite's files.",
+      "usage": "extractasset <path> [*params]",
+      "help": "Извлекает asset из файлов игры.\nРаботает только на сервере.\n\n**Кулдаун:** отсутствует.\n**Необходимый уровень:** 0",
+      "required_level": 0,
+      "has_cooldown": false,
+      "cooldown_rate": 0,
+      "cooldown_per_second": 0,
+      "cooldown_type": "None",
+      "hidden": false
     },
-    "durka":
-    {
-        "durka":{
-            "name": "durka",
-            "aliases": ["дурка"],
-            "brief": "Вызов дурки пользователям.",
-            "description": "Вызовите дурку одному или нескольким пользователям.",
-            "usage": "durka <members>",
-            "help": "Совершите звонок в психиатрическую больницу и вызовите санитаров, которые приедут за шизоидами.\n\n**Кулдаун:** 1 час, действует на определённого пользователя.\nДоступ к команде октрывается при наличии ролей за активность. **Олд** — минимально необходимая роль.",
-            "required_level": 0,
-            "has_cooldown": true,
-            "cooldown_rate": 1,
-            "cooldown_per_second": 3600,
-            "cooldown_type": "member",
-            "hidden": false
-        },
-        "durkachat":{
-          "name": "durkachat",
-          "aliases": ["дуркачат"],
-          "brief": "Вызов дурки чату.",
-          "description": "Вызовите дурку чату.",
-          "usage": "durkachat",
-          "help": "Вызов санитаров, использовать при чрезвычайно высоком содержании бреда в чате.\n\n**Кулдаун:** 15 минут, действует на весь сервер.\nДоступ к команде октрывается при наличии ролей за активность. **Олд** — минимально необходимая роль.",
-          "required_level": 0,
-          "has_cooldown": false,
-          "cooldown_rate": 1,
-          "cooldown_per_second": 900,
-          "cooldown_type": "guild",
-          "hidden": false
-      }
-    },
-    "eval":
-    {
-        "eval":{
-            "name": "eval",
-            "aliases": ["exec"],
-            "brief": "Выполнение скриптов удалённо.",
-            "description": "Выполняет на сервере бота написанный скрипт, возвращает результат.",
-            "usage": "eval <code>",
-            "help": "Debug команда. Выполняет на сервере бота написанный скрипт, возвращает результат.\nДоступно только владельцу бота.",
-            "required_level": 0,
-            "has_cooldown": false,
-            "cooldown_rate": 0,
-            "cooldown_per_second": 0,
-            "cooldown_type": "None",
-            "hidden": true
-        }
-    },
-    "fn_devservers":
-    {
-        "fndev":{
-            "name": "fndev",
-            "aliases": ["devserv"],
-            "brief": "Состояние dev серверов Fortnite.",
-            "description": "Отображает данные о состоянии dev серверов Fortnite.",
-            "usage": "fndev [stage]",
-            "help": "Просмотр состояния серверов, на которых разработчики тестируют патчи Fortnite. Использование ключа `stage` отоюбражает только состояние stage сервера.\n\n**Кулдаун:** отсутствует.\n**Необходимый уровень:** 0",
-            "required_level": 0,
-            "has_cooldown": false,
-            "cooldown_rate": 0,
-            "cooldown_per_second": 0,
-            "cooldown_type": "None",
-            "hidden": false
-        }
-    },
-    "fortniteapicom":
-    {
-        "searchcosmetic":{
-            "name": "searchcosmetic",
-            "aliases": ["cosmeticsearch"],
-            "brief": "Поиск косметического предмета Fortnite.",
-            "description": "Информация о косметическом предмете Fortnite.",
-            "usage": "searchcosmetic <-name> [-lang] [-id] [-type] [-rarity]",
-            "help": "Поиск косметического предмета Fortnite и отображение информации о нём.\nС полным списком всех параметров поиска можно ознакомиться по команде `+searchparams`\n\n**Кулдаун:** отсутствует.\n**Необходимый уровень:** 0",
-            "required_level": 0,
-            "has_cooldown": false,
-            "cooldown_rate": 0,
-            "cooldown_per_second": 0,
-            "cooldown_type": "None",
-            "hidden": false
-        },
-        "news":{
-            "name": "news",
-            "aliases": ["fortnews", "fnnews", "newsfn"],
-            "brief": "Отображает внутриигровые новости Fortnite.",
-            "description": "Возможность посмотреть новости Fortnite.",
-            "usage": "news <mode> [language]",
-            "help": "Просмотр внутриигровых новостей Fortnite. Доступные режимы: `br`, `creative`, `stw`.\n\n**Кулдаун:** отсутствует.\n**Необходимый уровень:** 0",
-            "required_level": 0,
-            "has_cooldown": false,
-            "cooldown_rate": 0,
-            "cooldown_per_second": 0,
-            "cooldown_type": "None",
-            "hidden": false
-        },
-        "creatorcode":{
-            "name": "creatorcode",
-            "aliases": ["searchcreator", "searchcode", "getcode"],
-            "brief": "Отображает информацию о коде автора Epic Games.",
-            "description": "Информация о введённом теге автора.",
-            "usage": "creatorcode <code>",
-            "help": "Просмотр информации о коде автора Epic Games. Если найдено несколько позиций, информация будет отображена в нескольких страницах.\n\n**Кулдаун:** отсутствует.\n**Необходимый уровень:** 0",
-            "required_level": 0,
-            "has_cooldown": false,
-            "cooldown_rate": 0,
-            "cooldown_per_second": 0,
-            "cooldown_type": "None",
-            "hidden": false
-        },
-        "shop":{
-            "name": "shop",
-            "aliases": ["fnshop", "brshop", "магазин"],
-            "brief": "Отображает магазин предметов королевской битвы.",
-            "description": "Магазин предметов королевской битвы.",
-            "usage": "shop",
-            "help": "Просмотр магазина предметов королевской битвы.\n\n**Кулдаун:** отсутствует.\n**Необходимый уровень:** 0",
-            "required_level": 0,
-            "has_cooldown": false,
-            "cooldown_rate": 0,
-            "cooldown_per_second": 0,
-            "cooldown_type": "None",
-            "hidden": false
-        },
-        "searchparams":{
-            "name": "searchparams",
-            "aliases": ["cosmparams"],
-            "brief": "Список параметров для поиска косметических предметов Fortnite.",
-            "description": "Отображает параметры поиска косметических предметов.",
-            "usage": "searchparams",
-            "help": "Просмотр параметров для поиска косметических предметов Fortnite.\n\n**Кулдаун:** отсутствует.\n**Необходимый уровень:** 0",
-            "required_level": 0,
-            "has_cooldown": false,
-            "cooldown_rate": 0,
-            "cooldown_per_second": 0,
-            "cooldown_type": "None",
-            "hidden": false
-        }
-    },
-    "fortniteapiio":
-    {
-        "map":{
-            "name": "map",
-            "aliases": ["fnmap", "fortnitemap", "fortmap"],
-            "brief": "Отображает текущую карту острова Королевской битвы.",
-            "description": "Просмотр карты Fortnite.",
-            "usage": "map [poi] [lang]",
-            "help": "Отображает текущую карту острова Королевской битвы. При использовании аргумента `poi` карта будет отображаться с названием локаций.\n\n**Кулдаун:** отсутствует.\n**Необходимый уровень:** 0",
-            "required_level": 0,
-            "has_cooldown": false,
-            "cooldown_rate": 0,
-            "cooldown_per_second": 0,
-            "cooldown_type": "None",
-            "hidden": false
-        },
-        "fnach":{
-            "name": "fnach",
-            "aliases": ["fnachievements", "достиженияфортнайт"],
-            "brief": "Список достижений Fortnite текущего сезона.",
-            "description": "Достижения в Fortnite.",
-            "usage": "fnach",
-            "help": "Отображает достижения текущего сезона королевской битвы Fortnite.\n\n**Кулдаун:** отсутствует.\n**Необходимый уровень:** 0",
-            "required_level": 0,
-            "has_cooldown": false,
-            "cooldown_rate": 0,
-            "cooldown_per_second": 0,
-            "cooldown_type": "None",
-            "hidden": false
-        },
-        "fish":{
-            "name": "fish",
-            "aliases": ["рыбки", "рыбка"],
-            "brief": "Список рыбок Fortnite текущего сезона.",
-            "description": "Рыбки в Fortnite.",
-            "usage": "fish [number]",
-            "help": "Отображает рыбки, которые доступны в текущем сезоне королевской битвы Fortnite. В качестве параметра вы можете указать номер интересующей вас рыбки.\n\n**Кулдаун:** отсутствует.\n**Необходимый уровень:** 0",
-            "required_level": 0,
-            "has_cooldown": false,
-            "cooldown_rate": 0,
-            "cooldown_per_second": 0,
-            "cooldown_type": "None",
-            "hidden": false
-        },
-        "challenges":{
-            "name": "challenges",
-            "aliases": ["fnchallenge"],
-            "brief": "Список редких заданий (карточек медалей) Fortnite текущего сезона.",
-            "description": "Редкие задания (карточки  медалей) в Fortnite.",
-            "usage": "challenges",
-            "help": "Отображает редкие задания (карточки медалей), которые доступны в текущем сезоне королевской битвы Fortnite.\n\n**Кулдаун:** отсутствует.\n**Необходимый уровень:** 0",
-            "required_level": 0,
-            "has_cooldown": false,
-            "cooldown_rate": 0,
-            "cooldown_per_second": 0,
-            "cooldown_type": "None",
-            "hidden": false
-        },
-        "npc":{
-            "name": "npc",
-            "aliases": ["нпс", "characters"],
-            "brief": "Список всех NPC Fortnite текущего сезона.",
-            "description": "NPC (персонажи) в Fortnite.",
-            "usage": "npc [number]",
-            "help": "Отображает список всех NPC, которые доступны в текущем сезоне королевской битвы Fortnite. В качестве параметра вы можете указать номер интересующего вас персонажа.\n\n**Кулдаун:** отсутствует.\n**Необходимый уровень:** 0",
-            "required_level": 0,
-            "has_cooldown": false,
-            "cooldown_rate": 0,
-            "cooldown_per_second": 0,
-            "cooldown_type": "None",
-            "hidden": false
-        }
-    },
-    "fortnitetracker":
-    {
-        "fnstats":{
-            "name": "fnstats",
-            "aliases": ["fortstats", "statsfn", "fn"],
-            "brief": "Отображает статистику игрового профиля Fortnite.",
-            "description": "Просмотр статистики профиля Fortnite.",
-            "usage": "fn <nickname>",
-            "help": "Возможность просмотреть статистику игрового профиля Fortnite.\nКоманда работает в тестовом режиме, поэтому возможны проблемы в её работе.\nРаботает только на сервере.\n\n**Кулдаун:** отсутствует.\n**Необходимый уровень:** 0",
-            "required_level": 0,
-            "has_cooldown": false,
-            "cooldown_rate": 0,
-            "cooldown_per_second": 0,
-            "cooldown_type": "None",
-            "hidden": false
-        }
-    },
-    "fun":
-    {
-        "hug":{
-            "name": "hug",
-            "aliases": ["обнять","обнимашки"],
-            "brief": "Обнимите кого-нибудь!",
-            "description": "Покажите всем свою любовь и обнимите кого-нибудь!",
-            "usage": "hug <member>",
-            "help": "Команда для обнимашек. Работает только на сервере, во всех каналах.\n\n**Кулдаун:** отсутствует.\n**Необходимый уровень:** 0",
-            "required_level": 0,
-            "has_cooldown": false,
-            "cooldown_rate": 0,
-            "cooldown_per_second": 0,
-            "cooldown_type": "None",
-            "hidden": false
-        },
-        "coin":{
-            "name": "coin",
-            "aliases": ["монетка", "орел_решка","о_р","орёл_решка"],
-            "brief": "Сыграйте в орёл-решка.",
-            "description": "Бот подбрасывает монетку.",
-            "usage": "coin",
-            "help": "Пригодится при непростом выборе. Работает на сервере и в личных сообщениях.\n\n**Кулдаун:** отсутствует.\n**Необходимый уровень:** 3",
-            "required_level": 3,
-            "has_cooldown": false,
-            "cooldown_rate": 0,
-            "cooldown_per_second": 0,
-            "cooldown_type": "None",
-            "hidden": false
-        },
-        "saper":{
-            "name": "saper",
-            "aliases": ["сапер", "сапёр"],
-            "brief": "Сыграйте в сапёра.",
-            "description": "Выберите сложность и бот сгенерирует игровое поле.",
-            "usage": "saper",
-            "help": "Почувствуйте себя сапёром. Работает на сервере и в личных сообщениях.\n\n**Кулдаун:** отсутствует.\n**Необходимый уровень:** 3",
-            "required_level": 3,
-            "has_cooldown": false,
-            "cooldown_rate": 0,
-            "cooldown_per_second": 0,
-            "cooldown_type": "None",
-            "hidden": false
-        },
-        "flags":{
-            "name": "flags",
-            "aliases": ["флаги"],
-            "brief": "Сыграйте в игру по угадыванию флага страны.",
-            "description": "Мини-игра по угадывания флага страны.",
-            "usage": "flags",
-            "help": "Проверьте, насколько хорошо вы знаете флаги разных стран. Работает только на сервере в канале мини-игр.\n\n**Кулдаун:** отсутствует.\n**Необходимый уровень:** 3",
-            "required_level": 3,
-            "has_cooldown": false,
-            "cooldown_rate": 0,
-            "cooldown_per_second": 0,
-            "cooldown_type": "None",
-            "hidden": false
-        },
-        "knb":{
-            "name": "knb",
-            "aliases": ["кнб", "камень_ножницы_бумага"],
-            "brief": "Сыграйте в камень-ножницы-бумага.",
-            "description": "Мини-игра камень-ножницы-бумага.",
-            "usage": "knb <камень/ножницы/бумага>",
-            "help": "Бот играет с вами в игру. Работает только на сервере в канале мини-игр.\n\n**Кулдаун:** отсутствует.\n**Необходимый уровень:** 3",
-            "required_level": 3,
-            "has_cooldown": false,
-            "cooldown_rate": 0,
-            "cooldown_per_second": 0,
-            "cooldown_type": "None",
-            "hidden": false
-        },
-        "8ball":{
-            "name": "8ball",
-            "aliases": ["8b", "ball", "шар"],
-            "brief": "Задайте вопрос магическому шару.",
-            "description": "Шуточный способ предсказывать будущее.",
-            "usage": "шар <вопрос>",
-            "help": "Задайте вопрос магическому шару. Шуточный способ предсказывать будущее. Работает только на сервере в канале мини-игр.\n\n**Кулдаун:** отсутствует.\n**Необходимый уровень:** 3",
-            "required_level": 3,
-            "has_cooldown": false,
-            "cooldown_rate": 0,
-            "cooldown_per_second": 0,
-            "cooldown_type": "None",
-            "hidden": false
-        },
-        "randint":{
-            "name": "randint",
-            "aliases": ["random", "рандом", "число"],
-            "brief": "Генерация случайных целых чисел.",
-            "description": "Бот генерирует случайное число в заданном диапазане.",
-            "usage": "randint <digit a> <digit b>",
-            "help": "Бот генерирует случайное число в диапазоне от A до B включительно. Работает только на сервере.\n\n**Кулдаун:** отсутствует.\n**Необходимый уровень:** 3",
-            "required_level": 3,
-            "has_cooldown": false,
-            "cooldown_rate": 0,
-            "cooldown_per_second": 0,
-            "cooldown_type": "None",
-            "hidden": false
-        }
-    },
-    "help":
-    {
-        "help":{
-            "name": "help",
-            "aliases": ["хелп", "хэлп", "команды", "h"],
-            "brief": "Help меню.",
-            "description": "Отображает все доступные команды бота.",
-            "usage": "help [command/category]",
-            "help": "Помогает разобраться с использованием команд бота. Работает на сервере и в личных сообщениях.\n\n**Кулдаун:** отсутствует.",
-            "required_level": 0,
-            "has_cooldown": false,
-            "cooldown_rate": 0,
-            "cooldown_per_second": 0,
-            "cooldown_type": "None",
-            "hidden": false
-        }
-    },
-    "leaderboards":
-    {
-        "achievementboard":{
-            "name": "achievementboard",
-            "aliases": ["ab", "achboard"],
-            "brief": "Рейтинг по достижениям.",
-            "description": "Рейтинг по количеству полученных на сервере достижений.",
-            "usage": "achboard",
-            "help": "Отображает список лидеров по количеству полученных на сервере достижений. Работает только в канале <#604621910386671616>.\n\n**Кулдаун:** отсутствует.",
-            "required_level": 0,
-            "has_cooldown": false,
-            "cooldown_rate": 0,
-            "cooldown_per_second": 0,
-            "cooldown_type": "None",
-            "hidden": false
-        },
-        "levelboard":{
-            "name": "levelboard",
-            "aliases": ["lb", "lvlboard"],
-            "brief": "Рейтинг по уровню.",
-            "description": "Рейтинг по уровню на сервере.",
-            "usage": "levelboard",
-            "help": "Отображает список лидеров по уровню на сервере. Работает только в канале <#604621910386671616>.\n\n**Кулдаун:** отсутствует.",
-            "required_level": 0,
-            "has_cooldown": false,
-            "cooldown_rate": 0,
-            "cooldown_per_second": 0,
-            "cooldown_type": "None",
-            "hidden": false
-        },
-        "messageboard":{
-            "name": "messageboard",
-            "aliases": ["mb", "msgboard"],
-            "brief": "Рейтинг по сообщениям.",
-            "description": "Рейтинг по количеству написанных сообщений.",
-            "usage": "messageboard",
-            "help": "Отображает список лидеров по количеству написанных сообщений. Работает только в канале <#604621910386671616>.\n\n**Кулдаун:** отсутствует.",
-            "required_level": 0,
-            "has_cooldown": false,
-            "cooldown_rate": 0,
-            "cooldown_per_second": 0,
-            "cooldown_type": "None",
-            "hidden": false
-        },
-        "reputationboard":{
-            "name": "reputationboard",
-            "aliases": ["rb", "repboard"],
-            "brief": "Рейтинг по репутации.",
-            "description": "Рейтинг по количеству репутации.",
-            "usage": "repboard",
-            "help": "Отображает список лидеров по количеству репутации. Работает только в канале <#604621910386671616>.\n\n**Кулдаун:** отсутствует.",
-            "required_level": 0,
-            "has_cooldown": false,
-            "cooldown_rate": 0,
-            "cooldown_per_second": 0,
-            "cooldown_type": "None",
-            "hidden": false
-        },
-        "vbucksboard":{
-            "name": "vbucksboard",
-            "aliases": ["vb", "$board"],
-            "brief": "Рейтинг по В-Баксам.",
-            "description": "Рейтинг по количеству потраченных В-Баксов.",
-            "usage": "vbucksboard",
-            "help": "Отображает список лидеров по количеству В-Баксов, которые участники потратили с нашим тегом FNFUN. Работает только в канале <#604621910386671616>.\n\n**Кулдаун:** отсутствует.",
-            "required_level": 0,
-            "has_cooldown": false,
-            "cooldown_rate": 0,
-            "cooldown_per_second": 0,
-            "cooldown_type": "None",
-            "hidden": false
-        }
-    },
-    "leveling":
-    {
-        "rank":{
-            "name": "rank",
-            "aliases": ["lvl", "level", "уровень", "ранг"],
-            "brief": "Статистика уровней.",
-            "description": "Просмотр своей статистики уровней.",
-            "usage": "rank",
-            "help": "Отображает статистику уровней пользователя. Работает только на сервере.\n\n**Кулдаун:** отсутствует.",
-            "required_level": 0,
-            "has_cooldown": false,
-            "cooldown_rate": 0,
-            "cooldown_per_second": 0,
-            "cooldown_type": "None",
-            "hidden": false
-        }
-    },
-    "moderation":
-    {
-        "kick":{
-            "name": "kick",
-            "aliases": ["кик", "выгнать"],
-            "brief": "Кик участника.",
-            "description": "Выгоняет участника с сервера.",
-            "usage": "kick <members> [reason]",
-            "help": "Кикает участника с сервера.\n\nКоманда доступна только администраторам.\n\n**Кулдаун:** отсутствует.",
-            "required_level": 0,
-            "has_cooldown": false,
-            "cooldown_rate": 0,
-            "cooldown_per_second": 0,
-            "cooldown_type": "None",
-            "hidden": false
-        },
-        "ban":{
-            "name": "ban",
-            "aliases": ["бан"],
-            "brief": "Бан участника.",
-            "description": "Банит участника на сервере.",
-            "usage": "ban <members> [delete_days] [reason]",
-            "help": "Банит участника на сервере, а также удаляет все его сообщения за прошедшие 24 часа.\nКоманда доступна только администраторам.\n\n**Кулдаун:** отсутствует.",
-            "required_level": 0,
-            "has_cooldown": false,
-            "cooldown_rate": 0,
-            "cooldown_per_second": 0,
-            "cooldown_type": "None",
-            "hidden": false
-        },
-        "unban":{
-          "name": "unban",
-          "aliases": ["анбан", "разбан"],
-          "brief": "Разбан пользователя.",
-          "description": "Снимает у пользователя бан на сервере.",
-          "usage": "unban <members> [reason]",
-          "help": "Отзывает бан участника на сервере.\nКоманда доступна только администраторам.\n\n**Кулдаун:** отсутствует.",
-          "required_level": 0,
-          "has_cooldown": false,
-          "cooldown_rate": 0,
-          "cooldown_per_second": 0,
-          "cooldown_type": "None",
-          "hidden": false
-        },
-        "purge":{
-            "name": "purge",
-            "aliases": ["delete", "пудж", "удали"],
-            "brief": "Удаление указанного количества сообщений.",
-            "description": "Бот удаляет сообщения в указанном количестве.",
-            "usage": "purge [limit]",
-            "help": "Бот удаляет сообщения в указанном количестве.\n\nКоманда доступна только администраторам.\n\n**Кулдаун:** отсутствует.",
-            "required_level": 0,
-            "has_cooldown": false,
-            "cooldown_rate": 0,
-            "cooldown_per_second": 0,
-            "cooldown_type": "None",
-            "hidden": false
-        },
-        "hat":{
-          "name": "hat",
-          "aliases": ["шапка", "пошапке", "slap", "hit"],
-          "brief": "Даёт по шапке.",
-          "description": "Не даёт мут, но снимает от 50 до 150 очков репутации.",
-          "usage": "шапка <members>",
-          "help": "Не даёт мут, но снимает от 50 до 150 очков репутации. Для ситуаций, когда мутить ещё рано, но по шапке дать стоит.\n\nКоманда доступна Часовым и выше.\n\n**Кулдаун:** отсутствует.",
-          "required_level": 0,
-          "has_cooldown": false,
-          "cooldown_rate": 0,
-          "cooldown_per_second": 0,
-          "cooldown_type": "None",
-          "hidden": false
-      },
-        "mute":{
-            "name": "mute",
-            "aliases": ["мут", "мьют"],
-            "brief": "Мут пользователей.",
-            "description": "Бот мутит пользователей на указанный срок.",
-            "usage": "mute <members> [hours] [reason]",
-            "help": "Бот мутит пользователей на указанный срок. Время указывается в часах. Для мута на более короткие сроки используйте соответсвующие команды.\nПри выдаче мута у пользователя забираются **все** роли (исключение — роли интеграций), при этом выдаётся роль нарушителя. По истечении срока мута роли возвращаются пользователю автоматически.\n\nКоманда доступна только администраторам.\n\n**Кулдаун:** отсутствует.",
-            "required_level": 0,
-            "has_cooldown": false,
-            "cooldown_rate": 0,
-            "cooldown_per_second": 0,
-            "cooldown_type": "None",
-            "hidden": false
-        },
-        "unmute":{
-            "name": "unmute",
-            "aliases": ["анмут", "размьют"],
-            "brief": "Анмут пользователей.",
-            "description": "Бот снимает мут у пользователей.",
-            "usage": "unmute <members> [reason]",
-            "help": "Бот снимает мут у пользователей.\n\nКоманда доступна только администраторам.\n\n**Кулдаун:** отсутствует.",
-            "required_level": 0,
-            "has_cooldown": false,
-            "cooldown_rate": 0,
-            "cooldown_per_second": 0,
-            "cooldown_type": "None",
-            "hidden": false
-        },
-        "ugol":{
-          "name": "ugol",
-          "aliases": ["угол"],
-          "brief": "Отправляет пользователей в угол.",
-          "description": "Бот мутит пользователей на 30 минут.",
-          "usage": "ugol <members> [reason]",
-          "help": "Бот мутит пользователей на 30 минут.\nПри выдаче мута у пользователя забираются **все** роли (исключение — роли интеграций), при этом выдаётся роль нарушителя. По истечении срока мута роли возвращаются пользователю автоматически.\n\nКоманда доступна только администраторам.\n\n**Кулдаун:** отсутствует.",
-          "required_level": 0,
-          "has_cooldown": false,
-          "cooldown_rate": 0,
-          "cooldown_per_second": 0,
-          "cooldown_type": "None",
-          "hidden": false
-        },
-        "isolator":{
-          "name": "isolator",
-          "aliases": ["изолятор"],
-          "brief": "Отправляет пользователей в изолятор.",
-          "description": "Бот мутит пользователей на 3 часа.",
-          "usage": "isolator <members> [reason]",
-          "help": "Бот мутит пользователей на 3 часа.\nПри выдаче мута у пользователя забираются **все** роли (исключение — роли интеграций), при этом выдаётся роль нарушителя. По истечении срока мута роли возвращаются пользователю автоматически.\n\nКоманда доступна только администраторам.\n\n**Кулдаун:** отсутствует.",
-          "required_level": 0,
-          "has_cooldown": false,
-          "cooldown_rate": 0,
-          "cooldown_per_second": 0,
-          "cooldown_type": "None",
-          "hidden": false
-        },
-        "dungeon":{
-          "name": "dungeon",
-          "aliases": ["данжн"],
-          "brief": "Отправляет пользователей в ♂️ Dungeon ♂️",
-          "description": "Бот мутит пользователей на 12 часов.",
-          "usage": "dungeon <members> [reason]",
-          "help": "Бот мутит пользователей на 12 часов.\nПри выдаче мута у пользователя забираются **все** роли (исключение — роли интеграций), при этом выдаётся роль нарушителя. По истечении срока мута роли возвращаются пользователю автоматически.\n\nКоманда доступна только администраторам.\n\n**Кулдаун:** отсутствует.",
-          "required_level": 0,
-          "has_cooldown": false,
-          "cooldown_rate": 0,
-          "cooldown_per_second": 0,
-          "cooldown_type": "None",
-          "hidden": false
-        },
-        "gulag":{
-          "name": "gulag",
-          "aliases": ["гулаг"],
-          "brief": "Отправляет пользователей в ГУЛАГ.",
-          "description": "Бот мутит пользователей на 24 часа.",
-          "usage": "gulag <members> [reason]",
-          "help": "Бот мутит пользователей на 24 часа.\nПри выдаче мута у пользователя забираются **все** роли (исключение — роли интеграций), при этом выдаётся роль нарушителя. По истечении срока мута роли возвращаются пользователю автоматически.\n\nКоманда доступна только администраторам.\n\n**Кулдаун:** отсутствует.",
-          "required_level": 0,
-          "has_cooldown": false,
-          "cooldown_rate": 0,
-          "cooldown_per_second": 0,
-          "cooldown_type": "None",
-          "hidden": false
-        },
-        "warn":{
-          "name": "warn",
-          "aliases": ["варн"],
-          "brief": "Выдаёт warn и мут.",
-          "description": "Бот выдаёт пользователю предупреждение и мутит его на определённое время.",
-          "usage": "warn <members> [reason]",
-          "help": "Бот выдаёт пользователю варн и мут, срок которого зависит от количества накопленных предупреждений. Градация времени мута следующая:\n— Первый варн: мут на 6 часов.\n— Второй варн: мут на 12 часов.\n— Третий варн: мут на 24 часа + запрет на использование команд бота.\n— Четвёртый варн: бан на сервере.\n\nПри выдаче мута у пользователя забираются **все** роли (исключение — роли интеграций), при этом выдаётся роль нарушителя. По истечении срока мута роли возвращаются пользователю автоматически.\n\nКоманда доступна только администраторам.\n\n**Кулдаун:** отсутствует.",
-          "required_level": 0,
-          "has_cooldown": false,
-          "cooldown_rate": 0,
-          "cooldown_per_second": 0,
-          "cooldown_type": "None",
-          "hidden": false
-        },
-        "readrole":{
-          "name": "readrole",
-          "aliases": ["читающий", "ридрол"],
-          "brief": "Правила нужно знать!",
-          "description": "Отправляет пользователей изучать правила сервера и описание ролей.",
-          "usage": "readrole <members>",
-          "help": "Бот отправляет пользователей изучать правила сервера и описание ролей. На время изучения (5 минут) у пользователя отнимаются все роли, по истечении срока они возвращаются автоматически.\n\nКоманда доступна Часовым и выше.\n\n**Кулдаун:** отсутствует.",
-          "required_level": 0,
-          "has_cooldown": false,
-          "cooldown_rate": 0,
-          "cooldown_per_second": 0,
-          "cooldown_type": "None",
-          "hidden": false
-        },
-        "removereadrole":{
-          "name": "removereadrole",
-          "aliases": ["нечитающий"],
-          "brief": "Забирает у пользователя роль Читающего.",
-          "description": "Завершает процесс изучения пользователем основных каналов сервера.",
-          "usage": "нечитающий <members>",
-          "help": "Бот завершает процесс изучения пользователем основных каналов сервера. Забирает у участника роль Читающего, возвращает ему отнятые ранее роли.\n\nКоманда доступна Часовым и выше.\n\n**Кулдаун:** отсутствует.",
-          "required_level": 0,
-          "has_cooldown": false,
-          "cooldown_rate": 0,
-          "cooldown_per_second": 0,
-          "cooldown_type": "None",
-          "hidden": false
-        }
-    },
-    "nekos":
-    {
-        "anipic":{
-            "name": "anipic",
-            "aliases": ["аниме", "anime"],
-            "brief": "Отображает случайную аниме картинку.",
-            "description": "Бот присылает случайную картинку c аниме-тян.",
-            "usage": "anipic",
-            "help": "Бот присылает случайную картинку c аниме-тян. Все картинки SFW (safe for work) и не содержат эротический контент. По крайней мере, так написано в документации используемого API. Если вы обнаружили, что картинка таковой не является, сообщите, пожалуйста, об этом администрации сервера.\nРаботает на сервере и в личных сообщениях.\n\n**Кулдаун:** отсутствует.\n**Необходимый уровень:** 5",
-            "required_level": 5,
-            "has_cooldown": false,
-            "cooldown_rate": 0,
-            "cooldown_per_second": 0,
-            "cooldown_type": "None",
-            "hidden": false
-        }
-    },
-    "owner":
-    {
-        "loadcog":{
-            "name": "loadcog",
-            "aliases": ["cogload"],
-            "brief": "Загружает указанный cog в бота.",
-            "description": "Загружает, инициализирует и запускает cog.",
-            "usage": "loadcog lib.cogs.<cog_name>",
-            "help": "Загружает, инициализирует и запускает cog. Работает только в личных сообщениях. Доступно только разработчику бота.",
-            "required_level": 0,
-            "has_cooldown": false,
-            "cooldown_rate": 0,
-            "cooldown_per_second": 0,
-            "cooldown_type": "None",
-            "hidden": true
-        },
-        "unloadcog":
-        {
-            "name": "unloadcog",
-            "aliases": ["cogunload"],
-            "brief": "Выгружает из бота указанный cog.",
-            "description": "Деактивирует и выгружает cog.",
-            "usage": "unloadcog lib.cogs.<cog_name>",
-            "help": "Деактивирует и выгружает cog. Работает только в личных сообщениях. Доступно только разработчику бота.",
-            "required_level": 0,
-            "has_cooldown": false,
-            "cooldown_rate": 0,
-            "cooldown_per_second": 0,
-            "cooldown_type": "None",
-            "hidden": true
-        },
-        "reloadcog":
-        {
-            "name": "reloadcog",
-            "aliases": ["cogreload"],
-            "brief": "Перезагружает указанный cog.",
-            "description": "Деактивирует —> выгружает —> загружает —> активирует cog.",
-            "usage": "reloadcog lib.cogs.<cog_name>",
-            "help": "Деактивирует —> выгружает —> загружает —> активирует cog. Работает только в личных сообщениях. Доступно только разработчику бота.",
-            "required_level": 0,
-            "has_cooldown": false,
-            "cooldown_rate": 0,
-            "cooldown_per_second": 0,
-            "cooldown_type": "None",
-            "hidden": true
-        },
-        "disablecmd":
-        {
-            "name": "disablecmd",
-            "aliases": ["отключить"],
-            "brief": "Отключает указанную команду.",
-            "description": "Отключает и скрывает указанную команду.",
-            "usage": "disablecmd <command>",
-            "help": "Отключает и скрывает указанную команду. Работает только в личных сообщениях. Доступно только разработчику бота.",
-            "required_level": 0,
-            "has_cooldown": false,
-            "cooldown_rate": 0,
-            "cooldown_per_second": 0,
-            "cooldown_type": "None",
-            "hidden": true
-        },
-        "enablecmd":
-        {
-            "name": "enablecmd",
-            "aliases": ["включить"],
-            "brief": "Включает указанную команду.",
-            "description": "Включает и делает видимой указанную команду.",
-            "usage": "enablecmd <command>",
-            "help": "Включает и делает видимой указанную команду. Работает только в личных сообщениях. Доступно только разработчику бота.",
-            "required_level": 0,
-            "has_cooldown": false,
-            "cooldown_rate": 0,
-            "cooldown_per_second": 0,
-            "cooldown_type": "None",
-            "hidden": true
-        },
-        "disabledcmds":
-        {
-            "name": "disabledcmds",
-            "aliases": ["discmds"],
-            "brief": "Отображает отключенные команды.",
-            "description": "Формирует список отключенных команд.",
-            "usage": "disabledcmds",
-            "help": "Формирует список отключенных команд. Работает только в личных сообщениях. Доступно только разработчику бота.",
-            "required_level": 0,
-            "has_cooldown": false,
-            "cooldown_rate": 0,
-            "cooldown_per_second": 0,
-            "cooldown_type": "None",
-            "hidden": true
-        },
-        "ping":
-        {
-            "name": "ping",
-            "aliases": ["пинг"],
-            "brief": "Отображает время ответа Discord API.",
-            "description": "Get the response time for Discord API.",
-            "usage": "ping",
-            "help": "Отображает время ответа Discord API, пинг бота. Работает только в личных сообщениях. Доступно только разработчику бота.",
-            "required_level": 0,
-            "has_cooldown": false,
-            "cooldown_rate": 0,
-            "cooldown_per_second": 0,
-            "cooldown_type": "None",
-            "hidden": true
-        },
-        "fnping":
-        {
-            "name": "fnping",
-            "aliases": ["fnapiping", "fnpingapi"],
-            "brief": "Отображает время ответа используемых Fortnite API.",
-            "description": "Get the response time for APIs.",
-            "usage": "fnping",
-            "help": "Отображает время ответа используемых Fortnite API. Работает только в личных сообщениях. Доступно только разработчику бота.",
-            "required_level": 0,
-            "has_cooldown": false,
-            "cooldown_rate": 0,
-            "cooldown_per_second": 0,
-            "cooldown_type": "None",
-            "hidden": true
-        },
-        "bearer":{
-            "name": "bearer",
-            "aliases": ["epickey"],
-            "brief": "Fetch the current bearer token.",
-            "description": "Fetch the current bearer token.",
-            "usage": "bearer",
-            "help": "Fetch the current bearer token.",
-            "required_level": 0,
-            "has_cooldown": false,
-            "cooldown_rate": 0,
-            "cooldown_per_second": 0,
-            "cooldown_type": "None",
-            "hidden": true
-        },
-        "approve":{
-            "name": "approve",
-            "aliases": ["одобрить"],
-            "brief": "Одобряет заявку на добавление/удаление трека в плейлист.",
-            "description": "Одобряет заявку на добавление/удаление трека в плейлист.",
-            "usage": "approve <suggestion id> [comment]",
-            "help": "Одобряет заявку на добавление/удаление трека в плейлист радио. Работает в личных сообщениях. Доступно только <@195637386221191170> и <@375722626636578816>",
-            "required_level": 0,
-            "has_cooldown": false,
-            "cooldown_rate": 0,
-            "cooldown_per_second": 0,
-            "cooldown_type": "None",
-            "hidden": true
-        },
-        "reject":{
-            "name": "reject",
-            "aliases": ["отказать"],
-            "brief": "Отклоняет заявку на добавление/удаление трека в плейлист.",
-            "description": "Отклоняет заявку на добавление/удаление трека в плейлист.",
-            "usage": "reject <suggestion id> [comment]",
-            "help": "Отклоняет заявку на добавление/удаление трека в плейлист радио. Работает в личных сообщениях. Доступно только <@195637386221191170> и <@375722626636578816>",
-            "required_level": 0,
-            "has_cooldown": false,
-            "cooldown_rate": 0,
-            "cooldown_per_second": 0,
-            "cooldown_type": "None",
-            "hidden": true
-        },
-        "blacklist":{
-            "name": "blacklist",
-            "aliases": ["blockuser"],
-            "brief": "Блокировка пользователя для ограничения доступа к боту.",
-            "description": "Блокирует пользователю доступ к командам бота.",
-            "usage": "blacklist <user>",
-            "help": "Добавляет пользователя в чёрный список, блокирует ему доступ к командам. Доступно только разработчику бота.",
-            "required_level": 0,
-            "has_cooldown": false,
-            "cooldown_rate": 0,
-            "cooldown_per_second": 0,
-            "cooldown_type": "None",
-            "hidden": true
-        },
-        "whitelist":{
-            "name": "whitelist",
-            "aliases": ["unblockuser"],
-            "brief": "Убирает пользователя из чёрного списка.",
-            "description": "Снимает блокировку пользователя.",
-            "usage": "whitelist <user>",
-            "help": "Убирает пользователя из чёрного списка, возвращает ему доступ к командам. Доступно только разработчику бота.",
-            "required_level": 0,
-            "has_cooldown": false,
-            "cooldown_rate": 0,
-            "cooldown_per_second": 0,
-            "cooldown_type": "None",
-            "hidden": true
-        },
-        "echo":{
-            "name": "echo",
-            "aliases": ["say"],
-            "brief": "Отправка собщений от имени бота.",
-            "description": "Отправляет собщение от имени бота в указанный канал.",
-            "usage": "echo <channel> <message>",
-            "help": "Отправляет сообщение от имени бота в указанный канал. Возможна отправка медиафайлов (не более 8 мб). Доступно только разработчику бота.",
-            "required_level": 0,
-            "has_cooldown": false,
-            "cooldown_rate": 0,
-            "cooldown_per_second": 0,
-            "cooldown_type": "None",
-            "hidden": true
-        },
-        "setrep":{
-          "name": "setrep",
-          "aliases": ["setreputation"],
-          "brief": "Изменение репутации.",
-          "description": "Изменяет репутацию пользователя.",
-          "usage": "setrep <user_id> <action> <value>",
-          "help": "Изменяет репутацию пользователя: увеличивает, уменьшает, делает равным. Доступно только разработчику бота.\nРаботает только в личных сообщениях.",
-          "required_level": 0,
-          "has_cooldown": false,
-          "cooldown_rate": 0,
-          "cooldown_per_second": 0,
-          "cooldown_type": "None",
-          "hidden": true
-        },
-        "setamount":{
-          "name": "setamount",
-          "aliases": ["setmsg", "setmessages"],
-          "brief": "Изменение количества сообщений.",
-          "description": "Изменяет количество сообщений пользователя.",
-          "usage": "setamount <user_id> <action> <value>",
-          "help": "Изменяет количество сообщений пользователя: увеличивает, уменьшает, делает равным. Доступно только разработчику бота.\nРаботает только в личных сообщениях.",
-          "required_level": 0,
-          "has_cooldown": false,
-          "cooldown_rate": 0,
-          "cooldown_per_second": 0,
-          "cooldown_type": "None",
-          "hidden": true
-        },
-        "shutdown":{
-            "name": "shutdown",
-            "aliases": ["logout"],
-            "brief": "Отключение бота.",
-            "description": "Отключает бота от сети.",
-            "usage": "shutdown",
-            "help": "Завершает все служебные процессы бота и отключает его. Доступно только разработчику бота.",
-            "required_level": 0,
-            "has_cooldown": false,
-            "cooldown_rate": 0,
-            "cooldown_per_second": 0,
-            "cooldown_type": "None",
-            "hidden": true
-        }
-    },
-    "profanity":
-    {
-        "swear":
-        {
-            "name": "swear",
-            "aliases": ["свир", "свеар"],
-            "brief": "Наказание за обход мат-фильтра.",
-            "description": "Наказание за обход мат-фильтра с помощью не предусмотренных способов.",
-            "usage": "swear <member>",
-            "help": "Уменьшает репутацию пользователя при обходе мат-фильтра с помощью не предусмотренных способов.\nДоступно Часовым и выше.\n\n**Кулдаун:** отсутствует.\n**Необходимый уровень:** 0",
-            "required_level": 0,
-            "has_cooldown": false,
-            "cooldown_rate": 0,
-            "cooldown_per_second": 0,
-            "cooldown_type": "None",
-            "hidden": true
-        },
-        "addprofanity":
-        {
-            "name": "addprofanity",
-            "aliases": ["addswears", "addcurses", "addfoo"],
-            "brief": "Добавление слов в мат-фильтр.",
-            "description": "Добавляет слова в фильтр.",
-            "usage": "addprofanity <words>",
-            "help": "Обновляет мат-фильтр. Добавляет указанные слова в словарь.\nДоступно только разработчику бота.",
-            "required_level": 0,
-            "has_cooldown": false,
-            "cooldown_rate": 0,
-            "cooldown_per_second": 0,
-            "cooldown_type": "None",
-            "hidden": true
-        },
-        "delprofanity":
-        {
-            "name": "delprofanity",
-            "aliases": ["delswears", "delcurses", "delfoo"],
-            "brief": "Удаление слов из мат-фильтра.",
-            "description": "Удаляет слова из фильтра.",
-            "usage": "delprofanity <words>",
-            "help": "Обновляет мат-фильтр. Удаляет указанные слова из словаря.\nДоступно только разработчику бота.",
-            "required_level": 0,
-            "has_cooldown": false,
-            "cooldown_rate": 0,
-            "cooldown_per_second": 0,
-            "cooldown_type": "None",
-            "hidden": true
-        }
-    },
-    "purchases_handler":
-    {
-        "addvbucks":
-        {
-            "name": "addvbucks",
-            "aliases": [],
-            "brief": "Добавление В-Баксов.",
-            "description": "Увеличивает счётчик потраченных В-Баксов.",
-            "usage": "addvbucks <user_id> <amount> [item]",
-            "help": "Увеличивает у пользователя счётчик потраченных с тегом В-Баксов.\nДоступно только разработчику.\n\n**Кулдаун:** отсутствует.\n**Необходимый уровень:** 0",
-            "required_level": 0,
-            "has_cooldown": false,
-            "cooldown_rate": 0,
-            "cooldown_per_second": 0,
-            "cooldown_type": "None",
-            "hidden": true
-        },
-        "addrubles":
-        {
-            "name": "addrubles",
-            "aliases": [],
-            "brief": "Добавление рублей.",
-            "description": "Увеличивает счётчик потраченных рублей.",
-            "usage": "addrubles <user_id> <amount> [item]",
-            "help": "Увеличивает у пользователя счётчик потраченных рублей на покупки с тегом/донаты автору.\nДоступно только разработчику.\n\n**Кулдаун:** отсутствует.\n**Необходимый уровень:** 0",
-            "required_level": 0,
-            "has_cooldown": false,
-            "cooldown_rate": 0,
-            "cooldown_per_second": 0,
-            "cooldown_type": "None",
-            "hidden": true
-        },
-        "resetpurchases":
-        {
-            "name": "resetpurchases",
-            "aliases": [],
-            "brief": "Сброс покупок.",
-            "description": "Сбрасывает статистику покупок.",
-            "usage": "resetpurchases <user_id> [reason]",
-            "help": "Сбрасывает статистику покупок пользователя, предварительно сделав дамп данных.\nДоступно только разработчику.\n\n**Кулдаун:** отсутствует.\n**Необходимый уровень:** 0",
-            "required_level": 0,
-            "has_cooldown": false,
-            "cooldown_rate": 0,
-            "cooldown_per_second": 0,
-            "cooldown_type": "None",
-            "hidden": true
-        },
-        "purchases":
-        {
-            "name": "purchases",
-            "aliases": ["покупки"],
-            "brief": "Просмотр покупок с тегом.",
-            "description": "Отображает список ваших покупок с тегом.",
-            "usage": "purchases",
-            "help": "Команда для просмотра покупок, которые вы совершили с нашим тегом **FNFUN**. Список пополняется по мере того, как вы присылаете скриншоты покупок в канал <#546408250158088192>\nРаботает только на сервере в канале <#604621910386671616>.\n\n**Кулдаун:** отсутствует.\n**Необходимый уровень:** 0",
-            "required_level": 0,
-            "has_cooldown": false,
-            "cooldown_rate": 0,
-            "cooldown_per_second": 0,
-            "cooldown_type": "None",
-            "hidden": false
-        },
-        "faq":
-        {
-            "name": "faq",
-            "aliases": ["почему"],
-            "brief": "Правила засчитывания покупок.",
-            "description": "Правила засчитывания покупок с тегом.",
-            "usage": "faq",
-            "help": "Правила засчитывания покупок с тегом. Ответы на часто задаваемые вопросы о покупках.\nРаботает только на сервере.\n\n**Кулдаун:** отсутствует.\n**Необходимый уровень:** 0",
-            "required_level": 0,
-            "has_cooldown": false,
-            "cooldown_rate": 0,
-            "cooldown_per_second": 0,
-            "cooldown_type": "None",
-            "hidden": false
-        }
-    },
-    "reactions":
-    {
-        "addreactionrole":
-        {
-            "name": "addreactionrole",
-            "aliases": ["addreactrole", "addreaction", "addreact"],
-            "brief": "Добавление роли за реакцию.",
-            "description": "Добавляет в базу данных реакцию, за которую выдаётся роль.",
-            "usage": "addreactionrole <channel> <message id> <emoji> <role>",
-            "help": "Добавляет к сообщению реакция, за нажатие на которую будет выдаваться указанная роль.\nДоступно только администраторам сервера.\n\n**Кулдаун:** отсутствует.\n**Необходимый уровень:** 0",
-            "required_level": 0,
-            "has_cooldown": false,
-            "cooldown_rate": 0,
-            "cooldown_per_second": 0,
-            "cooldown_type": "None",
-            "hidden": true
-        },
-        "removereactionrole":
-        {
-            "name": "removereactionrole",
-            "aliases": ["removereactrole", "removereaction", "removereact"],
-            "brief": "Удаление роли за реакцию.",
-            "description": "Удаляет из базы данных реакцию, за которую выдаётся роль.",
-            "usage": "removereactionrole <message id> <emoji>",
-            "help": "Удаляет под сообщением и из базы данных реакцию, за которую выдаётся роль.\nДоступно только администраторам сервера.\n\n**Кулдаун:** отсутствует.\n**Необходимый уровень:** 0",
-            "required_level": 0,
-            "has_cooldown": false,
-            "cooldown_rate": 0,
-            "cooldown_per_second": 0,
-            "cooldown_type": "None",
-            "hidden": true
-        }
-    },
-    "user_stats":
-    {
-        "profile":
-        {
-            "name": "profile",
-            "aliases": ["stats", "account", "профиль"],
-            "brief": "Отображает профиль пользователя с его статистикой на сервере.",
-            "description": "Возможность просмотреть статистику на сервере.",
-            "usage": "profile [member]",
-            "help": "Отображает профиль пользователя с его статистикой на сервере. Чужую статистику можно просматривать, только если профиль запрашиваемого пользователя открыт.\nРаботает только на сервере в канале <#604621910386671616>.\n\n**Кулдаун:** отсутствует.\n**Необходимый уровень:** 0",
-            "required_level": 0,
-            "has_cooldown": false,
-            "cooldown_rate": 0,
-            "cooldown_per_second": 0,
-            "cooldown_type": "None",
-            "hidden": false
-        },
-        "setbio":
-        {
-            "name": "setbio",
-            "aliases": ["биография","bioset", "aboutme"],
-            "brief": "Измените свою биографию так, как вам угодно.",
-            "description": "Укажите вашу биографию, которая отображается в карточке пользователя.",
-            "usage": "setbio <ваша биография>",
-            "help": "Команда для изменения биографии пользователя, которая отображается в его профиле. Максимальная допустимая длина биографии - 255 символов.\nЕсли при вызове команды текст биографии не указан, производится её сброс с подтверждением.\nРаботает только на сервере в канале <#604621910386671616>.\n\n**Кулдаун:** отсутствует.\n**Необходимый уровень:** 0",
-            "required_level": 0,
-            "has_cooldown": false,
-            "cooldown_rate": 0,
-            "cooldown_per_second": 0,
-            "cooldown_type": "None",
-            "hidden": false
-        },
-        "setprivacy":
-        {
-            "name": "setprivacy",
-            "aliases": ["приватность","privacy"],
-            "brief": "Измените настройку приватности вашего профиля.",
-            "description": "Настройка приватности для просмотра вашего профиля другими пользователями.",
-            "usage": "setprivacy",
-            "help": "Команда для изменения настройки приватности профиля пользователя.\nРаботает только на сервере в канале <#604621910386671616>.\n\n**Кулдаун:** отсутствует.\n**Необходимый уровень:** 0",
-            "required_level": 0,
-            "has_cooldown": false,
-            "cooldown_rate": 0,
-            "cooldown_per_second": 0,
-            "cooldown_type": "None",
-            "hidden": false
-        },
-        "amount":
-        {
-            "name": "amount",
-            "aliases": ["сообщения"],
-            "brief": "Количество ваших сообщений на сервере.",
-            "description": "Команда для просмотра количества ваших сообщений на сервере.",
-            "usage": "amount",
-            "help": "Команда для просмотра количества написанных вами сообщений.\n**Внимание!** В подсчёте не участвуют сообщения, написанные в каналах <#546416181871902730>, <#604621910386671616>, <#546411393239220233>.\nРаботает только на сервере в канале <#604621910386671616>.\n\n**Кулдаун:** отсутствует.\n**Необходимый уровень:** 0",
-            "required_level": 0,
-            "has_cooldown": false,
-            "cooldown_rate": 0,
-            "cooldown_per_second": 0,
-            "cooldown_type": "None",
-            "hidden": false
-        },
-        "myrep":
-        {
-            "name": "myrep",
-            "aliases": ["моярепутация"],
-            "brief": "Количество ваших очков репутации.",
-            "description": "Команда для просмотра количества ваших ваших очков репутации на сервере.",
-            "usage": "myrep",
-            "help": "Команда для просмотра количества ваших очков репутации.\nУзнать принцип работы системы репутации можно по команде `+rep`\nРаботает только на сервере в канале <#604621910386671616>.\n\n**Кулдаун:** отсутствует.\n**Необходимый уровень:** 0",
-            "required_level": 0,
-            "has_cooldown": false,
-            "cooldown_rate": 0,
-            "cooldown_per_second": 0,
-            "cooldown_type": "None",
-            "hidden": false
-        },
-        "rep":
-        {
-            "name": "rep",
-            "aliases": ["реп", "репутация"],
-            "brief": "Принцип действия системы репутации.",
-            "description": "Описывает, как работает система репутации и для чего она нужна.",
-            "usage": "rep",
-            "help": "Принцип работы системы репутации. Объяснение, что такое репутация и зачем она нужна.\nРаботает только на сервере в канале <#604621910386671616>.\n\n**Кулдаун:** отсутствует.\n**Необходимый уровень:** 0",
-            "required_level": 0,
-            "has_cooldown": false,
-            "cooldown_rate": 0,
-            "cooldown_per_second": 0,
-            "cooldown_type": "None",
-            "hidden": false
-        }
-    },
-    "peelyde":
-    {
-        "upcoming":
-        {
-            "name": "upcoming",
-            "aliases": ["fnupcoming","fnleaks"],
-            "brief": "Отображает картинку со сливами обновления Fortnite или недавно расшифрованных предметов.",
-            "description": "Просмотр сливов Fortnite.",
-            "usage": "upcoming [full]",
-            "help": "Команда для просмотра сливов Fortnite. При использовании ключа `full` отображает полную картинку сливов последнего обновления, без него отображаются только недавно расшифрованные предметы.\nРаботает только на сервере.\n\n**Кулдаун:** отсутствует.\n**Необходимый уровень:** 0",
-            "required_level": 0,
-            "has_cooldown": false,
-            "cooldown_rate": 0,
-            "cooldown_per_second": 0,
-            "cooldown_type": "None",
-            "hidden": false
-        },
-        "fnseason":
-        {
-            "name": "fnseason",
-            "aliases": ["seasonfn","fortseason"],
-            "brief": "Отображает продолжительность текущего сезона Королевской битвы.",
-            "description": "Просмотр продолжительности текущего сезона Королевской битвы в виде прогресс бара.",
-            "usage": "fnseason",
-            "help": "Команда для просмотра продолжительности текущего сезона Королевской битвы в виде прогресс бара.\nРаботает только на сервере.\n\n**Кулдаун:** отсутствует.\n**Необходимый уровень:** 0",
-            "required_level": 0,
-            "has_cooldown": false,
-            "cooldown_rate": 0,
-            "cooldown_per_second": 0,
-            "cooldown_type": "None",
-            "hidden": false
-        }
-    },
-    "music_player":
-    {
-        "connect":
-        {
-            "name": "connect",
-            "aliases": ["summon"],
-            "brief": "Подключение к голосовому каналу.",
-            "description": "Бот подключается к голосовому каналу.",
-            "usage": "connect [channel]",
-            "help": "Бот подключается к голосовому каналу для воспроизведения музыки.\nРаботает только в канале <#546411393239220233>\n\n**Кулдаун:** отсутствует.\n**Необходимый уровень:** 0",
-            "required_level": 0,
-            "has_cooldown": false,
-            "cooldown_rate": 0,
-            "cooldown_per_second": 0,
-            "cooldown_type": "None",
-            "hidden": false
-        },
-        "play":
-        {
-            "name": "play",
-            "aliases": ["p"],
-            "brief": "Добавление композиций в очередь воспроизведения.",
-            "description": "Добавляет трек или плейлист в очередь воспроизведения.",
-            "usage": "play <track name or url>",
-            "help": "Команда для добавления треков в очередь воспроизведения. Вы можете указать как название композиции, так и прямую ссылку на трек. Поддерживаются ссылки на YouTube, SoundCloud, Twitch. Доступно также воспроизведение по прямой HTTP ссылке на звуковой файл. **Spotify не поддерживается.**\n**Команда не предназначена для отмены паузы. Чтобы продолжить воспроизведение после паузы, используйте команду `resume`.**\nРаботает только в канале <#546411393239220233>\n\n**Кулдаун:** отсутствует.\n**Необходимый уровень:** 0",
-            "required_level": 0,
-            "has_cooldown": false,
-            "cooldown_rate": 0,
-            "cooldown_per_second": 0,
-            "cooldown_type": "None",
-            "hidden": false
-        },
-        "pause":
-        {
-            "name": "pause",
-            "aliases": [],
-            "brief": "Пауза воспроизведения.",
-            "description": "Приостанавливает воспроизведение.",
-            "usage": "pause",
-            "help": "Приостанавливает воспроизведение текущего трека. Для запуска трека после паузы используйте `resume`.\nЕсли поставить паузу желает не администратор или DJ, и в голосовой комнате находится несколько человек, запускается процесс голосования. В случае его успешного завершения, плеер переходит в режим паузы.\nРаботает только в канале <#546411393239220233>\n\n**Кулдаун:** отсутствует.\n**Необходимый уровень:** 0",
-            "required_level": 0,
-            "has_cooldown": false,
-            "cooldown_rate": 0,
-            "cooldown_per_second": 0,
-            "cooldown_type": "None",
-            "hidden": false
-        },
-        "resume":
-        {
-            "name": "resume",
-            "aliases": [],
-            "brief": "Продолжение воспроизведения.",
-            "description": "Запуск воспроизведения после паузы.",
-            "usage": "resume",
-            "help": "Продолжает воспроизведение после паузы.\nЕсли продолжить воспроизведение желает не администратор или DJ, и в голосовой комнате находится несколько человек, запускается процесс голосования. В случае его успешного завершения, пауза отменяется, начинается проигрывание музыки.\nРаботает только в канале <#546411393239220233>\n\n**Кулдаун:** отсутствует.\n**Необходимый уровень:** 0",
-            "required_level": 0,
-            "has_cooldown": false,
-            "cooldown_rate": 0,
-            "cooldown_per_second": 0,
-            "cooldown_type": "None",
-            "hidden": false
-        },
-        "skip":
-        {
-            "name": "skip",
-            "aliases": ["s"],
-            "brief": "Пропуск трека.",
-            "description": "Пропускает текущий трек.",
-            "usage": "skip",
-            "help": "Пропускает трек, который сейчас играет, запускает следующую песню в плейлисте.\nЕсли пропустить трек желает не администратор или DJ, и в голосовой комнате находится несколько человек, запускается процесс голосования. В случае его успешного завершения, плеер пропускает трек.\nРаботает только в канале <#546411393239220233>\n\n**Кулдаун:** отсутствует.\n**Необходимый уровень:** 0",
-            "required_level": 0,
-            "has_cooldown": false,
-            "cooldown_rate": 0,
-            "cooldown_per_second": 0,
-            "cooldown_type": "None",
-            "hidden": false
-        },
-        "stop":
-        {
-            "name": "stop",
-            "aliases": ["teardown"],
-            "brief": "Останавливает плеер.",
-            "description": "Полностью останавливает и сбрасывает музыкальный плеер.",
-            "usage": "stop",
-            "help": "Останавливает музыкальный плеер, очищает очередь воспроизведения, бот покидает голосовой канал.\nЕсли остановить плеер желает не администратор или DJ, и в голосовой комнате находится несколько человек, запускается процесс голосования. В случае его успешного завершения, плеер останавливается.\nРаботает только в канале <#546411393239220233>\n\n**Кулдаун:** отсутствует.\n**Необходимый уровень:** 0",
-            "required_level": 0,
-            "has_cooldown": false,
-            "cooldown_rate": 0,
-            "cooldown_per_second": 0,
-            "cooldown_type": "None",
-            "hidden": false
-        },
-        "volume":
-        {
-            "name": "volume",
-            "aliases": ["vol"],
-            "brief": "Изменение громкости.",
-            "description": "Изменение громкости воспроизведения.",
-            "usage": "volume <0-100>",
-            "help": "Изменение громкости выходного аудиосигнала. Допустимый диапазон: от 1 до 100.\nТолько администраторы и DJ могут менять громкость.\nРаботает только в канале <#546411393239220233>\n\n**Кулдаун:** отсутствует.\n**Необходимый уровень:** 0",
-            "required_level": 0,
-            "has_cooldown": false,
-            "cooldown_rate": 0,
-            "cooldown_per_second": 0,
-            "cooldown_type": "None",
-            "hidden": false
-        },
-        "shuffle":
-        {
-            "name": "shuffle",
-            "aliases": ["mix"],
-            "brief": "Перемешивание плейлиста.",
-            "description": "Перемешивание очереди воспроизведения.",
-            "usage": "shuffle",
-            "help": "Бот перемешивает очередь воспроизведения.\nЕсли перемешать очередь желает не администратор или DJ, и в голосовой комнате находится несколько человек, запускается процесс голосования. В случае его успешного завершения, очередь перемешивается.\nРаботает только в канале <#546411393239220233>\n\n**Кулдаун:** отсутствует.\n**Необходимый уровень:** 0",
-            "required_level": 0,
-            "has_cooldown": false,
-            "cooldown_rate": 0,
-            "cooldown_per_second": 0,
-            "cooldown_type": "None",
-            "hidden": false
-        },
-        "equalizer":
-        {
-            "name": "equalizer",
-            "aliases": ["eq"],
-            "brief": "Эквалайзер.",
-            "description": "Изменение настроек эквалайзера.",
-            "usage": "eq <flat/boost/metal/piano>",
-            "help": "Измените настройки эквалайзера так, как вам угодно. Доступные пресеты: **flat**, **boost**, **metal**, **piano**.\nТолько администраторы и DJ могут менять настройки эквалайзера.\nРаботает только в канале <#546411393239220233>\n\n**Кулдаун:** отсутствует.\n**Необходимый уровень:** 0",
-            "required_level": 0,
-            "has_cooldown": false,
-            "cooldown_rate": 0,
-            "cooldown_per_second": 0,
-            "cooldown_type": "None",
-            "hidden": false
-        },
-        "queue":
-        {
-            "name": "queue",
-            "aliases": ["q", "que"],
-            "brief": "Очередь воспроизведения.",
-            "description": "Просмотр очереди воспроизведения.",
-            "usage": "queue",
-            "help": "Отображение очереди воспроизведения.\nРаботает только в канале <#546411393239220233>\n\n**Кулдаун:** отсутствует.\n**Необходимый уровень:** 0",
-            "required_level": 0,
-            "has_cooldown": false,
-            "cooldown_rate": 0,
-            "cooldown_per_second": 0,
-            "cooldown_type": "None",
-            "hidden": false
-        },
-        "nowplaying":
-        {
-            "name": "nowplaying",
-            "aliases": ["np"],
-            "brief": "Музыкальный контроллер.",
-            "description": "Обновление музыкального контроллера.",
-            "usage": "np",
-            "help": "Обновите музыкальный контроллер, если он отображает старую/некорректную информацию.\nРаботает только в канале <#546411393239220233>\n\n**Кулдаун:** отсутствует.\n**Необходимый уровень:** 0",
-            "required_level": 0,
-            "has_cooldown": false,
-            "cooldown_rate": 0,
-            "cooldown_per_second": 0,
-            "cooldown_type": "None",
-            "hidden": false
-        },
-        "swap_dj":
-        {
-            "name": "swap_dj",
-            "aliases": [],
-            "brief": "Смена DJ.",
-            "description": "Передача прав ди-джея.",
-            "usage": "swap_dj <member>",
-            "help": "Передаёт права ди-джея другому участнику голосового канала. Если в канале всего лишь 1 пользователь, передача прав DJ невозможна.\nТолько администраторы и DJ могут использовать эту команду.\nРаботает только в канале <#546411393239220233>\n\n**Кулдаун:** отсутствует.\n**Необходимый уровень:** 0",
-            "required_level": 0,
-            "has_cooldown": false,
-            "cooldown_rate": 0,
-            "cooldown_per_second": 0,
-            "cooldown_type": "None",
-            "hidden": false
-        }
+    "shopsections": {
+      "name": "shopsections",
+      "aliases": [
+        "sectionstore"
+      ],
+      "brief": "Отображает категории магазина предметов.",
+      "description": "Возможность просмотреть текущие категории магазина предметов Fortnite.",
+      "usage": "shopsections",
+      "help": "Позволяет просмотреть текущие (возможно, и будущие) категории магазина предметов Fortnite.\nРаботает только на сервере.\n\n**Кулдаун:** отсутствует.\n**Необходимый уровень:** 0",
+      "required_level": 0,
+      "has_cooldown": false,
+      "cooldown_rate": 0,
+      "cooldown_per_second": 0,
+      "cooldown_type": "None",
+      "hidden": false
     }
+  },
+  "commands": {
+    "suggest": {
+      "name": "suggest",
+      "aliases": [
+        "предложить",
+        "добавить",
+        "radiosuggest",
+        "radioadd"
+      ],
+      "brief": "Предложите трек, который хотите добавить в пелейлист радио.",
+      "description": "Формирует заявку на добавление трека в плейлист.",
+      "usage": "suggest <track>",
+      "help": "Возможность предложить добавить указанный трек в плейлист радио.\n\n**Работает в канале:** <#546411393239220233>\n**Кулдаун:** отсутствует.\n**Необходимый уровень:** 0",
+      "required_level": 0,
+      "has_cooldown": false,
+      "cooldown_rate": 0,
+      "cooldown_per_second": 0,
+      "cooldown_type": "None",
+      "hidden": false
+    },
+    "support": {
+      "name": "support",
+      "aliases": [
+        "поддержка"
+      ],
+      "brief": "Перенаправление в канал со скриншотами покупок.",
+      "description": "Перенаправляет пользователей в <#546408250158088192>.",
+      "usage": "support [members]",
+      "help": "Перенаправляет пользователей в <#546408250158088192> — канал со скриншотами покупок.\nРаботает только на сервере.\n\n**Кулдаун:** 5 минут, действует на определённого пользователя.\n**Необходимый уровень:** 10",
+      "required_level": 10,
+      "has_cooldown": true,
+      "cooldown_rate": 1,
+      "cooldown_per_second": 300,
+      "cooldown_type": "member",
+      "hidden": false
+    },
+    "question": {
+      "name": "question",
+      "aliases": [
+        "вопросы"
+      ],
+      "brief": "Перенаправление в канал с вопросами.",
+      "description": "Перенаправляет пользователей в <#546700132390010882>.",
+      "usage": "question [members]",
+      "help": "Перенаправляет пользователей в <#546700132390010882> — канал с вопросами, если вопрос задан в неподходящем канале.\nРаботает только на сервере.\n\n**Кулдаун:** 5 минут, действует на определённого пользователя.\n**Необходимый уровень:** 10",
+      "required_level": 10,
+      "has_cooldown": true,
+      "cooldown_rate": 1,
+      "cooldown_per_second": 300,
+      "cooldown_type": "member",
+      "hidden": false
+    },
+    "media": {
+      "name": "media",
+      "aliases": [
+        "медиа"
+      ],
+      "brief": "Перенаправление в медиа канал.",
+      "description": "Перенаправляет пользователей в <#644523860326219776>.",
+      "usage": "media <members>",
+      "help": "Перенаправляет пользователей <#644523860326219776>, если в чат отправлен медиафайл не по теме разговора.\nРаботает только на сервере.\n\n**Кулдаун:** 5 минут, действует на определённого пользователя.\n**Необходимый уровень:** 10",
+      "required_level": 10,
+      "has_cooldown": true,
+      "cooldown_rate": 1,
+      "cooldown_per_second": 300,
+      "cooldown_type": "member",
+      "hidden": false
+    },
+    "poisk": {
+      "name": "poisk",
+      "aliases": [
+        "поиск"
+      ],
+      "brief": "Перенаправление в канал поиска игроков.",
+      "description": "Перенаправляет пользователей в <#546416181871902730>.",
+      "usage": "poisk <members>",
+      "help": "Перенаправляет пользователей <#546416181871902730>, если в неподходящем канале осуществляется поиск напарника для игры.\nРаботает только на сервере.\n\n**Кулдаун:** 5 минут, действует на определённого пользователя.\n**Необходимый уровень:** 10",
+      "required_level": 10,
+      "has_cooldown": true,
+      "cooldown_rate": 1,
+      "cooldown_per_second": 300,
+      "cooldown_type": "member",
+      "hidden": false
+    },
+    "ppo": {
+      "name": "ppo",
+      "aliases": [
+        "ппо"
+      ],
+      "brief": "ППО это who?",
+      "description": "Расшифровка ППО.",
+      "usage": "ppo",
+      "help": "Расшифровка аббревиатуры ППО.\n\n**Кулдаун:** 10 минут, действует на весь сервер.\n**Необходимый уровень:** 3",
+      "required_level": 3,
+      "has_cooldown": true,
+      "cooldown_rate": 1,
+      "cooldown_per_second": 600,
+      "cooldown_type": "guild",
+      "hidden": false
+    },
+    "sp": {
+      "name": "sp",
+      "aliases": [
+        "сп"
+      ],
+      "brief": "СП это who?",
+      "description": "Расшифровка СП.",
+      "usage": "sp",
+      "help": "Расшифровка аббревиатуры СП.\n\n**Кулдаун:** 10 минут, действует на весь сервер.\n**Необходимый уровень:** 3",
+      "required_level": 3,
+      "has_cooldown": true,
+      "cooldown_rate": 1,
+      "cooldown_per_second": 600,
+      "cooldown_type": "guild",
+      "hidden": false
+    },
+    "code": {
+      "name": "code",
+      "aliases": [
+        "тег",
+        "код",
+        "тегавтора",
+        "sac"
+      ],
+      "brief": "Наш тег автора",
+      "description": "Наш тег: FNFUN.",
+      "usage": "code",
+      "help": "Используйте наш тег автора **FNFUN** в магазине предметов Fortnite.\n\n**Кулдаун:** 1 минута, действует на весь сервер.\n**Необходимый уровень:** 0",
+      "required_level": 0,
+      "has_cooldown": true,
+      "cooldown_rate": 1,
+      "cooldown_per_second": 60,
+      "cooldown_type": "guild",
+      "hidden": false
+    },
+    "avatar": {
+      "name": "avatar",
+      "aliases": [
+        "аватар"
+      ],
+      "brief": "Аватар пользователя.",
+      "description": "Показывает фото профиля указанного участника сервера.",
+      "usage": "avatar <member>",
+      "help": "Бот показывает фото профиля указанного участника сервера.\n\n**Кулдаун:** 5 минут, действует на определённого пользователя.\n**Необходимый уровень:** 10",
+      "required_level": 10,
+      "has_cooldown": true,
+      "cooldown_rate": 1,
+      "cooldown_per_second": 300,
+      "cooldown_type": "member",
+      "hidden": false
+    },
+    "info": {
+      "name": "info",
+      "aliases": [
+        "about",
+        "инфо"
+      ],
+      "brief": "Информация о Dungeon Durker.",
+      "description": "Информация о проекте Dungeon Durker.",
+      "usage": "info",
+      "help": "Отображает основную информацию о проекте Dungeon Durker, предоставляет описание бота.\n\n**Кулдаун:** отсутствует.\n**Необходимый уровень:** 0",
+      "required_level": 0,
+      "has_cooldown": false,
+      "cooldown_rate": 0,
+      "cooldown_per_second": 0,
+      "cooldown_type": "None",
+      "hidden": false
+    }
+  },
+  "contests": {
+    "giveaway": {
+      "name": "giveaway",
+      "aliases": [
+        "розыгрыш"
+      ],
+      "brief": "Команда для проведения розыгрышей.",
+      "description": "Проведение розыгрышей с автоматическим подведением итогов.",
+      "usage": "giveaway <mins> [winners count] [description]",
+      "help": "Бот инициализирует процесс проведения розыгрыша. Через указанное время (в минутах) автоматически определяется победитель.\n\nДоступно только разработчику бота.",
+      "required_level": 0,
+      "has_cooldown": false,
+      "cooldown_rate": 0,
+      "cooldown_per_second": 0,
+      "cooldown_type": "None",
+      "hidden": true
+    }
+  },
+  "covid": {
+    "covid": {
+      "name": "covid",
+      "aliases": [
+        "ковид",
+        "coronastats",
+        "корона"
+      ],
+      "brief": "Статистика по коронавирусу.",
+      "description": "Отображение статистики по коронавирусу для конкретной страны.",
+      "usage": "covid <country>",
+      "help": "Бот отображает актуальную статистику по коронавирусу для конкретной страны.\n\n**Кулдаун:** отсутствует.\n**Необходимый уровень:** 0",
+      "required_level": 0,
+      "has_cooldown": false,
+      "cooldown_rate": 0,
+      "cooldown_per_second": 0,
+      "cooldown_type": "None",
+      "hidden": false
+    }
+  },
+  "durka": {
+    "durka": {
+      "name": "durka",
+      "aliases": [
+        "дурка"
+      ],
+      "brief": "Вызов дурки пользователям.",
+      "description": "Вызовите дурку одному или нескольким пользователям.",
+      "usage": "durka <members>",
+      "help": "Совершите звонок в психиатрическую больницу и вызовите санитаров, которые приедут за шизоидами.\n\n**Кулдаун:** 1 час, действует на определённого пользователя.\nДоступ к команде октрывается при наличии ролей за активность. **Олд** — минимально необходимая роль.",
+      "required_level": 0,
+      "has_cooldown": true,
+      "cooldown_rate": 1,
+      "cooldown_per_second": 3600,
+      "cooldown_type": "member",
+      "hidden": false
+    },
+    "durkachat": {
+      "name": "durkachat",
+      "aliases": [
+        "дуркачат"
+      ],
+      "brief": "Вызов дурки чату.",
+      "description": "Вызовите дурку чату.",
+      "usage": "durkachat",
+      "help": "Вызов санитаров, использовать при чрезвычайно высоком содержании бреда в чате.\n\n**Кулдаун:** 15 минут, действует на весь сервер.\nДоступ к команде октрывается при наличии ролей за активность. **Олд** — минимально необходимая роль.",
+      "required_level": 0,
+      "has_cooldown": false,
+      "cooldown_rate": 1,
+      "cooldown_per_second": 900,
+      "cooldown_type": "guild",
+      "hidden": false
+    }
+  },
+  "eval": {
+    "eval": {
+      "name": "eval",
+      "aliases": [
+        "exec"
+      ],
+      "brief": "Выполнение скриптов удалённо.",
+      "description": "Выполняет на сервере бота написанный скрипт, возвращает результат.",
+      "usage": "eval <code>",
+      "help": "Debug команда. Выполняет на сервере бота написанный скрипт, возвращает результат.\nДоступно только владельцу бота.",
+      "required_level": 0,
+      "has_cooldown": false,
+      "cooldown_rate": 0,
+      "cooldown_per_second": 0,
+      "cooldown_type": "None",
+      "hidden": true
+    }
+  },
+  "fn_devservers": {
+    "fndev": {
+      "name": "fndev",
+      "aliases": [
+        "devserv"
+      ],
+      "brief": "Состояние dev серверов Fortnite.",
+      "description": "Отображает данные о состоянии dev серверов Fortnite.",
+      "usage": "fndev [stage]",
+      "help": "Просмотр состояния серверов, на которых разработчики тестируют патчи Fortnite. Использование ключа `stage` отоюбражает только состояние stage сервера.\n\n**Кулдаун:** отсутствует.\n**Необходимый уровень:** 0",
+      "required_level": 0,
+      "has_cooldown": false,
+      "cooldown_rate": 0,
+      "cooldown_per_second": 0,
+      "cooldown_type": "None",
+      "hidden": false
+    }
+  },
+  "fortniteapicom": {
+    "searchcosmetic": {
+      "name": "searchcosmetic",
+      "aliases": [
+        "cosmeticsearch"
+      ],
+      "brief": "Поиск косметического предмета Fortnite.",
+      "description": "Информация о косметическом предмете Fortnite.",
+      "usage": "searchcosmetic <-name> [-lang] [-id] [-type] [-rarity]",
+      "help": "Поиск косметического предмета Fortnite и отображение информации о нём.\nС полным списком всех параметров поиска можно ознакомиться по команде `+searchparams`\n\n**Кулдаун:** отсутствует.\n**Необходимый уровень:** 0",
+      "required_level": 0,
+      "has_cooldown": false,
+      "cooldown_rate": 0,
+      "cooldown_per_second": 0,
+      "cooldown_type": "None",
+      "hidden": false
+    },
+    "news": {
+      "name": "news",
+      "aliases": [
+        "fortnews",
+        "fnnews",
+        "newsfn"
+      ],
+      "brief": "Отображает внутриигровые новости Fortnite.",
+      "description": "Возможность посмотреть новости Fortnite.",
+      "usage": "news <mode> [language]",
+      "help": "Просмотр внутриигровых новостей Fortnite. Доступные режимы: `br`, `creative`, `stw`.\n\n**Кулдаун:** отсутствует.\n**Необходимый уровень:** 0",
+      "required_level": 0,
+      "has_cooldown": false,
+      "cooldown_rate": 0,
+      "cooldown_per_second": 0,
+      "cooldown_type": "None",
+      "hidden": false
+    },
+    "creatorcode": {
+      "name": "creatorcode",
+      "aliases": [
+        "searchcreator",
+        "searchcode",
+        "getcode"
+      ],
+      "brief": "Отображает информацию о коде автора Epic Games.",
+      "description": "Информация о введённом теге автора.",
+      "usage": "creatorcode <code>",
+      "help": "Просмотр информации о коде автора Epic Games. Если найдено несколько позиций, информация будет отображена в нескольких страницах.\n\n**Кулдаун:** отсутствует.\n**Необходимый уровень:** 0",
+      "required_level": 0,
+      "has_cooldown": false,
+      "cooldown_rate": 0,
+      "cooldown_per_second": 0,
+      "cooldown_type": "None",
+      "hidden": false
+    },
+    "shop": {
+      "name": "shop",
+      "aliases": [
+        "fnshop",
+        "brshop",
+        "магазин"
+      ],
+      "brief": "Отображает магазин предметов королевской битвы.",
+      "description": "Магазин предметов королевской битвы.",
+      "usage": "shop",
+      "help": "Просмотр магазина предметов королевской битвы.\n\n**Кулдаун:** отсутствует.\n**Необходимый уровень:** 0",
+      "required_level": 0,
+      "has_cooldown": false,
+      "cooldown_rate": 0,
+      "cooldown_per_second": 0,
+      "cooldown_type": "None",
+      "hidden": false
+    },
+    "searchparams": {
+      "name": "searchparams",
+      "aliases": [
+        "cosmparams"
+      ],
+      "brief": "Список параметров для поиска косметических предметов Fortnite.",
+      "description": "Отображает параметры поиска косметических предметов.",
+      "usage": "searchparams",
+      "help": "Просмотр параметров для поиска косметических предметов Fortnite.\n\n**Кулдаун:** отсутствует.\n**Необходимый уровень:** 0",
+      "required_level": 0,
+      "has_cooldown": false,
+      "cooldown_rate": 0,
+      "cooldown_per_second": 0,
+      "cooldown_type": "None",
+      "hidden": false
+    }
+  },
+  "fortniteapiio": {
+    "map": {
+      "name": "map",
+      "aliases": [
+        "fnmap",
+        "fortnitemap",
+        "fortmap"
+      ],
+      "brief": "Отображает текущую карту острова Королевской битвы.",
+      "description": "Просмотр карты Fortnite.",
+      "usage": "map [poi] [lang]",
+      "help": "Отображает текущую карту острова Королевской битвы. При использовании аргумента `poi` карта будет отображаться с названием локаций.\n\n**Кулдаун:** отсутствует.\n**Необходимый уровень:** 0",
+      "required_level": 0,
+      "has_cooldown": false,
+      "cooldown_rate": 0,
+      "cooldown_per_second": 0,
+      "cooldown_type": "None",
+      "hidden": false
+    },
+    "fnach": {
+      "name": "fnach",
+      "aliases": [
+        "fnachievements",
+        "достиженияфортнайт"
+      ],
+      "brief": "Список достижений Fortnite текущего сезона.",
+      "description": "Достижения в Fortnite.",
+      "usage": "fnach",
+      "help": "Отображает достижения текущего сезона королевской битвы Fortnite.\n\n**Кулдаун:** отсутствует.\n**Необходимый уровень:** 0",
+      "required_level": 0,
+      "has_cooldown": false,
+      "cooldown_rate": 0,
+      "cooldown_per_second": 0,
+      "cooldown_type": "None",
+      "hidden": false
+    },
+    "fish": {
+      "name": "fish",
+      "aliases": [
+        "рыбки",
+        "рыбка"
+      ],
+      "brief": "Список рыбок Fortnite текущего сезона.",
+      "description": "Рыбки в Fortnite.",
+      "usage": "fish [number]",
+      "help": "Отображает рыбки, которые доступны в текущем сезоне королевской битвы Fortnite. В качестве параметра вы можете указать номер интересующей вас рыбки.\n\n**Кулдаун:** отсутствует.\n**Необходимый уровень:** 0",
+      "required_level": 0,
+      "has_cooldown": false,
+      "cooldown_rate": 0,
+      "cooldown_per_second": 0,
+      "cooldown_type": "None",
+      "hidden": false
+    },
+    "challenges": {
+      "name": "challenges",
+      "aliases": [
+        "fnchallenge"
+      ],
+      "brief": "Список редких заданий (карточек медалей) Fortnite текущего сезона.",
+      "description": "Редкие задания (карточки  медалей) в Fortnite.",
+      "usage": "challenges",
+      "help": "Отображает редкие задания (карточки медалей), которые доступны в текущем сезоне королевской битвы Fortnite.\n\n**Кулдаун:** отсутствует.\n**Необходимый уровень:** 0",
+      "required_level": 0,
+      "has_cooldown": false,
+      "cooldown_rate": 0,
+      "cooldown_per_second": 0,
+      "cooldown_type": "None",
+      "hidden": false
+    },
+    "npc": {
+      "name": "npc",
+      "aliases": [
+        "нпс",
+        "characters"
+      ],
+      "brief": "Список всех NPC Fortnite текущего сезона.",
+      "description": "NPC (персонажи) в Fortnite.",
+      "usage": "npc [number]",
+      "help": "Отображает список всех NPC, которые доступны в текущем сезоне королевской битвы Fortnite. В качестве параметра вы можете указать номер интересующего вас персонажа.\n\n**Кулдаун:** отсутствует.\n**Необходимый уровень:** 0",
+      "required_level": 0,
+      "has_cooldown": false,
+      "cooldown_rate": 0,
+      "cooldown_per_second": 0,
+      "cooldown_type": "None",
+      "hidden": false
+    }
+  },
+  "fortnitetracker": {
+    "fnstats": {
+      "name": "fnstats",
+      "aliases": [
+        "fortstats",
+        "statsfn",
+        "fn"
+      ],
+      "brief": "Отображает статистику игрового профиля Fortnite.",
+      "description": "Просмотр статистики профиля Fortnite.",
+      "usage": "fn <nickname>",
+      "help": "Возможность просмотреть статистику игрового профиля Fortnite.\nКоманда работает в тестовом режиме, поэтому возможны проблемы в её работе.\nРаботает только на сервере.\n\n**Кулдаун:** отсутствует.\n**Необходимый уровень:** 0",
+      "required_level": 0,
+      "has_cooldown": false,
+      "cooldown_rate": 0,
+      "cooldown_per_second": 0,
+      "cooldown_type": "None",
+      "hidden": false
+    }
+  },
+  "fun": {
+    "hug": {
+      "name": "hug",
+      "aliases": [
+        "обнять",
+        "обнимашки"
+      ],
+      "brief": "Обнимите кого-нибудь!",
+      "description": "Покажите всем свою любовь и обнимите кого-нибудь!",
+      "usage": "hug <member>",
+      "help": "Команда для обнимашек. Работает только на сервере, во всех каналах.\n\n**Кулдаун:** отсутствует.\n**Необходимый уровень:** 0",
+      "required_level": 0,
+      "has_cooldown": false,
+      "cooldown_rate": 0,
+      "cooldown_per_second": 0,
+      "cooldown_type": "None",
+      "hidden": false
+    },
+    "coin": {
+      "name": "coin",
+      "aliases": [
+        "монетка",
+        "орел_решка",
+        "о_р",
+        "орёл_решка"
+      ],
+      "brief": "Сыграйте в орёл-решка.",
+      "description": "Бот подбрасывает монетку.",
+      "usage": "coin",
+      "help": "Пригодится при непростом выборе. Работает на сервере и в личных сообщениях.\n\n**Кулдаун:** отсутствует.\n**Необходимый уровень:** 3",
+      "required_level": 3,
+      "has_cooldown": false,
+      "cooldown_rate": 0,
+      "cooldown_per_second": 0,
+      "cooldown_type": "None",
+      "hidden": false
+    },
+    "saper": {
+      "name": "saper",
+      "aliases": [
+        "сапер",
+        "сапёр"
+      ],
+      "brief": "Сыграйте в сапёра.",
+      "description": "Выберите сложность и бот сгенерирует игровое поле.",
+      "usage": "saper",
+      "help": "Почувствуйте себя сапёром. Работает на сервере и в личных сообщениях.\n\n**Кулдаун:** отсутствует.\n**Необходимый уровень:** 3",
+      "required_level": 3,
+      "has_cooldown": false,
+      "cooldown_rate": 0,
+      "cooldown_per_second": 0,
+      "cooldown_type": "None",
+      "hidden": false
+    },
+    "flags": {
+      "name": "flags",
+      "aliases": [
+        "флаги"
+      ],
+      "brief": "Сыграйте в игру по угадыванию флага страны.",
+      "description": "Мини-игра по угадывания флага страны.",
+      "usage": "flags",
+      "help": "Проверьте, насколько хорошо вы знаете флаги разных стран. Работает только на сервере в канале мини-игр.\n\n**Кулдаун:** отсутствует.\n**Необходимый уровень:** 3",
+      "required_level": 3,
+      "has_cooldown": false,
+      "cooldown_rate": 0,
+      "cooldown_per_second": 0,
+      "cooldown_type": "None",
+      "hidden": false
+    },
+    "knb": {
+      "name": "knb",
+      "aliases": [
+        "кнб",
+        "камень_ножницы_бумага"
+      ],
+      "brief": "Сыграйте в камень-ножницы-бумага.",
+      "description": "Мини-игра камень-ножницы-бумага.",
+      "usage": "knb <камень/ножницы/бумага>",
+      "help": "Бот играет с вами в игру. Работает только на сервере в канале мини-игр.\n\n**Кулдаун:** отсутствует.\n**Необходимый уровень:** 3",
+      "required_level": 3,
+      "has_cooldown": false,
+      "cooldown_rate": 0,
+      "cooldown_per_second": 0,
+      "cooldown_type": "None",
+      "hidden": false
+    },
+    "8ball": {
+      "name": "8ball",
+      "aliases": [
+        "8b",
+        "ball",
+        "шар"
+      ],
+      "brief": "Задайте вопрос магическому шару.",
+      "description": "Шуточный способ предсказывать будущее.",
+      "usage": "шар <вопрос>",
+      "help": "Задайте вопрос магическому шару. Шуточный способ предсказывать будущее. Работает только на сервере в канале мини-игр.\n\n**Кулдаун:** отсутствует.\n**Необходимый уровень:** 3",
+      "required_level": 3,
+      "has_cooldown": false,
+      "cooldown_rate": 0,
+      "cooldown_per_second": 0,
+      "cooldown_type": "None",
+      "hidden": false
+    },
+    "randint": {
+      "name": "randint",
+      "aliases": [
+        "random",
+        "рандом",
+        "число"
+      ],
+      "brief": "Генерация случайных целых чисел.",
+      "description": "Бот генерирует случайное число в заданном диапазане.",
+      "usage": "randint <digit a> <digit b>",
+      "help": "Бот генерирует случайное число в диапазоне от A до B включительно. Работает только на сервере.\n\n**Кулдаун:** отсутствует.\n**Необходимый уровень:** 3",
+      "required_level": 3,
+      "has_cooldown": false,
+      "cooldown_rate": 0,
+      "cooldown_per_second": 0,
+      "cooldown_type": "None",
+      "hidden": false
+    }
+  },
+  "help": {
+    "help": {
+      "name": "help",
+      "aliases": [
+        "хелп",
+        "хэлп",
+        "команды",
+        "h"
+      ],
+      "brief": "Help меню.",
+      "description": "Отображает все доступные команды бота.",
+      "usage": "help [command/category]",
+      "help": "Помогает разобраться с использованием команд бота. Работает на сервере и в личных сообщениях.\n\n**Кулдаун:** отсутствует.",
+      "required_level": 0,
+      "has_cooldown": false,
+      "cooldown_rate": 0,
+      "cooldown_per_second": 0,
+      "cooldown_type": "None",
+      "hidden": false
+    }
+  },
+  "leaderboards": {
+    "achievementboard": {
+      "name": "achievementboard",
+      "aliases": [
+        "ab",
+        "achboard"
+      ],
+      "brief": "Рейтинг по достижениям.",
+      "description": "Рейтинг по количеству полученных на сервере достижений.",
+      "usage": "achboard",
+      "help": "Отображает список лидеров по количеству полученных на сервере достижений. Работает только в канале <#604621910386671616>.\n\n**Кулдаун:** отсутствует.",
+      "required_level": 0,
+      "has_cooldown": false,
+      "cooldown_rate": 0,
+      "cooldown_per_second": 0,
+      "cooldown_type": "None",
+      "hidden": false
+    },
+    "levelboard": {
+      "name": "levelboard",
+      "aliases": [
+        "lb",
+        "lvlboard"
+      ],
+      "brief": "Рейтинг по уровню.",
+      "description": "Рейтинг по уровню на сервере.",
+      "usage": "levelboard",
+      "help": "Отображает список лидеров по уровню на сервере. Работает только в канале <#604621910386671616>.\n\n**Кулдаун:** отсутствует.",
+      "required_level": 0,
+      "has_cooldown": false,
+      "cooldown_rate": 0,
+      "cooldown_per_second": 0,
+      "cooldown_type": "None",
+      "hidden": false
+    },
+    "messageboard": {
+      "name": "messageboard",
+      "aliases": [
+        "mb",
+        "msgboard"
+      ],
+      "brief": "Рейтинг по сообщениям.",
+      "description": "Рейтинг по количеству написанных сообщений.",
+      "usage": "messageboard",
+      "help": "Отображает список лидеров по количеству написанных сообщений. Работает только в канале <#604621910386671616>.\n\n**Кулдаун:** отсутствует.",
+      "required_level": 0,
+      "has_cooldown": false,
+      "cooldown_rate": 0,
+      "cooldown_per_second": 0,
+      "cooldown_type": "None",
+      "hidden": false
+    },
+    "reputationboard": {
+      "name": "reputationboard",
+      "aliases": [
+        "rb",
+        "repboard"
+      ],
+      "brief": "Рейтинг по репутации.",
+      "description": "Рейтинг по количеству репутации.",
+      "usage": "repboard",
+      "help": "Отображает список лидеров по количеству репутации. Работает только в канале <#604621910386671616>.\n\n**Кулдаун:** отсутствует.",
+      "required_level": 0,
+      "has_cooldown": false,
+      "cooldown_rate": 0,
+      "cooldown_per_second": 0,
+      "cooldown_type": "None",
+      "hidden": false
+    },
+    "vbucksboard": {
+      "name": "vbucksboard",
+      "aliases": [
+        "vb",
+        "$board"
+      ],
+      "brief": "Рейтинг по В-Баксам.",
+      "description": "Рейтинг по количеству потраченных В-Баксов.",
+      "usage": "vbucksboard",
+      "help": "Отображает список лидеров по количеству В-Баксов, которые участники потратили с нашим тегом FNFUN. Работает только в канале <#604621910386671616>.\n\n**Кулдаун:** отсутствует.",
+      "required_level": 0,
+      "has_cooldown": false,
+      "cooldown_rate": 0,
+      "cooldown_per_second": 0,
+      "cooldown_type": "None",
+      "hidden": false
+    }
+  },
+  "leveling": {
+    "rank": {
+      "name": "rank",
+      "aliases": [
+        "lvl",
+        "level",
+        "уровень",
+        "ранг"
+      ],
+      "brief": "Статистика уровней.",
+      "description": "Просмотр своей статистики уровней.",
+      "usage": "rank",
+      "help": "Отображает статистику уровней пользователя. Работает только на сервере.\n\n**Кулдаун:** отсутствует.",
+      "required_level": 0,
+      "has_cooldown": false,
+      "cooldown_rate": 0,
+      "cooldown_per_second": 0,
+      "cooldown_type": "None",
+      "hidden": false
+    }
+  },
+  "moderation": {
+    "kick": {
+      "name": "kick",
+      "aliases": [
+        "кик",
+        "выгнать"
+      ],
+      "brief": "Кик участника.",
+      "description": "Выгоняет участника с сервера.",
+      "usage": "kick <members> [reason]",
+      "help": "Кикает участника с сервера.\n\nКоманда доступна только администраторам.\n\n**Кулдаун:** отсутствует.",
+      "required_level": 0,
+      "has_cooldown": false,
+      "cooldown_rate": 0,
+      "cooldown_per_second": 0,
+      "cooldown_type": "None",
+      "hidden": false
+    },
+    "ban": {
+      "name": "ban",
+      "aliases": [
+        "бан"
+      ],
+      "brief": "Бан участника.",
+      "description": "Банит участника на сервере.",
+      "usage": "ban <members> [delete_days] [reason]",
+      "help": "Банит участника на сервере, а также удаляет все его сообщения за прошедшие 24 часа.\nКоманда доступна только администраторам.\n\n**Кулдаун:** отсутствует.",
+      "required_level": 0,
+      "has_cooldown": false,
+      "cooldown_rate": 0,
+      "cooldown_per_second": 0,
+      "cooldown_type": "None",
+      "hidden": false
+    },
+    "unban": {
+      "name": "unban",
+      "aliases": [
+        "анбан",
+        "разбан"
+      ],
+      "brief": "Разбан пользователя.",
+      "description": "Снимает у пользователя бан на сервере.",
+      "usage": "unban <members> [reason]",
+      "help": "Отзывает бан участника на сервере.\nКоманда доступна только администраторам.\n\n**Кулдаун:** отсутствует.",
+      "required_level": 0,
+      "has_cooldown": false,
+      "cooldown_rate": 0,
+      "cooldown_per_second": 0,
+      "cooldown_type": "None",
+      "hidden": false
+    },
+    "purge": {
+      "name": "purge",
+      "aliases": [
+        "delete",
+        "пудж",
+        "удали"
+      ],
+      "brief": "Удаление указанного количества сообщений.",
+      "description": "Бот удаляет сообщения в указанном количестве.",
+      "usage": "purge [limit]",
+      "help": "Бот удаляет сообщения в указанном количестве.\n\nКоманда доступна только администраторам.\n\n**Кулдаун:** отсутствует.",
+      "required_level": 0,
+      "has_cooldown": false,
+      "cooldown_rate": 0,
+      "cooldown_per_second": 0,
+      "cooldown_type": "None",
+      "hidden": false
+    },
+    "hat": {
+      "name": "hat",
+      "aliases": [
+        "шапка",
+        "пошапке",
+        "slap",
+        "hit"
+      ],
+      "brief": "Даёт по шапке.",
+      "description": "Не даёт мут, но снимает от 50 до 150 очков репутации.",
+      "usage": "шапка <members>",
+      "help": "Не даёт мут, но снимает от 50 до 150 очков репутации. Для ситуаций, когда мутить ещё рано, но по шапке дать стоит.\n\nКоманда доступна Часовым и выше.\n\n**Кулдаун:** отсутствует.",
+      "required_level": 0,
+      "has_cooldown": false,
+      "cooldown_rate": 0,
+      "cooldown_per_second": 0,
+      "cooldown_type": "None",
+      "hidden": false
+    },
+    "mute": {
+      "name": "mute",
+      "aliases": [
+        "мут",
+        "мьют"
+      ],
+      "brief": "Мут пользователей.",
+      "description": "Бот мутит пользователей на указанный срок.",
+      "usage": "mute <members> [hours] [reason]",
+      "help": "Бот мутит пользователей на указанный срок. Время указывается в часах. Для мута на более короткие сроки используйте соответсвующие команды.\nПри выдаче мута у пользователя забираются **все** роли (исключение — роли интеграций), при этом выдаётся роль нарушителя. По истечении срока мута роли возвращаются пользователю автоматически.\n\nКоманда доступна только администраторам.\n\n**Кулдаун:** отсутствует.",
+      "required_level": 0,
+      "has_cooldown": false,
+      "cooldown_rate": 0,
+      "cooldown_per_second": 0,
+      "cooldown_type": "None",
+      "hidden": false
+    },
+    "unmute": {
+      "name": "unmute",
+      "aliases": [
+        "анмут",
+        "размьют"
+      ],
+      "brief": "Анмут пользователей.",
+      "description": "Бот снимает мут у пользователей.",
+      "usage": "unmute <members> [reason]",
+      "help": "Бот снимает мут у пользователей.\n\nКоманда доступна только администраторам.\n\n**Кулдаун:** отсутствует.",
+      "required_level": 0,
+      "has_cooldown": false,
+      "cooldown_rate": 0,
+      "cooldown_per_second": 0,
+      "cooldown_type": "None",
+      "hidden": false
+    },
+    "ugol": {
+      "name": "ugol",
+      "aliases": [
+        "угол"
+      ],
+      "brief": "Отправляет пользователей в угол.",
+      "description": "Бот мутит пользователей на 30 минут.",
+      "usage": "ugol <members> [reason]",
+      "help": "Бот мутит пользователей на 30 минут.\nПри выдаче мута у пользователя забираются **все** роли (исключение — роли интеграций), при этом выдаётся роль нарушителя. По истечении срока мута роли возвращаются пользователю автоматически.\n\nКоманда доступна только администраторам.\n\n**Кулдаун:** отсутствует.",
+      "required_level": 0,
+      "has_cooldown": false,
+      "cooldown_rate": 0,
+      "cooldown_per_second": 0,
+      "cooldown_type": "None",
+      "hidden": false
+    },
+    "isolator": {
+      "name": "isolator",
+      "aliases": [
+        "изолятор"
+      ],
+      "brief": "Отправляет пользователей в изолятор.",
+      "description": "Бот мутит пользователей на 3 часа.",
+      "usage": "isolator <members> [reason]",
+      "help": "Бот мутит пользователей на 3 часа.\nПри выдаче мута у пользователя забираются **все** роли (исключение — роли интеграций), при этом выдаётся роль нарушителя. По истечении срока мута роли возвращаются пользователю автоматически.\n\nКоманда доступна только администраторам.\n\n**Кулдаун:** отсутствует.",
+      "required_level": 0,
+      "has_cooldown": false,
+      "cooldown_rate": 0,
+      "cooldown_per_second": 0,
+      "cooldown_type": "None",
+      "hidden": false
+    },
+    "dungeon": {
+      "name": "dungeon",
+      "aliases": [
+        "данжн"
+      ],
+      "brief": "Отправляет пользователей в ♂️ Dungeon ♂️",
+      "description": "Бот мутит пользователей на 12 часов.",
+      "usage": "dungeon <members> [reason]",
+      "help": "Бот мутит пользователей на 12 часов.\nПри выдаче мута у пользователя забираются **все** роли (исключение — роли интеграций), при этом выдаётся роль нарушителя. По истечении срока мута роли возвращаются пользователю автоматически.\n\nКоманда доступна только администраторам.\n\n**Кулдаун:** отсутствует.",
+      "required_level": 0,
+      "has_cooldown": false,
+      "cooldown_rate": 0,
+      "cooldown_per_second": 0,
+      "cooldown_type": "None",
+      "hidden": false
+    },
+    "gulag": {
+      "name": "gulag",
+      "aliases": [
+        "гулаг"
+      ],
+      "brief": "Отправляет пользователей в ГУЛАГ.",
+      "description": "Бот мутит пользователей на 24 часа.",
+      "usage": "gulag <members> [reason]",
+      "help": "Бот мутит пользователей на 24 часа.\nПри выдаче мута у пользователя забираются **все** роли (исключение — роли интеграций), при этом выдаётся роль нарушителя. По истечении срока мута роли возвращаются пользователю автоматически.\n\nКоманда доступна только администраторам.\n\n**Кулдаун:** отсутствует.",
+      "required_level": 0,
+      "has_cooldown": false,
+      "cooldown_rate": 0,
+      "cooldown_per_second": 0,
+      "cooldown_type": "None",
+      "hidden": false
+    },
+    "warn": {
+      "name": "warn",
+      "aliases": [
+        "варн"
+      ],
+      "brief": "Выдаёт warn и мут.",
+      "description": "Бот выдаёт пользователю предупреждение и мутит его на определённое время.",
+      "usage": "warn <members> [reason]",
+      "help": "Бот выдаёт пользователю варн и мут, срок которого зависит от количества накопленных предупреждений. Градация времени мута следующая:\n— Первый варн: мут на 6 часов.\n— Второй варн: мут на 12 часов.\n— Третий варн: мут на 24 часа + запрет на использование команд бота.\n— Четвёртый варн: бан на сервере.\n\nПри выдаче мута у пользователя забираются **все** роли (исключение — роли интеграций), при этом выдаётся роль нарушителя. По истечении срока мута роли возвращаются пользователю автоматически.\n\nКоманда доступна только администраторам.\n\n**Кулдаун:** отсутствует.",
+      "required_level": 0,
+      "has_cooldown": false,
+      "cooldown_rate": 0,
+      "cooldown_per_second": 0,
+      "cooldown_type": "None",
+      "hidden": false
+    },
+    "readrole": {
+      "name": "readrole",
+      "aliases": [
+        "читающий",
+        "ридрол"
+      ],
+      "brief": "Правила нужно знать!",
+      "description": "Отправляет пользователей изучать правила сервера и описание ролей.",
+      "usage": "readrole <members>",
+      "help": "Бот отправляет пользователей изучать правила сервера и описание ролей. На время изучения (5 минут) у пользователя отнимаются все роли, по истечении срока они возвращаются автоматически.\n\nКоманда доступна Часовым и выше.\n\n**Кулдаун:** отсутствует.",
+      "required_level": 0,
+      "has_cooldown": false,
+      "cooldown_rate": 0,
+      "cooldown_per_second": 0,
+      "cooldown_type": "None",
+      "hidden": false
+    },
+    "removereadrole": {
+      "name": "removereadrole",
+      "aliases": [
+        "нечитающий"
+      ],
+      "brief": "Забирает у пользователя роль Читающего.",
+      "description": "Завершает процесс изучения пользователем основных каналов сервера.",
+      "usage": "нечитающий <members>",
+      "help": "Бот завершает процесс изучения пользователем основных каналов сервера. Забирает у участника роль Читающего, возвращает ему отнятые ранее роли.\n\nКоманда доступна Часовым и выше.\n\n**Кулдаун:** отсутствует.",
+      "required_level": 0,
+      "has_cooldown": false,
+      "cooldown_rate": 0,
+      "cooldown_per_second": 0,
+      "cooldown_type": "None",
+      "hidden": false
+    }
+  },
+  "nekos": {
+    "anipic": {
+      "name": "anipic",
+      "aliases": [
+        "аниме",
+        "anime"
+      ],
+      "brief": "Отображает случайную аниме картинку.",
+      "description": "Бот присылает случайную картинку c аниме-тян.",
+      "usage": "anipic",
+      "help": "Бот присылает случайную картинку c аниме-тян. Все картинки SFW (safe for work) и не содержат эротический контент. По крайней мере, так написано в документации используемого API. Если вы обнаружили, что картинка таковой не является, сообщите, пожалуйста, об этом администрации сервера.\nРаботает на сервере и в личных сообщениях.\n\n**Кулдаун:** отсутствует.\n**Необходимый уровень:** 5",
+      "required_level": 5,
+      "has_cooldown": false,
+      "cooldown_rate": 0,
+      "cooldown_per_second": 0,
+      "cooldown_type": "None",
+      "hidden": false
+    }
+  },
+  "owner": {
+    "loadcog": {
+      "name": "loadcog",
+      "aliases": [
+        "cogload"
+      ],
+      "brief": "Загружает указанный cog в бота.",
+      "description": "Загружает, инициализирует и запускает cog.",
+      "usage": "loadcog lib.cogs.<cog_name>",
+      "help": "Загружает, инициализирует и запускает cog. Работает только в личных сообщениях. Доступно только разработчику бота.",
+      "required_level": 0,
+      "has_cooldown": false,
+      "cooldown_rate": 0,
+      "cooldown_per_second": 0,
+      "cooldown_type": "None",
+      "hidden": true
+    },
+    "unloadcog": {
+      "name": "unloadcog",
+      "aliases": [
+        "cogunload"
+      ],
+      "brief": "Выгружает из бота указанный cog.",
+      "description": "Деактивирует и выгружает cog.",
+      "usage": "unloadcog lib.cogs.<cog_name>",
+      "help": "Деактивирует и выгружает cog. Работает только в личных сообщениях. Доступно только разработчику бота.",
+      "required_level": 0,
+      "has_cooldown": false,
+      "cooldown_rate": 0,
+      "cooldown_per_second": 0,
+      "cooldown_type": "None",
+      "hidden": true
+    },
+    "reloadcog": {
+      "name": "reloadcog",
+      "aliases": [
+        "cogreload"
+      ],
+      "brief": "Перезагружает указанный cog.",
+      "description": "Деактивирует —> выгружает —> загружает —> активирует cog.",
+      "usage": "reloadcog lib.cogs.<cog_name>",
+      "help": "Деактивирует —> выгружает —> загружает —> активирует cog. Работает только в личных сообщениях. Доступно только разработчику бота.",
+      "required_level": 0,
+      "has_cooldown": false,
+      "cooldown_rate": 0,
+      "cooldown_per_second": 0,
+      "cooldown_type": "None",
+      "hidden": true
+    },
+    "disablecmd": {
+      "name": "disablecmd",
+      "aliases": [
+        "отключить"
+      ],
+      "brief": "Отключает указанную команду.",
+      "description": "Отключает и скрывает указанную команду.",
+      "usage": "disablecmd <command>",
+      "help": "Отключает и скрывает указанную команду. Работает только в личных сообщениях. Доступно только разработчику бота.",
+      "required_level": 0,
+      "has_cooldown": false,
+      "cooldown_rate": 0,
+      "cooldown_per_second": 0,
+      "cooldown_type": "None",
+      "hidden": true
+    },
+    "enablecmd": {
+      "name": "enablecmd",
+      "aliases": [
+        "включить"
+      ],
+      "brief": "Включает указанную команду.",
+      "description": "Включает и делает видимой указанную команду.",
+      "usage": "enablecmd <command>",
+      "help": "Включает и делает видимой указанную команду. Работает только в личных сообщениях. Доступно только разработчику бота.",
+      "required_level": 0,
+      "has_cooldown": false,
+      "cooldown_rate": 0,
+      "cooldown_per_second": 0,
+      "cooldown_type": "None",
+      "hidden": true
+    },
+    "disabledcmds": {
+      "name": "disabledcmds",
+      "aliases": [
+        "discmds"
+      ],
+      "brief": "Отображает отключенные команды.",
+      "description": "Формирует список отключенных команд.",
+      "usage": "disabledcmds",
+      "help": "Формирует список отключенных команд. Работает только в личных сообщениях. Доступно только разработчику бота.",
+      "required_level": 0,
+      "has_cooldown": false,
+      "cooldown_rate": 0,
+      "cooldown_per_second": 0,
+      "cooldown_type": "None",
+      "hidden": true
+    },
+    "ping": {
+      "name": "ping",
+      "aliases": [
+        "пинг"
+      ],
+      "brief": "Отображает время ответа Discord API.",
+      "description": "Get the response time for Discord API.",
+      "usage": "ping",
+      "help": "Отображает время ответа Discord API, пинг бота. Работает только в личных сообщениях. Доступно только разработчику бота.",
+      "required_level": 0,
+      "has_cooldown": false,
+      "cooldown_rate": 0,
+      "cooldown_per_second": 0,
+      "cooldown_type": "None",
+      "hidden": true
+    },
+    "fnping": {
+      "name": "fnping",
+      "aliases": [
+        "fnapiping",
+        "fnpingapi"
+      ],
+      "brief": "Отображает время ответа используемых Fortnite API.",
+      "description": "Get the response time for APIs.",
+      "usage": "fnping",
+      "help": "Отображает время ответа используемых Fortnite API. Работает только в личных сообщениях. Доступно только разработчику бота.",
+      "required_level": 0,
+      "has_cooldown": false,
+      "cooldown_rate": 0,
+      "cooldown_per_second": 0,
+      "cooldown_type": "None",
+      "hidden": true
+    },
+    "bearer": {
+      "name": "bearer",
+      "aliases": [
+        "epickey"
+      ],
+      "brief": "Fetch the current bearer token.",
+      "description": "Fetch the current bearer token.",
+      "usage": "bearer",
+      "help": "Fetch the current bearer token.",
+      "required_level": 0,
+      "has_cooldown": false,
+      "cooldown_rate": 0,
+      "cooldown_per_second": 0,
+      "cooldown_type": "None",
+      "hidden": true
+    },
+    "approve": {
+      "name": "approve",
+      "aliases": [
+        "одобрить"
+      ],
+      "brief": "Одобряет заявку на добавление/удаление трека в плейлист.",
+      "description": "Одобряет заявку на добавление/удаление трека в плейлист.",
+      "usage": "approve <suggestion id> [comment]",
+      "help": "Одобряет заявку на добавление/удаление трека в плейлист радио. Работает в личных сообщениях. Доступно только <@195637386221191170> и <@375722626636578816>",
+      "required_level": 0,
+      "has_cooldown": false,
+      "cooldown_rate": 0,
+      "cooldown_per_second": 0,
+      "cooldown_type": "None",
+      "hidden": true
+    },
+    "reject": {
+      "name": "reject",
+      "aliases": [
+        "отказать"
+      ],
+      "brief": "Отклоняет заявку на добавление/удаление трека в плейлист.",
+      "description": "Отклоняет заявку на добавление/удаление трека в плейлист.",
+      "usage": "reject <suggestion id> [comment]",
+      "help": "Отклоняет заявку на добавление/удаление трека в плейлист радио. Работает в личных сообщениях. Доступно только <@195637386221191170> и <@375722626636578816>",
+      "required_level": 0,
+      "has_cooldown": false,
+      "cooldown_rate": 0,
+      "cooldown_per_second": 0,
+      "cooldown_type": "None",
+      "hidden": true
+    },
+    "blacklist": {
+      "name": "blacklist",
+      "aliases": [
+        "blockuser"
+      ],
+      "brief": "Блокировка пользователя для ограничения доступа к боту.",
+      "description": "Блокирует пользователю доступ к командам бота.",
+      "usage": "blacklist <user>",
+      "help": "Добавляет пользователя в чёрный список, блокирует ему доступ к командам. Доступно только разработчику бота.",
+      "required_level": 0,
+      "has_cooldown": false,
+      "cooldown_rate": 0,
+      "cooldown_per_second": 0,
+      "cooldown_type": "None",
+      "hidden": true
+    },
+    "whitelist": {
+      "name": "whitelist",
+      "aliases": [
+        "unblockuser"
+      ],
+      "brief": "Убирает пользователя из чёрного списка.",
+      "description": "Снимает блокировку пользователя.",
+      "usage": "whitelist <user>",
+      "help": "Убирает пользователя из чёрного списка, возвращает ему доступ к командам. Доступно только разработчику бота.",
+      "required_level": 0,
+      "has_cooldown": false,
+      "cooldown_rate": 0,
+      "cooldown_per_second": 0,
+      "cooldown_type": "None",
+      "hidden": true
+    },
+    "echo": {
+      "name": "echo",
+      "aliases": [
+        "say"
+      ],
+      "brief": "Отправка собщений от имени бота.",
+      "description": "Отправляет собщение от имени бота в указанный канал.",
+      "usage": "echo <channel> <message>",
+      "help": "Отправляет сообщение от имени бота в указанный канал. Возможна отправка медиафайлов (не более 8 мб). Доступно только разработчику бота.",
+      "required_level": 0,
+      "has_cooldown": false,
+      "cooldown_rate": 0,
+      "cooldown_per_second": 0,
+      "cooldown_type": "None",
+      "hidden": true
+    },
+    "setrep": {
+      "name": "setrep",
+      "aliases": [
+        "setreputation"
+      ],
+      "brief": "Изменение репутации.",
+      "description": "Изменяет репутацию пользователя.",
+      "usage": "setrep <user_id> <action> <value>",
+      "help": "Изменяет репутацию пользователя: увеличивает, уменьшает, делает равным. Доступно только разработчику бота.\nРаботает только в личных сообщениях.",
+      "required_level": 0,
+      "has_cooldown": false,
+      "cooldown_rate": 0,
+      "cooldown_per_second": 0,
+      "cooldown_type": "None",
+      "hidden": true
+    },
+    "setamount": {
+      "name": "setamount",
+      "aliases": [
+        "setmsg",
+        "setmessages"
+      ],
+      "brief": "Изменение количества сообщений.",
+      "description": "Изменяет количество сообщений пользователя.",
+      "usage": "setamount <user_id> <action> <value>",
+      "help": "Изменяет количество сообщений пользователя: увеличивает, уменьшает, делает равным. Доступно только разработчику бота.\nРаботает только в личных сообщениях.",
+      "required_level": 0,
+      "has_cooldown": false,
+      "cooldown_rate": 0,
+      "cooldown_per_second": 0,
+      "cooldown_type": "None",
+      "hidden": true
+    },
+    "shutdown": {
+      "name": "shutdown",
+      "aliases": [
+        "logout"
+      ],
+      "brief": "Отключение бота.",
+      "description": "Отключает бота от сети.",
+      "usage": "shutdown",
+      "help": "Завершает все служебные процессы бота и отключает его. Доступно только разработчику бота.",
+      "required_level": 0,
+      "has_cooldown": false,
+      "cooldown_rate": 0,
+      "cooldown_per_second": 0,
+      "cooldown_type": "None",
+      "hidden": true
+    }
+  },
+  "profanity": {
+    "swear": {
+      "name": "swear",
+      "aliases": [
+        "свир",
+        "свеар"
+      ],
+      "brief": "Наказание за обход мат-фильтра.",
+      "description": "Наказание за обход мат-фильтра с помощью не предусмотренных способов.",
+      "usage": "swear <member>",
+      "help": "Уменьшает репутацию пользователя при обходе мат-фильтра с помощью не предусмотренных способов.\nДоступно Часовым и выше.\n\n**Кулдаун:** отсутствует.\n**Необходимый уровень:** 0",
+      "required_level": 0,
+      "has_cooldown": false,
+      "cooldown_rate": 0,
+      "cooldown_per_second": 0,
+      "cooldown_type": "None",
+      "hidden": true
+    },
+    "addprofanity": {
+      "name": "addprofanity",
+      "aliases": [
+        "addswears",
+        "addcurses",
+        "addfoo"
+      ],
+      "brief": "Добавление слов в мат-фильтр.",
+      "description": "Добавляет слова в фильтр.",
+      "usage": "addprofanity <words>",
+      "help": "Обновляет мат-фильтр. Добавляет указанные слова в словарь.\nДоступно только разработчику бота.",
+      "required_level": 0,
+      "has_cooldown": false,
+      "cooldown_rate": 0,
+      "cooldown_per_second": 0,
+      "cooldown_type": "None",
+      "hidden": true
+    },
+    "delprofanity": {
+      "name": "delprofanity",
+      "aliases": [
+        "delswears",
+        "delcurses",
+        "delfoo"
+      ],
+      "brief": "Удаление слов из мат-фильтра.",
+      "description": "Удаляет слова из фильтра.",
+      "usage": "delprofanity <words>",
+      "help": "Обновляет мат-фильтр. Удаляет указанные слова из словаря.\nДоступно только разработчику бота.",
+      "required_level": 0,
+      "has_cooldown": false,
+      "cooldown_rate": 0,
+      "cooldown_per_second": 0,
+      "cooldown_type": "None",
+      "hidden": true
+    }
+  },
+  "purchases_handler": {
+    "addvbucks": {
+      "name": "addvbucks",
+      "aliases": [],
+      "brief": "Добавление В-Баксов.",
+      "description": "Увеличивает счётчик потраченных В-Баксов.",
+      "usage": "addvbucks <user_id> <amount> [item]",
+      "help": "Увеличивает у пользователя счётчик потраченных с тегом В-Баксов.\nДоступно только разработчику.\n\n**Кулдаун:** отсутствует.\n**Необходимый уровень:** 0",
+      "required_level": 0,
+      "has_cooldown": false,
+      "cooldown_rate": 0,
+      "cooldown_per_second": 0,
+      "cooldown_type": "None",
+      "hidden": true
+    },
+    "addrubles": {
+      "name": "addrubles",
+      "aliases": [],
+      "brief": "Добавление рублей.",
+      "description": "Увеличивает счётчик потраченных рублей.",
+      "usage": "addrubles <user_id> <amount> [item]",
+      "help": "Увеличивает у пользователя счётчик потраченных рублей на покупки с тегом/донаты автору.\nДоступно только разработчику.\n\n**Кулдаун:** отсутствует.\n**Необходимый уровень:** 0",
+      "required_level": 0,
+      "has_cooldown": false,
+      "cooldown_rate": 0,
+      "cooldown_per_second": 0,
+      "cooldown_type": "None",
+      "hidden": true
+    },
+    "resetpurchases": {
+      "name": "resetpurchases",
+      "aliases": [],
+      "brief": "Сброс покупок.",
+      "description": "Сбрасывает статистику покупок.",
+      "usage": "resetpurchases <user_id> [reason]",
+      "help": "Сбрасывает статистику покупок пользователя, предварительно сделав дамп данных.\nДоступно только разработчику.\n\n**Кулдаун:** отсутствует.\n**Необходимый уровень:** 0",
+      "required_level": 0,
+      "has_cooldown": false,
+      "cooldown_rate": 0,
+      "cooldown_per_second": 0,
+      "cooldown_type": "None",
+      "hidden": true
+    },
+    "purchases": {
+      "name": "purchases",
+      "aliases": [
+        "покупки"
+      ],
+      "brief": "Просмотр покупок с тегом.",
+      "description": "Отображает список ваших покупок с тегом.",
+      "usage": "purchases",
+      "help": "Команда для просмотра покупок, которые вы совершили с нашим тегом **FNFUN**. Список пополняется по мере того, как вы присылаете скриншоты покупок в канал <#546408250158088192>\nРаботает только на сервере в канале <#604621910386671616>.\n\n**Кулдаун:** отсутствует.\n**Необходимый уровень:** 0",
+      "required_level": 0,
+      "has_cooldown": false,
+      "cooldown_rate": 0,
+      "cooldown_per_second": 0,
+      "cooldown_type": "None",
+      "hidden": false
+    },
+    "faq": {
+      "name": "faq",
+      "aliases": [
+        "почему"
+      ],
+      "brief": "Правила засчитывания покупок.",
+      "description": "Правила засчитывания покупок с тегом.",
+      "usage": "faq",
+      "help": "Правила засчитывания покупок с тегом. Ответы на часто задаваемые вопросы о покупках.\nРаботает только на сервере.\n\n**Кулдаун:** отсутствует.\n**Необходимый уровень:** 0",
+      "required_level": 0,
+      "has_cooldown": false,
+      "cooldown_rate": 0,
+      "cooldown_per_second": 0,
+      "cooldown_type": "None",
+      "hidden": false
+    }
+  },
+  "reactions": {
+    "addreactionrole": {
+      "name": "addreactionrole",
+      "aliases": [
+        "addreactrole",
+        "addreaction",
+        "addreact"
+      ],
+      "brief": "Добавление роли за реакцию.",
+      "description": "Добавляет в базу данных реакцию, за которую выдаётся роль.",
+      "usage": "addreactionrole <channel> <message id> <emoji> <role>",
+      "help": "Добавляет к сообщению реакция, за нажатие на которую будет выдаваться указанная роль.\nДоступно только администраторам сервера.\n\n**Кулдаун:** отсутствует.\n**Необходимый уровень:** 0",
+      "required_level": 0,
+      "has_cooldown": false,
+      "cooldown_rate": 0,
+      "cooldown_per_second": 0,
+      "cooldown_type": "None",
+      "hidden": true
+    },
+    "removereactionrole": {
+      "name": "removereactionrole",
+      "aliases": [
+        "removereactrole",
+        "removereaction",
+        "removereact"
+      ],
+      "brief": "Удаление роли за реакцию.",
+      "description": "Удаляет из базы данных реакцию, за которую выдаётся роль.",
+      "usage": "removereactionrole <message id> <emoji>",
+      "help": "Удаляет под сообщением и из базы данных реакцию, за которую выдаётся роль.\nДоступно только администраторам сервера.\n\n**Кулдаун:** отсутствует.\n**Необходимый уровень:** 0",
+      "required_level": 0,
+      "has_cooldown": false,
+      "cooldown_rate": 0,
+      "cooldown_per_second": 0,
+      "cooldown_type": "None",
+      "hidden": true
+    }
+  },
+  "user_stats": {
+    "profile": {
+      "name": "profile",
+      "aliases": [
+        "stats",
+        "account",
+        "профиль"
+      ],
+      "brief": "Отображает профиль пользователя с его статистикой на сервере.",
+      "description": "Возможность просмотреть статистику на сервере.",
+      "usage": "profile [member]",
+      "help": "Отображает профиль пользователя с его статистикой на сервере. Чужую статистику можно просматривать, только если профиль запрашиваемого пользователя открыт.\nРаботает только на сервере в канале <#604621910386671616>.\n\n**Кулдаун:** отсутствует.\n**Необходимый уровень:** 0",
+      "required_level": 0,
+      "has_cooldown": false,
+      "cooldown_rate": 0,
+      "cooldown_per_second": 0,
+      "cooldown_type": "None",
+      "hidden": false
+    },
+    "setbio": {
+      "name": "setbio",
+      "aliases": [
+        "биография",
+        "bioset",
+        "aboutme"
+      ],
+      "brief": "Измените свою биографию так, как вам угодно.",
+      "description": "Укажите вашу биографию, которая отображается в карточке пользователя.",
+      "usage": "setbio <ваша биография>",
+      "help": "Команда для изменения биографии пользователя, которая отображается в его профиле. Максимальная допустимая длина биографии - 255 символов.\nЕсли при вызове команды текст биографии не указан, производится её сброс с подтверждением.\nРаботает только на сервере в канале <#604621910386671616>.\n\n**Кулдаун:** отсутствует.\n**Необходимый уровень:** 0",
+      "required_level": 0,
+      "has_cooldown": false,
+      "cooldown_rate": 0,
+      "cooldown_per_second": 0,
+      "cooldown_type": "None",
+      "hidden": false
+    },
+    "setprivacy": {
+      "name": "setprivacy",
+      "aliases": [
+        "приватность",
+        "privacy"
+      ],
+      "brief": "Измените настройку приватности вашего профиля.",
+      "description": "Настройка приватности для просмотра вашего профиля другими пользователями.",
+      "usage": "setprivacy",
+      "help": "Команда для изменения настройки приватности профиля пользователя.\nРаботает только на сервере в канале <#604621910386671616>.\n\n**Кулдаун:** отсутствует.\n**Необходимый уровень:** 0",
+      "required_level": 0,
+      "has_cooldown": false,
+      "cooldown_rate": 0,
+      "cooldown_per_second": 0,
+      "cooldown_type": "None",
+      "hidden": false
+    },
+    "amount": {
+      "name": "amount",
+      "aliases": [
+        "сообщения"
+      ],
+      "brief": "Количество ваших сообщений на сервере.",
+      "description": "Команда для просмотра количества ваших сообщений на сервере.",
+      "usage": "amount",
+      "help": "Команда для просмотра количества написанных вами сообщений.\n**Внимание!** В подсчёте не участвуют сообщения, написанные в каналах <#546416181871902730>, <#604621910386671616>, <#546411393239220233>.\nРаботает только на сервере в канале <#604621910386671616>.\n\n**Кулдаун:** отсутствует.\n**Необходимый уровень:** 0",
+      "required_level": 0,
+      "has_cooldown": false,
+      "cooldown_rate": 0,
+      "cooldown_per_second": 0,
+      "cooldown_type": "None",
+      "hidden": false
+    },
+    "myrep": {
+      "name": "myrep",
+      "aliases": [
+        "моярепутация"
+      ],
+      "brief": "Количество ваших очков репутации.",
+      "description": "Команда для просмотра количества ваших ваших очков репутации на сервере.",
+      "usage": "myrep",
+      "help": "Команда для просмотра количества ваших очков репутации.\nУзнать принцип работы системы репутации можно по команде `+rep`\nРаботает только на сервере в канале <#604621910386671616>.\n\n**Кулдаун:** отсутствует.\n**Необходимый уровень:** 0",
+      "required_level": 0,
+      "has_cooldown": false,
+      "cooldown_rate": 0,
+      "cooldown_per_second": 0,
+      "cooldown_type": "None",
+      "hidden": false
+    },
+    "rep": {
+      "name": "rep",
+      "aliases": [
+        "реп",
+        "репутация"
+      ],
+      "brief": "Принцип действия системы репутации.",
+      "description": "Описывает, как работает система репутации и для чего она нужна.",
+      "usage": "rep",
+      "help": "Принцип работы системы репутации. Объяснение, что такое репутация и зачем она нужна.\nРаботает только на сервере в канале <#604621910386671616>.\n\n**Кулдаун:** отсутствует.\n**Необходимый уровень:** 0",
+      "required_level": 0,
+      "has_cooldown": false,
+      "cooldown_rate": 0,
+      "cooldown_per_second": 0,
+      "cooldown_type": "None",
+      "hidden": false
+    }
+  },
+  "peelyde": {
+    "upcoming": {
+      "name": "upcoming",
+      "aliases": [
+        "fnupcoming",
+        "fnleaks"
+      ],
+      "brief": "Отображает картинку со сливами обновления Fortnite или недавно расшифрованных предметов.",
+      "description": "Просмотр сливов Fortnite.",
+      "usage": "upcoming [full]",
+      "help": "Команда для просмотра сливов Fortnite. При использовании ключа `full` отображает полную картинку сливов последнего обновления, без него отображаются только недавно расшифрованные предметы.\nРаботает только на сервере.\n\n**Кулдаун:** отсутствует.\n**Необходимый уровень:** 0",
+      "required_level": 0,
+      "has_cooldown": false,
+      "cooldown_rate": 0,
+      "cooldown_per_second": 0,
+      "cooldown_type": "None",
+      "hidden": false
+    },
+    "fnseason": {
+      "name": "fnseason",
+      "aliases": [
+        "seasonfn",
+        "fortseason"
+      ],
+      "brief": "Отображает продолжительность текущего сезона Королевской битвы.",
+      "description": "Просмотр продолжительности текущего сезона Королевской битвы в виде прогресс бара.",
+      "usage": "fnseason",
+      "help": "Команда для просмотра продолжительности текущего сезона Королевской битвы в виде прогресс бара.\nРаботает только на сервере.\n\n**Кулдаун:** отсутствует.\n**Необходимый уровень:** 0",
+      "required_level": 0,
+      "has_cooldown": false,
+      "cooldown_rate": 0,
+      "cooldown_per_second": 0,
+      "cooldown_type": "None",
+      "hidden": false
+    }
+  },
+  "music_player": {
+    "connect": {
+      "name": "connect",
+      "aliases": [
+        "summon"
+      ],
+      "brief": "Подключение к голосовому каналу.",
+      "description": "Бот подключается к голосовому каналу.",
+      "usage": "connect [channel]",
+      "help": "Бот подключается к голосовому каналу для воспроизведения музыки.\nРаботает только в канале <#546411393239220233>\n\n**Кулдаун:** отсутствует.\n**Необходимый уровень:** 0",
+      "required_level": 0,
+      "has_cooldown": false,
+      "cooldown_rate": 0,
+      "cooldown_per_second": 0,
+      "cooldown_type": "None",
+      "hidden": false
+    },
+    "play": {
+      "name": "play",
+      "aliases": [
+        "p"
+      ],
+      "brief": "Добавление композиций в очередь воспроизведения.",
+      "description": "Добавляет трек или плейлист в очередь воспроизведения.",
+      "usage": "play <track name or url>",
+      "help": "Команда для добавления треков в очередь воспроизведения. Вы можете указать как название композиции, так и прямую ссылку на трек. Поддерживаются ссылки на YouTube, SoundCloud, Twitch. Доступно также воспроизведение по прямой HTTP ссылке на звуковой файл. **Spotify не поддерживается.**\n**Команда не предназначена для отмены паузы. Чтобы продолжить воспроизведение после паузы, используйте команду `resume`.**\nРаботает только в канале <#546411393239220233>\n\n**Кулдаун:** отсутствует.\n**Необходимый уровень:** 0",
+      "required_level": 0,
+      "has_cooldown": false,
+      "cooldown_rate": 0,
+      "cooldown_per_second": 0,
+      "cooldown_type": "None",
+      "hidden": false
+    },
+    "pause": {
+      "name": "pause",
+      "aliases": [],
+      "brief": "Пауза воспроизведения.",
+      "description": "Приостанавливает воспроизведение.",
+      "usage": "pause",
+      "help": "Приостанавливает воспроизведение текущего трека. Для запуска трека после паузы используйте `resume`.\nЕсли поставить паузу желает не администратор или DJ, и в голосовой комнате находится несколько человек, запускается процесс голосования. В случае его успешного завершения, плеер переходит в режим паузы.\nРаботает только в канале <#546411393239220233>\n\n**Кулдаун:** отсутствует.\n**Необходимый уровень:** 0",
+      "required_level": 0,
+      "has_cooldown": false,
+      "cooldown_rate": 0,
+      "cooldown_per_second": 0,
+      "cooldown_type": "None",
+      "hidden": false
+    },
+    "resume": {
+      "name": "resume",
+      "aliases": [],
+      "brief": "Продолжение воспроизведения.",
+      "description": "Запуск воспроизведения после паузы.",
+      "usage": "resume",
+      "help": "Продолжает воспроизведение после паузы.\nЕсли продолжить воспроизведение желает не администратор или DJ, и в голосовой комнате находится несколько человек, запускается процесс голосования. В случае его успешного завершения, пауза отменяется, начинается проигрывание музыки.\nРаботает только в канале <#546411393239220233>\n\n**Кулдаун:** отсутствует.\n**Необходимый уровень:** 0",
+      "required_level": 0,
+      "has_cooldown": false,
+      "cooldown_rate": 0,
+      "cooldown_per_second": 0,
+      "cooldown_type": "None",
+      "hidden": false
+    },
+    "skip": {
+      "name": "skip",
+      "aliases": [
+        "s"
+      ],
+      "brief": "Пропуск трека.",
+      "description": "Пропускает текущий трек.",
+      "usage": "skip",
+      "help": "Пропускает трек, который сейчас играет, запускает следующую песню в плейлисте.\nЕсли пропустить трек желает не администратор или DJ, и в голосовой комнате находится несколько человек, запускается процесс голосования. В случае его успешного завершения, плеер пропускает трек.\nРаботает только в канале <#546411393239220233>\n\n**Кулдаун:** отсутствует.\n**Необходимый уровень:** 0",
+      "required_level": 0,
+      "has_cooldown": false,
+      "cooldown_rate": 0,
+      "cooldown_per_second": 0,
+      "cooldown_type": "None",
+      "hidden": false
+    },
+    "stop": {
+      "name": "stop",
+      "aliases": [
+        "teardown"
+      ],
+      "brief": "Останавливает плеер.",
+      "description": "Полностью останавливает и сбрасывает музыкальный плеер.",
+      "usage": "stop",
+      "help": "Останавливает музыкальный плеер, очищает очередь воспроизведения, бот покидает голосовой канал.\nЕсли остановить плеер желает не администратор или DJ, и в голосовой комнате находится несколько человек, запускается процесс голосования. В случае его успешного завершения, плеер останавливается.\nРаботает только в канале <#546411393239220233>\n\n**Кулдаун:** отсутствует.\n**Необходимый уровень:** 0",
+      "required_level": 0,
+      "has_cooldown": false,
+      "cooldown_rate": 0,
+      "cooldown_per_second": 0,
+      "cooldown_type": "None",
+      "hidden": false
+    },
+    "volume": {
+      "name": "volume",
+      "aliases": [
+        "vol"
+      ],
+      "brief": "Изменение громкости.",
+      "description": "Изменение громкости воспроизведения.",
+      "usage": "volume <0-100>",
+      "help": "Изменение громкости выходного аудиосигнала. Допустимый диапазон: от 1 до 100.\nТолько администраторы и DJ могут менять громкость.\nРаботает только в канале <#546411393239220233>\n\n**Кулдаун:** отсутствует.\n**Необходимый уровень:** 0",
+      "required_level": 0,
+      "has_cooldown": false,
+      "cooldown_rate": 0,
+      "cooldown_per_second": 0,
+      "cooldown_type": "None",
+      "hidden": false
+    },
+    "shuffle": {
+      "name": "shuffle",
+      "aliases": [
+        "mix"
+      ],
+      "brief": "Перемешивание плейлиста.",
+      "description": "Перемешивание очереди воспроизведения.",
+      "usage": "shuffle",
+      "help": "Бот перемешивает очередь воспроизведения.\nЕсли перемешать очередь желает не администратор или DJ, и в голосовой комнате находится несколько человек, запускается процесс голосования. В случае его успешного завершения, очередь перемешивается.\nРаботает только в канале <#546411393239220233>\n\n**Кулдаун:** отсутствует.\n**Необходимый уровень:** 0",
+      "required_level": 0,
+      "has_cooldown": false,
+      "cooldown_rate": 0,
+      "cooldown_per_second": 0,
+      "cooldown_type": "None",
+      "hidden": false
+    },
+    "equalizer": {
+      "name": "equalizer",
+      "aliases": [
+        "eq"
+      ],
+      "brief": "Эквалайзер.",
+      "description": "Изменение настроек эквалайзера.",
+      "usage": "eq <flat/boost/metal/piano>",
+      "help": "Измените настройки эквалайзера так, как вам угодно. Доступные пресеты: **flat**, **boost**, **metal**, **piano**.\nТолько администраторы и DJ могут менять настройки эквалайзера.\nРаботает только в канале <#546411393239220233>\n\n**Кулдаун:** отсутствует.\n**Необходимый уровень:** 0",
+      "required_level": 0,
+      "has_cooldown": false,
+      "cooldown_rate": 0,
+      "cooldown_per_second": 0,
+      "cooldown_type": "None",
+      "hidden": false
+    },
+    "queue": {
+      "name": "queue",
+      "aliases": [
+        "q",
+        "que"
+      ],
+      "brief": "Очередь воспроизведения.",
+      "description": "Просмотр очереди воспроизведения.",
+      "usage": "queue",
+      "help": "Отображение очереди воспроизведения.\nРаботает только в канале <#546411393239220233>\n\n**Кулдаун:** отсутствует.\n**Необходимый уровень:** 0",
+      "required_level": 0,
+      "has_cooldown": false,
+      "cooldown_rate": 0,
+      "cooldown_per_second": 0,
+      "cooldown_type": "None",
+      "hidden": false
+    },
+    "nowplaying": {
+      "name": "nowplaying",
+      "aliases": [
+        "np"
+      ],
+      "brief": "Музыкальный контроллер.",
+      "description": "Обновление музыкального контроллера.",
+      "usage": "np",
+      "help": "Обновите музыкальный контроллер, если он отображает старую/некорректную информацию.\nРаботает только в канале <#546411393239220233>\n\n**Кулдаун:** отсутствует.\n**Необходимый уровень:** 0",
+      "required_level": 0,
+      "has_cooldown": false,
+      "cooldown_rate": 0,
+      "cooldown_per_second": 0,
+      "cooldown_type": "None",
+      "hidden": false
+    },
+    "swap_dj": {
+      "name": "swap_dj",
+      "aliases": [],
+      "brief": "Смена DJ.",
+      "description": "Передача прав ди-джея.",
+      "usage": "swap_dj <member>",
+      "help": "Передаёт права ди-джея другому участнику голосового канала. Если в канале всего лишь 1 пользователь, передача прав DJ невозможна.\nТолько администраторы и DJ могут использовать эту команду.\nРаботает только в канале <#546411393239220233>\n\n**Кулдаун:** отсутствует.\n**Необходимый уровень:** 0",
+      "required_level": 0,
+      "has_cooldown": false,
+      "cooldown_rate": 0,
+      "cooldown_per_second": 0,
+      "cooldown_type": "None",
+      "hidden": false
+    }
+  }
 }
