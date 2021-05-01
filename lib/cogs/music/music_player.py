@@ -302,7 +302,7 @@ class PaginatorSource(menus.ListPageSource):
         return True
 
 
-class MusicPlayer(commands.Cog, wavelink.WavelinkMixin):
+class MusicPlayer(commands.Cog, wavelink.WavelinkMixin, name='Музыка'):
     """MusicPlayer Cog."""
 
     def __init__(self, bot: commands.Bot):

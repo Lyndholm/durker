@@ -220,7 +220,7 @@ class PaginatorSource(menus.ListPageSource):
         return True
 
 
-class GachiRadio(commands.Cog, wavelink.WavelinkMixin):
+class GachiRadio(commands.Cog, wavelink.WavelinkMixin, name='Gachi Radio'):
     """GachiRadio music Cog."""
 
     def __init__(self, bot: commands.Bot):

@@ -221,7 +221,7 @@ class PaginatorSource(menus.ListPageSource):
         return True
 
 
-class MeinRadio(commands.Cog, wavelink.WavelinkMixin):
+class MeinRadio(commands.Cog, wavelink.WavelinkMixin, name='Mein Radio'):
     """MeinRadio music Cog."""
 
     def __init__(self, bot: commands.Bot):
