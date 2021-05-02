@@ -78,15 +78,20 @@ class Help(Cog, name='Help меню'):
 
     def help_memu(self, ctx):
         hidden_cogs = ['модерация']
-        chasovoy = get(ctx.guild.roles, id=686495834241761280)
-
         commands = []
         sorted_cogs = sorted(ctx.bot.cogs, key=lambda x: translit(x, 'ru'))
         cogs = sorted_cogs.copy()
-        for cog in sorted_cogs:
-            if cog.lower() in hidden_cogs:
-                if ctx.author.top_role.position < chasovoy.position:
+        if ctx.guild:
+            chasovoy = get(ctx.guild.roles, id=686495834241761280)
+            for cog in sorted_cogs:
+                if cog.lower() in hidden_cogs:
+                    if ctx.author.top_role.position < chasovoy.position:
+                        cogs.remove(cog)
+        else:
+            for cog in sorted_cogs:
+                if cog.lower() in hidden_cogs:
                     cogs.remove(cog)
+
 
         for cog in cogs:
             if ctx.author.id == 375722626636578816:
