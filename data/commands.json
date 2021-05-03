@@ -53,6 +53,38 @@
       "cooldown_per_second": 0,
       "cooldown_type": "None",
       "hidden": false
+    },
+    "addachievement": {
+      "name": "addachievement",
+      "aliases": [
+        "addach"
+      ],
+      "brief": "Выдача достижения.",
+      "description": "Выдача достижения пользователю.",
+      "usage": "addachievement <achievement>",
+      "help": "Бот выдаёт указанное достижение пользователю.\nРаботает только на сервере в канале <#604621910386671616>.\n\n**Кулдаун:** отсутствует.\n**Необходимый уровень:** 0",
+      "required_level": 0,
+      "has_cooldown": false,
+      "cooldown_rate": 0,
+      "cooldown_per_second": 0,
+      "cooldown_type": "None",
+      "hidden": true
+    },
+    "removeachievement": {
+      "name": "removeachievement",
+      "aliases": [
+        "removeach"
+      ],
+      "brief": "Отнятие достижения.",
+      "description": "Отнятие достижения у пользователя.",
+      "usage": "removeachievement <achievement>",
+      "help": "Бот забирает указанное достижение у пользователя.\nРаботает только на сервере в канале <#604621910386671616>.\n\n**Кулдаун:** отсутствует.\n**Необходимый уровень:** 0",
+      "required_level": 0,
+      "has_cooldown": false,
+      "cooldown_rate": 0,
+      "cooldown_per_second": 0,
+      "cooldown_type": "None",
+      "hidden": true
     }
   },
   "benbot": {

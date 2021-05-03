@@ -1,15 +1,16 @@
+import json
 from datetime import datetime
 from random import choice
 from typing import Optional
 
-from discord import Color, Embed
-from discord.ext.commands import Cog, command, guild_only
+from discord import Color, Embed, Member
+from discord.ext.commands import Cog, command, guild_only, is_owner
 from discord.ext.menus import ListPageSource, MenuPages
 from loguru import logger
 
 from ..db import db
 from ..utils.lazy_paginator import paginate
-from ..utils.utils import load_commands_from_json
+from ..utils.utils import edit_user_reputation, load_commands_from_json
 
 cmd = load_commands_from_json('achievement_system')
 
@@ -67,14 +68,50 @@ class AchievementSystem(Cog, name='Система достижений'):
         for i in range(0, len(l), n):
             yield l[i:i + n]
 
-    def can_view_hidden_achievement(self, ctx, internal_id: str):
-        if ctx.author.id == self.bot.owner_ids[0]:
+    def can_view_hidden_achievement(self, user_id: int, achievement: str) -> bool:
+        if user_id == self.bot.owner_ids[0]:
             return True
+        return self.user_have_achievement(user_id, achievement)
 
-        rec = db.fetchone(['achievements_list'], 'users_stats', 'user_id', ctx.author.id)
+    def user_have_achievement(self, user_id: int, achievement: str) -> bool:
+        rec = db.fetchone(['achievements_list'], 'users_stats', 'user_id', user_id)
         data = rec[0]['user_achievements_list']
         user_achievements = [key for dic in data for key in dic.keys()]
-        return internal_id in user_achievements
+        return achievement in user_achievements
+
+    def edit_rep_for_achievement(self, target_id: int, achievement: str, action: str):
+        rep_boost = db.field(
+                   'SELECT rep_boost FROM achievements WHERE internal_id '
+                   'LIKE %s', achievement
+                )
+        edit_user_reputation(target_id, action, rep_boost)
+
+    def give_achievement(self, admin_id: int, target_id: int, achievement: str):
+        if not self.user_have_achievement(target_id, achievement):
+            data = db.fetchone(['achievements_list'], 'users_stats', 'user_id', target_id)[0]
+            transaction = {
+                achievement: {
+                    'id': len(data['user_achievements_list'])+1,
+                    'achieved_at': datetime.now().strftime('%d.%m.%Y %H:%M:%S'),
+                    'given_by': admin_id
+                    }
+                }
+            data['user_achievements_list'].append(transaction)
+            db.execute("UPDATE users_stats SET achievements_list = %s WHERE user_id = %s",
+                       json.dumps(data), target_id)
+            db.commit()
+            self.edit_rep_for_achievement(target_id, achievement, '+')
+
+    def take_achievement_away(self, target_id: int, achievement: str):
+        if self.user_have_achievement(target_id, achievement):
+            data = db.fetchone(['achievements_list'], 'users_stats', 'user_id', target_id)[0]
+            temp = data['user_achievements_list']
+            new_list = [a for a in temp if achievement not in list(a.keys())]
+            data['user_achievements_list'] = new_list
+            db.execute("UPDATE users_stats SET achievements_list = %s WHERE user_id = %s",
+                       json.dumps(data), target_id)
+            db.commit()
+            self.edit_rep_for_achievement(target_id, achievement, '-')
 
     def advanced_achievements_memu(self, ctx, data):
         achievements = []
@@ -225,7 +262,7 @@ class AchievementSystem(Cog, name='Система достижений'):
                 if data[8] is False:
                     await paginate(ctx, self.achievement_helper(ctx, data))
                 else:
-                    if self.can_view_hidden_achievement(ctx, internal_id):
+                    if self.can_view_hidden_achievement(ctx.author.id, internal_id):
                         await paginate(ctx, self.achievement_helper(ctx, data))
                     else:
                         await ctx.reply('🕵️ Достижение скрыто.', mention_author=False)
@@ -234,6 +271,95 @@ class AchievementSystem(Cog, name='Система достижений'):
                 await ctx.reply('4️⃣0️⃣4️⃣ Достижение не найдено.', mention_author=False)
         else:
             await ctx.reply('📒 Укажите название достижения.', mention_author=False)
+
+
+    @command(name=cmd["addachievement"]["name"], aliases=cmd["addachievement"]["aliases"],
+            brief=cmd["addachievement"]["brief"],
+            description=cmd["addachievement"]["description"],
+            usage=cmd["addachievement"]["usage"],
+            help=cmd["addachievement"]["help"],
+            hidden=cmd["addachievement"]["hidden"], enabled=True)
+    @is_owner()
+    @guild_only()
+    @logger.catch
+    async def add_achievement_to_user_command(self, ctx, member: Optional[Member], *, achievement: Optional[str]):
+        if member is None:
+            await ctx.reply(
+                '📝 Укажите пользователя, которому необходимо выдать достижение.',
+                mention_author=False
+            )
+            return
+        if achievement:
+            data = db.record(
+                "SELECT name, internal_id FROM achievements WHERE "
+                "to_tsvector(internal_id) @@ to_tsquery(''%s'')",
+                achievement)
+            if data is not None:
+                if not self.user_have_achievement(member.id, achievement):
+                    self.give_achievement(ctx.author.id, member.id, achievement)
+                    await ctx.reply(
+                        f'✅ Достижение **{data[0]}** успешно выдано пользователю **{member.display_name}**.',
+                        mention_author=False
+                    )
+                else:
+                    await ctx.reply(
+                        '⛔ У пользователя уже есть указанное достижение. Повторная выдача невозможна.',
+                        mention_author=False
+                    )
+            else:
+                await ctx.reply(
+                    '4️⃣0️⃣4️⃣ Указанное достижение не найдено, выдача невозможна.',
+                    mention_author=False
+                )
+        else:
+            await ctx.reply(
+                '📒 Укажите название достижения.', mention_author=False
+            )
+
+
+    @command(name=cmd["removeachievement"]["name"], aliases=cmd["removeachievement"]["aliases"],
+            brief=cmd["removeachievement"]["brief"],
+            description=cmd["removeachievement"]["description"],
+            usage=cmd["removeachievement"]["usage"],
+            help=cmd["removeachievement"]["help"],
+            hidden=cmd["removeachievement"]["hidden"], enabled=True)
+    @is_owner()
+    @guild_only()
+    @logger.catch
+    async def remove_achievement_from_user_command(self, ctx, member: Optional[Member], *, achievement: Optional[str]):
+        if member is None:
+            await ctx.reply(
+                '📝 Укажите пользователя, у которого необходимо забрать достижение.',
+                mention_author=False
+            )
+            return
+        if achievement:
+            data = db.record(
+                "SELECT name, internal_id FROM achievements WHERE "
+                "to_tsvector(internal_id) @@ to_tsquery(''%s'')",
+                achievement)
+            if data is not None:
+                if self.user_have_achievement(member.id, achievement):
+                    self.take_achievement_away(member.id, achievement)
+                    await ctx.reply(
+                        f'✅ Достижение **{data[0]}** успешно отобрано у пользователя **{member.display_name}**.',
+                        mention_author=False
+                    )
+                else:
+                    await ctx.reply(
+                        '⛔ У пользователя нет указанного достижения, забрать его невозможно.',
+                        mention_author=False
+                    )
+            else:
+                await ctx.reply(
+                    '4️⃣0️⃣4️⃣ Указанное достижение не найдено, забрать его невозможно.',
+                    mention_author=False
+                )
+        else:
+            await ctx.reply(
+                '📒 Укажите название достижения.', mention_author=False
+            )
+
 
     @Cog.listener()
     async def on_ready(self):
