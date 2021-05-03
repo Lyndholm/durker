@@ -100,8 +100,10 @@ async def paginate(ctx, input_):
                     await pages.remove_reaction(r[4], ctx.author)
                 except discord.Forbidden:
                     pass
-
-                await pages.edit(embed=input_[current])
+                try:
+                    await pages.edit(embed=input_[current])
+                except IndexError:
+                    pass
             else:
                 try:
                     await pages.clear_reactions()

@@ -1,4 +1,60 @@
 {
+  "achievement_system": {
+    "achieve": {
+      "name": "achieve",
+      "aliases": [
+        "achinfo",
+        "howachieve"
+      ],
+      "brief": "Принцип действия системы достижений.",
+      "description": "Описывает, как работает система достижений и для чего она нужна.",
+      "usage": "achieve",
+      "help": "Принцип действия системы достижений. Объяснение, что такое достижения и зачем они нужны.\nРаботает только на сервере в канале <#604621910386671616>.\n\n**Кулдаун:** отсутствует.\n**Необходимый уровень:** 0",
+      "required_level": 0,
+      "has_cooldown": false,
+      "cooldown_rate": 0,
+      "cooldown_per_second": 0,
+      "cooldown_type": "None",
+      "hidden": false
+    },
+    "achievements": {
+      "name": "achievements",
+      "aliases": [
+        "achlist",
+        "достижения",
+        "ачивки"
+      ],
+      "brief": "Список достижений.",
+      "description": "Список достижений, доступных к получению.",
+      "usage": "achievements",
+      "help": "Отображет список всех достижений, которые участники могут получить.\nРаботает только на сервере в канале <#604621910386671616>.\n\n**Кулдаун:** отсутствует.\n**Необходимый уровень:** 0",
+      "required_level": 0,
+      "has_cooldown": false,
+      "cooldown_rate": 0,
+      "cooldown_per_second": 0,
+      "cooldown_type": "None",
+      "hidden": false
+    },
+    "getinfo": {
+      "name": "getinfo",
+      "aliases": [
+        "getachievement",
+        "findachievement",
+        "findach",
+        "найтидостижение"
+      ],
+      "brief": "Поиск достижения.",
+      "description": "Поиск и отображение информации о конкретном достижении.",
+      "usage": "getinfo <achievement>",
+      "help": "Бот осуществляет поиск указанного достижения. В случае успеха, отображает об ачивке подробную информацию.\nРаботает только на сервере в канале <#604621910386671616>.\n\n**Кулдаун:** отсутствует.\n**Необходимый уровень:** 0",
+      "required_level": 0,
+      "has_cooldown": false,
+      "cooldown_rate": 0,
+      "cooldown_per_second": 0,
+      "cooldown_type": "None",
+      "hidden": false
+    }
+  },
   "benbot": {
     "benbotstatus": {
       "name": "benbotstatus",

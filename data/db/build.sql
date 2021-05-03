@@ -1,11 +1,14 @@
 CREATE TABLE public.achievements
 (
-    id serial,
+    id bigserial,
+    internal_id text DEFAULT 'AID_000_Placeholder_0',
     name text DEFAULT 'Achievement name placeholder',
     description text DEFAULT 'Achievement description placeholder',
-    thumbnail text DEFAULT 'https://cdn.discordapp.com/attachments/774698479981297664/774700936958312468/placeholder.png',
-    rep_boost integer DEFAULT 0,
-    PRIMARY KEY (id)
+    image text DEFAULT 'https://cdn.discordapp.com/attachments/774698479981297664/838350972027273246/Achievement_Token_Placeholder.png',
+    introduction_version text DEFAULT '0.0.0',
+    rep_boost bigint DEFAULT 0,
+    granted_automatically boolean DEFAULT FALSE,
+    hidden boolean DEFAULT FALSE
 );
 
 ALTER TABLE public.achievements
