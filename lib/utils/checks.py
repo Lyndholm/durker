@@ -71,7 +71,7 @@ def can_manage_radio():
     return commands.check(predicate)
 
 
-def can_manage_suggestions():
+def can_manage_radio_suggestions():
     """
     A check() that checks if member can manage radio suggestions.
     """

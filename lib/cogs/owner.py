@@ -7,7 +7,7 @@ from discord import Color, Embed, User
 from discord.ext.commands import Cog, Greedy, command, dm_only, is_owner
 
 from ..db import db
-from ..utils.checks import can_manage_suggestions
+from ..utils.checks import can_manage_radio_suggestions
 from ..utils.utils import (edit_user_messages_count, edit_user_reputation,
                            load_commands_from_json)
 
@@ -302,7 +302,7 @@ class Owner(Cog, name='Команды разработчика'):
             help=cmd["approve"]["help"],
             hidden=cmd["approve"]["hidden"], enabled=True)
     @dm_only()
-    @can_manage_suggestions()
+    @can_manage_radio_suggestions()
     async def approve_suggestion_command(self, ctx, suggestion_id: int = None, *, comment: str = 'Отсутсвует.'):
         if suggestion_id is None:
             return await ctx.send('Укажите номер заявки.')
@@ -316,7 +316,7 @@ class Owner(Cog, name='Команды разработчика'):
             help=cmd["reject"]["help"],
             hidden=cmd["reject"]["hidden"], enabled=True)
     @dm_only()
-    @can_manage_suggestions()
+    @can_manage_radio_suggestions()
     async def reject_suggestion_command(self, ctx, suggestion_id: int = None, *, comment: str = 'Отсутсвует.'):
         if suggestion_id is None:
             return await ctx.send('Укажите номер заявки.')
