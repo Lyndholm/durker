@@ -1,5 +1,6 @@
 import json
 from datetime import datetime
+from operator import itemgetter
 from random import choice
 from typing import Optional
 
@@ -32,7 +33,7 @@ class AchievementMenu(ListPageSource):
     async def write_page(self, menu, offset, fields=[]):
         len_data = len(self.entries)
 
-        embed = Embed(color=self.ctx.author.color).set_thumbnail(url=(self.thumbnails))
+        embed = Embed(color=self.ctx.author.color).set_thumbnail(url=choice(self.thumbnails))
         embed.set_footer(text=f'{offset} — {min(len_data, offset+self.per_page-1)} из {len_data} достижений'
                               f' | {self.ctx.prefix}getinfo <achievement> для подробностей о достижении')
         if self.overview_type == 'global':
@@ -48,12 +49,14 @@ class AchievementMenu(ListPageSource):
     async def format_page(self, menu, entries):
         offset = (menu.current_page*self.per_page) + 1
         fields = []
-        table = ('\n'.join(f'\n> **{entry[2]}**\n> **Описание:** {entry[3]}'
-                for idx, entry in enumerate(entries)))
 
         if self.overview_type == 'global':
-            fields.append(('Достижения:', table))
+            table = ('\n'.join(f'\n> **{entry[2]}**\n> {entry[3]}'
+                    for idx, entry in enumerate(entries)))
+            fields.append(('Достижения, которые можно получить:', table))
         elif self.overview_type == 'user':
+            table = ('\n'.join(f'\n> **{entry[2]}**\n> **Дата получения:** {entry[-1][:-3]} МСК'
+                    for idx, entry in enumerate(entries)))
             fields.append(('Открытые достижения:', table))
 
         return await self.write_page(menu, offset, fields)
@@ -134,7 +137,31 @@ class AchievementSystem(Cog, name='Система достижений'):
             achievements.append(embed)
 
         for idx, embed in enumerate(achievements, 1):
-            embed.set_footer(text=f'Достижение №{idx} из {len(achievements)}')
+            embed.set_footer(text=f'Достижение {idx} из {len(achievements)}')
+
+        return achievements
+
+    def advanced_user_achievements_memu(self, ctx, data):
+        achievements = []
+
+        for ach_chunks in list(self.chuncks(data, 1)):
+            ach_chunks = ach_chunks[0]
+            embed = Embed(
+                title=f'🏅 {ach_chunks[2]}',
+                color=ctx.author.color,
+                description=ach_chunks[3]
+            ).set_thumbnail(url=ach_chunks[4]
+            ).set_author(name=f'Достижения {ctx.author.display_name}', icon_url=ctx.author.avatar_url)
+            fields = [
+                ('Дата получения:', ach_chunks[-1][:-3] + ' МСК', True)
+            ]
+
+            for name, value, inline in fields:
+                embed.add_field(name=name, value=value, inline=inline)
+            achievements.append(embed)
+
+        for idx, embed in enumerate(achievements, 1):
+            embed.set_footer(text=f'Достижение {idx} из {len(achievements)}')
 
         return achievements
 
@@ -160,6 +187,31 @@ class AchievementSystem(Cog, name='Система достижений'):
 
         return [embed]
 
+    async def display_method(self, ctx) -> str:
+        reactions = ['1️⃣', '2️⃣']
+        embed = Embed(
+            title='💠 Выбор метода отображения',
+            color=ctx.author.color,
+            timestamp=datetime.utcnow(),
+            description='**Пожалуйста, выберите метод отображения списка достижений:\n\n'
+                        '1️⃣ — подробное описание каждого достижения. 1 страница = 1 достижение.\n'
+                        '2️⃣ — краткая сводка по каждому достижению. 1 страница = 5 достижений.**'
+        )
+        message = await ctx.reply(embed=embed, mention_author=False)
+        for r in reactions:
+            await message.add_reaction(r)
+        try:
+            method, user = await self.bot.wait_for(
+                'reaction_add', timeout=120.0,
+                check=lambda method, user: user == ctx.author
+                and method.message.channel == ctx.channel
+                and method.emoji in reactions)
+        except TimeoutError:
+            await message.clear_reactions()
+            return
+        await message.delete()
+        method = "detailed" if str(method.emoji) == '1️⃣' else "briefly"
+        return method
 
     @command(name=cmd["achieve"]["name"], aliases=cmd["achieve"]["aliases"],
             brief=cmd["achieve"]["brief"],
@@ -204,30 +256,7 @@ class AchievementSystem(Cog, name='Система достижений'):
         if ctx.author.id != self.bot.owner_ids[0]:
             data = [i for i in data if i[8] is False]
 
-        reactions = ['1️⃣', '2️⃣']
-        embed = Embed(
-            title='💠 Выбор метода отображения',
-            color=ctx.author.color,
-            timestamp=datetime.utcnow(),
-            description='**Пожалуйста, выберите метод отображения списка достижений:\n\n'
-                        '1️⃣ — подробное описание каждого достижения. 1 страница = 1 достижение.\n'
-                        '2️⃣ — краткая сводка по каждому достижению. 1 страница = 5 достижений.**'
-        )
-        message = await ctx.reply(embed=embed, mention_author=False)
-        for r in reactions:
-            await message.add_reaction(r)
-        try:
-            method, user = await self.bot.wait_for(
-                'reaction_add', timeout=120.0,
-                check=lambda method, user: user == ctx.author
-                and method.message.channel == ctx.channel
-                and method.emoji in reactions)
-        except TimeoutError:
-            await message.clear_reactions()
-            return
-        await message.delete()
-        method = "detailed" if str(method.emoji) == '1️⃣' else "briefly"
-
+        method = await self.display_method(ctx)
         if method == 'detailed':
             embed = self.advanced_achievements_memu(ctx, data)
             await paginate(ctx, embed)
@@ -271,6 +300,52 @@ class AchievementSystem(Cog, name='Система достижений'):
                 await ctx.reply('4️⃣0️⃣4️⃣ Достижение не найдено.', mention_author=False)
         else:
             await ctx.reply('📒 Укажите название достижения.', mention_author=False)
+
+
+    @command(name=cmd["inventory"]["name"], aliases=cmd["inventory"]["aliases"],
+            brief=cmd["inventory"]["brief"],
+            description=cmd["inventory"]["description"],
+            usage=cmd["inventory"]["usage"],
+            help=cmd["inventory"]["help"],
+            hidden=cmd["inventory"]["hidden"], enabled=True)
+    @guild_only()
+    @logger.catch
+    async def inventory_command(self, ctx):
+        rec = db.fetchone(['achievements_list'], 'users_stats', 'user_id', ctx.author.id)
+        user_data = rec[0]['user_achievements_list']
+        if user_data:
+            user_achievements = tuple(
+                [key for dic in user_data for key in dic.keys()]
+            )
+            achievements_data = db.records(
+                'SELECT * FROM achievements WHERE internal_id IN %s',
+                user_achievements
+            )
+            achievements_data = [list(l) for l in achievements_data]
+
+            for dic in user_data:
+                achievement_id = list(dic.keys())[0]
+                for entry in achievements_data:
+                    if achievement_id in entry:
+                        entry.append(dic[achievement_id]['achieved_at'])
+            data = sorted(achievements_data, key=itemgetter(-1), reverse=True)
+
+            method = await self.display_method(ctx)
+            if method == 'detailed':
+                embed = self.advanced_user_achievements_memu(ctx, data)
+                await paginate(ctx, embed)
+            else:
+                menu = MenuPages(
+                    source=AchievementMenu(ctx, data, 'user'),
+                    clear_reactions_after=True,
+                    timeout=120.0)
+                await menu.start(ctx)
+        else:
+            await ctx.reply(
+                'У вас нет ни одного достижения. Со списком всех достижений можно ' \
+                'ознакомиться в канале <#604621910386671616> по команде ',
+                f'{ctx.prefix}achievements', mention_author=False
+            )
 
 
     @command(name=cmd["addachievement"]["name"], aliases=cmd["addachievement"]["aliases"],

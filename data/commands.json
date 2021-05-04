@@ -54,6 +54,24 @@
       "cooldown_type": "None",
       "hidden": false
     },
+    "inventory": {
+      "name": "inventory",
+      "aliases": [
+        "инвентарь",
+        "myachievements",
+        "myach"
+      ],
+      "brief": "Просмотр своих достижений.",
+      "description": "Отображает список достижений, которые есть у пользователя.",
+      "usage": "inventory",
+      "help": "Отображает список достижений, которые есть в инвентаре пользователя.\nРаботает только на сервере в канале <#604621910386671616>.\n\n**Кулдаун:** отсутствует.\n**Необходимый уровень:** 0",
+      "required_level": 0,
+      "has_cooldown": false,
+      "cooldown_rate": 0,
+      "cooldown_per_second": 0,
+      "cooldown_type": "None",
+      "hidden": false
+    },
     "addachievement": {
       "name": "addachievement",
       "aliases": [
