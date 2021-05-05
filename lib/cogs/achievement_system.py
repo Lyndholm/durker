@@ -225,7 +225,7 @@ class AchievementSystem(Cog, name='Система достижений'):
             description=f'Поздравляем! Вы заработали достижение **{data[2]}** '
                         f'на сервере **{target.guild}**\n\nПосмотреть список '
                         'своих достижений можно по команде `+inventory`.'
-        ).set_thumbnail(url=data[4]
+        ).set_thumbnail(url=data[4])
         await target.send(embed=embed)
 
     @command(name=cmd["achieve"]["name"], aliases=cmd["achieve"]["aliases"],
