@@ -213,6 +213,21 @@ class AchievementSystem(Cog, name='Система достижений'):
         method = "detailed" if str(method.emoji) == '1️⃣' else "briefly"
         return method
 
+    async def achievement_award_notification(self, achievement: str, target: Member):
+        data = db.record(
+            "SELECT * FROM achievements WHERE "
+            "to_tsvector(internal_id) @@ to_tsquery(''%s'')",
+            achievement)
+        embed = Embed(
+            title='Открыто новое достижение!',
+            color=Color.random(),
+            timestamp=datetime.utcnow(),
+            description=f'Поздравляем! Вы заработали достижение **{data[2]}** '
+                        f'на сервере **{target.guild}**\n\nПосмотреть список '
+                        'своих достижений можно по команде `+inventory`.'
+        ).set_thumbnail(url=data[4]
+        await target.send(embed=embed)
+
     @command(name=cmd["achieve"]["name"], aliases=cmd["achieve"]["aliases"],
             brief=cmd["achieve"]["brief"],
             description=cmd["achieve"]["description"],
@@ -342,9 +357,9 @@ class AchievementSystem(Cog, name='Система достижений'):
                 await menu.start(ctx)
         else:
             await ctx.reply(
-                'У вас нет ни одного достижения. Со списком всех достижений можно ' \
-                'ознакомиться в канале <#604621910386671616> по команде ',
-                f'{ctx.prefix}achievements', mention_author=False
+                'У вас нет ни одного достижения. Со списком всех достижений можно '
+                'ознакомиться в канале <#604621910386671616> по команде '
+                f'`{ctx.prefix}achievements`', mention_author=False
             )
 
 
@@ -372,6 +387,7 @@ class AchievementSystem(Cog, name='Система достижений'):
             if data is not None:
                 if not self.user_have_achievement(member.id, achievement):
                     self.give_achievement(ctx.author.id, member.id, achievement)
+                    await self.achievement_award_notification(achievement, member)
                     await ctx.reply(
                         f'✅ Достижение **{data[0]}** успешно выдано пользователю **{member.display_name}**.',
                         mention_author=False
