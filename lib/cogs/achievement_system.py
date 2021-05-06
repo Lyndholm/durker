@@ -92,6 +92,12 @@ class AchievementSystem(Cog, name='Система достижений'):
 
     def give_achievement(self, admin_id: int, target_id: int, achievement: str):
         if not self.user_have_achievement(target_id, achievement):
+            rec = db.record(
+                "SELECT id FROM achievements WHERE "
+                "to_tsvector(internal_id) @@ to_tsquery(''%s'')",
+                achievement)
+            if rec is None:
+                return
             data = db.fetchone(['achievements_list'], 'users_stats', 'user_id', target_id)[0]
             transaction = {
                 achievement: {

@@ -248,7 +248,7 @@ class Fun(Cog, name='Развлечения'):
                             for leader in leaders:
                                 leader = self.bot.get_user(int(leaders[position-1]))
                                 leader_score = event_members[str(leader.id)]['score']
-                                e.add_field(name=f"{position} место:", value=f"{leader.mention} | очки: **{leader_score}**",inline=False)
+                                e.add_field(name=f"{position} место:", value=f"{leader.mention} | Очки: **{leader_score}**",inline=False)
                                 position += 1
                             await ctx.send(embed = e)
                     except:
@@ -260,7 +260,7 @@ class Fun(Cog, name='Развлечения'):
                             for leader in leaders:
                                 leader = self.bot.get_user(int(leaders[position-1]))
                                 leader_score = event_members[str(leader.id)]['score']
-                                e.add_field(name=f"{position} место:", value=f"{leader.mention} | очки: **{leader_score}**",inline=False)
+                                e.add_field(name=f"{position} место:", value=f"{leader.mention} | Очки: **{leader_score}**",inline=False)
                                 position += 1
                             await ctx.send(embed = e)
                         return

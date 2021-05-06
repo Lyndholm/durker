@@ -176,6 +176,7 @@ class Leaderboards(Cog, name='Списки лидеров'):
     async def achievements_leaderboard_command(self, ctx):
         data = db.records("SELECT user_id, achievements_list FROM users_stats ORDER BY json_array_length(achievements_list->'user_achievements_list')")
         records = [(user_id, len(achievements['user_achievements_list'])) for user_id, achievements in data]
+        records = sorted(records, key=itemgetter(1), reverse=True)
         menu = MenuPages(source=AchievementsLeaderboardMenu(ctx, records), clear_reactions_after=True)
         await menu.start(ctx)
 
