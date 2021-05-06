@@ -1,3 +1,4 @@
+import asyncio
 import json
 from datetime import datetime
 from operator import itemgetter
@@ -206,11 +207,17 @@ class AchievementSystem(Cog, name='Система достижений'):
                 check=lambda method, user: user == ctx.author
                 and method.message.channel == ctx.channel
                 and method.emoji in reactions)
-        except TimeoutError:
+        except asyncio.TimeoutError:
             await message.clear_reactions()
             return
         await message.delete()
-        method = "detailed" if str(method.emoji) == '1️⃣' else "briefly"
+
+        if str(method.emoji) == '1️⃣':
+            method = 'detailed'
+        elif str(method.emoji) == '2️⃣':
+            method = 'briefly'
+        else:
+            method = None
         return method
 
     async def achievement_award_notification(self, achievement: str, target: Member):
@@ -270,17 +277,26 @@ class AchievementSystem(Cog, name='Система достижений'):
         data = db.records('SELECT * FROM achievements')
         if ctx.author.id != self.bot.owner_ids[0]:
             data = [i for i in data if i[8] is False]
+        if not data:
+            await ctx.reply(
+                '😳 Этого не должно было произойти, но база данных достижений пуста.'
+                '\nПожалуйста, сообщите об этом <@375722626636578816>',
+                mention_author=False
+            )
+            return
 
         method = await self.display_method(ctx)
         if method == 'detailed':
             embed = self.advanced_achievements_memu(ctx, data)
             await paginate(ctx, embed)
-        else:
+        elif method == 'briefly':
             menu = MenuPages(
                 source=AchievementMenu(ctx, data, 'global'),
                 clear_reactions_after=True,
                 timeout=120.0)
             await menu.start(ctx)
+        else:
+            return
 
 
     @command(name=cmd["getinfo"]["name"], aliases=cmd["getinfo"]["aliases"],
@@ -311,7 +327,6 @@ class AchievementSystem(Cog, name='Система достижений'):
                     else:
                         await ctx.reply('🕵️ Достижение скрыто.', mention_author=False)
             else:
-
                 await ctx.reply('4️⃣0️⃣4️⃣ Достижение не найдено.', mention_author=False)
         else:
             await ctx.reply('📒 Укажите название достижения.', mention_author=False)
@@ -349,12 +364,14 @@ class AchievementSystem(Cog, name='Система достижений'):
             if method == 'detailed':
                 embed = self.advanced_user_achievements_memu(ctx, data)
                 await paginate(ctx, embed)
-            else:
+            elif method == 'briefly':
                 menu = MenuPages(
                     source=AchievementMenu(ctx, data, 'user'),
                     clear_reactions_after=True,
                     timeout=120.0)
                 await menu.start(ctx)
+            else:
+                return
         else:
             await ctx.reply(
                 'У вас нет ни одного достижения. Со списком всех достижений можно '
