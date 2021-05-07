@@ -5,8 +5,8 @@ from operator import itemgetter
 from random import choice
 from typing import Optional
 
-from discord import Color, Embed, Member
-from discord.ext.commands import Cog, command, guild_only, is_owner
+from discord import Color, Embed, Member, Forbidden
+from discord.ext.commands import Cog, command, guild_only, is_owner, dm_only
 from discord.ext.menus import ListPageSource, MenuPages
 from loguru import logger
 
@@ -239,7 +239,10 @@ class AchievementSystem(Cog, name='Система достижений'):
                         f'на сервере **{target.guild}**\n\nПосмотреть список '
                         'своих достижений можно по команде `+inventory`.'
         ).set_thumbnail(url=data[4])
-        await target.send(embed=embed)
+        try:
+            await target.send(embed=embed)
+        except Forbidden:
+            pass
 
     @command(name=cmd["achieve"]["name"], aliases=cmd["achieve"]["aliases"],
             brief=cmd["achieve"]["brief"],
@@ -473,6 +476,71 @@ class AchievementSystem(Cog, name='Система достижений'):
             await ctx.reply(
                 '📒 Укажите название достижения.', mention_author=False
             )
+
+
+    @command(name=cmd["resetachievements"]["name"], aliases=cmd["resetachievements"]["aliases"],
+            brief=cmd["resetachievements"]["brief"],
+            description=cmd["resetachievements"]["description"],
+            usage=cmd["resetachievements"]["usage"],
+            help=cmd["resetachievements"]["help"],
+            hidden=cmd["resetachievements"]["hidden"], enabled=True)
+    @is_owner()
+    @dm_only()
+    @logger.catch
+    async def reset_achievements_command(self, ctx, user_id: Optional[int]):
+        if user_id is None:
+            reactions = ['🟩', '🟥']
+            embed = Embed(
+                title='⚠️ Внимание!',
+                color=Color.red(),
+                timestamp=datetime.utcnow(),
+                description='Вы не указали ID пользователя, которому необходимо '
+                            'сбросить список достижений. Этот сценарий ведёт к '
+                            'сбросу достижений **ВСЕХ** пользователей. Желаете '
+                            'продолжить?\n\n🟩 — Да.\n🟥 — Нет.'
+            )
+            message = await ctx.reply(embed=embed, mention_author=False)
+            for r in reactions:
+                await message.add_reaction(r)
+            try:
+                method, user = await self.bot.wait_for(
+                    'reaction_add', timeout=60.0,
+                    check=lambda method, user: user == ctx.author
+                    and method.message.channel == ctx.channel
+                    and method.emoji in reactions)
+            except asyncio.TimeoutError:
+                return
+            await message.delete()
+
+            if str(method.emoji) == '🟩':
+                for member in self.bot.guild.members:
+                    data = {'user_achievements_list': []}
+                    db.execute("UPDATE users_stats SET achievements_list = %s WHERE user_id = %s",
+                            json.dumps(data), member.id)
+                    db.commit()
+                embed = Embed(
+                        title='✅ Успешно!',
+                        color=Color.green(),
+                        timestamp=datetime.utcnow(),
+                        description=f'Достижения **ВСЕХ** пользователей сброшены.'
+                    )
+                await ctx.reply(embed=embed, mention_author=False)
+                return
+            elif str(method.emoji) == '🟥':
+                await ctx.message.add_reaction('🟥')
+                return
+
+        data = {'user_achievements_list': []}
+        db.execute("UPDATE users_stats SET achievements_list = %s WHERE user_id = %s",
+                json.dumps(data), user_id)
+        db.commit()
+        embed = Embed(
+                title='✅ Успешно!',
+                color=Color.green(),
+                timestamp=datetime.utcnow(),
+                description=f'Достижения пользователя <@{user_id}> сброшены.'
+            )
+        await ctx.reply(embed=embed, mention_author=False)
 
 
     @Cog.listener()

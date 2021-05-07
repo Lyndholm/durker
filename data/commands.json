@@ -103,6 +103,22 @@
       "cooldown_per_second": 0,
       "cooldown_type": "None",
       "hidden": true
+    },
+    "resetachievements": {
+      "name": "resetachievements",
+      "aliases": [
+        "resetach"
+      ],
+      "brief": "Сброс достижений.",
+      "description": "Сбрасывает список достижений.",
+      "usage": "resetachievements [user_id]",
+      "help": "Сбрасывает список достижений пользователей.\nДоступно только разработчику.\n\n**Кулдаун:** отсутствует.\n**Необходимый уровень:** 0",
+      "required_level": 0,
+      "has_cooldown": false,
+      "cooldown_rate": 0,
+      "cooldown_per_second": 0,
+      "cooldown_type": "None",
+      "hidden": true
     }
   },
   "benbot": {
