@@ -48,6 +48,7 @@ class AchievementHandler(Cog, name='AchievementHandler'):
         await self.kotleta_handler(member, achievements, cog)
         await self.philanthropist_handler(member, achievements, cog)
         await self.voice_master_handler(member, achievements, cog)
+        await self.leveling_handler(member, achievements, cog)
 
     async def writer_handler(self, member, achievements, cog):
         data = db.fetchone(['messages_count'], 'users_stats', 'user_id', member.id)[0]
@@ -263,6 +264,41 @@ class AchievementHandler(Cog, name='AchievementHandler'):
             if VOICE_MASTER_5 not in achievements:
                 cog.give_achievement(self.bot.guild.me.id, member.id, VOICE_MASTER_5)
                 await cog.achievement_award_notification(VOICE_MASTER_5, member)
+
+    async def leveling_handler(self, member, achievements, cog):
+        level = db.fetchone(['level'], 'leveling', 'user_id', member.id)[0]
+        LEVELING_1 = 'AID_049_Leveling_1'
+        LEVELING_2 = 'AID_050_Leveling_2'
+        LEVELING_3 = 'AID_051_Leveling_3'
+        LEVELING_4 = 'AID_052_Leveling_4'
+        LEVELING_5 = 'AID_053_Leveling_5'
+        LEVELING_6 = 'AID_054_Leveling_6'
+
+        if level >= 3:
+            if LEVELING_1 not in achievements:
+                cog.give_achievement(self.bot.guild.me.id, member.id, LEVELING_1)
+                await cog.achievement_award_notification(LEVELING_1, member)
+        if level >= 10:
+            if LEVELING_2 not in achievements:
+                cog.give_achievement(self.bot.guild.me.id, member.id, LEVELING_2)
+                await cog.achievement_award_notification(LEVELING_2, member)
+        if level >= 25:
+            if LEVELING_3 not in achievements:
+                cog.give_achievement(self.bot.guild.me.id, member.id, LEVELING_3)
+                await cog.achievement_award_notification(LEVELING_3, member)
+        if level >= 50:
+            if LEVELING_4 not in achievements:
+                cog.give_achievement(self.bot.guild.me.id, member.id, LEVELING_4)
+                await cog.achievement_award_notification(LEVELING_4, member)
+        if level >= 75:
+            if LEVELING_5 not in achievements:
+                cog.give_achievement(self.bot.guild.me.id, member.id, LEVELING_5)
+                await cog.achievement_award_notification(LEVELING_5, member)
+        if level >= 100:
+            if LEVELING_6 not in achievements:
+                cog.give_achievement(self.bot.guild.me.id, member.id, LEVELING_6)
+                await cog.achievement_award_notification(LEVELING_6, member)
+
 
 def setup(bot):
     bot.add_cog(AchievementHandler(bot))
