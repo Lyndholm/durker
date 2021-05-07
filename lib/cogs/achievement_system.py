@@ -283,7 +283,7 @@ class AchievementSystem(Cog, name='Система достижений'):
     @guild_only()
     @logger.catch
     async def achievements_list_command(self, ctx):
-        data = db.records('SELECT * FROM achievements')
+        data = db.records('SELECT * FROM achievements ORDER BY id')
         if ctx.author.id != self.bot.owner_ids[0]:
             data = [i for i in data if i[8] is False]
         if not data:
@@ -357,7 +357,7 @@ class AchievementSystem(Cog, name='Система достижений'):
                 [key for dic in user_data for key in dic.keys()]
             )
             achievements_data = db.records(
-                'SELECT * FROM achievements WHERE internal_id IN %s',
+                'SELECT * FROM achievements WHERE internal_id IN %s ORDER BY id',
                 user_achievements
             )
             achievements_data = [list(l) for l in achievements_data]

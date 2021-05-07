@@ -52,12 +52,12 @@ class AchievementHandler(Cog, name='AchievementHandler'):
 
     async def writer_handler(self, member, achievements, cog):
         data = db.fetchone(['messages_count'], 'users_stats', 'user_id', member.id)[0]
-        WRITER_1 = 'AID_001_Writer_1'
-        WRITER_2 = 'AID_002_Writer_2'
-        WRITER_3 = 'AID_003_Writer_3'
-        WRITER_4 = 'AID_004_Writer_4'
-        WRITER_5 = 'AID_005_Writer_5'
-        WRITER_6 = 'AID_006_Writer_6'
+        WRITER_1 = 'AID_Writer_1'
+        WRITER_2 = 'AID_Writer_2'
+        WRITER_3 = 'AID_Writer_3'
+        WRITER_4 = 'AID_Writer_4'
+        WRITER_5 = 'AID_Writer_5'
+        WRITER_6 = 'AID_Writer_6'
 
         if data >= 1_000:
             if WRITER_1 not in achievements:
@@ -86,13 +86,13 @@ class AchievementHandler(Cog, name='AchievementHandler'):
 
     async def old_handler(self, member, achievements, cog):
         diff = datetime.utcnow() - member.joined_at
-        OLD_1 = 'AID_007_Old_1'
-        OLD_2 = 'AID_008_Old_2'
-        OLD_3 = 'AID_009_Old_3'
-        OLD_4 = 'AID_010_Old_4'
-        OLD_5 = 'AID_011_Old_5'
-        OLD_6 = 'AID_012_Old_6'
-        OLD_7 = 'AID_013_Old_7'
+        OLD_1 = 'AID_Old_1'
+        OLD_2 = 'AID_Old_2'
+        OLD_3 = 'AID_Old_3'
+        OLD_4 = 'AID_Old_4'
+        OLD_5 = 'AID_Old_5'
+        OLD_6 = 'AID_Old_6'
+        OLD_7 = 'AID_Old_7'
 
         if diff.days >= 7:
             if OLD_1 not in achievements:
@@ -125,11 +125,11 @@ class AchievementHandler(Cog, name='AchievementHandler'):
 
     async def role_master_handler(self, member, achievements, cog):
         roles = len(member.roles) - 1
-        ROLE_MASTER_1 = 'AID_014_RoleMaster_1'
-        ROLE_MASTER_2 = 'AID_015_RoleMaster_2'
-        ROLE_MASTER_3 = 'AID_016_RoleMaster_3'
-        ROLE_MASTER_4 = 'AID_017_RoleMaster_4'
-        ROLE_MASTER_5 = 'AID_018_RoleMaster_5'
+        ROLE_MASTER_1 = 'AID_RoleMaster_1'
+        ROLE_MASTER_2 = 'AID_RoleMaster_2'
+        ROLE_MASTER_3 = 'AID_RoleMaster_3'
+        ROLE_MASTER_4 = 'AID_RoleMaster_4'
+        ROLE_MASTER_5 = 'AID_RoleMaster_5'
 
         if roles >= 3:
             if ROLE_MASTER_1 not in achievements:
@@ -156,12 +156,12 @@ class AchievementHandler(Cog, name='AchievementHandler'):
         data = db.fetchone(['purchases'], 'users_stats', 'user_id', member.id)[0]
         vbucks = sum(data['vbucks_purchases'][i]['price']
                     for i in range(len(data['vbucks_purchases'])))
-        PATRON_1 = 'AID_019_Patron_1'
-        PATRON_2 = 'AID_020_Patron_2'
-        PATRON_3 = 'AID_021_Patron_3'
-        PATRON_4 = 'AID_022_Patron_4'
-        PATRON_5 = 'AID_023_Patron_5'
-        PATRON_6 = 'AID_024_Patron_6'
+        PATRON_1 = 'AID_Patron_1'
+        PATRON_2 = 'AID_Patron_2'
+        PATRON_3 = 'AID_Patron_3'
+        PATRON_4 = 'AID_Patron_4'
+        PATRON_5 = 'AID_Patron_5'
+        PATRON_6 = 'AID_Patron_6'
 
         if vbucks > 0:
             if PATRON_1 not in achievements:
@@ -190,11 +190,11 @@ class AchievementHandler(Cog, name='AchievementHandler'):
 
     async def reputation_master_handler(self, member, achievements, cog):
         rep_rank = db.fetchone(['rep_rank'], 'users_stats', 'user_id', member.id)[0]
-        REP_MASTER_1 = 'AID_025_ReputationMaster_1'
-        REP_MASTER_2 = 'AID_026_ReputationMaster_2'
-        REP_MASTER_3 = 'AID_027_ReputationMaster_3'
-        REP_MASTER_4 = 'AID_028_ReputationMaster_4'
-        REP_MASTER_5 = 'AID_029_ReputationMaster_5'
+        REP_MASTER_1 = 'AID_ReputationMaster_1'
+        REP_MASTER_2 = 'AID_ReputationMaster_2'
+        REP_MASTER_3 = 'AID_ReputationMaster_3'
+        REP_MASTER_4 = 'AID_ReputationMaster_4'
+        REP_MASTER_5 = 'AID_ReputationMaster_5'
 
         if rep_rank >= 1_000:
             if REP_MASTER_1 not in achievements:
@@ -219,7 +219,7 @@ class AchievementHandler(Cog, name='AchievementHandler'):
 
     async def kotleta_handler(self, member, achievements, cog):
         esport_role = get(member.guild.roles, name='Киберспортсмен')
-        KOTLETA_1 = 'AID_030_Kotleta_1'
+        KOTLETA_1 = 'AID_Kotleta_1'
 
         if esport_role in member.roles:
             if KOTLETA_1 not in achievements:
@@ -228,7 +228,7 @@ class AchievementHandler(Cog, name='AchievementHandler'):
 
     async def philanthropist_handler(self, member, achievements, cog):
         stark_role = get(member.guild.roles, name='Филантроп')
-        PHILANTHROPIST_1 = 'AID_031_Philanthropist_1'
+        PHILANTHROPIST_1 = 'AID_Philanthropist_1'
 
         if stark_role in member.roles:
             if PHILANTHROPIST_1 not in achievements:
@@ -238,11 +238,11 @@ class AchievementHandler(Cog, name='AchievementHandler'):
     async def voice_master_handler(self, member, achievements, cog):
         seconds = db.fetchone(['invoice_time'], 'users_stats', 'user_id', member.id)[0]
         hours = seconds//3600
-        VOICE_MASTER_1 = 'AID_044_VoiceMaster_1'
-        VOICE_MASTER_2 = 'AID_045_VoiceMaster_2'
-        VOICE_MASTER_3 = 'AID_046_VoiceMaster_3'
-        VOICE_MASTER_4 = 'AID_047_VoiceMaster_4'
-        VOICE_MASTER_5 = 'AID_048_VoiceMaster_5'
+        VOICE_MASTER_1 = 'AID_VoiceMaster_1'
+        VOICE_MASTER_2 = 'AID_VoiceMaster_2'
+        VOICE_MASTER_3 = 'AID_VoiceMaster_3'
+        VOICE_MASTER_4 = 'AID_VoiceMaster_4'
+        VOICE_MASTER_5 = 'AID_VoiceMaster_5'
 
         if hours >= 10:
             if VOICE_MASTER_1 not in achievements:
@@ -267,12 +267,12 @@ class AchievementHandler(Cog, name='AchievementHandler'):
 
     async def leveling_handler(self, member, achievements, cog):
         level = db.fetchone(['level'], 'leveling', 'user_id', member.id)[0]
-        LEVELING_1 = 'AID_049_Leveling_1'
-        LEVELING_2 = 'AID_050_Leveling_2'
-        LEVELING_3 = 'AID_051_Leveling_3'
-        LEVELING_4 = 'AID_052_Leveling_4'
-        LEVELING_5 = 'AID_053_Leveling_5'
-        LEVELING_6 = 'AID_054_Leveling_6'
+        LEVELING_1 = 'AID_Leveling_1'
+        LEVELING_2 = 'AID_Leveling_2'
+        LEVELING_3 = 'AID_Leveling_3'
+        LEVELING_4 = 'AID_Leveling_4'
+        LEVELING_5 = 'AID_Leveling_5'
+        LEVELING_6 = 'AID_Leveling_6'
 
         if level >= 3:
             if LEVELING_1 not in achievements:
