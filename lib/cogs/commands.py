@@ -96,7 +96,9 @@ class Commands(Cog, name='Базовые команды'):
         )
         embed.add_field(
             name="История покупок",
-            value=f"Узнать количество потраченных с тегом В-Баксов можно в канале <#604621910386671616> по команде `{ctx.prefix}stats`\nПросмотреть историю покупок: `+purchases`",
+            value="Узнать количество потраченных с тегом В-Баксов можно в канале <#604621910386671616> по команде " \
+                f"`{ctx.prefix or self.bot.PREFIX}stats`\nПросмотреть историю покупок: " \
+                f"`{ctx.prefix or self.bot.PREFIX}purchases`",
             inline=False
         )
         embed.add_field(
