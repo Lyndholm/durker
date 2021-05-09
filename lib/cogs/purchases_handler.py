@@ -37,7 +37,7 @@ class VbucksPurchasesMenu(ListPageSource):
         offset = (menu.current_page*self.per_page) + 1
 
         fields = []
-        table = '⠀' + ('\n'.join(f'\n> **{entry[0]}** \n> **Цена:** {entry[1]}\n> **Дата:** {entry[2][:-3]}'
+        table = '⠀' + ('\n'.join(f'\n> **{entry[0]}** \n> **Цена:** {entry[1]} В-Баксов\n> **Дата:** {entry[2][:-3]}'
                 for idx, entry in enumerate(entries)))
 
         fields.append(('Список внутриигровых покупок за В-Баксы.', table))
@@ -65,7 +65,7 @@ class RealMoneyPurchasesMenu(ListPageSource):
         offset = (menu.current_page*self.per_page) + 1
 
         fields = []
-        table = '⠀' + ('\n'.join(f'\n> **{entry[0]}** \n> **Цена:** {entry[1]}\n> **Дата:** {entry[2][:-3]}'
+        table = '⠀' + ('\n'.join(f'\n> **{entry[0]}** \n> **Цена:** {entry[1]} руб.\n> **Дата:** {entry[2][:-3]}'
                 for idx, entry in enumerate(entries)))
 
         fields.append(('Список покупок, совершённых за реальные деньги.', table))
