@@ -205,7 +205,7 @@ class Fun(Cog, name='Развлечения'):
             hidden=cmd["flags"]["hidden"], enabled=True)
     async def guess_flags_command(self, ctx):
         event_members = {}
-        async with aiofiles.open('./data/country_flags.json', mode='r', encoding = 'utf8') as f:
+        async with aiofiles.open('./data/json/country_flags.json', mode='r', encoding = 'utf8') as f:
             flags = json.loads(await f.read())
             count = 1
             flags_list = []

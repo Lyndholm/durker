@@ -38,11 +38,11 @@ class MessagesHandler(Cog, name='Messages handler'):
         bot.loop.create_task(self.parse_questions_from_txt())
 
     async def parse_questions_from_txt(self):
-        async with aiofiles.open(f'data/question_filter.txt', mode='r', encoding='utf-8') as f:
+        async with aiofiles.open(f'data/txt/question_filter.txt', mode='r', encoding='utf-8') as f:
             lines = await f.readlines()
             self.question_filter = [line.strip() for line in lines if line != '']
 
-        async with aiofiles.open(f'data/rep_filter.txt', mode='r', encoding='utf-8') as f:
+        async with aiofiles.open(f'data/txt/rep_filter.txt', mode='r', encoding='utf-8') as f:
             lines = await f.readlines()
             self.rep_filter = [line.strip() for line in lines if line != '']
 

@@ -88,7 +88,7 @@ class FortniteAPIio(Cog, name='Fortnite API 3'):
             help=cmd["fish"]["help"],
             hidden=cmd["fish"]["hidden"], enabled=True)
     async def show_fortnite_fish_list_command(self, ctx, number: int = 0):
-        async with aiofiles.open('./data/fish.json', mode='r', encoding='utf-8') as f:
+        async with aiofiles.open('./data/json/fish_s16.json', mode='r', encoding='utf-8') as f:
             data = json.loads(await f.read())
 
         if number == 0:
@@ -204,7 +204,7 @@ class FortniteAPIio(Cog, name='Fortnite API 3'):
             help=cmd["npc"]["help"],
             hidden=cmd["npc"]["hidden"], enabled=True)
     async def show_fortnite_characters_command(self, ctx, number: int = 0):
-        async with aiofiles.open('./data/characters_s16.json', mode='r', encoding='utf-8') as f:
+        async with aiofiles.open('./data/json/characters_s16.json', mode='r', encoding='utf-8') as f:
             data = json.loads(await f.read())
 
         if number == 0:

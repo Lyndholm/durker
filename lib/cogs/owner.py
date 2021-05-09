@@ -338,7 +338,7 @@ class Owner(Cog, name='Команды разработчика'):
 
         self.bot.banlist.extend([user.id for user in targets])
 
-        async with aiofiles.open('./data/banlist.txt', 'a', encoding='utf-8') as f:
+        async with aiofiles.open('./data/txt/banlist.txt', 'a', encoding='utf-8') as f:
             await f.writelines([f"{user.id}\n" for user in targets])
 
         await ctx.message.add_reaction('✅')
@@ -356,7 +356,7 @@ class Owner(Cog, name='Команды разработчика'):
         if not targets:
             return await ctx.message.add_reaction('❌')
 
-        async with aiofiles.open('./data/banlist.txt', 'w', encoding='utf-8') as f:
+        async with aiofiles.open('./data/txt/banlist.txt', 'w', encoding='utf-8') as f:
             await f.write("".join([f"{user}\n" for user in self.bot.banlist if user not in [u.id for u in targets]]))
 
         for target in targets:
@@ -437,7 +437,7 @@ class Owner(Cog, name='Команды разработчика'):
     @dm_only()
     @is_owner()
     async def shutdown_command(self, ctx):
-        async with aiofiles.open('./data/banlist.txt', 'w', encoding='utf-8') as f:
+        async with aiofiles.open('./data/txt/banlist.txt', 'w', encoding='utf-8') as f:
             await f.writelines([f"{user}\n" for user in self.bot.banlist])
 
         db.commit()

@@ -491,7 +491,7 @@ class Moderation(Cog, name='Модерация'):
 
                 self.bot.banlist.append(target.id)
 
-                async with aiofiles.open('./data/banlist.txt', 'a', encoding='utf-8') as f:
+                async with aiofiles.open('./data/txt/banlist.txt', 'a', encoding='utf-8') as f:
                    await f.write(f"{target.id}\n")
 
             if len(warns) > 3:

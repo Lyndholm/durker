@@ -105,10 +105,10 @@ class Profanity(Cog, name='Мат-фильтр'):
     @is_owner()
     @logger.catch
     async def addprofanity_command(self, ctx, *words):
-        async with aiofiles.open(f'./data/profanity.txt', mode='a', encoding='utf-8') as f:
+        async with aiofiles.open(f'./data/txt/profanity.txt', mode='a', encoding='utf-8') as f:
             await f.write("".join([f"{w}\n" for w in words]))
 
-        self.bot.profanity.load_censor_words_from_file("./data/profanity.txt")
+        self.bot.profanity.load_censor_words_from_file("./data/txt/profanity.txt")
         await ctx.send("Словарь обновлен!")
 
 
@@ -122,14 +122,14 @@ class Profanity(Cog, name='Мат-фильтр'):
     @is_owner()
     @logger.catch
     async def delprofanity_command(self, ctx, *words):
-        async with aiofiles.open(f'./data/profanity.txt', mode='r', encoding='utf-8') as f:
+        async with aiofiles.open(f'./data/txt/profanity.txt', mode='r', encoding='utf-8') as f:
             lines = await f.readlines()
             stored = [w.strip() for w in lines]
 
-        async with aiofiles.open(f'./data/profanity.txt', mode='w', encoding='utf-8') as f:
+        async with aiofiles.open(f'./data/txt/profanity.txt', mode='w', encoding='utf-8') as f:
             await f.write("".join([f"{w}\n" for w in stored if w not in words]))
 
-        self.bot.profanity.load_censor_words_from_file("./data/profanity.txt")
+        self.bot.profanity.load_censor_words_from_file("./data/txt/profanity.txt")
         await ctx.send("Словарь обновлен!")
 
 

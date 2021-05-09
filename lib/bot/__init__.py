@@ -71,7 +71,7 @@ class Bot(BotBase):
             809519845707743272  #spam (dev server)
         ]
         try:
-            with open('./data/banlist.txt', 'r', encoding='utf-8') as f:
+            with open('./data/txt/banlist.txt', 'r', encoding='utf-8') as f:
                 self.banlist = [int(line.strip()) for line in f.readlines()]
         except FileNotFoundError:
             self.banlist = []
@@ -167,7 +167,7 @@ class Bot(BotBase):
         if not self.ready:
             self.guild = self.get_guild(GUILD_ID)
             self.scheduler.start()
-            self.profanity.load_censor_words_from_file("./data/profanity.txt")
+            self.profanity.load_censor_words_from_file("./data/txt/profanity.txt")
             print("\nLogged in as:", bot.user)
             print("ID:", bot.user.id)
             print("\nAvailable guilds:")
