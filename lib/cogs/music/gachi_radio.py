@@ -83,7 +83,7 @@ class Player(wavelink.Player):
 
         await self.play(track)
         try:
-            self.queue._queue.insert(random.randint(130, self.queue.qsize()-1), track)
+            self.queue._queue.insert(random.randint(self.queue.qsize()//2, self.queue.qsize()-1), track)
         except ValueError:
             pass
 
