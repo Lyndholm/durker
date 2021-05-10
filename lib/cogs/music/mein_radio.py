@@ -11,11 +11,15 @@ import discord
 import wavelink
 from discord.ext import commands, menus
 from discord.ext.commands.errors import CheckFailure
+from loguru import logger
 
 from ...db import db
 from ...utils.checks import (can_manage_radio, is_channel,
                              radio_whitelisted_users)
 from ...utils.constants import MUSIC_COMMANDS_CHANNEL
+from ...utils.utils import load_commands_from_json
+
+cmd = load_commands_from_json('music_player')
 
 # URL matching REGEX...
 URL_REG = re.compile(r'https?://(?:www\.)?.+')
@@ -409,9 +413,17 @@ class MeinRadio(commands.Cog, wavelink.WavelinkMixin, name='Mein Radio'):
 
         return player.dj == ctx.author or ctx.author.guild_permissions.administrator or ctx.author.id in radio_whitelisted_users
 
-    @commands.command(aliases=["summon"], hidden=True, enabled=True)
+    @commands.command(
+        name=cmd["connect"]["name"],
+        aliases=cmd["connect"]["aliases"],
+        brief=cmd["connect"]["brief"],
+        description=cmd["connect"]["description"],
+        usage=cmd["connect"]["usage"],
+        help=cmd["connect"]["help"],
+        hidden=True, enabled=True)
     @can_manage_radio()
     @is_channel(MUSIC_COMMANDS_CHANNEL)
+    @logger.catch
     async def connect(self, ctx: commands.Context, *, channel: discord.VoiceChannel = None):
         """Connect to a voice channel."""
         player: Player = self.bot.wavelink.get_player(guild_id=ctx.guild.id, cls=Player, context=ctx)
@@ -426,9 +438,17 @@ class MeinRadio(commands.Cog, wavelink.WavelinkMixin, name='Mein Radio'):
 
         await player.connect(channel.id)
 
-    @commands.command(aliases=['p'], hidden=True, enabled=True)
+    @commands.command(
+        name=cmd["play"]["name"],
+        aliases=cmd["play"]["aliases"],
+        brief=cmd["play"]["brief"],
+        description=cmd["play"]["description"],
+        usage=cmd["play"]["usage"],
+        help=cmd["play"]["help"],
+        hidden=True, enabled=True)
     @can_manage_radio()
     @is_channel(MUSIC_COMMANDS_CHANNEL)
+    @logger.catch
     async def play(self, ctx: commands.Context, *, query: str):
         """Play or queue a song with the given query."""
         player: Player = self.bot.wavelink.get_player(guild_id=ctx.guild.id, cls=Player, context=ctx)
@@ -459,9 +479,17 @@ class MeinRadio(commands.Cog, wavelink.WavelinkMixin, name='Mein Radio'):
         if not player.is_playing:
             await player.do_next()
 
-    @commands.command(hidden=True, enabled=True)
+    @commands.command(
+        name=cmd["pause"]["name"],
+        aliases=cmd["pause"]["aliases"],
+        brief=cmd["pause"]["brief"],
+        description=cmd["pause"]["description"],
+        usage=cmd["pause"]["usage"],
+        help=cmd["pause"]["help"],
+        hidden=True, enabled=True)
     @can_manage_radio()
     @is_channel(MUSIC_COMMANDS_CHANNEL)
+    @logger.catch
     async def pause(self, ctx: commands.Context):
         """Pause the currently playing song."""
         player: Player = self.bot.wavelink.get_player(guild_id=ctx.guild.id, cls=Player, context=ctx)
@@ -485,9 +513,17 @@ class MeinRadio(commands.Cog, wavelink.WavelinkMixin, name='Mein Radio'):
         else:
             await ctx.send(f'**{ctx.author.display_name}** проголосовал за остановку воспроизведения.', delete_after=15)
 
-    @commands.command(hidden=True, enabled=True)
+    @commands.command(
+        name=cmd["resume"]["name"],
+        aliases=cmd["resume"]["aliases"],
+        brief=cmd["resume"]["brief"],
+        description=cmd["resume"]["description"],
+        usage=cmd["resume"]["usage"],
+        help=cmd["resume"]["help"],
+        hidden=True, enabled=True)
     @can_manage_radio()
     @is_channel(MUSIC_COMMANDS_CHANNEL)
+    @logger.catch
     async def resume(self, ctx: commands.Context):
         """Resume a currently paused player."""
         player: Player = self.bot.wavelink.get_player(guild_id=ctx.guild.id, cls=Player, context=ctx)
@@ -511,9 +547,17 @@ class MeinRadio(commands.Cog, wavelink.WavelinkMixin, name='Mein Radio'):
         else:
             await ctx.send(f'**{ctx.author.display_name}** проголосовал за запуск плеера.', delete_after=10)
 
-    @commands.command(hidden=True, enabled=True)
+    @commands.command(
+        name=cmd["skip"]["name"],
+        aliases=cmd["skip"]["aliases"],
+        brief=cmd["skip"]["brief"],
+        description=cmd["skip"]["description"],
+        usage=cmd["skip"]["usage"],
+        help=cmd["skip"]["help"],
+        hidden=True, enabled=True)
     @can_manage_radio()
     @is_channel(MUSIC_COMMANDS_CHANNEL)
+    @logger.catch
     async def skip(self, ctx: commands.Context):
         """Skip the currently playing song."""
         player: Player = self.bot.wavelink.get_player(guild_id=ctx.guild.id, cls=Player, context=ctx)
@@ -543,9 +587,17 @@ class MeinRadio(commands.Cog, wavelink.WavelinkMixin, name='Mein Radio'):
         else:
             await ctx.send(f'**{ctx.author.display_name}** проголосовал за смену трека.', delete_after=10)
 
-    @commands.command(hidden=True, enabled=True)
+    @commands.command(
+        name=cmd["stop"]["name"],
+        aliases=cmd["stop"]["aliases"],
+        brief=cmd["stop"]["brief"],
+        description=cmd["stop"]["description"],
+        usage=cmd["stop"]["usage"],
+        help=cmd["stop"]["help"],
+        hidden=True, enabled=True)
     @can_manage_radio()
     @is_channel(MUSIC_COMMANDS_CHANNEL)
+    @logger.catch
     async def stop(self, ctx: commands.Context):
         """Stop the player and clear all internal states."""
         player: Player = self.bot.wavelink.get_player(guild_id=ctx.guild.id, cls=Player, context=ctx)
@@ -566,9 +618,17 @@ class MeinRadio(commands.Cog, wavelink.WavelinkMixin, name='Mein Radio'):
         else:
             await ctx.send(f'**{ctx.author.display_name}** проголосовал за остановку воспроизведения.', delete_after=15)
 
-    @commands.command(aliases=['vol'], hidden=True, enabled=True)
+    @commands.command(
+        name=cmd["volume"]["name"],
+        aliases=cmd["volume"]["aliases"],
+        brief=cmd["volume"]["brief"],
+        description=cmd["volume"]["description"],
+        usage=cmd["volume"]["usage"],
+        help=cmd["volume"]["help"],
+        hidden=True, enabled=True)
     @can_manage_radio()
     @is_channel(MUSIC_COMMANDS_CHANNEL)
+    @logger.catch
     async def volume(self, ctx: commands.Context, *, vol: int):
         """Change the players volume, between 1 and 100."""
         player: Player = self.bot.wavelink.get_player(guild_id=ctx.guild.id, cls=Player, context=ctx)
@@ -585,9 +645,17 @@ class MeinRadio(commands.Cog, wavelink.WavelinkMixin, name='Mein Radio'):
         await player.set_volume(vol)
         await ctx.send(f'Установлена громкость **{vol}%**', delete_after=10)
 
-    @commands.command(aliases=['mix'], hidden=True, enabled=True)
+    @commands.command(
+        name=cmd["shuffle"]["name"],
+        aliases=cmd["shuffle"]["aliases"],
+        brief=cmd["shuffle"]["brief"],
+        description=cmd["shuffle"]["description"],
+        usage=cmd["shuffle"]["usage"],
+        help=cmd["shuffle"]["help"],
+        hidden=True, enabled=True)
     @can_manage_radio()
     @is_channel(MUSIC_COMMANDS_CHANNEL)
+    @logger.catch
     async def shuffle(self, ctx: commands.Context):
         """Shuffle the players queue."""
         player: Player = self.bot.wavelink.get_player(guild_id=ctx.guild.id, cls=Player, context=ctx)
@@ -616,6 +684,7 @@ class MeinRadio(commands.Cog, wavelink.WavelinkMixin, name='Mein Radio'):
     @commands.command(hidden=True, enabled=True)
     @can_manage_radio()
     @is_channel(MUSIC_COMMANDS_CHANNEL)
+    @logger.catch
     async def vol_up(self, ctx: commands.Context):
         """Command used for volume up button."""
         player: Player = self.bot.wavelink.get_player(guild_id=ctx.guild.id, cls=Player, context=ctx)
@@ -634,6 +703,7 @@ class MeinRadio(commands.Cog, wavelink.WavelinkMixin, name='Mein Radio'):
     @commands.command(hidden=True, enabled=True)
     @can_manage_radio()
     @is_channel(MUSIC_COMMANDS_CHANNEL)
+    @logger.catch
     async def vol_down(self, ctx: commands.Context):
         """Command used for volume down button."""
         player: Player = self.bot.wavelink.get_player(guild_id=ctx.guild.id, cls=Player, context=ctx)
@@ -649,9 +719,17 @@ class MeinRadio(commands.Cog, wavelink.WavelinkMixin, name='Mein Radio'):
 
         await player.set_volume(vol)
 
-    @commands.command(aliases=['eq'], hidden=True, enabled=True)
+    @commands.command(
+        name=cmd["equalizer"]["name"],
+        aliases=cmd["equalizer"]["aliases"],
+        brief=cmd["equalizer"]["brief"],
+        description=cmd["equalizer"]["description"],
+        usage=cmd["equalizer"]["usage"],
+        help=cmd["equalizer"]["help"],
+        hidden=True, enabled=True)
     @can_manage_radio()
     @is_channel(MUSIC_COMMANDS_CHANNEL)
+    @logger.catch
     async def equalizer(self, ctx: commands.Context, *, equalizer: str):
         """Change the players equalizer."""
         player: Player = self.bot.wavelink.get_player(guild_id=ctx.guild.id, cls=Player, context=ctx)
@@ -676,8 +754,16 @@ class MeinRadio(commands.Cog, wavelink.WavelinkMixin, name='Mein Radio'):
         await ctx.send(f'Эквалайзер обновлён: **{equalizer}**', delete_after=10)
         await player.set_eq(eq)
 
-    @commands.command(aliases=['q', 'que'], hidden=True, enabled=True)
+    @commands.command(
+        name=cmd["queue"]["name"],
+        aliases=cmd["queue"]["aliases"],
+        brief=cmd["queue"]["brief"],
+        description=cmd["queue"]["description"],
+        usage=cmd["queue"]["usage"],
+        help=cmd["queue"]["help"],
+        hidden=False, enabled=True)
     @is_channel(MUSIC_COMMANDS_CHANNEL)
+    @logger.catch
     async def queue(self, ctx: commands.Context):
         """Display the players queued songs."""
         player: Player = self.bot.wavelink.get_player(guild_id=ctx.guild.id, cls=Player, context=ctx)
@@ -694,8 +780,16 @@ class MeinRadio(commands.Cog, wavelink.WavelinkMixin, name='Mein Radio'):
 
         await paginator.start(ctx)
 
-    @commands.command(aliases=['np'], hidden=True, enabled=True)
+    @commands.command(
+        name=cmd["nowplaying"]["name"],
+        aliases=cmd["nowplaying"]["aliases"],
+        brief=cmd["nowplaying"]["brief"],
+        description=cmd["nowplaying"]["description"],
+        usage=cmd["nowplaying"]["usage"],
+        help=cmd["nowplaying"]["help"],
+        hidden=False, enabled=True)
     @is_channel(MUSIC_COMMANDS_CHANNEL)
+    @logger.catch
     async def nowplaying(self, ctx: commands.Context):
         """Update the player controller."""
         player: Player = self.bot.wavelink.get_player(guild_id=ctx.guild.id, cls=Player, context=ctx)
@@ -707,9 +801,17 @@ class MeinRadio(commands.Cog, wavelink.WavelinkMixin, name='Mein Radio'):
         except discord.errors.HTTPException:
             pass
 
-    @commands.command(hidden=True, enabled=True)
+    @commands.command(
+        name=cmd["swap_dj"]["name"],
+        aliases=cmd["swap_dj"]["aliases"],
+        brief=cmd["swap_dj"]["brief"],
+        description=cmd["swap_dj"]["description"],
+        usage=cmd["swap_dj"]["usage"],
+        help=cmd["swap_dj"]["help"],
+        hidden=True, enabled=True)
     @can_manage_radio()
     @is_channel(MUSIC_COMMANDS_CHANNEL)
+    @logger.catch
     async def swap_dj(self, ctx: commands.Context, *, member: discord.Member = None):
         """Swap the current DJ to another member in the voice channel."""
         player: Player = self.bot.wavelink.get_player(guild_id=ctx.guild.id, cls=Player, context=ctx)
@@ -743,12 +845,13 @@ class MeinRadio(commands.Cog, wavelink.WavelinkMixin, name='Mein Radio'):
                 return await ctx.send(f'{member.mention} стал диджеем.')
 
     @commands.command(name="to_delete", aliases=['удоли', 'удалить', 'убрать', 'radioremove', 'radiodelete'],
-            brief="Сделайте заявку на удаление трека, который сейчас играет, из пелейлиста радио.",
-            description="Формирует заявку на удаление трека, который сейчас играет, из плейлиста радио.",
+            brief="Сделайте заявку на удаление из пелейлиста радио трека, который сейчас играет.",
+            description="Формирует заявку на удаление из плейлиста радио трека, который сейчас играет.",
             usage="to_delete <track> <reason>",
             help="Возможность предложить удалить трек из плейлиста радио.\n\n**Работает в канале:** <#546411393239220233>\n**Кулдаун:** отсутсвует.\n**Необходимый уровень:** 0",
             hidden=False, enabled=True)
     @is_channel(MUSIC_COMMANDS_CHANNEL)
+    @logger.catch
     async def to_delete_song_command(self, ctx, *, reason: str = None):
         player: Player = self.bot.wavelink.get_player(guild_id=ctx.guild.id, cls=Player, context=ctx)
         track = player.current
