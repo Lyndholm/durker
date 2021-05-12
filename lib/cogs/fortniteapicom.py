@@ -1,15 +1,16 @@
 import shlex
 from argparse import ArgumentParser
 from asyncio.exceptions import TimeoutError
-from aiohttp import ClientSession
-from discord import Embed, Color, File, HTTPException
-from discord.ext.commands import Cog
-from discord.ext.commands import command
 from datetime import datetime
 
+from aiohttp import ClientSession
+from discord import Color, Embed, File, HTTPException
+from discord.ext.commands import Cog, command
+from loguru import logger
+
 from ..utils.constants import PLACEHOLDER
-from ..utils.utils import load_commands_from_json
 from ..utils.paginator import Paginator
+from ..utils.utils import load_commands_from_json
 
 cmd = load_commands_from_json("fortniteapicom")
 
@@ -34,6 +35,7 @@ class FortniteAPIcom(Cog, name='Fortnite API 2'):
             usage=cmd["searchcosmetic"]["usage"],
             help=cmd["searchcosmetic"]["help"],
             hidden=cmd["searchcosmetic"]["hidden"], enabled=True)
+    @logger.catch
     async def search_fortnite_cosmetic_command(self, ctx, *, args: str = None):
         if args is not None:
             parser = Arguments(add_help=False, allow_abbrev=False)
@@ -238,7 +240,7 @@ class FortniteAPIcom(Cog, name='Fortnite API 2'):
 
                     else:
                         embed = Embed(
-                            title=':exclamation: Ошибка!',
+                            title='❗ Ошибка!',
                             description=str(response_data["status"]) + "\n```txt\n" + response_data["error"] + "```",
                             color=Color.red(),
                             timestamp=datetime.utcnow())
@@ -340,6 +342,7 @@ class FortniteAPIcom(Cog, name='Fortnite API 2'):
             usage=cmd["searchparams"]["usage"],
             help=cmd["searchparams"]["help"],
             hidden=cmd["searchparams"]["hidden"], enabled=True)
+    @logger.catch
     async def cosmetics_search_params_command(self, ctx):
         params_embeds = []
         params_images = (
@@ -364,12 +367,13 @@ class FortniteAPIcom(Cog, name='Fortnite API 2'):
             usage=cmd["news"]["usage"],
             help=cmd["news"]["help"],
             hidden=cmd["news"]["hidden"], enabled=True)
+    @logger.catch
     async def show_fortnite_news_command(self, ctx, mode: str = "br", language: str = "ru"):
         mode = mode.lower()
         placeholder = PLACEHOLDER
 
         if mode not in ["br", "stw", "creative"]:
-            embed = Embed(title=':exclamation: Внимание!', description ="Укажите режим корректно: `br`, `stw`, `creative`.", color= Color.red())
+            embed = Embed(title='❗ Внимание!', description ="Укажите режим корректно: `br`, `stw`, `creative`.", color= Color.red())
             await ctx.message.reply(embed=embed, mention_author=False)
             return
 
@@ -413,11 +417,12 @@ class FortniteAPIcom(Cog, name='Fortnite API 2'):
             usage=cmd["creatorcode"]["usage"],
             help=cmd["creatorcode"]["help"],
             hidden=cmd["creatorcode"]["hidden"], enabled=True)
+    @logger.catch
     async def show_creator_code_data_command(self, ctx, code: str = "fnfun"):
         async with ClientSession() as session:
             async with session.get(f"https://fortnite-api.com/v2/creatorcode/search/all", params={"name": code}) as r:
                 if r.status == 404:
-                    embed = Embed(title=':exclamation: Внимание!', description ="Указанный тег автора не найден.", color= Color.red())
+                    embed = Embed(title='❗ Внимание!', description ="Указанный тег автора не найден.", color= Color.red())
                     await ctx.message.reply(embed=embed, mention_author=False)
                 elif r.status == 200:
                     data = await r.json()
@@ -461,6 +466,7 @@ class FortniteAPIcom(Cog, name='Fortnite API 2'):
             usage=cmd["shop"]["usage"],
             help=cmd["shop"]["help"],
             hidden=cmd["shop"]["hidden"], enabled=True)
+    @logger.catch
     async def show_battle_royale_shop_command(self, ctx):
         shop_img = File("athena/itemshop.jpg", filename="itemshop.jpg")
 
@@ -474,7 +480,7 @@ class FortniteAPIcom(Cog, name='Fortnite API 2'):
         try:
             await ctx.send(embed=embed, file=shop_img)
         except HTTPException:
-            embed = Embed(title=':exclamation: HTTPException',
+            embed = Embed(title='❗ HTTPException',
             description =f"Если вы видите это сообщение, значит, вес изображения с магазином превышает 8 Мб, вследствие чего его невозможно отправить.\n"
                         "Пожалуйста, сообщите об этом <@375722626636578816>",
             color= Color.red())

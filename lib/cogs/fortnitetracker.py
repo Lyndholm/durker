@@ -1,10 +1,11 @@
+from asyncio.exceptions import TimeoutError
+from os import getenv
+
 import requests
 from aiohttp import ClientSession
-from asyncio.exceptions import TimeoutError
-from discord import Embed, Color, File
-from discord.ext.commands import Cog
-from discord.ext.commands import command
-from os import getenv
+from discord import Color, Embed, File
+from discord.ext.commands import Cog, command
+from loguru import logger
 
 from ..utils.utils import load_commands_from_json
 
@@ -27,9 +28,10 @@ class FortniteTracker(Cog, name='Fortnite Stats'):
             usage=cmd["fnstats"]["usage"],
             help=cmd["fnstats"]["help"],
             hidden=cmd["fnstats"]["hidden"], enabled=True)
+    @logger.catch
     async def fortnite_stats_command(self, ctx, *, profile:str=None):
         if profile is None:
-            embed = Embed(title=':exclamation: Внимание!', description =f"{ctx.author.mention}\nПожалуйста, укажите никнейм запрашиваемого аккаунта.", color= Color.red())
+            embed = Embed(title='❗ Внимание!', description =f"{ctx.author.mention}\nПожалуйста, укажите никнейм запрашиваемого аккаунта.", color= Color.red())
             await ctx.send(embed=embed)
             return
 
@@ -125,7 +127,6 @@ class FortniteTracker(Cog, name='Fortnite Stats'):
                         description="**Внимание!**\nДанный метод нестабилен. Он может отображать некорректную информацию или вовсе ничего не показывать."
                         )
                     stats_embed.set_image(url=data["data"]["image"])
-                    #print(data["data"]["image"])
                     await main_message.edit(embed=stats_embed)
 
 

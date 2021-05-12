@@ -1,16 +1,16 @@
-import time
+from datetime import datetime
 from io import BytesIO
 from typing import Optional
-from aiohttp import ClientSession
-from discord import Embed, Color, File
-from discord.ext.commands import Cog
-from discord.ext.commands import command, is_owner, dm_only, check_any
-from discord.ext.commands.errors import CheckAnyFailure
-from datetime import datetime
 
-from ..utils.utils import load_commands_from_json
+from aiohttp import ClientSession
+from discord import Color, Embed, File
+from discord.ext.commands import Cog, command, dm_only, is_owner
+from discord.ext.commands.errors import CheckAnyFailure
+from loguru import logger
+
 from ..utils.checks import is_channel, required_level
 from ..utils.paginator import Paginator
+from ..utils.utils import load_commands_from_json
 
 cmd = load_commands_from_json("benbot")
 
@@ -32,6 +32,7 @@ class BenBot(Cog, name='Fortnite API 1'):
             hidden=cmd["benbotstatus"]["hidden"], enabled=True)
     @dm_only()
     @is_owner()
+    @logger.catch
     async def fetch_benbot_status_command(self, ctx):
         async with ClientSession() as session:
             async with session.get('https://benbotfn.tk/api/v1/status') as r:
@@ -68,6 +69,7 @@ class BenBot(Cog, name='Fortnite API 1'):
             hidden=cmd["aes"]["hidden"], enabled=True)
     @required_level(cmd["aes"]["required_level"])
     @is_channel(777979537795055636)
+    @logger.catch
     async def fetch_fortnite_aes_command(self, ctx, version: Optional[str]):
         async with ClientSession() as session:
             async with session.get('https://benbotfn.tk/api/v1/aes', params={"version":version} if version else None) as r:
@@ -97,6 +99,7 @@ class BenBot(Cog, name='Fortnite API 1'):
             usage=cmd["cosmeticinfo"]["usage"],
             help=cmd["cosmeticinfo"]["help"],
             hidden=cmd["cosmeticinfo"]["hidden"], enabled=True)
+    @logger.catch
     async def show_fn_cosmetic_info_command(self, ctx, id: str):
         async with ClientSession() as session:
             async with session.get(f"https://benbotfn.tk/api/v1/cosmetics/br/{id}", params={"lang":"ru"}) as r:
@@ -141,6 +144,7 @@ class BenBot(Cog, name='Fortnite API 1'):
             usage=cmd["extractasset"]["usage"],
             help=cmd["extractasset"]["help"],
             hidden=cmd["extractasset"]["hidden"], enabled=True)
+    @logger.catch
     async def extract_fn_asset_command(self, ctx, path: str):
         async with ClientSession() as session:
             async with session.get(f"https://benbotfn.tk/api/v1/exportAsset?path={path}") as r:
@@ -176,6 +180,7 @@ class BenBot(Cog, name='Fortnite API 1'):
             usage=cmd["shopsections"]["usage"],
             help=cmd["shopsections"]["help"],
             hidden=cmd["shopsections"]["hidden"], enabled=True)
+    @logger.catch
     async def display_fortnite_section_store_command(self, ctx):
         async with ClientSession() as session:
             async with session.get("https://benbotfn.tk/api/v1/calendar") as r:

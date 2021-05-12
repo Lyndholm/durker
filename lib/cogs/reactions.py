@@ -20,6 +20,7 @@ class ReactionRole(Cog, name='Роли за реакции'):
         if not self.bot.ready:
            self.bot.cogs_ready.ready_up("reactions")
 
+    @logger.catch
     async def edit_member_roles(self, guild_id: int, role_id: int, user_id: int, action: str):
         guild = self.bot.get_guild(guild_id)
         role = get(guild.roles, id=role_id)

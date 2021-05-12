@@ -1,9 +1,13 @@
-from discord import Member, VoiceState, TextChannel, VoiceChannel
-from discord.utils import get
-from discord.ext.commands import Cog
-from discord.errors import HTTPException, NotFound
 from datetime import datetime
+
+from discord import Member, TextChannel, VoiceChannel, VoiceState
+from discord.errors import HTTPException, NotFound
+from discord.ext.commands import Cog
+from discord.utils import get
+from loguru import logger
+
 from ..db import db
+
 
 class Voice(Cog, name='VoiceChannels Management'):
     def __init__(self, bot):
@@ -15,6 +19,7 @@ class Voice(Cog, name='VoiceChannels Management'):
         if not self.bot.ready:
            self.bot.cogs_ready.ready_up("voice")
 
+    @logger.catch
     async def create_temporary_channels(self, member: Member, before: VoiceState, after: VoiceState):
         voice_category = get(self.bot.guild.categories, id=814768982388506634)
 
@@ -39,11 +44,13 @@ class Voice(Cog, name='VoiceChannels Management'):
         except NotFound:
             return
 
+    @logger.catch
     async def delete_temporary_channels(self, voice_channel: VoiceChannel, text_channel: TextChannel):
         await voice_channel.delete()
         await text_channel.delete()
         del self.temporary_channels[voice_channel.id]
 
+    @logger.catch
     async def overwrite_text_channel_perms(self, member: Member, channel_id: int, access: bool):
         text_channel = self.bot.get_channel(channel_id)
         perms = text_channel.overwrites_for(member)
@@ -55,6 +62,7 @@ class Voice(Cog, name='VoiceChannels Management'):
         except NotFound:
             return
 
+    @logger.catch
     def update_member_invoce_time(self, member_id: int):
         rec = db.fetchone(["entered_at"], "voice_activity", "user_id", member_id)
         time_diff = (datetime.now() - rec[0]).seconds
@@ -62,7 +70,7 @@ class Voice(Cog, name='VoiceChannels Management'):
         db.execute("UPDATE users_stats SET invoice_time = %s WHERE user_id = %s",
                     time + time_diff, member_id)
         db.commit()
-        db.execute(f"DELETE FROM voice_activity WHERE user_id = {member_id}")
+        db.execute("DELETE FROM voice_activity WHERE user_id = %s", member_id)
         db.commit()
 
     @Cog.listener()

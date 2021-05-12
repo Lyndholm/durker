@@ -77,6 +77,7 @@ class PurchasesHandler(Cog, name='Покупки и не только'):
     def __init__(self, bot):
         self.bot = bot
 
+    @logger.catch
     async def check_support_roles(self, member):
         purchases = db.fetchone(['purchases'], 'users_stats', 'user_id', member.id)[0]
         vbucks_count = sum(purchases['vbucks_purchases'][i]['price'] for i in range(len(purchases['vbucks_purchases'])))
@@ -238,6 +239,7 @@ class PurchasesHandler(Cog, name='Покупки и не только'):
             help=cmd["faq"]["help"],
             hidden=cmd["faq"]["hidden"], enabled=True)
     @guild_only()
+    @logger.catch
     async def faq_command(self, ctx):
         embeds = []
         embeds.append(Embed(

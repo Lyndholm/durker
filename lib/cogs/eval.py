@@ -1,12 +1,12 @@
-import io
-import discord
-import textwrap
 import contextlib
-
-from discord.ext import commands
-from discord.ext.commands import Cog
-from discord.ext.commands import command, is_owner
+import io
+import textwrap
 from traceback import format_exception
+
+import discord
+from discord.ext import commands
+from discord.ext.commands import Cog, command, is_owner
+from loguru import logger
 
 from ..utils.utils import Pag, clean_code, load_commands_from_json
 
@@ -29,6 +29,7 @@ class Eval(Cog, name='EvalCog'):
             help=cmd["eval"]["help"],
             hidden=cmd["eval"]["hidden"], enabled=True)
     @is_owner()
+    @logger.catch
     async def eval_command(self, ctx, *, code: str):
         code = clean_code(code)
 

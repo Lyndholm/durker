@@ -5,6 +5,7 @@ import aiofiles
 from aiohttp import ClientSession
 from discord import Color, Embed, User
 from discord.ext.commands import Cog, Greedy, command, dm_only, is_owner
+from loguru import logger
 
 from ..db import db
 from ..utils.checks import can_manage_radio_suggestions
@@ -32,14 +33,15 @@ class Owner(Cog, name='Команды разработчика'):
             hidden=cmd["loadcog"]["hidden"], enabled=True)
     @dm_only()
     @is_owner()
+    @logger.catch
     async def load_cog_command(self, ctx, *, cog: str):
         try:
             self.bot.load_extension(cog)
         except Exception as e:
-            embed = Embed(title=':exclamation: Ошибка!', description=f'{type(e).__name__} - {e}', color = Color.red())
+            embed = Embed(title='❗ Ошибка!', description=f'{type(e).__name__} - {e}', color = Color.red())
             await ctx.send(embed=embed)
         else:
-            embed = Embed(title=':thumbsup: Успешно!', description=f'Cog **`{cog}`** успешно загружен и активирован!', color = Color.green())
+            embed = Embed(title='👍 Успешно!', description=f'Cog **`{cog}`** успешно загружен и активирован!', color = Color.green())
             await ctx.send(embed=embed)
 
 
@@ -51,14 +53,15 @@ class Owner(Cog, name='Команды разработчика'):
             hidden=cmd["unloadcog"]["hidden"], enabled=True)
     @dm_only()
     @is_owner()
+    @logger.catch
     async def unload_cog_command(self, ctx, *, cog: str):
         try:
             self.bot.unload_extension(cog)
         except Exception as e:
-            embed = Embed(title=':exclamation: Ошибка!', description=f'{type(e).__name__} - {e}', color = Color.red())
+            embed = Embed(title='❗ Ошибка!', description=f'{type(e).__name__} - {e}', color = Color.red())
             await ctx.send(embed=embed)
         else:
-            embed = Embed(title=':thumbsup: Успешно!', description=f'Cog **`{cog}`** успешно деактивирован и выгружен!', color = Color.green())
+            embed = Embed(title='👍 Успешно!', description=f'Cog **`{cog}`** успешно деактивирован и выгружен!', color = Color.green())
             await ctx.send(embed=embed)
 
 
@@ -70,15 +73,16 @@ class Owner(Cog, name='Команды разработчика'):
             hidden=cmd["reloadcog"]["hidden"], enabled=True)
     @dm_only()
     @is_owner()
+    @logger.catch
     async def reload_cog_command(self, ctx, *, cog: str):
         try:
             self.bot.unload_extension(cog)
             self.bot.load_extension(cog)
         except Exception as e:
-            embed = Embed(title=':exclamation: Ошибка!', description=f'{type(e).__name__} - {e}', color = Color.red())
+            embed = Embed(title='❗ Ошибка!', description=f'{type(e).__name__} - {e}', color = Color.red())
             await ctx.send(embed=embed)
         else:
-            embed = Embed(title=':thumbsup: Успешно!', description=f'Cog **`{cog}`** успешно перезагружен!', color = Color.green())
+            embed = Embed(title='👍 Успешно!', description=f'Cog **`{cog}`** успешно перезагружен!', color = Color.green())
             await ctx.send(embed=embed)
 
 
@@ -90,19 +94,20 @@ class Owner(Cog, name='Команды разработчика'):
             hidden=cmd["disablecmd"]["hidden"], enabled=True)
     @dm_only()
     @is_owner()
+    @logger.catch
     async def disable_cmd_command(self, ctx, *, cmd: str):
         try:
             command = self.bot.get_command(name=cmd)
             if command.enabled:
                 self.modified_commands[cmd] = command.cog.qualified_name
                 command.update(enabled=False, hidden=True)
-                embed = Embed(title=':thumbsup: Успешно!', description=f'Команда **`{cmd}`** отключена!', color = Color.green())
+                embed = Embed(title='👍 Успешно!', description=f'Команда **`{cmd}`** отключена!', color = Color.green())
                 await ctx.send(embed=embed)
             else:
-                embed = Embed(title=':exclamation: Ошибка!', description=f'Команда `{cmd}` уже отключена.', color = Color.red())
+                embed = Embed(title='❗ Ошибка!', description=f'Команда `{cmd}` уже отключена.', color = Color.red())
                 await ctx.send(embed=embed)
         except Exception as e:
-            embed = Embed(title=':exclamation: Ошибка!', description=f'{type(e).__name__} - {e}', color = Color.red())
+            embed = Embed(title='❗ Ошибка!', description=f'{type(e).__name__} - {e}', color = Color.red())
             await ctx.send(embed=embed)
 
 
@@ -114,6 +119,7 @@ class Owner(Cog, name='Команды разработчика'):
             hidden=cmd["enablecmd"]["hidden"], enabled=True)
     @dm_only()
     @is_owner()
+    @logger.catch
     async def enable_cmd_command(self, ctx, *, cmd: str):
         try:
             command = self.bot.get_command(name=cmd)
@@ -122,13 +128,13 @@ class Owner(Cog, name='Команды разработчика'):
                 command.update(enabled=True, hidden=False)
                 command.cog = command_cog
                 del self.modified_commands[cmd]
-                embed = Embed(title=':thumbsup: Успешно!', description=f'Команда **`{cmd}`** включена!', color = Color.green())
+                embed = Embed(title='👍 Успешно!', description=f'Команда **`{cmd}`** включена!', color = Color.green())
                 await ctx.send(embed=embed)
             else:
-                embed = Embed(title=':exclamation: Ошибка!', description=f'Команда `{cmd}` сейчас активна. Повторное включение невозможно', color = Color.red())
+                embed = Embed(title='❗ Ошибка!', description=f'Команда `{cmd}` сейчас активна. Повторное включение невозможно', color = Color.red())
                 await ctx.send(embed=embed)
         except Exception as e:
-            embed = Embed(title=':exclamation: Ошибка!', description=f'{type(e).__name__} - {e}', color = Color.red())
+            embed = Embed(title='❗ Ошибка!', description=f'{type(e).__name__} - {e}', color = Color.red())
             await ctx.send(embed=embed)
 
 
@@ -140,6 +146,7 @@ class Owner(Cog, name='Команды разработчика'):
             hidden=cmd["disabledcmds"]["hidden"], enabled=True)
     @dm_only()
     @is_owner()
+    @logger.catch
     async def show_disabled_cmds_command(self, ctx):
         disabled_cmds = []
         for command in self.bot.commands:
@@ -156,6 +163,7 @@ class Owner(Cog, name='Команды разработчика'):
             hidden=cmd["ping"]["hidden"], enabled=True)
     @dm_only()
     @is_owner()
+    @logger.catch
     async def ping_bot_command(self, ctx):
         start = time.monotonic()
         message = await ctx.send(f'🏓 DWSP latency: {self.bot.latency*1000:,.0f} ms.')
@@ -170,6 +178,7 @@ class Owner(Cog, name='Команды разработчика'):
             hidden=cmd["fnping"]["hidden"], enabled=True)
     @dm_only()
     @is_owner()
+    @logger.catch
     async def ping_fortnite_apis_command(self, ctx):
         """Get the response time for APIs."""
         message = await ctx.send("Response time for APIs:")
@@ -226,7 +235,6 @@ class Owner(Cog, name='Команды разработчика'):
                 value=f"{round(peelyde_ping * 1000)} ms.",
             ),
         )
-        inline = True
 
 
     @command(name=cmd["bearer"]["name"], aliases=cmd["bearer"]["aliases"],
@@ -237,6 +245,7 @@ class Owner(Cog, name='Команды разработчика'):
             hidden=cmd["bearer"]["hidden"], enabled=True)
     @dm_only()
     @is_owner()
+    @logger.catch
     async def fetch_bearer_token_command(self, ctx):
         async with ClientSession() as session:
             async with session.get('https://api.nitestats.com/v1/epic/bearer') as r:
@@ -255,6 +264,7 @@ class Owner(Cog, name='Команды разработчика'):
                 await ctx.send(embed=embed)
 
 
+    @logger.catch
     async def pass_suggesion_decision(self, ctx, suggestion_id: int = None, decision: bool = None, comment: str = 'Отсутсвует'):
         answer_text = f"Ваша заявка **№{suggestion_id}** {'одобрена' if decision else 'отклонена'}.\n" + f"Комментарий администратора: {comment}"
         attachments = ''
@@ -294,7 +304,6 @@ class Owner(Cog, name='Команды разработчика'):
             await ctx.message.add_reaction('❌')
 
 
-
     @command(name=cmd["approve"]["name"], aliases=cmd["approve"]["aliases"],
             brief=cmd["approve"]["brief"],
             description=cmd["approve"]["description"],
@@ -303,6 +312,7 @@ class Owner(Cog, name='Команды разработчика'):
             hidden=cmd["approve"]["hidden"], enabled=True)
     @dm_only()
     @can_manage_radio_suggestions()
+    @logger.catch
     async def approve_suggestion_command(self, ctx, suggestion_id: int = None, *, comment: str = 'Отсутсвует.'):
         if suggestion_id is None:
             return await ctx.send('Укажите номер заявки.')
@@ -317,6 +327,7 @@ class Owner(Cog, name='Команды разработчика'):
             hidden=cmd["reject"]["hidden"], enabled=True)
     @dm_only()
     @can_manage_radio_suggestions()
+    @logger.catch
     async def reject_suggestion_command(self, ctx, suggestion_id: int = None, *, comment: str = 'Отсутсвует.'):
         if suggestion_id is None:
             return await ctx.send('Укажите номер заявки.')
@@ -332,6 +343,7 @@ class Owner(Cog, name='Команды разработчика'):
             hidden=cmd["blacklist"]["hidden"], enabled=True)
     @dm_only()
     @is_owner()
+    @logger.catch
     async def blacklist_user_command(self, ctx, targets: Greedy[User]):
         if not targets:
             return await ctx.message.add_reaction('❌')
@@ -352,6 +364,7 @@ class Owner(Cog, name='Команды разработчика'):
             hidden=cmd["whitelist"]["hidden"], enabled=True)
     @dm_only()
     @is_owner()
+    @logger.catch
     async def whitelist_user_command(self, ctx, targets: Greedy[User]):
         if not targets:
             return await ctx.message.add_reaction('❌')
@@ -376,6 +389,7 @@ class Owner(Cog, name='Команды разработчика'):
             hidden=cmd["echo"]["hidden"], enabled=True)
     @dm_only()
     @is_owner()
+    @logger.catch
     async def echo_command(self, ctx, channel_id: int = None, *, content: str = '_ _'):
         try:
             channel = self.bot.get_channel(channel_id)
@@ -398,6 +412,7 @@ class Owner(Cog, name='Команды разработчика'):
             hidden=cmd["setrep"]["hidden"], enabled=True)
     @dm_only()
     @is_owner()
+    @logger.catch
     async def set_reputation_command(self, ctx, user_id: int, action: str, value: int):
         edit_user_reputation(user_id, action, value)
         await ctx.reply(embed=Embed(
@@ -417,6 +432,7 @@ class Owner(Cog, name='Команды разработчика'):
             hidden=cmd["setamount"]["hidden"], enabled=True)
     @dm_only()
     @is_owner()
+    @logger.catch
     async def set_amount_command(self, ctx, user_id: int, action: str, value: int):
         edit_user_messages_count(user_id, action, value)
         await ctx.reply(embed=Embed(
@@ -436,6 +452,7 @@ class Owner(Cog, name='Команды разработчика'):
             hidden=cmd["shutdown"]["hidden"], enabled=True)
     @dm_only()
     @is_owner()
+    @logger.catch
     async def shutdown_command(self, ctx):
         async with aiofiles.open('./data/txt/banlist.txt', 'w', encoding='utf-8') as f:
             await f.writelines([f"{user}\n" for user in self.bot.banlist])

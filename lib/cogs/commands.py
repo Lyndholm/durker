@@ -9,6 +9,7 @@ from discord import Color, Embed, File, Member
 from discord import __version__ as discord_version
 from discord.ext.commands import (BucketType, Cog, Greedy, check_any, command,
                                   cooldown, guild_only, has_any_role)
+from loguru import logger
 from psutil import Process, cpu_percent, virtual_memory
 
 from ..db import db
@@ -34,6 +35,7 @@ class Commands(Cog, name='Базовые команды'):
             help=cmd["suggest"]["help"],
             hidden=cmd["suggest"]["hidden"], enabled=True)
     @is_channel(708601604353556491)
+    @logger.catch
     async def suggest_song_command(self, ctx, *, song: str = None):
         if song is None:
             return await ctx.send('Пожалуйста, укажите название трека, который вы хотите предложить добавить в плейлист радио.')
@@ -78,6 +80,7 @@ class Commands(Cog, name='Базовые команды'):
     @guild_only()
     @required_level(cmd["support"]["required_level"])
     @cooldown(cmd["support"]["cooldown_rate"], cmd["support"]["cooldown_per_second"], BucketType.member)
+    @logger.catch
     async def redirect_to_support_channel_command(self, ctx, targets: Greedy[Member]):
         content = " ".join([member.mention for member in targets]) or ctx.author.mention
         embed = Embed(
@@ -125,6 +128,7 @@ class Commands(Cog, name='Базовые команды'):
     @guild_only()
     @required_level(cmd["question"]["required_level"])
     @cooldown(cmd["question"]["cooldown_rate"], cmd["question"]["cooldown_per_second"], BucketType.member)
+    @logger.catch
     async def redirect_to_question_channel_command(self, ctx, targets: Greedy[Member]):
         users = " ".join([member.mention for member in targets]) or ctx.author.mention
         await ctx.send(
@@ -148,6 +152,7 @@ class Commands(Cog, name='Базовые команды'):
         required_level(cmd["media"]["required_level"]),
         has_any_role(790664227706241068, 686495834241761280))
     @cooldown(cmd["media"]["cooldown_rate"], cmd["media"]["cooldown_per_second"], BucketType.member)
+    @logger.catch
     async def redirect_to_media_channel_command(self, ctx, targets: Greedy[Member]):
         await ctx.message.delete()
         await ctx.send(' '.join(member.mention for member in targets) +  f' Изображениям и прочим медиафайлам, '
@@ -181,6 +186,7 @@ class Commands(Cog, name='Базовые команды'):
         required_level(cmd["poisk"]["required_level"]),
         has_any_role(790664227706241068, 686495834241761280))
     @cooldown(cmd["poisk"]["cooldown_rate"], cmd["poisk"]["cooldown_per_second"], BucketType.member)
+    @logger.catch
     async def redirect_to_poisk_channel_command(self, ctx, targets: Greedy[Member]):
         await ctx.message.delete()
         chance = randint(1, 100)
@@ -204,6 +210,7 @@ class Commands(Cog, name='Базовые команды'):
     @guild_only()
     @required_level(cmd["ppo"]["required_level"])
     @cooldown(cmd["ppo"]["cooldown_rate"], cmd["ppo"]["cooldown_per_second"], BucketType.guild)
+    @logger.catch
     async def ppo_command(self, ctx):
         await ctx.message.delete()
         await ctx.send('Понял Принял Обработал')
@@ -217,6 +224,7 @@ class Commands(Cog, name='Базовые команды'):
     @guild_only()
     @required_level(cmd["sp"]["required_level"])
     @cooldown(cmd["sp"]["cooldown_rate"], cmd["sp"]["cooldown_per_second"], BucketType.guild)
+    @logger.catch
     async def sp_command(self, ctx):
         await ctx.message.delete()
         await ctx.send('СП=справедливо=<:Spravedlivo:681858765158351124>')
@@ -230,6 +238,7 @@ class Commands(Cog, name='Базовые команды'):
     @guild_only()
     @required_level(cmd["code"]["required_level"])
     @cooldown(cmd["code"]["cooldown_rate"], cmd["code"]["cooldown_per_second"], BucketType.guild)
+    @logger.catch
     async def sac_command(self, ctx):
         await ctx.message.delete()
         await ctx.send('<:UseCodeFNFUN:681878310107480068> Лучший тег автора: **FNFUN** <:UseCodeFNFUN:681878310107480068>',
@@ -244,6 +253,7 @@ class Commands(Cog, name='Базовые команды'):
     @guild_only()
     @required_level(cmd["avatar"]["required_level"])
     @cooldown(cmd["avatar"]["cooldown_rate"], cmd["avatar"]["cooldown_per_second"], BucketType.member)
+    @logger.catch
     async def display_member_avatar(self, ctx, member: Optional[Member]):
         await ctx.message.delete()
         if not member:
@@ -265,6 +275,7 @@ class Commands(Cog, name='Базовые команды'):
             help=cmd["info"]["help"],
             hidden=cmd["info"]["hidden"], enabled=True)
     @guild_only()
+    @logger.catch
     async def show_bot_info_command(self, ctx):
         embed = Embed(
             title="Информация о боте",

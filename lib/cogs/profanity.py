@@ -30,7 +30,8 @@ class Profanity(Cog, name='Мат-фильтр'):
         )
 
     def increase_user_profanity_counter(self, user_id: int):
-        db.execute(f"UPDATE users_stats SET profanity_triggers = profanity_triggers + 1 WHERE user_id = {user_id}")
+        db.execute("UPDATE users_stats SET profanity_triggers = profanity_triggers + 1 WHERE user_id = %s",
+                    user_id)
         db.commit()
 
     def fetch_user_profanity_counter(self, user_id: int) -> int:

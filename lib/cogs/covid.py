@@ -1,12 +1,11 @@
-from discord import Embed, Color
-from discord.ext.commands import Cog
-from discord.ext.commands import command
 from datetime import datetime
 
 from aiohttp import ClientSession
+from discord import Color, Embed
+from discord.ext.commands import Cog, command
+from loguru import logger
 
 from ..utils.utils import load_commands_from_json
-
 
 cmd = load_commands_from_json("covid")
 
@@ -25,9 +24,10 @@ class Covid(Cog, name='COVID-19'):
             usage=cmd["covid"]["usage"],
             help=cmd["covid"]["help"],
             hidden=cmd["covid"]["hidden"], enabled=True)
+    @logger.catch
     async def covid_stats_command(self, ctx, country: str = None):
         if not country:
-            embed = Embed(title=':exclamation: Внимание!', description =f"Пожалуйста, введите название страны на английском языке.", color = Color.red())
+            embed = Embed(title='❗ Внимание!', description =f"Пожалуйста, введите название страны на английском языке.", color = Color.red())
             await ctx.send(embed=embed)
         else:
             async with ClientSession() as session:
@@ -65,7 +65,7 @@ class Covid(Cog, name='COVID-19'):
                                     await ctx.send(embed=embed)
 
                         else:
-                            embed = Embed(title=':exclamation: Внимание!', description =f"Что-то пошло не так. API вернуло: {r.status}", color = Color.red())
+                            embed = Embed(title='❗ Внимание!', description =f"Что-то пошло не так. API вернуло: {r.status}", color = Color.red())
                             await ctx.send(embed=embed)
 
 

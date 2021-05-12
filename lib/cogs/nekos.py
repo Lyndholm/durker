@@ -1,13 +1,12 @@
 from io import BytesIO
-from discord import Embed, Color, File
-from discord.ext.commands import Cog
-from discord.ext.commands import command
-
-from aiohttp import ClientSession
 from random import choice, randint
 
-from ..utils.utils import load_commands_from_json
+from aiohttp import ClientSession
+from discord import Color, Embed, File
+from discord.ext.commands import Cog, command
+from loguru import logger
 
+from ..utils.utils import load_commands_from_json
 
 cmd = load_commands_from_json("nekos")
 
@@ -31,6 +30,7 @@ class Nekos(Cog, name='Аниме'):
             usage=cmd["anipic"]["usage"],
             help=cmd["anipic"]["help"],
             hidden=cmd["anipic"]["hidden"], enabled=True)
+    @logger.catch
     async def random_anime_picture_command(self, ctx):
         embed = Embed(color=Color.random(), timestamp=ctx.message.created_at)
         embed.set_footer(text=f'{ctx.author.name}', icon_url=ctx.author.avatar_url)

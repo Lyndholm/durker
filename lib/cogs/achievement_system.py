@@ -5,8 +5,8 @@ from operator import itemgetter
 from random import choice
 from typing import Optional
 
-from discord import Color, Embed, Member, Forbidden
-from discord.ext.commands import Cog, command, guild_only, is_owner, dm_only
+from discord import Color, Embed, Forbidden, Member
+from discord.ext.commands import Cog, command, dm_only, guild_only, is_owner
 from discord.ext.menus import ListPageSource, MenuPages
 from loguru import logger
 
@@ -90,6 +90,7 @@ class AchievementSystem(Cog, name='Система достижений'):
                 )
         edit_user_reputation(target_id, action, rep_boost)
 
+    @logger.catch
     def give_achievement(self, admin_id: int, target_id: int, achievement: str):
         if not self.user_have_achievement(target_id, achievement):
             rec = db.record(
@@ -112,6 +113,7 @@ class AchievementSystem(Cog, name='Система достижений'):
             db.commit()
             self.edit_rep_for_achievement(target_id, achievement, '+')
 
+    @logger.catch
     def take_achievement_away(self, target_id: int, achievement: str):
         if self.user_have_achievement(target_id, achievement):
             data = db.fetchone(['achievements_list'], 'users_stats', 'user_id', target_id)[0]
@@ -123,6 +125,7 @@ class AchievementSystem(Cog, name='Система достижений'):
             db.commit()
             self.edit_rep_for_achievement(target_id, achievement, '-')
 
+    @logger.catch
     def advanced_achievements_memu(self, ctx, data):
         achievements = []
 
@@ -148,6 +151,7 @@ class AchievementSystem(Cog, name='Система достижений'):
 
         return achievements
 
+    @logger.catch
     def advanced_user_achievements_memu(self, ctx, data):
         achievements = []
 
@@ -172,6 +176,7 @@ class AchievementSystem(Cog, name='Система достижений'):
 
         return achievements
 
+    @logger.catch
     def achievement_helper(self, ctx, data):
         embed = Embed(
            title=f'🎖️ Достижение: {data[2]}',
@@ -194,6 +199,7 @@ class AchievementSystem(Cog, name='Система достижений'):
 
         return [embed]
 
+    @logger.catch
     async def display_method(self, ctx) -> str:
         reactions = ['1️⃣', '2️⃣']
         embed = Embed(
@@ -226,6 +232,7 @@ class AchievementSystem(Cog, name='Система достижений'):
             method = None
         return method
 
+    @logger.catch
     async def achievement_award_notification(self, achievement: str, target: Member):
         data = db.record(
             "SELECT * FROM achievements WHERE "

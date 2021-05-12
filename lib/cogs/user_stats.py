@@ -1,13 +1,13 @@
-from discord import Member, Embed, Color
-from discord.utils import get
-from discord.ext.commands import Cog
-from discord.ext.commands import command, guild_only
-from datetime import datetime, timedelta
 from asyncio.exceptions import TimeoutError
+from datetime import datetime, timedelta
+
+from discord import Color, Embed, Member
+from discord.ext.commands import Cog, command, guild_only
+from discord.utils import get
+from loguru import logger
 
 from ..db import db
 from ..utils.utils import load_commands_from_json, russian_plural
-
 
 cmd = load_commands_from_json("user_stats")
 
@@ -28,11 +28,12 @@ class UserStats(Cog, name='Статистика'):
         help=cmd["profile"]["help"],
         hidden=cmd["profile"]["hidden"], enabled=True)
     @guild_only()
+    @logger.catch
     async def fetch_member_profile_command(self, ctx, member: Member = None):
         if member and member != ctx.author:
             is_member_profile_public = db.fetchone(["is_profile_public"], "users_info", "user_id", member.id)
             if is_member_profile_public[0] is False:
-                embed = Embed(title=":exclamation: Внимание!", color=Color.red(), timestamp=datetime.utcnow(),
+                embed = Embed(title="❗ Внимание!", color=Color.red(), timestamp=datetime.utcnow(),
                             description=f"Профиль участника **{member.display_name}** ({member.mention}) скрыт. Просматривать его может только владелец.")
                 embed.set_footer(text=ctx.author, icon_url=ctx.author.avatar_url)
                 await ctx.send(embed=embed)
@@ -179,13 +180,14 @@ class UserStats(Cog, name='Статистика'):
         help=cmd["setbio"]["help"],
         hidden=cmd["setbio"]["hidden"], enabled=True)
     @guild_only()
+    @logger.catch
     async def setbio_command(self, ctx, *, bio: str = None):
         if bio is None:
             db_bio = db.fetchone(["brief_biography"], "users_info", "user_id", ctx.author.id)[0]
 
             if db_bio is not None:
                     r_list = ['🟩', '🟥']
-                    embed = Embed(title=':exclamation: Внимание!', color = Color.red(), timestamp = datetime.utcnow(),
+                    embed = Embed(title='❗ Внимание!', color = Color.red(), timestamp = datetime.utcnow(),
                             description = f"{ctx.author.mention}, ваша биография уже написана. Вы желаете её сбросить?\n\n"
                             "🟩 — нет.\n\n🟥 — да, сбросить мою биографию.")
                     msg = await ctx.send(embed=embed)
@@ -224,12 +226,12 @@ class UserStats(Cog, name='Статистика'):
                             await ctx.send(embed=embed)
                             return
             else:
-                embed = Embed(title=':exclamation: Внимание!', color = Color.red(),
+                embed = Embed(title='❗ Внимание!', color = Color.red(),
                             description = f"{ctx.author.mention}, пожалуйста, напишите Вашу биографию. Учитывайте, что максимальная длина текста — **255** символов.")
                 await ctx.send(embed=embed)
 
         elif len(bio.strip()) > 255:
-            embed = Embed(title=':exclamation: Внимание!', color = Color.red(),
+            embed = Embed(title='❗ Внимание!', color = Color.red(),
                         description = f"{ctx.author.mention}, пожалуйста, уменьшите длину Вашей биографии. Вы превысили допустимый объём на {len(bio) - 255} символ(-а).")
             await ctx.send(embed=embed)
 
@@ -255,6 +257,7 @@ class UserStats(Cog, name='Статистика'):
         help=cmd["setprivacy"]["help"],
         hidden=cmd["setprivacy"]["hidden"], enabled=True)
     @guild_only()
+    @logger.catch
     async def set_user_profile_privacy_command(self, ctx):
         r_list = ['🟩', '🟥', '❌']
         embed = Embed(
@@ -329,6 +332,7 @@ class UserStats(Cog, name='Статистика'):
         help=cmd["amount"]["help"],
         hidden=cmd["amount"]["hidden"], enabled=True)
     @guild_only()
+    @logger.catch
     async def amount_command(self, ctx):
         activity_role_1 = get(ctx.guild.roles, name='Работяга')
         activity_role_2 = get(ctx.guild.roles, name='Олд')
@@ -369,6 +373,7 @@ class UserStats(Cog, name='Статистика'):
         help=cmd["myrep"]["help"],
         hidden=cmd["myrep"]["hidden"], enabled=True)
     @guild_only()
+    @logger.catch
     async def myrep_command(self, ctx):
         rep_rank = db.fetchone(["rep_rank"], "users_stats", 'user_id', ctx.author.id)[0]
         desc = f"{ctx.author.mention}, количество ваших очков репутации: **{rep_rank}**"
@@ -414,6 +419,7 @@ class UserStats(Cog, name='Статистика'):
         help=cmd["rep"]["help"],
         hidden=cmd["rep"]["hidden"], enabled=True)
     @guild_only()
+    @logger.catch
     async def how_rep_sys_works_command(self, ctx):
         embed = Embed(
             title="Репутация: что это, для чего нужна, как зарабатывать.",

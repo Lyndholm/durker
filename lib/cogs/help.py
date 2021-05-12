@@ -6,6 +6,7 @@ import aiofiles
 from discord import Color, Embed
 from discord.ext.commands import Cog, Command, command
 from discord.utils import get
+from loguru import logger
 from transliterate import translit
 
 from ..utils.constants import PLACEHOLDER
@@ -44,6 +45,7 @@ class Help(Cog, name='Help меню'):
             usage=cmd["help"]["usage"],
             help=cmd["help"]["help"],
             hidden=cmd["help"]["hidden"], enabled=True)
+    @logger.catch
     async def help_command(self, ctx, *, cmd: Optional[str]):
         if cmd is None:
             embed = self.help_memu(ctx)
@@ -57,7 +59,7 @@ class Help(Cog, name='Help меню'):
                     await paginate(ctx, self.command_helper(ctx, thing))
                 else:
                     embed = Embed(
-                        title=':exclamation: Ошибка!',
+                        title='❗ Ошибка!',
                         description =f"Указанная команда не существует, либо она скрыта или отключена.",
                         color = Color.red()
                     )
@@ -76,6 +78,7 @@ class Help(Cog, name='Help меню'):
         for i in range(0, len(l), n):
             yield l[i:i + n]
 
+    @logger.catch
     def help_memu(self, ctx):
         hidden_cogs = ['модерация']
         commands = []
@@ -118,6 +121,7 @@ class Help(Cog, name='Help меню'):
                 )
         return commands
 
+    @logger.catch
     def cog_helper(self, ctx, cog):
         name = cog.qualified_name or cog.__class__.__name__
         commands = []
@@ -153,6 +157,7 @@ class Help(Cog, name='Help меню'):
             )
         return commands
 
+    @logger.catch
     def command_helper(self, ctx, cmd):
         try:
             commands = []

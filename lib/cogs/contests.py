@@ -1,8 +1,10 @@
-from random import sample, shuffle
-from discord import Embed, Color
-from discord.ext.commands import Cog
-from discord.ext.commands import command, guild_only, is_owner
 from datetime import datetime, timedelta
+from logging import log
+from random import sample, shuffle
+
+from discord import Color, Embed
+from discord.ext.commands import Cog, command, guild_only, is_owner
+from loguru import logger
 
 from ..utils.utils import load_commands_from_json
 
@@ -22,6 +24,7 @@ class Contests(Cog, name='Контесты'):
             hidden=cmd["giveaway"]["hidden"], enabled=True)
     @guild_only()
     @is_owner()
+    @logger.catch
     async def create_giveaway(self, ctx, mins: int = None, winners: int = 1, *, description: str = "Розыгрыш."):
         await ctx.message.delete()
         if winners <= 0:
@@ -50,6 +53,7 @@ class Contests(Cog, name='Контесты'):
                                 args=[message.channel.id, message.id, embed, winners])
         await message.add_reaction('✅')
 
+    @logger.catch
     async def complete_giveaway(self, channel_id, message_id, embed, winners_count):
         message = await self.bot.get_channel(channel_id).fetch_message(message_id)
 

@@ -5,6 +5,7 @@ from random import randint
 from discord import Embed, Message, TextChannel
 from discord.ext.commands import Cog, command, guild_only
 from discord.utils import remove_markdown
+from loguru import logger
 
 from ..db import db
 from ..utils.decorators import listen_for_guilds
@@ -39,6 +40,7 @@ class Leveling(Cog, name='Система уровней'):
             777979537795055636, #testing на dev сервере
         )
 
+    @logger.catch
     async def can_message_be_counted(self, message: Message) -> bool:
         message_content = remove_markdown(message.clean_content)
         ctx = await self.bot.get_context(message)
@@ -57,12 +59,14 @@ class Leveling(Cog, name='Система уровней'):
                     else:
                         return False
 
+    @logger.catch
     async def process_xp(self, message: Message):
         level, xp, xp_total, xp_lock = db.fetchone(['level', 'xp', 'xp_total', 'xp_lock'], 'leveling', 'user_id', message.author.id)
 
         if datetime.now() > xp_lock:
             await self.add_xp(message, xp, xp_total, level)
 
+    @logger.catch
     async def add_xp(self, message: Message, xp: int, xp_total: int, level: int):
         xp_to_add = randint(5, 15)
         xp_end = floor(5 * (level ^ 2) + 50 * level + 100)
@@ -76,6 +80,7 @@ class Leveling(Cog, name='Система уровней'):
         db.execute("UPDATE leveling SET xp_lock = %s WHERE user_id = %s", datetime.now() + timedelta(seconds=60), message.author.id)
         db.commit()
 
+    @logger.catch
     async def increase_user_level(self,  message: Message, xp: int, xp_total: int, xp_to_add: int, xp_end: int, level: int):
         db.execute(
             "UPDATE leveling SET level = %s, xp = %s, xp_total = xp_total - %s WHERE user_id = %s",
@@ -112,6 +117,7 @@ class Leveling(Cog, name='Система уровней'):
             help=cmd["rank"]["help"],
             hidden=cmd["rank"]["hidden"], enabled=True)
     @guild_only()
+    @logger.catch
     async def rank_command(self, ctx):
         xp, xp_total, level = db.fetchone(['xp', 'xp_total', 'level'], 'leveling', 'user_id', ctx.author.id)
         xp_end = floor(5 * (level ^ 2) + 50 * level + 100)

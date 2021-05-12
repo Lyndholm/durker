@@ -1,15 +1,16 @@
 import json
-import aiofiles
-from os import getenv
-from aiohttp import ClientSession
-from discord import Embed, Color
-from discord.ext.commands import Cog
-from discord.ext.commands import command
 from datetime import datetime
-from random import randint, choice
+from os import getenv
+from random import choice, randint
 
-from ..utils.utils import load_commands_from_json
+import aiofiles
+from aiohttp import ClientSession
+from discord import Color, Embed
+from discord.ext.commands import Cog, command
+from loguru import logger
+
 from ..utils.paginator import Paginator
+from ..utils.utils import load_commands_from_json
 
 cmd = load_commands_from_json("fortniteapiio")
 
@@ -30,6 +31,7 @@ class FortniteAPIio(Cog, name='Fortnite API 3'):
             usage=cmd["map"]["usage"],
             help=cmd["map"]["help"],
             hidden=cmd["map"]["hidden"], enabled=True)
+    @logger.catch
     async def show_fortnite_map_command(self, ctx, poi:str="None", language="ru"):
         embed = Embed(title="Карта Королевской Битвы",color=Color.orange(), timestamp=datetime.utcnow())
         embed.set_footer(text=f'{ctx.author.name}', icon_url=ctx.author.avatar_url)
@@ -47,6 +49,7 @@ class FortniteAPIio(Cog, name='Fortnite API 3'):
             usage=cmd["fnach"]["usage"],
             help=cmd["fnach"]["help"],
             hidden=cmd["fnach"]["hidden"], enabled=True)
+    @logger.catch
     async def show_fortnite_achievements_command(self, ctx, language: str ="ru"):
         achievement_embeds = []
         divided = []
@@ -87,6 +90,7 @@ class FortniteAPIio(Cog, name='Fortnite API 3'):
             usage=cmd["fish"]["usage"],
             help=cmd["fish"]["help"],
             hidden=cmd["fish"]["hidden"], enabled=True)
+    @logger.catch
     async def show_fortnite_fish_list_command(self, ctx, number: int = 0):
         async with aiofiles.open('./data/json/fish_s16.json', mode='r', encoding='utf-8') as f:
             data = json.loads(await f.read())
@@ -155,6 +159,7 @@ class FortniteAPIio(Cog, name='Fortnite API 3'):
             usage=cmd["challenges"]["usage"],
             help=cmd["challenges"]["help"],
             hidden=cmd["challenges"]["hidden"], enabled=True)
+    @logger.catch
     async def show_fortnite_rare_challenges_command(self, ctx, language: str = "ru"):
         QUEST_ID = "Quest_S16_Milestone"
         quest_embeds = []
@@ -203,6 +208,7 @@ class FortniteAPIio(Cog, name='Fortnite API 3'):
             usage=cmd["npc"]["usage"],
             help=cmd["npc"]["help"],
             hidden=cmd["npc"]["hidden"], enabled=True)
+    @logger.catch
     async def show_fortnite_characters_command(self, ctx, number: int = 0):
         async with aiofiles.open('./data/json/characters_s16.json', mode='r', encoding='utf-8') as f:
             data = json.loads(await f.read())

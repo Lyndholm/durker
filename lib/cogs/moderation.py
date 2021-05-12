@@ -3,7 +3,7 @@ import re
 from asyncio import sleep
 from datetime import datetime, timedelta
 from math import floor
-from random import randint, choice
+from random import choice, randint
 from typing import Optional
 
 import aiofiles
@@ -15,6 +15,7 @@ from discord.ext.commands import (BadArgument, CheckFailure, Cog, Converter,
                                   guild_only, has_any_role, has_permissions)
 from discord.utils import find, get
 from jishaku.functools import executor_function
+from loguru import logger
 
 from ..db import db
 from ..utils.constants import (AUDIT_LOG_CHANNEL, HELPER_ROLE_ID,
@@ -49,6 +50,7 @@ class Moderation(Cog, name='Модерация'):
         self.EMOJI_REGEX = r'<(?P<animated>a?):(?P<name>[a-zA-Z0-9_]{2,32}):(?P<id>[0-9]{18,22})>'
         self.UNICODE_EMOJI_REGEX = r'[\U00010000-\U0010ffff]'
 
+    @logger.catch
     async def kick_members(self, message, targets, reason):
         for target in targets:
             if message.guild.me.top_role.position < target.top_role.position:
@@ -89,6 +91,7 @@ class Moderation(Cog, name='Модерация'):
     @guild_only()
     @bot_has_permissions(kick_members=True)
     @has_permissions(kick_members=True)
+    @logger.catch
     async def kick_members_command(self, ctx, targets: Greedy[Member], *, reason: Optional[str] = "Не указана"):
         await ctx.message.delete()
 
@@ -98,6 +101,7 @@ class Moderation(Cog, name='Модерация'):
             await self.kick_members(ctx.message, targets, reason)
 
 
+    @logger.catch
     async def ban_members(self, message, targets, delete_days, reason):
         for target in targets:
             if message.guild.me.top_role.position < target.top_role.position:
@@ -138,6 +142,7 @@ class Moderation(Cog, name='Модерация'):
     @guild_only()
     @bot_has_permissions(ban_members=True)
     @has_permissions(ban_members=True)
+    @logger.catch
     async def ban_members_command(self, ctx, targets: Greedy[Member],
                                         delete_days: Optional[int] = 1, *,
                                         reason: Optional[str] = "Не указана"):
@@ -148,6 +153,7 @@ class Moderation(Cog, name='Модерация'):
         else:
             await self.ban_members(ctx.message, targets, delete_days, reason)
 
+    @logger.catch
     async def unban_members(self, message, targets, reason):
         for target in targets:
             await message.guild.unban(target, reason=reason)
@@ -179,6 +185,7 @@ class Moderation(Cog, name='Модерация'):
     @guild_only()
     @bot_has_permissions(ban_members=True)
     @has_permissions(ban_members=True)
+    @logger.catch
     async def unban_members_command(self, ctx, targets: Greedy[BannedUser], *,
                                     reason: Optional[str] = "Не указана"):
         await ctx.message.delete()
@@ -189,6 +196,7 @@ class Moderation(Cog, name='Модерация'):
             await self.unban_members(ctx.message, targets, reason)
 
 
+    @logger.catch
     async def mute_members(self, message, targets, time, reason, mute_type):
         def _notification_embed(target: Member, description: str, time_field: tuple) -> Embed:
             embed = Embed(
@@ -307,6 +315,7 @@ class Moderation(Cog, name='Модерация'):
 
         return unmutes
 
+    @logger.catch
     async def unmute_members(self, ctx, targets, reason: Optional[str] = "Не указана"):
         for target in targets:
             if self.mute_role in target.roles:
@@ -346,6 +355,7 @@ class Moderation(Cog, name='Модерация'):
     @guild_only()
     @bot_has_permissions(manage_roles=True)
     @has_any_role(790664227706241068, 686495834241761280)
+    @logger.catch
     async def mute_members_command(self, ctx, targets: Greedy[Member], hours: Optional[str],
                                    *, reason: Optional[str] = "Не указана"):
         await ctx.message.delete()
@@ -370,6 +380,7 @@ class Moderation(Cog, name='Модерация'):
     @guild_only()
     @bot_has_permissions(manage_roles=True)
     @has_any_role(790664227706241068, 686495834241761280)
+    @logger.catch
     async def ugol_mute_command(self, ctx, targets: Greedy[Member], *, reason: Optional[str] = "Не указана"):
         await ctx.message.delete()
 
@@ -392,6 +403,7 @@ class Moderation(Cog, name='Модерация'):
     @guild_only()
     @bot_has_permissions(manage_roles=True)
     @has_any_role(790664227706241068, 686495834241761280)
+    @logger.catch
     async def isolator_mute_command(self, ctx, targets: Greedy[Member], *, reason: Optional[str] = "Не указана"):
         await ctx.message.delete()
 
@@ -414,6 +426,7 @@ class Moderation(Cog, name='Модерация'):
     @guild_only()
     @bot_has_permissions(manage_roles=True)
     @has_any_role(790664227706241068, 686495834241761280)
+    @logger.catch
     async def dungeon_mute_command(self, ctx, targets: Greedy[Member], *, reason: Optional[str] = "Не указана"):
         await ctx.message.delete()
 
@@ -436,6 +449,7 @@ class Moderation(Cog, name='Модерация'):
     @guild_only()
     @bot_has_permissions(manage_roles=True)
     @has_any_role(790664227706241068, 686495834241761280)
+    @logger.catch
     async def gulag_mute_command(self, ctx, targets: Greedy[Member], *, reason: Optional[str] = "Не указана"):
         await ctx.message.delete()
 
@@ -449,6 +463,7 @@ class Moderation(Cog, name='Модерация'):
             await self.unmute_members(ctx, targets, "Время пребывания в ГУЛАГе истекло.")
 
 
+    @logger.catch
     async def warn_member(self, message, target, warns, reason):
         @executor_function
         def _warn_sleep(sleep_time: int):
@@ -542,6 +557,7 @@ class Moderation(Cog, name='Модерация'):
     @guild_only()
     @bot_has_permissions(manage_roles=True)
     @has_any_role(790664227706241068, 686495834241761280)
+    @logger.catch
     async def warn_mute_command(self, ctx, targets: Greedy[Member], *, reason: Optional[str] = "Не указана"):
 
         await ctx.message.delete()
@@ -585,6 +601,7 @@ class Moderation(Cog, name='Модерация'):
     @guild_only()
     @bot_has_permissions(manage_roles=True)
     @has_any_role(790664227706241068,606928001669791755)
+    @logger.catch
     async def unmute_members_command(self, ctx, targets: Greedy[Member], *, reason: Optional[str] = "Мут снят вручную администратором."):
         await ctx.message.delete()
 
@@ -595,6 +612,7 @@ class Moderation(Cog, name='Модерация'):
         await self.unmute_members(ctx, targets, reason)
 
 
+    @logger.catch
     async def readrole_members(self, ctx, targets):
       for target in targets:
         if self.read_role not in target.roles:
@@ -628,6 +646,7 @@ class Moderation(Cog, name='Модерация'):
     @guild_only()
     @bot_has_permissions(manage_roles=True)
     @has_any_role(790664227706241068,606928001669791755)
+    @logger.catch
     async def readrole_command(self, ctx, targets: Greedy[Member]):
         await ctx.message.delete()
         if not len(targets):
@@ -639,6 +658,7 @@ class Moderation(Cog, name='Модерация'):
         await self.remove_readrole_members(ctx, targets)
 
 
+    @logger.catch
     async def remove_readrole_members(self, ctx, targets):
       for target in targets:
         if self.read_role in target.roles:
@@ -666,6 +686,7 @@ class Moderation(Cog, name='Модерация'):
     @guild_only()
     @bot_has_permissions(manage_roles=True)
     @has_any_role(790664227706241068,606928001669791755)
+    @logger.catch
     async def remove_readrole_command(self, ctx, targets: Greedy[Member]):
         await ctx.message.delete()
         if not len(targets):
@@ -684,6 +705,7 @@ class Moderation(Cog, name='Модерация'):
     @guild_only()
     @bot_has_permissions(manage_messages=True)
     @has_permissions(administrator=True)
+    @logger.catch
     async def clear_messages_command(self, ctx, targets: Greedy[Member], limit: Optional[int] = 1):
         def _check(message):
             return not len(targets) or message.author in targets
@@ -764,6 +786,7 @@ class Moderation(Cog, name='Модерация'):
             hidden=cmd["hat"]["hidden"], enabled=True)
     @guild_only()
     @has_any_role(790664227706241068,606928001669791755)
+    @logger.catch
     async def hat_command(self, ctx, targets: Greedy[Member]):
         if not targets:
             return

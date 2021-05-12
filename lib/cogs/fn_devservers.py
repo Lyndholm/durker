@@ -1,10 +1,10 @@
 from aiohttp import ClientSession
-from discord import Embed, Color
-from discord.ext.commands import Cog
-from discord.ext.commands import command
+from discord import Color, Embed
+from discord.ext.commands import Cog, command
+from loguru import logger
 
-from ..utils.utils import load_commands_from_json
 from ..utils.paginator import Paginator
+from ..utils.utils import load_commands_from_json
 
 cmd = load_commands_from_json("fn_devservers")
 
@@ -72,6 +72,7 @@ class FortniteDevServers(Cog, name='Fortnite Dev'):
             usage=cmd["fndev"]["usage"],
             help=cmd["fndev"]["help"],
             hidden=cmd["fndev"]["hidden"], enabled=True)
+    @logger.catch
     async def fortnite_dev_servers_state_command(self, ctx, server:str="None"):
         servers_embeds = []
         if server.lower() == "stage":

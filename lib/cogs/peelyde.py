@@ -1,8 +1,9 @@
 from io import BytesIO
+
 from aiohttp import ClientSession
-from discord import Embed, Color, File
-from discord.ext.commands import Cog
-from discord.ext.commands import command
+from discord import Color, Embed, File
+from discord.ext.commands import Cog, command
+from loguru import logger
 
 from ..utils.utils import load_commands_from_json
 
@@ -25,6 +26,7 @@ class PeelyDE(Cog, name='Fortnite API 4'):
             usage=cmd["upcoming"]["usage"],
             help=cmd["upcoming"]["help"],
             hidden=cmd["upcoming"]["hidden"], enabled=True)
+    @logger.catch
     async def show_fortnite_upcoming_items_command(self, ctx, mode:str="current", language:str="ru"):
         embed = Embed(
             title="Fortnite upcoming items",
@@ -60,6 +62,7 @@ class PeelyDE(Cog, name='Fortnite API 4'):
             usage=cmd["fnseason"]["usage"],
             help=cmd["fnseason"]["help"],
             hidden=cmd["fnseason"]["hidden"], enabled=True)
+    @logger.catch
     async def show_battle_royal_season_data_command(self, ctx):
         embed = Embed(
             title="Королевская битва",

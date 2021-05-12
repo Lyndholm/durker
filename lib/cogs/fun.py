@@ -1,20 +1,18 @@
 import json
-import aiofiles
-from discord import Embed, Color, Member
-from discord.ext.commands import Cog, BucketType
-from discord.ext.commands import command, cooldown
-from discord.ext.commands import check_any, is_owner, guild_only, dm_only
-from discord.ext.commands.errors import MissingRequiredArgument
-from discord.channel import DMChannel
-
-from random import randint, choice
-from aiohttp import ClientSession
 from asyncio import sleep
+from random import choice, randint
 
+import aiofiles
+from aiohttp import ClientSession
+from discord import Color, Embed, Member
+from discord.channel import DMChannel
+from discord.ext.commands import (BucketType, Cog, check_any, command,
+                                  cooldown, dm_only, guild_only, is_owner)
+from discord.ext.commands.errors import MissingRequiredArgument
+from loguru import logger
 
 from ..utils import checks
 from ..utils.utils import load_commands_from_json
-
 
 cmd = load_commands_from_json("fun")
 
@@ -41,6 +39,7 @@ class Fun(Cog, name='Развлечения'):
             usage=cmd["hug"]["usage"],
             help=cmd["hug"]["help"],
             hidden=cmd["hug"]["hidden"], enabled=True)
+    @logger.catch
     async def hug_command(self, ctx, *, member: Member):
         await ctx.message.delete()
         async with ClientSession() as session:
@@ -64,6 +63,7 @@ class Fun(Cog, name='Развлечения'):
             hidden=cmd["coin"]["hidden"], enabled=True)
     @checks.required_level(cmd["coin"]["required_level"])
     @check_any(checks.is_any_channel([777979537795055636, 796439346344493107, 708601604353556491]), dm_only())
+    @logger.catch
     async def drop_coin_command(self, ctx):
         robot_choice = choice(["орёл", "решка"])
 
@@ -83,6 +83,7 @@ class Fun(Cog, name='Развлечения'):
             usage=cmd["saper"]["usage"],
             help=cmd["saper"]["help"],
             hidden=cmd["saper"]["hidden"], enabled=True)
+    @logger.catch
     async def saper_command(self, ctx):
         await ctx.message.delete()
 
@@ -203,6 +204,7 @@ class Fun(Cog, name='Развлечения'):
             usage=cmd["flags"]["usage"],
             help=cmd["flags"]["help"],
             hidden=cmd["flags"]["hidden"], enabled=True)
+    @logger.catch
     async def guess_flags_command(self, ctx):
         event_members = {}
         async with aiofiles.open('./data/json/country_flags.json', mode='r', encoding = 'utf8') as f:
@@ -272,6 +274,7 @@ class Fun(Cog, name='Развлечения'):
             usage=cmd["knb"]["usage"],
             help=cmd["knb"]["help"],
             hidden=cmd["knb"]["hidden"], enabled=True)
+    @logger.catch
     async def stone_scissors_paper_command(self, ctx, item: str):
         await ctx.message.delete()
         robot = ['Камень', 'Ножницы', 'Бумага']
@@ -342,7 +345,7 @@ class Fun(Cog, name='Развлечения'):
     @stone_scissors_paper_command.error
     async def stone_scissors_paper_command_error(self, ctx, exc):
         if isinstance(exc, MissingRequiredArgument):
-            embed = Embed(title=':exclamation: Внимание!', description =f"Укажите, что вы выбрали: камень, ножницы или бумагу.\n`{ctx.command} {ctx.command.usage}`", color= Color.red())
+            embed = Embed(title='❗ Внимание!', description =f"Укажите, что вы выбрали: камень, ножницы или бумагу.\n`{ctx.command} {ctx.command.usage}`", color= Color.red())
             await ctx.send(embed=embed, delete_after = 20)
 
 
@@ -353,6 +356,7 @@ class Fun(Cog, name='Развлечения'):
             help=cmd["8ball"]["help"],
             hidden=cmd["8ball"]["hidden"], enabled=True)
     @guild_only()
+    @logger.catch
     async def magic_ball_command(self, ctx, *, question: str):
         posible_answers = {
             "affirmative": {
@@ -391,7 +395,7 @@ class Fun(Cog, name='Развлечения'):
     @magic_ball_command.error
     async def magic_ball_command_error(self, ctx, exc):
         if isinstance(exc, MissingRequiredArgument):
-            embed = Embed(title=':exclamation: Внимание!', description =f"Пожалуйста, укажите вопрос.", color = Color.red())
+            embed = Embed(title='❗ Внимание!', description =f"Пожалуйста, укажите вопрос.", color = Color.red())
             await ctx.send(embed=embed, delete_after = 30)
 
 
@@ -401,6 +405,7 @@ class Fun(Cog, name='Развлечения'):
             usage=cmd["randint"]["usage"],
             help=cmd["randint"]["help"],
             hidden=cmd["randint"]["hidden"], enabled=True)
+    @logger.catch
     async def randint_command(self, ctx, a: int, b: int):
         embed = Embed(title="Генератор случайных чисел", description=f"Случайное целое число: **{randint(a,b)}**", color=Color.random())
         await ctx.send(embed=embed)
@@ -408,7 +413,7 @@ class Fun(Cog, name='Развлечения'):
     @randint_command.error
     async def randint_command_error(self, ctx, exc):
         if isinstance(exc, MissingRequiredArgument):
-            embed = Embed(title=':exclamation: Внимание!', description =f"Пожалуйста, укажите корректный диапазон **целых** чисел.", color = Color.red())
+            embed = Embed(title='❗ Внимание!', description =f"Пожалуйста, укажите корректный диапазон **целых** чисел.", color = Color.red())
             await ctx.send(embed=embed, delete_after = 30)
 
 

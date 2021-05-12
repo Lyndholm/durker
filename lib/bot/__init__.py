@@ -209,7 +209,7 @@ class Bot(BotBase):
         if not ctx.command.has_error_handler():
             if isinstance(exc, CommandNotFound):
                 embed = Embed(
-                    title=':exclamation: Ошибка!',
+                    title='❗ Ошибка!',
                     description=f'Команда `{ctx.message.clean_content}` не найдена.',
                     color=Color.red()
                 )
@@ -225,7 +225,7 @@ class Bot(BotBase):
 
             elif isinstance(exc, DisabledCommand):
                 embed = Embed(
-                    title=':exclamation: Ошибка!',
+                    title='❗ Ошибка!',
                     description=f"Команда `{ctx.command}` отключена.",
                     color=Color.red
                 )
@@ -234,7 +234,7 @@ class Bot(BotBase):
             elif isinstance(exc, NoPrivateMessage):
                 try:
                     embed = Embed(
-                        title=':exclamation: Ошибка!',
+                        title='❗ Ошибка!',
                         description=f"Команда `{ctx.command}` не может быть использована в личных сообщениях.",
                         color=Color.red()
                     )
@@ -244,7 +244,7 @@ class Bot(BotBase):
 
             elif isinstance(exc, PrivateMessageOnly):
                 embed = Embed(
-                    title=':exclamation: Ошибка!',
+                    title='❗ Ошибка!',
                     description=f"Команда `{ctx.command}` работает только в личных сообщениях. Она не может быть использована на сервере.",
                     color=Color.red()
                 )
@@ -252,7 +252,7 @@ class Bot(BotBase):
 
             elif isinstance(exc, MissingPermissions):
                 embed = Embed(
-                    title=':exclamation: Ошибка!',
+                    title='❗ Ошибка!',
                     description=f"У бота недостаточно прав для выполнения действия.",
                     color=Color.red()
                 )
@@ -260,7 +260,7 @@ class Bot(BotBase):
 
             elif isinstance(exc, Forbidden):
                 embed = Embed(
-                    title=':exclamation: Ошибка!',
+                    title='❗ Ошибка!',
                     description=f"Недостаточно прав для выполнения действия.",
                     color=Color.red()
                 )
@@ -268,7 +268,7 @@ class Bot(BotBase):
 
             elif isinstance(exc, HTTPException):
                 embed = Embed(
-                    title=':exclamation: Ошибка!',
+                    title='❗ Ошибка!',
                     description=f"Невозможно отправить сообщение. Возможно, превышен лимит символов.",
                     color=Color.red()
                 )
@@ -276,7 +276,7 @@ class Bot(BotBase):
 
             elif isinstance(exc, CheckFailure) or isinstance(exc, CheckAnyFailure):
                 embed = Embed(
-                    title=':exclamation: Ошибка!',
+                    title='❗ Ошибка!',
                     description=f"{ctx.author.mention}\nНевозможно выполнить указанную команду."
                                 "\nВозможно, вы используете неправильный канал, у вас недостаточный уровень или отсутствуют права на выполнение запрошенного метода.",
                     color=Color.red()
@@ -293,7 +293,7 @@ class Bot(BotBase):
                             timestamp=datetime.utcnow(),
                             color=Color.red()
                         )
-                        await dev.send(embed=embed)
+                        await self.get_user(OWNER_IDS[0]).send(embed=embed)
                     else:
                         embed = Embed(
                             title=f'Ошибка при выполнении команды {ctx.command}.',

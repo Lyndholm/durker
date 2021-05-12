@@ -1,10 +1,15 @@
-from discord import Embed, Color, Member, Forbidden
-from discord.utils import get
-from discord.ext.commands import Cog
 from datetime import datetime
-from ..utils.constants import WELCOME_CHANNEL, GOODBYE_CHANNEL, AUDIT_LOG_CHANNEL, MUTE_ROLE_ID
-from ..utils.utils import insert_new_user_in_db, dump_user_data_in_json, delete_user_from_db
+
+from discord import Color, Embed, Forbidden, Member
+from discord.ext.commands import Cog
+from discord.utils import get
+from loguru import logger
+
 from ..db import db
+from ..utils.constants import (AUDIT_LOG_CHANNEL, GOODBYE_CHANNEL,
+                               MUTE_ROLE_ID, WELCOME_CHANNEL)
+from ..utils.utils import (delete_user_from_db, dump_user_data_in_json,
+                           insert_new_user_in_db)
 
 
 class Welcome(Cog, name='Greetings'):
@@ -19,6 +24,7 @@ class Welcome(Cog, name='Greetings'):
 
 
     @Cog.listener()
+    @logger.catch
     async def on_member_update(self, before: Member, after: Member):
         if before.pending is True and after.pending is False:
             rec = db.fetchone(["user_id"], "mutes", "user_id", after.id)
@@ -65,6 +71,7 @@ class Welcome(Cog, name='Greetings'):
 
 
     @Cog.listener()
+    @logger.catch
     async def on_member_remove(self, member):
         if member.pending is True:
             embed = Embed(description=f"Пользователь **{member.display_name}** ({member.mention}) не завершил процесс верификации, не принял правила и покинул сервер.",

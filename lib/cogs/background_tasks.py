@@ -10,6 +10,7 @@ from discord.ext import tasks
 from discord.ext.commands import Cog
 from discord.utils import get
 from jishaku.functools import executor_function
+from loguru import logger
 
 from ..db import db
 from ..utils.utils import edit_user_reputation
@@ -49,6 +50,7 @@ class BackgroundTasks(Cog, name='Фоновые процессы'):
 
 
     @tasks.loop(minutes=10.0)
+    @logger.catch
     async def check_activity_role(self):
         worker = get(self.bot.guild.roles, id=720709053348708457)
         old = get(self.bot.guild.roles, id=720709161150578783)
@@ -84,6 +86,7 @@ class BackgroundTasks(Cog, name='Фоновые процессы'):
 
 
     @tasks.loop(hours=24.0)
+    @logger.catch
     async def check_mecenat_role(self):
         mecenat = get(self.bot.guild.roles, id=731241570967486505)
         kapitalist = get(self.bot.guild.roles, id=730017005029294121)
@@ -102,6 +105,7 @@ class BackgroundTasks(Cog, name='Фоновые процессы'):
 
 
     @tasks.loop(hours=1.0)
+    @logger.catch
     async def check_supporter_role(self):
         kapitalist = get(self.bot.guild.roles, id=730017005029294121)
         magnat = get(self.bot.guild.roles, id=774686818356428841)
@@ -123,6 +127,7 @@ class BackgroundTasks(Cog, name='Фоновые процессы'):
 
 
     @tasks.loop(hours=1.0)
+    @logger.catch
     async def update_user_nickname(self):
         for member in self.bot.guild.members:
             nickname = db.fetchone(['nickname'], 'users_info', 'user_id', member.id)[0]
@@ -143,6 +148,7 @@ class BackgroundTasks(Cog, name='Фоновые процессы'):
             os.system("python ./athena/athena_monotonic.py")
 
     @tasks.loop(minutes=1.0)
+    @logger.catch
     async def update_fortnite_shop_hash(self):
         """Makes a request to the api and checks if the hash has been updated"""
         async with ClientSession() as session:
