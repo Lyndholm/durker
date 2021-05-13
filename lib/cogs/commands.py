@@ -8,12 +8,14 @@ from typing import Optional
 from discord import Color, Embed, File, Member
 from discord import __version__ as discord_version
 from discord.ext.commands import (BucketType, Cog, Greedy, check_any, command,
-                                  cooldown, guild_only, has_any_role)
+                                  cooldown, guild_only, has_any_role,
+                                  has_permissions)
 from loguru import logger
 from psutil import Process, cpu_percent, virtual_memory
 
 from ..db import db
 from ..utils.checks import is_channel, required_level
+from ..utils.constants import CONSOLE_CHANNEL, MUSIC_COMMANDS_CHANNEL
 from ..utils.utils import load_commands_from_json
 
 cmd = load_commands_from_json("commands")
@@ -34,7 +36,9 @@ class Commands(Cog, name='Базовые команды'):
             usage=cmd["suggest"]["usage"],
             help=cmd["suggest"]["help"],
             hidden=cmd["suggest"]["hidden"], enabled=True)
-    @is_channel(708601604353556491)
+    @guild_only()
+    @is_channel(MUSIC_COMMANDS_CHANNEL)
+    @required_level(cmd["suggest"]["required_level"])
     @logger.catch
     async def suggest_song_command(self, ctx, *, song: str = None):
         if song is None:
@@ -126,8 +130,6 @@ class Commands(Cog, name='Базовые команды'):
             help=cmd["question"]["help"],
             hidden=cmd["question"]["hidden"], enabled=True)
     @guild_only()
-    @required_level(cmd["question"]["required_level"])
-    @cooldown(cmd["question"]["cooldown_rate"], cmd["question"]["cooldown_per_second"], BucketType.member)
     @logger.catch
     async def redirect_to_question_channel_command(self, ctx, targets: Greedy[Member]):
         users = " ".join([member.mention for member in targets]) or ctx.author.mention
@@ -150,7 +152,8 @@ class Commands(Cog, name='Базовые команды'):
     @guild_only()
     @check_any(
         required_level(cmd["media"]["required_level"]),
-        has_any_role(790664227706241068, 686495834241761280))
+        has_any_role(643879247433433108, 682157177959481363),
+        has_permissions(administrator=True))
     @cooldown(cmd["media"]["cooldown_rate"], cmd["media"]["cooldown_per_second"], BucketType.member)
     @logger.catch
     async def redirect_to_media_channel_command(self, ctx, targets: Greedy[Member]):
@@ -184,7 +187,8 @@ class Commands(Cog, name='Базовые команды'):
     @guild_only()
     @check_any(
         required_level(cmd["poisk"]["required_level"]),
-        has_any_role(790664227706241068, 686495834241761280))
+        has_any_role(643879247433433108, 682157177959481363),
+        has_permissions(administrator=True))
     @cooldown(cmd["poisk"]["cooldown_rate"], cmd["poisk"]["cooldown_per_second"], BucketType.member)
     @logger.catch
     async def redirect_to_poisk_channel_command(self, ctx, targets: Greedy[Member]):
@@ -275,6 +279,8 @@ class Commands(Cog, name='Базовые команды'):
             help=cmd["info"]["help"],
             hidden=cmd["info"]["hidden"], enabled=True)
     @guild_only()
+    @is_channel(CONSOLE_CHANNEL)
+    @cooldown(cmd["info"]["cooldown_rate"], cmd["info"]["cooldown_per_second"], BucketType.member)
     @logger.catch
     async def show_bot_info_command(self, ctx):
         embed = Embed(
