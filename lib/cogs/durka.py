@@ -4,11 +4,14 @@ from random import randint
 from apscheduler.triggers.cron import CronTrigger
 from discord import Member
 from discord.ext.commands import (Cog, CommandError, CommandOnCooldown, Greedy,
-                                  check, command, cooldown, guild_only)
+                                  NoPrivateMessage, check, command, cooldown,
+                                  guild_only)
 from discord.ext.commands.cooldowns import BucketType
+from discord.utils import get
 from loguru import logger
 
 from ..db import db
+from ..utils.constants import CHASOVOY_ROLE_ID
 from ..utils.utils import cooldown_timer_str, load_commands_from_json
 
 cmd = load_commands_from_json("durka")
@@ -22,7 +25,8 @@ class NotEnoughPermsForCalling(CommandError):
 
 def have_available_durka_calls() -> bool:
     def predicate(ctx):
-        if ctx.author.top_role.position >= 28:
+        chasovoy = get(ctx.guild.roles, id=CHASOVOY_ROLE_ID)
+        if ctx.author.top_role.position >= chasovoy.position:
             return True
 
         rec = db.fetchone(["available_durka_calls"], "durka_stats", "user_id", ctx.author.id)[0]
@@ -69,7 +73,7 @@ class Durka(Cog, name='Родина-Дурка'):
 
     def update_available_durka_calls(self):
         for member in self.bot.guild:
-            db.execute(f"UPDATE durka_stats SET available_durka_calls = 3 WHERE user_id = {member.id}")
+            db.execute("UPDATE durka_stats SET available_durka_calls = 3 WHERE user_id = %s", member.id)
             db.commit()
 
     def schedule_durka_calls_update(self, sched):
@@ -165,10 +169,10 @@ class Durka(Cog, name='Родина-Дурка'):
             usage=cmd["durka"]["usage"],
             help=cmd["durka"]["help"],
             hidden=cmd["durka"]["hidden"], enabled=True)
-    @cooldown(1, 3600, BucketType.user)
-    @guild_only()
     @have_available_durka_calls()
     @have_enough_perms_for_calling()
+    @guild_only()
+    @cooldown(cmd["durka"]["cooldown_rate"], cmd["durka"]["cooldown_per_second"], BucketType.member)
     @logger.catch
     async def durka_command(self, ctx, targets: Greedy[Member]):
         durka_ban_list = (ctx.guild.me, ctx.guild.get_member(375722626636578816))
@@ -180,8 +184,8 @@ class Durka(Cog, name='Родина-Дурка'):
                 "Учтите, места в дурко-мобиле ограничены, санитары не могут перевозить более 7 пациентов за раз. "
                 "Также за сутки вы можете вызвать дурку не более 3-х раз.", delete_after=60)
             ctx.command.reset_cooldown(ctx)
-            if ctx.author.top_role.position < 28:
-                db.execute(f"UPDATE durka_stats SET available_durka_calls = available_durka_calls + 1 WHERE user_id = {ctx.author.id}")
+            if ctx.author.top_role.position < self.chasovoy.position:
+                db.execute("UPDATE durka_stats SET available_durka_calls = available_durka_calls + 1 WHERE user_id = %s", ctx.author.id)
                 db.commit()
             return
 
@@ -189,21 +193,18 @@ class Durka(Cog, name='Родина-Дурка'):
             await ctx.send("Места в дурко-мобиле ограничены. Санитары не могут перевозить более 5 пациентов за раз.")
             return
 
-        for target in targets:
-            if target in durka_ban_list:
-                while target in targets:
-                    targets.remove(target)
+        targets = [t for t in targets if t not in durka_ban_list]
 
         if not targets:
             await ctx.send(f"Шизоид {self.durka_emoji}{ctx.message.author.mention}{self.durka_emoji}, ты кому дурку вызываешь? Вернись в палату.\nЯ уже вызвал тебе санитаров, они в пути.")
             return
 
         for target in targets:
-            db.execute(f"UPDATE durka_stats SET received_durka_calls = received_durka_calls + 1 WHERE user_id = {target.id}")
+            db.execute("UPDATE durka_stats SET received_durka_calls = received_durka_calls + 1 WHERE user_id = %s", target.id)
             db.commit()
-            if ctx.author.top_role.position >= 28:
+            if ctx.author.top_role.position >= self.chasovoy.position:
                 ctx.command.reset_cooldown(ctx)
-                db.execute(f"UPDATE users_stats SET rep_rank = rep_rank - 50 WHERE user_id = {target.id}")
+                db.execute("UPDATE users_stats SET rep_rank = rep_rank - 50 WHERE user_id = %s", target.id)
                 db.commit()
 
         if 50 <= randint(1, 100) <= 55:
@@ -218,15 +219,31 @@ class Durka(Cog, name='Родина-Дурка'):
     async def durka_command_error(self, ctx, exc):
         if isinstance(exc, NotEnoughPermsForCalling):
             await ctx.message.delete(delay=30)
-            await ctx.send(f'Дружище {ctx.author.mention}, ты пока не можешь вызывать дурку. Тебе необходимо получить роль **Олд**, как минимум.', delete_after=30)
+            await ctx.reply(
+                f'Дружище {ctx.author.mention}, ты пока не можешь вызывать дурку. '
+                'Тебе необходимо получить роль **Олд**, как минимум.',
+                mention_author=False, delete_after=30
+            )
         elif isinstance(exc, NoAvaliableDurkaCalls):
             await ctx.message.delete(delay=30)
-            await ctx.send(f'{ctx.author.mention}, вы исчерпали суточный лимит использования дурки. В день вы можете вызвать саниторов не более **трёх** раз. Количество вызовов сбрасывается ежедневно в **03:00 МСК**.', delete_after=30)
+            await ctx.reply(
+                f'{ctx.author.mention}, вы исчерпали суточный лимит использования дурки. '
+                'В день вы можете вызвать саниторов не более **трёх** раз. Количество '
+                'вызовов сбрасывается ежедневно в **03:00 МСК**.',
+                mention_author=False, delete_after=30
+            )
         elif isinstance(exc, CommandOnCooldown):
             await ctx.message.delete(delay=30)
-            await ctx.send(f"Не так быстро! Дурка может принять заказ от одного пользователя раз в **60 минут**. Новый вызов можно будет сделать через " +  cooldown_timer_str(exc.retry_after), delete_after=30)
+            await ctx.reply(
+                f'Не так быстро! Дурка может принять заказ от одного пользователя раз в '
+                '**60 минут**. Новый вызов можно будет сделать через '
+                f'{cooldown_timer_str(exc.retry_after)}',
+                mention_author=False, delete_after=30
+            )
+        elif isinstance(exc, NoPrivateMessage):
+            await ctx.reply('Дурка не работает в личных сообщениях.', mention_author=False)
         else:
-            print(exc)
+            raise exc
 
 
     @command(name=cmd["durkachat"]["name"], aliases=cmd["durkachat"]["aliases"],
@@ -235,10 +252,10 @@ class Durka(Cog, name='Родина-Дурка'):
             usage=cmd["durkachat"]["usage"],
             help=cmd["durkachat"]["help"],
             hidden=cmd["durkachat"]["hidden"], enabled=True)
-    @cooldown(1, 900, BucketType.guild)
-    @guild_only()
     @have_available_durka_calls()
     @have_enough_perms_for_calling()
+    @guild_only()
+    @cooldown(cmd["durkachat"]["cooldown_rate"], cmd["durkachat"]["cooldown_per_second"], BucketType.guild)
     @logger.catch
     async def durka_chat_command(self, ctx):
         content = f"Внимание! Наши специалисты заметили чрезвычайно высокое содержание бреда в чате.\nСанитары уже выдвинулись для разрешения проблемы " \
@@ -252,21 +269,38 @@ class Durka(Cog, name='Родина-Дурка'):
     async def durka_chat_command_error(self, ctx, exc):
         if isinstance(exc, NotEnoughPermsForCalling):
             await ctx.message.delete(delay=30)
-            await ctx.send(f'Дружище {ctx.author.mention}, ты пока не можешь вызывать дурку. Тебе необходимо получить роль **Олд**, как минимум.', delete_after=30)
+            await ctx.reply(
+                f'Дружище {ctx.author.mention}, ты пока не можешь вызывать дурку. '
+                'Тебе необходимо получить роль **Олд**, как минимум.',
+                mention_author=False, delete_after=30
+            )
         elif isinstance(exc, NoAvaliableDurkaCalls):
             await ctx.message.delete(delay=30)
-            await ctx.send(f'{ctx.author.mention}, вы исчерпали суточный лимит использования дурки. В день вы можете вызвать саниторов не более **трёх** раз. Количество вызовов сбрасывается ежедневно в **03:00 МСК**.', delete_after=30)
+            await ctx.reply(
+                f'{ctx.author.mention}, вы исчерпали суточный лимит использования дурки. '
+                'В день вы можете вызвать саниторов не более **трёх** раз. Количество '
+                'вызовов сбрасывается ежедневно в **03:00 МСК**.',
+                mention_author=False, delete_after=30
+            )
         elif isinstance(exc, CommandOnCooldown):
             await ctx.message.delete(delay=30)
-            await ctx.send(f"Не так быстро! Дурку чату можно вызвать один раз в **15 минут**. Новый вызов можно будет сделать через " +  cooldown_timer_str(exc.retry_after), delete_after=30)
+            await ctx.reply(
+                f'Не так быстро! Дурку чату можно вызвать один раз в **15 минут**. '
+                'Новый вызов можно будет сделать через '
+                f'{cooldown_timer_str(exc.retry_after)}',
+                delete_after=30, mention_author=False
+            )
+        elif isinstance(exc, NoPrivateMessage):
+            await ctx.reply("Дурка не работает в личных сообщениях.", mention_author=False)
         else:
-            print(exc)
+            raise exc
 
 
     @Cog.listener()
     async def on_ready(self):
         if not self.bot.ready:
            self.bot.cogs_ready.ready_up("durka")
+           self.chasovoy = self.bot.guild.get_role(CHASOVOY_ROLE_ID)
 
 
 def setup(bot):

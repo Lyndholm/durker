@@ -157,7 +157,10 @@ class Bot(BotBase):
             if message.author.id in self.banlist:
                 return
             elif not self.ready:
-                await ctx.send("Бот не готов принимать сообщения и обрабатывать команды. Пожалуйста, подождите.", delete_after=60)
+                await ctx.reply(
+                    "Бот не готов принимать сообщения и обрабатывать команды. Пожалуйста, подождите.",
+                    mention_author=False, delete_after=60
+                )
             else:
                 await self.invoke(ctx)
 
@@ -213,7 +216,7 @@ class Bot(BotBase):
                     description=f'Команда `{ctx.message.clean_content}` не найдена.',
                     color=Color.red()
                 )
-                await ctx.send(embed=embed, delete_after = 10)
+                await ctx.reply(embed=embed, mention_author=False, delete_after=10)
 
             elif isinstance(exc, CommandOnCooldown):
                 embed = Embed(
@@ -221,7 +224,7 @@ class Bot(BotBase):
                     description=f"Команда на откате. Ожидайте {cooldown_timer_str(exc.retry_after)}",
                     color=Color.red()
                 )
-                await ctx.send(embed=embed, delete_after = 10)
+                await ctx.reply(embed=embed, mention_author=False, delete_after=10)
 
             elif isinstance(exc, DisabledCommand):
                 embed = Embed(
@@ -229,7 +232,7 @@ class Bot(BotBase):
                     description=f"Команда `{ctx.command}` отключена.",
                     color=Color.red
                 )
-                await ctx.send(embed=embed, delete_after = 10)
+                await ctx.reply(embed=embed, mention_author=False, delete_after=10)
 
             elif isinstance(exc, NoPrivateMessage):
                 try:
@@ -238,7 +241,7 @@ class Bot(BotBase):
                         description=f"Команда `{ctx.command}` не может быть использована в личных сообщениях.",
                         color=Color.red()
                     )
-                    await ctx.author.send(embed=embed, delete_after = 30)
+                    await ctx.reply(embed=embed, mention_author=False)
                 except HTTPException:
                     pass
 
@@ -248,23 +251,23 @@ class Bot(BotBase):
                     description=f"Команда `{ctx.command}` работает только в личных сообщениях. Она не может быть использована на сервере.",
                     color=Color.red()
                 )
-                await ctx.send(embed=embed, delete_after = 30)
+                await ctx.reply(embed=embed, mention_author=False, delete_after=15)
 
             elif isinstance(exc, MissingPermissions):
                 embed = Embed(
-                    title='❗ Ошибка!',
-                    description=f"У бота недостаточно прав для выполнения действия.",
-                    color=Color.red()
-                )
-                await ctx.send(embed=embed, delete_after = 30)
-
-            elif isinstance(exc, Forbidden):
-                embed = Embed(
-                    title='❗ Ошибка!',
+                    title='❗ MissingPermissions',
                     description=f"Недостаточно прав для выполнения действия.",
                     color=Color.red()
                 )
-                await ctx.send(embed=embed, delete_after = 30)
+                await ctx.reply(embed=embed, mention_author=False, delete_after=15)
+
+            elif isinstance(exc, Forbidden):
+                embed = Embed(
+                    title='❗ Forbidden',
+                    description=f"Недостаточно прав для выполнения действия.",
+                    color=Color.red()
+                )
+                await ctx.reply(embed=embed, mention_author=False, delete_after=15)
 
             elif isinstance(exc, HTTPException):
                 embed = Embed(
@@ -272,7 +275,7 @@ class Bot(BotBase):
                     description=f"Невозможно отправить сообщение. Возможно, превышен лимит символов.",
                     color=Color.red()
                 )
-                await ctx.send(embed=embed, delete_after = 30)
+                await ctx.reply(embed=embed, mention_author=False, delete_after=15)
 
             elif isinstance(exc, CheckFailure) or isinstance(exc, CheckAnyFailure):
                 embed = Embed(
@@ -281,7 +284,7 @@ class Bot(BotBase):
                                 "\nВозможно, вы используете неправильный канал, у вас недостаточный уровень или отсутствуют права на выполнение запрошенного метода.",
                     color=Color.red()
                 )
-                await ctx.send(embed=embed, delete_after = 10)
+                await ctx.reply(embed=embed, mention_author=False, delete_after=15)
 
             else:
                 channel = self.get_channel(id=AUDIT_LOG_CHANNEL)

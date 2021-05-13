@@ -1,9 +1,8 @@
 from datetime import datetime, timedelta
-from logging import log
 from random import sample, shuffle
 
-from discord import Color, Embed
-from discord.ext.commands import Cog, command, guild_only, is_owner
+from discord import Embed
+from discord.ext.commands import Cog, command, guild_only, has_permissions
 from loguru import logger
 
 from ..utils.utils import load_commands_from_json
@@ -22,10 +21,10 @@ class Contests(Cog, name='Контесты'):
             usage=cmd["giveaway"]["usage"],
             help=cmd["giveaway"]["help"],
             hidden=cmd["giveaway"]["hidden"], enabled=True)
+    @has_permissions(administrator=True)
     @guild_only()
-    @is_owner()
     @logger.catch
-    async def create_giveaway(self, ctx, mins: int = None, winners: int = 1, *, description: str = "Розыгрыш."):
+    async def create_giveaway(self, ctx, mins: int = None, winners: int = 0, *, description: str = "Розыгрыш."):
         await ctx.message.delete()
         if winners <= 0:
             return

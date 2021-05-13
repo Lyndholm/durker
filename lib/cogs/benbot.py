@@ -68,9 +68,9 @@ class BenBot(Cog, name='Fortnite API 1'):
             usage=cmd["aes"]["usage"],
             help=cmd["aes"]["help"],
             hidden=cmd["aes"]["hidden"], enabled=True)
-    @guild_only()
     @is_channel(CONSOLE_CHANNEL)
     @required_level(cmd["aes"]["required_level"])
+    @guild_only()
     @cooldown(cmd["aes"]["cooldown_rate"], cmd["aes"]["cooldown_per_second"], BucketType.member)
     @logger.catch
     async def fetch_fortnite_aes_command(self, ctx, version: Optional[str]):
@@ -102,9 +102,9 @@ class BenBot(Cog, name='Fortnite API 1'):
             usage=cmd["cosmeticinfo"]["usage"],
             help=cmd["cosmeticinfo"]["help"],
             hidden=cmd["cosmeticinfo"]["hidden"], enabled=True)
-    @guild_only()
-    @is_channel(CONSOLE_CHANNEL)
     @required_level(cmd["cosmeticinfo"]["required_level"])
+    @is_channel(CONSOLE_CHANNEL)
+    @guild_only()
     @logger.catch
     async def show_fn_cosmetic_info_command(self, ctx, id: str):
         async with ClientSession() as session:
@@ -150,9 +150,9 @@ class BenBot(Cog, name='Fortnite API 1'):
             usage=cmd["extractasset"]["usage"],
             help=cmd["extractasset"]["help"],
             hidden=cmd["extractasset"]["hidden"], enabled=True)
-    @guild_only()
-    @is_channel(CONSOLE_CHANNEL)
     @required_level(cmd["extractasset"]["required_level"])
+    @is_channel(CONSOLE_CHANNEL)
+    @guild_only()
     @logger.catch
     async def extract_fn_asset_command(self, ctx, path: str):
         async with ClientSession() as session:
@@ -189,9 +189,9 @@ class BenBot(Cog, name='Fortnite API 1'):
             usage=cmd["shopsections"]["usage"],
             help=cmd["shopsections"]["help"],
             hidden=cmd["shopsections"]["hidden"], enabled=True)
-    @guild_only()
-    @is_channel(CONSOLE_CHANNEL)
     @required_level(cmd["shopsections"]["required_level"])
+    @is_channel(CONSOLE_CHANNEL)
+    @guild_only()
     @cooldown(cmd["shopsections"]["cooldown_rate"], cmd["shopsections"]["cooldown_per_second"], BucketType.member)
     @logger.catch
     async def display_fortnite_section_store_command(self, ctx):

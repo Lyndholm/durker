@@ -36,9 +36,9 @@ class Commands(Cog, name='Базовые команды'):
             usage=cmd["suggest"]["usage"],
             help=cmd["suggest"]["help"],
             hidden=cmd["suggest"]["hidden"], enabled=True)
-    @guild_only()
-    @is_channel(MUSIC_COMMANDS_CHANNEL)
     @required_level(cmd["suggest"]["required_level"])
+    @is_channel(MUSIC_COMMANDS_CHANNEL)
+    @guild_only()
     @logger.catch
     async def suggest_song_command(self, ctx, *, song: str = None):
         if song is None:
@@ -81,8 +81,8 @@ class Commands(Cog, name='Базовые команды'):
             usage=cmd["support"]["usage"],
             help=cmd["support"]["help"],
             hidden=cmd["support"]["hidden"], enabled=True)
-    @guild_only()
     @required_level(cmd["support"]["required_level"])
+    @guild_only()
     @cooldown(cmd["support"]["cooldown_rate"], cmd["support"]["cooldown_per_second"], BucketType.member)
     @logger.catch
     async def redirect_to_support_channel_command(self, ctx, targets: Greedy[Member]):
@@ -149,11 +149,11 @@ class Commands(Cog, name='Базовые команды'):
             usage=cmd["media"]["usage"],
             help=cmd["media"]["help"],
             hidden=cmd["media"]["hidden"], enabled=True)
-    @guild_only()
     @check_any(
         required_level(cmd["media"]["required_level"]),
         has_any_role(643879247433433108, 682157177959481363),
         has_permissions(administrator=True))
+    @guild_only()
     @cooldown(cmd["media"]["cooldown_rate"], cmd["media"]["cooldown_per_second"], BucketType.member)
     @logger.catch
     async def redirect_to_media_channel_command(self, ctx, targets: Greedy[Member]):
@@ -184,11 +184,11 @@ class Commands(Cog, name='Базовые команды'):
             usage=cmd["poisk"]["usage"],
             help=cmd["poisk"]["help"],
             hidden=cmd["poisk"]["hidden"], enabled=True)
-    @guild_only()
     @check_any(
         required_level(cmd["poisk"]["required_level"]),
         has_any_role(643879247433433108, 682157177959481363),
         has_permissions(administrator=True))
+    @guild_only()
     @cooldown(cmd["poisk"]["cooldown_rate"], cmd["poisk"]["cooldown_per_second"], BucketType.member)
     @logger.catch
     async def redirect_to_poisk_channel_command(self, ctx, targets: Greedy[Member]):
@@ -211,8 +211,8 @@ class Commands(Cog, name='Базовые команды'):
             usage=cmd["ppo"]["usage"],
             help=cmd["ppo"]["help"],
             hidden=cmd["ppo"]["hidden"], enabled=True)
-    @guild_only()
     @required_level(cmd["ppo"]["required_level"])
+    @guild_only()
     @cooldown(cmd["ppo"]["cooldown_rate"], cmd["ppo"]["cooldown_per_second"], BucketType.guild)
     @logger.catch
     async def ppo_command(self, ctx):
@@ -225,8 +225,8 @@ class Commands(Cog, name='Базовые команды'):
             usage=cmd["sp"]["usage"],
             help=cmd["sp"]["help"],
             hidden=cmd["sp"]["hidden"], enabled=True)
-    @guild_only()
     @required_level(cmd["sp"]["required_level"])
+    @guild_only()
     @cooldown(cmd["sp"]["cooldown_rate"], cmd["sp"]["cooldown_per_second"], BucketType.guild)
     @logger.catch
     async def sp_command(self, ctx):
@@ -239,8 +239,8 @@ class Commands(Cog, name='Базовые команды'):
             usage=cmd["code"]["usage"],
             help=cmd["code"]["help"],
             hidden=cmd["code"]["hidden"], enabled=True)
-    @guild_only()
     @required_level(cmd["code"]["required_level"])
+    @guild_only()
     @cooldown(cmd["code"]["cooldown_rate"], cmd["code"]["cooldown_per_second"], BucketType.guild)
     @logger.catch
     async def sac_command(self, ctx):
@@ -254,8 +254,8 @@ class Commands(Cog, name='Базовые команды'):
             usage=cmd["avatar"]["usage"],
             help=cmd["avatar"]["help"],
             hidden=cmd["avatar"]["hidden"], enabled=True)
-    @guild_only()
     @required_level(cmd["avatar"]["required_level"])
+    @guild_only()
     @cooldown(cmd["avatar"]["cooldown_rate"], cmd["avatar"]["cooldown_per_second"], BucketType.member)
     @logger.catch
     async def display_member_avatar(self, ctx, member: Optional[Member]):
@@ -278,8 +278,8 @@ class Commands(Cog, name='Базовые команды'):
             usage=cmd["info"]["usage"],
             help=cmd["info"]["help"],
             hidden=cmd["info"]["hidden"], enabled=True)
-    @guild_only()
     @is_channel(CONSOLE_CHANNEL)
+    @guild_only()
     @cooldown(cmd["info"]["cooldown_rate"], cmd["info"]["cooldown_per_second"], BucketType.member)
     @logger.catch
     async def show_bot_info_command(self, ctx):

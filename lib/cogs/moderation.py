@@ -18,7 +18,7 @@ from jishaku.functools import executor_function
 from loguru import logger
 
 from ..db import db
-from ..utils.constants import (AUDIT_LOG_CHANNEL, HELPER_ROLE_ID,
+from ..utils.constants import (AUDIT_LOG_CHANNEL, CHASOVOY_ROLE_ID,
                                MODERATION_PUBLIC_CHANNEL, MUTE_ROLE_ID,
                                READ_ROLE_ID)
 from ..utils.decorators import listen_for_guilds
@@ -843,7 +843,7 @@ class Moderation(Cog, name='Модерация'):
             self.audit_channel = self.bot.get_channel(AUDIT_LOG_CHANNEL)
             self.mute_role = self.bot.guild.get_role(MUTE_ROLE_ID)
             self.read_role = self.bot.guild.get_role(READ_ROLE_ID)
-            self.helper_role = self.bot.guild.get_role(HELPER_ROLE_ID)
+            self.helper_role = self.bot.guild.get_role(CHASOVOY_ROLE_ID)
             self.bot.cogs_ready.ready_up("moderation")
 
 

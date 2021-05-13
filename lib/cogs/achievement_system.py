@@ -410,8 +410,8 @@ class AchievementSystem(Cog, name='Система достижений'):
             usage=cmd["addachievement"]["usage"],
             help=cmd["addachievement"]["help"],
             hidden=cmd["addachievement"]["hidden"], enabled=True)
-    @guild_only()
     @has_permissions(administrator=True)
+    @guild_only()
     @logger.catch
     async def add_achievement_to_user_command(self, ctx, member: Optional[Member], *, achievement: Optional[str]):
         if member is None:
@@ -455,8 +455,8 @@ class AchievementSystem(Cog, name='Система достижений'):
             usage=cmd["removeachievement"]["usage"],
             help=cmd["removeachievement"]["help"],
             hidden=cmd["removeachievement"]["hidden"], enabled=True)
-    @guild_only()
     @has_permissions(administrator=True)
+    @guild_only()
     @logger.catch
     async def remove_achievement_from_user_command(self, ctx, member: Optional[Member], *, achievement: Optional[str]):
         if member is None:
