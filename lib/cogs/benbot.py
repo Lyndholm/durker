@@ -4,11 +4,12 @@ from typing import Optional
 
 from aiohttp import ClientSession
 from discord import Color, Embed, File
-from discord.ext.commands import Cog, command, dm_only, is_owner
-from discord.ext.commands.errors import CheckAnyFailure
+from discord.ext.commands import (BucketType, Cog, command, cooldown, dm_only,
+                                  guild_only, is_owner)
 from loguru import logger
 
 from ..utils.checks import is_channel, required_level
+from ..utils.constants import CONSOLE_CHANNEL
 from ..utils.paginator import Paginator
 from ..utils.utils import load_commands_from_json
 
@@ -67,8 +68,10 @@ class BenBot(Cog, name='Fortnite API 1'):
             usage=cmd["aes"]["usage"],
             help=cmd["aes"]["help"],
             hidden=cmd["aes"]["hidden"], enabled=True)
+    @guild_only()
+    @is_channel(CONSOLE_CHANNEL)
     @required_level(cmd["aes"]["required_level"])
-    @is_channel(777979537795055636)
+    @cooldown(cmd["aes"]["cooldown_rate"], cmd["aes"]["cooldown_per_second"], BucketType.member)
     @logger.catch
     async def fetch_fortnite_aes_command(self, ctx, version: Optional[str]):
         async with ClientSession() as session:
@@ -83,7 +86,7 @@ class BenBot(Cog, name='Fortnite API 1'):
                             ).add_field(name="**Main Key**", value=data.get("mainKey", "Unknown"))
                 aes_embeds.append(embed)
 
-                for index, pak in enumerate(data.get("dynamicKeys", {})):
+                for pak in data.get("dynamicKeys", {}):
                     embed = Embed(title=pak.split("/")[-1], description=data.get("dynamicKeys", {}).get(pak, "Unknown"),
                                 color=Color.teal())
                     aes_embeds.append(embed)
@@ -99,6 +102,9 @@ class BenBot(Cog, name='Fortnite API 1'):
             usage=cmd["cosmeticinfo"]["usage"],
             help=cmd["cosmeticinfo"]["help"],
             hidden=cmd["cosmeticinfo"]["hidden"], enabled=True)
+    @guild_only()
+    @is_channel(CONSOLE_CHANNEL)
+    @required_level(cmd["cosmeticinfo"]["required_level"])
     @logger.catch
     async def show_fn_cosmetic_info_command(self, ctx, id: str):
         async with ClientSession() as session:
@@ -144,6 +150,9 @@ class BenBot(Cog, name='Fortnite API 1'):
             usage=cmd["extractasset"]["usage"],
             help=cmd["extractasset"]["help"],
             hidden=cmd["extractasset"]["hidden"], enabled=True)
+    @guild_only()
+    @is_channel(CONSOLE_CHANNEL)
+    @required_level(cmd["extractasset"]["required_level"])
     @logger.catch
     async def extract_fn_asset_command(self, ctx, path: str):
         async with ClientSession() as session:
@@ -180,6 +189,10 @@ class BenBot(Cog, name='Fortnite API 1'):
             usage=cmd["shopsections"]["usage"],
             help=cmd["shopsections"]["help"],
             hidden=cmd["shopsections"]["hidden"], enabled=True)
+    @guild_only()
+    @is_channel(CONSOLE_CHANNEL)
+    @required_level(cmd["shopsections"]["required_level"])
+    @cooldown(cmd["shopsections"]["cooldown_rate"], cmd["shopsections"]["cooldown_per_second"], BucketType.member)
     @logger.catch
     async def display_fortnite_section_store_command(self, ctx):
         async with ClientSession() as session:

@@ -3,14 +3,14 @@ from datetime import datetime, timedelta
 from difflib import Differ
 from typing import List, Tuple, Union
 
-from loguru import logger
 import aiofiles
 from discord import (AuditLogAction, Color, Embed, File, Guild, Member,
                      Message, MessageType, RawBulkMessageDeleteEvent,
                      RawMessageDeleteEvent, RawMessageUpdateEvent, User,
                      VoiceState)
 from discord.channel import DMChannel
-from discord.ext.commands import Cog, command
+from discord.ext.commands import Cog
+from loguru import logger
 
 from ..utils.constants import (ADMINS_CHANNEL, AUDIT_LOG_CHANNEL,
                                GVARDIYA_CHANNEL)
