@@ -6,11 +6,14 @@ from random import choice
 from typing import Optional
 
 from discord import Color, Embed, Forbidden, Member
-from discord.ext.commands import Cog, command, dm_only, guild_only, is_owner
+from discord.ext.commands import (Cog, check_any, command, dm_only, guild_only,
+                                  has_permissions, is_owner)
 from discord.ext.menus import ListPageSource, MenuPages
 from loguru import logger
 
 from ..db import db
+from ..utils.checks import is_channel, required_level
+from ..utils.constants import STATS_CHANNEL
 from ..utils.lazy_paginator import paginate
 from ..utils.utils import edit_user_reputation, load_commands_from_json
 
@@ -257,7 +260,8 @@ class AchievementSystem(Cog, name='Система достижений'):
             usage=cmd["achieve"]["usage"],
             help=cmd["achieve"]["help"],
             hidden=cmd["achieve"]["hidden"], enabled=True)
-    @guild_only()
+    @check_any(dm_only(), is_channel(STATS_CHANNEL))
+    @required_level(cmd["achieve"]["required_level"])
     @logger.catch
     async def how_achievement_sys_works_command(self, ctx):
         embed = Embed(
@@ -287,7 +291,8 @@ class AchievementSystem(Cog, name='Система достижений'):
             usage=cmd["achievements"]["usage"],
             help=cmd["achievements"]["help"],
             hidden=cmd["achievements"]["hidden"], enabled=True)
-    @guild_only()
+    @check_any(dm_only(), is_channel(STATS_CHANNEL))
+    @required_level(cmd["achievements"]["required_level"])
     @logger.catch
     async def achievements_list_command(self, ctx):
         data = db.records('SELECT * FROM achievements ORDER BY id')
@@ -321,7 +326,8 @@ class AchievementSystem(Cog, name='Система достижений'):
             usage=cmd["getinfo"]["usage"],
             help=cmd["getinfo"]["help"],
             hidden=cmd["getinfo"]["hidden"], enabled=True)
-    @guild_only()
+    @check_any(dm_only(), is_channel(STATS_CHANNEL))
+    @required_level(cmd["getinfo"]["required_level"])
     @logger.catch
     async def get_achievement_command(self, ctx, *, achievement: Optional[str]):
         if achievement:
@@ -354,7 +360,8 @@ class AchievementSystem(Cog, name='Система достижений'):
             usage=cmd["inventory"]["usage"],
             help=cmd["inventory"]["help"],
             hidden=cmd["inventory"]["hidden"], enabled=True)
-    @guild_only()
+    @check_any(dm_only(), is_channel(STATS_CHANNEL))
+    @required_level(cmd["inventory"]["required_level"])
     @logger.catch
     async def inventory_command(self, ctx):
         rec = db.fetchone(['achievements_list'], 'users_stats', 'user_id', ctx.author.id)
@@ -403,8 +410,8 @@ class AchievementSystem(Cog, name='Система достижений'):
             usage=cmd["addachievement"]["usage"],
             help=cmd["addachievement"]["help"],
             hidden=cmd["addachievement"]["hidden"], enabled=True)
-    @is_owner()
     @guild_only()
+    @has_permissions(administrator=True)
     @logger.catch
     async def add_achievement_to_user_command(self, ctx, member: Optional[Member], *, achievement: Optional[str]):
         if member is None:
@@ -448,8 +455,8 @@ class AchievementSystem(Cog, name='Система достижений'):
             usage=cmd["removeachievement"]["usage"],
             help=cmd["removeachievement"]["help"],
             hidden=cmd["removeachievement"]["hidden"], enabled=True)
-    @is_owner()
     @guild_only()
+    @has_permissions(administrator=True)
     @logger.catch
     async def remove_achievement_from_user_command(self, ctx, member: Optional[Member], *, achievement: Optional[str]):
         if member is None:

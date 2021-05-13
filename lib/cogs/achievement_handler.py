@@ -3,7 +3,7 @@ from typing import List
 
 from discord import Member
 from discord.ext import tasks
-from discord.ext.commands import Cog, command
+from discord.ext.commands import Cog
 from discord.utils import get
 from loguru import logger
 
