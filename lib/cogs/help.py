@@ -4,12 +4,13 @@ from typing import Optional
 
 import aiofiles
 from discord import Color, Embed
-from discord.ext.commands import Cog, Command, command
+from discord.ext.commands import Cog, Command, check_any, command, dm_only
 from discord.utils import get
 from loguru import logger
 from transliterate import translit
 
-from ..utils.constants import PLACEHOLDER
+from ..utils.checks import is_any_channel
+from ..utils.constants import CONSOLE_CHANNEL, PLACEHOLDER, STATS_CHANNEL
 from ..utils.lazy_paginator import paginate
 from ..utils.utils import load_commands_from_json
 
@@ -45,6 +46,7 @@ class Help(Cog, name='Help меню'):
             usage=cmd["help"]["usage"],
             help=cmd["help"]["help"],
             hidden=cmd["help"]["hidden"], enabled=True)
+    @check_any(dm_only(), is_any_channel([CONSOLE_CHANNEL, STATS_CHANNEL]))
     @logger.catch
     async def help_command(self, ctx, *, cmd: Optional[str]):
         if cmd is None:
