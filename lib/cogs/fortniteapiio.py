@@ -6,9 +6,11 @@ from random import choice, randint
 import aiofiles
 from aiohttp import ClientSession
 from discord import Color, Embed
-from discord.ext.commands import Cog, command
+from discord.ext.commands import BucketType, Cog, command, cooldown, guild_only
 from loguru import logger
 
+from ..utils.checks import is_channel, required_level
+from ..utils.constants import CONSOLE_CHANNEL
 from ..utils.paginator import Paginator
 from ..utils.utils import load_commands_from_json
 
@@ -31,6 +33,9 @@ class FortniteAPIio(Cog, name='Fortnite API 3'):
             usage=cmd["map"]["usage"],
             help=cmd["map"]["help"],
             hidden=cmd["map"]["hidden"], enabled=True)
+    @required_level(cmd["map"]["required_level"])
+    @is_channel(CONSOLE_CHANNEL)
+    @guild_only()
     @logger.catch
     async def show_fortnite_map_command(self, ctx, poi:str="None", language="ru"):
         embed = Embed(title="Карта Королевской Битвы",color=Color.orange(), timestamp=datetime.utcnow())
@@ -40,7 +45,7 @@ class FortniteAPIio(Cog, name='Fortnite API 3'):
         else:
             embed.set_image(url="https://media.fortniteapi.io/images/map.png")
 
-        await ctx.send(embed=embed)
+        await ctx.reply(embed=embed, mention_author=False)
 
 
     @command(name=cmd["fnach"]["name"], aliases=cmd["fnach"]["aliases"],
@@ -49,6 +54,10 @@ class FortniteAPIio(Cog, name='Fortnite API 3'):
             usage=cmd["fnach"]["usage"],
             help=cmd["fnach"]["help"],
             hidden=cmd["fnach"]["hidden"], enabled=True)
+    @required_level(cmd["fnach"]["required_level"])
+    @is_channel(CONSOLE_CHANNEL)
+    @guild_only()
+    @cooldown(cmd["fnach"]["cooldown_rate"], cmd["fnach"]["cooldown_per_second"], BucketType.member)
     @logger.catch
     async def show_fortnite_achievements_command(self, ctx, language: str ="ru"):
         achievement_embeds = []
@@ -57,7 +66,10 @@ class FortniteAPIio(Cog, name='Fortnite API 3'):
         async with ClientSession(headers=self.headers) as session:
             async with session.get("https://fortniteapi.io/v1/achievements", params={"lang":language}) as r:
                 if r.status != 200:
-                    await ctx.send(f"""```json\n{await r.text()}```""")
+                    await ctx.reply(
+                        f"""```json\n{await r.text()}```""",
+                        mention_author=False
+                    )
                     return
 
                 data = await r.json()
@@ -79,7 +91,7 @@ class FortniteAPIio(Cog, name='Fortnite API 3'):
                     achievement_embeds.append([*divided])
                     divided.clear()
 
-        message = await ctx.send(embed=achievement_embeds[0][0])
+        message = await ctx.reply(embed=achievement_embeds[0][0], mention_author=False)
         page = Paginator(self.bot, message, only=ctx.author, use_more=True, embeds=achievement_embeds)
         await page.start()
 
@@ -90,6 +102,9 @@ class FortniteAPIio(Cog, name='Fortnite API 3'):
             usage=cmd["fish"]["usage"],
             help=cmd["fish"]["help"],
             hidden=cmd["fish"]["hidden"], enabled=True)
+    @required_level(cmd["fish"]["required_level"])
+    @is_channel(CONSOLE_CHANNEL)
+    @guild_only()
     @logger.catch
     async def show_fortnite_fish_list_command(self, ctx, number: int = 0):
         async with aiofiles.open('./data/json/fish_s16.json', mode='r', encoding='utf-8') as f:
@@ -119,7 +134,7 @@ class FortniteAPIio(Cog, name='Fortnite API 3'):
 
                 fish_embeds.append(embed)
 
-            message = await ctx.send(embed=fish_embeds[0])
+            message = await ctx.reply(embed=fish_embeds[0], mention_author=False)
             page = Paginator(self.bot, message, only=ctx.author, embeds=fish_embeds)
             await page.start()
             return
@@ -127,7 +142,7 @@ class FortniteAPIio(Cog, name='Fortnite API 3'):
         else:
             if number > len(data['fish']) or number < 0:
                 embed = Embed(title='Некорректный номер рыбки!', color= Color.red())
-                await ctx.message.reply(embed=embed)
+                await ctx.reply(embed=embed, mention_author=False)
                 return
 
             number-=1
@@ -150,7 +165,7 @@ class FortniteAPIio(Cog, name='Fortnite API 3'):
             for name, value, inline in fields:
                 embed.add_field(name=name, value=value, inline=inline)
 
-            await ctx.send(embed=embed)
+            await ctx.reply(embed=embed, mention_author=False)
 
 
     @command(name=cmd["challenges"]["name"], aliases=cmd["challenges"]["aliases"],
@@ -159,6 +174,10 @@ class FortniteAPIio(Cog, name='Fortnite API 3'):
             usage=cmd["challenges"]["usage"],
             help=cmd["challenges"]["help"],
             hidden=cmd["challenges"]["hidden"], enabled=True)
+    @required_level(cmd["challenges"]["required_level"])
+    @is_channel(CONSOLE_CHANNEL)
+    @guild_only()
+    @cooldown(cmd["challenges"]["cooldown_rate"], cmd["challenges"]["cooldown_per_second"], BucketType.member)
     @logger.catch
     async def show_fortnite_rare_challenges_command(self, ctx, language: str = "ru"):
         QUEST_ID = "Quest_S16_Milestone"
@@ -167,7 +186,10 @@ class FortniteAPIio(Cog, name='Fortnite API 3'):
         async with ClientSession(headers=self.headers) as session:
             async with session.get("https://fortniteapi.io/v1/challenges", params={"season":"current", "lang":language}) as r:
                 if r.status != 200:
-                    await ctx.send(f"""```json\n{await r.text()}```""")
+                    await ctx.reply(
+                        f"""```json\n{await r.text()}```""",
+                        mention_author=False
+                    )
                     return
 
                 data = await r.json()
@@ -197,7 +219,7 @@ class FortniteAPIio(Cog, name='Fortnite API 3'):
                 xp_total = 0
                 quest_embeds.append(embed)
 
-        message = await ctx.send(embed=quest_embeds[0])
+        message = await ctx.reply(embed=quest_embeds[0], mention_author=False)
         page = Paginator(self.bot, message, only=ctx.author, embeds=quest_embeds)
         await page.start()
 
@@ -208,6 +230,9 @@ class FortniteAPIio(Cog, name='Fortnite API 3'):
             usage=cmd["npc"]["usage"],
             help=cmd["npc"]["help"],
             hidden=cmd["npc"]["hidden"], enabled=True)
+    @required_level(cmd["npc"]["required_level"])
+    @is_channel(CONSOLE_CHANNEL)
+    @guild_only()
     @logger.catch
     async def show_fortnite_characters_command(self, ctx, number: int = 0):
         async with aiofiles.open('./data/json/characters_s16.json', mode='r', encoding='utf-8') as f:
@@ -236,7 +261,7 @@ class FortniteAPIio(Cog, name='Fortnite API 3'):
 
                 npc_embeds.append(embed)
 
-            message = await ctx.send(embed=npc_embeds[0])
+            message = await ctx.reply(embed=npc_embeds[0], mention_author=False)
             page = Paginator(self.bot, message, only=ctx.author, embeds=npc_embeds)
             await page.start()
             return
@@ -244,7 +269,7 @@ class FortniteAPIio(Cog, name='Fortnite API 3'):
         else:
             if number > len(data) or number < 0:
                 embed = Embed(title='Некорректный номер NPC!', color= Color.red())
-                await ctx.message.reply(embed=embed)
+                await ctx.reply(embed=embed, mention_author=False)
                 return
 
             number-=1
@@ -256,7 +281,7 @@ class FortniteAPIio(Cog, name='Fortnite API 3'):
             embed.set_thumbnail(url=data[number]['images']['icon'])
             embed.set_image(url=data[number]['map'])
 
-            await ctx.send(embed=embed)
+            await ctx.reply(embed=embed, mention_author=False)
 
 
 def setup(bot):

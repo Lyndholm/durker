@@ -1,8 +1,10 @@
 from aiohttp import ClientSession
 from discord import Color, Embed
-from discord.ext.commands import Cog, command
+from discord.ext.commands import BucketType, Cog, command, cooldown, guild_only
 from loguru import logger
 
+from ..utils.checks import is_channel, required_level
+from ..utils.constants import CONSOLE_CHANNEL
 from ..utils.paginator import Paginator
 from ..utils.utils import load_commands_from_json
 
@@ -72,6 +74,10 @@ class FortniteDevServers(Cog, name='Fortnite Dev'):
             usage=cmd["fndev"]["usage"],
             help=cmd["fndev"]["help"],
             hidden=cmd["fndev"]["hidden"], enabled=True)
+    @required_level(cmd["fndev"]["required_level"])
+    @is_channel(CONSOLE_CHANNEL)
+    @guild_only()
+    @cooldown(cmd["fndev"]["cooldown_rate"], cmd["fndev"]["cooldown_per_second"], BucketType.member)
     @logger.catch
     async def fortnite_dev_servers_state_command(self, ctx, server:str="None"):
         servers_embeds = []
@@ -79,7 +85,10 @@ class FortniteDevServers(Cog, name='Fortnite Dev'):
             async with ClientSession() as session:
                 async with session.get("https://fortnite-public-service-stage.ol.epicgames.com/fortnite/api/version") as r:
                     if r.status != 200:
-                        await ctx.send(f"""```json\n{await r.text()}```""")
+                        await ctx.reply(
+                            f"""```json\n{await r.text()}```""",
+                            mention_author=False
+                        )
                         return
 
                     data = await r.json()
@@ -97,7 +106,7 @@ class FortniteDevServers(Cog, name='Fortnite Dev'):
                     embed.add_field(name="Build-Date", value=data["buildDate"], inline=True)
                     embed.add_field(name="Changelog #", value=data["cln"], inline=True)
 
-                    await ctx.send(embed=embed)
+                    await ctx.reply(embed=embed, mention_author=False)
                     return
         else:
             wait_embed = Embed(
@@ -105,7 +114,7 @@ class FortniteDevServers(Cog, name='Fortnite Dev'):
                 color=Color.magenta(),
                 description=":hourglass_flowing_sand: Сбор данных. Пожалуйста, подождите."
             )
-            wait_msg = await ctx.send(embed=wait_embed)
+            wait_msg = await ctx.reply(embed=wait_embed, mention_author=False)
 
             for url in servers:
                 try:
@@ -137,7 +146,7 @@ class FortniteDevServers(Cog, name='Fortnite Dev'):
                     continue
 
             await wait_msg.delete()
-            msg = await ctx.send(embed=servers_embeds[0])
+            msg = await ctx.reply(embed=servers_embeds[0], mention_author=False)
             page = Paginator(self.bot, msg, only=ctx.author, embeds=servers_embeds)
             await page.start()
 

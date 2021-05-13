@@ -3,10 +3,12 @@ from os import getenv
 
 import requests
 from aiohttp import ClientSession
-from discord import Color, Embed, File
-from discord.ext.commands import Cog, command
+from discord import Color, Embed
+from discord.ext.commands import BucketType, Cog, command, cooldown, guild_only
 from loguru import logger
 
+from ..utils.checks import is_channel
+from ..utils.constants import STATS_CHANNEL
 from ..utils.utils import load_commands_from_json
 
 cmd = load_commands_from_json("fortnitetracker")
@@ -28,11 +30,19 @@ class FortniteTracker(Cog, name='Fortnite Stats'):
             usage=cmd["fnstats"]["usage"],
             help=cmd["fnstats"]["help"],
             hidden=cmd["fnstats"]["hidden"], enabled=True)
+    @is_channel(STATS_CHANNEL)
+    @guild_only()
+    @cooldown(cmd["fnstats"]["cooldown_rate"], cmd["fnstats"]["cooldown_per_second"], BucketType.guild)
     @logger.catch
     async def fortnite_stats_command(self, ctx, *, profile:str=None):
         if profile is None:
-            embed = Embed(title='❗ Внимание!', description =f"{ctx.author.mention}\nПожалуйста, укажите никнейм запрашиваемого аккаунта.", color= Color.red())
-            await ctx.send(embed=embed)
+            embed = Embed(
+                title='❗ Внимание!',
+                description=f"{ctx.author.mention}\nПожалуйста, укажите никнейм запрашиваемого аккаунта.",
+                color=Color.red()
+            )
+            await ctx.reply(embed=embed, mention_author=False)
+            ctx.command.reset_cooldown(ctx)
             return
 
         plarform_reactions = ['💡', '⌨️', '🎮', '📱']
@@ -46,10 +56,11 @@ class FortniteTracker(Cog, name='Fortnite Stats'):
                         "1️⃣ — отображение статистики через картинку.\n"
                         "2️⃣ — отображение в Embed.\n"
                         "\n❌ — выход."
-                        "\n\n**P.S.** Данные берутся из разных источников, поэтому статистика может меняться в зависимости от выбранного вами метода."
-                        " Как правило, при отображении через Embed статистика точнее и актуальнее.\n\n"
+                        "\n\n**P.S.** Данные берутся из разных источников, поэтому статистика "
+                        "может меняться в зависимости от выбранного вами метода. "
+                        "Как правило, при отображении через Embed статистика точнее и актуальнее."
         )
-        main_message = await ctx.send(embed=embed)
+        main_message = await ctx.reply(embed=embed, mention_author=False)
 
         for reaction in ['1️⃣', '2️⃣', '❌']:
             await main_message.add_reaction(reaction)
@@ -116,7 +127,10 @@ class FortniteTracker(Cog, name='Fortnite Stats'):
                 async with session.get('https://fortnite-api.com/v1/stats/br/v2', params=params) as r:
                     if r.status != 200:
                         await main_message.delete()
-                        await ctx.message.reply(f"""```json\n{await r.text()}```""")
+                        await ctx.reply(
+                            f"""```json\n{await r.text()}```""",
+                            mention_author=False
+                        )
                         return
 
                     data = await r.json()
@@ -147,7 +161,10 @@ class FortniteTracker(Cog, name='Fortnite Stats'):
 
             if r.status_code != 200:
                 await main_message.delete()
-                await ctx.message.reply(f"""```json\n{await r.text()}```""")
+                await ctx.reply(
+                    f"""```json\n{await r.text()}```""",
+                    mention_author=False
+                )
                 return
 
             data = r.json()
