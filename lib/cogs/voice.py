@@ -23,10 +23,10 @@ class Voice(Cog, name='VoiceChannels Management'):
     async def create_temporary_channels(self, member: Member, before: VoiceState, after: VoiceState):
         voice_category = get(self.bot.guild.categories, id=814768982388506634)
 
-        voice_channel = await voice_category.create_voice_channel(name=f'{member.display_name}')
-        text_channel = await voice_category.create_text_channel(name=f'{member.display_name}')
+        voice_channel = await voice_category.create_voice_channel(name=member.display_name)
+        text_channel = await voice_category.create_text_channel(name=member.display_name)
         self.temporary_channels[voice_channel.id] = text_channel.id
-        await voice_channel.set_permissions(member, manage_channels=True)
+        await voice_channel.set_permissions(member, manage_channels=True, move_members=True)
         await text_channel.set_permissions(member, manage_channels=True)
         await text_channel.set_permissions(get(member.guild.roles, name='@everyone'), view_channel=False, read_messages=False, send_messages=False)
 
@@ -46,9 +46,12 @@ class Voice(Cog, name='VoiceChannels Management'):
 
     @logger.catch
     async def delete_temporary_channels(self, voice_channel: VoiceChannel, text_channel: TextChannel):
-        await voice_channel.delete()
-        await text_channel.delete()
-        del self.temporary_channels[voice_channel.id]
+        try:
+            del self.temporary_channels[voice_channel.id]
+            await voice_channel.delete()
+            await text_channel.delete()
+        except:
+            pass
 
     @logger.catch
     async def overwrite_text_channel_perms(self, member: Member, channel_id: int, access: bool):

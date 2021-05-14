@@ -68,8 +68,8 @@ class ReactionRole(Cog, name='Роли за реакции'):
             usage=cmd["addreactionrole"]["usage"],
             help=cmd["addreactionrole"]["help"],
             hidden=cmd["addreactionrole"]["hidden"], enabled=True)
-    @guild_only()
     @has_permissions(administrator=True)
+    @guild_only()
     @logger.catch
     async def add_reaction_role_command(self, ctx, channel: TextChannel, message_id: int, emoji: str, role: Role):
         cursor = db.get_cursor()
@@ -101,8 +101,8 @@ class ReactionRole(Cog, name='Роли за реакции'):
             usage=cmd["removereactionrole"]["usage"],
             help=cmd["removereactionrole"]["help"],
             hidden=cmd["removereactionrole"]["hidden"], enabled=True)
-    @guild_only()
     @has_permissions(administrator=True)
+    @guild_only()
     @logger.catch
     async def remove_reaction_role_command(self, ctx, message_id: int, emoji: str):
         cursor = db.get_cursor()

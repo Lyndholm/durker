@@ -2,11 +2,13 @@ from asyncio.exceptions import TimeoutError
 from datetime import datetime, timedelta
 
 from discord import Color, Embed, Member
-from discord.ext.commands import Cog, command, guild_only
+from discord.ext.commands import BucketType, Cog, command, cooldown, guild_only
 from discord.utils import get
 from loguru import logger
 
 from ..db import db
+from ..utils.checks import is_channel
+from ..utils.constants import STATS_CHANNEL
 from ..utils.utils import load_commands_from_json, russian_plural
 
 cmd = load_commands_from_json("user_stats")
@@ -27,6 +29,7 @@ class UserStats(Cog, name='Статистика'):
         usage=cmd["profile"]["usage"],
         help=cmd["profile"]["help"],
         hidden=cmd["profile"]["hidden"], enabled=True)
+    @is_channel(STATS_CHANNEL)
     @guild_only()
     @logger.catch
     async def fetch_member_profile_command(self, ctx, member: Member = None):
@@ -148,7 +151,7 @@ class UserStats(Cog, name='Статистика'):
         embed.add_field(name=":speaker: Время, проведенное в голосовых каналах:",
                         value=timedelta(seconds=user_stats[3]), inline=True)
 
-        embed.add_field(name=":coin: FUN-коинов:", value=casino[0] + casino[1], inline=True)
+        #embed.add_field(name=":coin: FUN-коинов:", value=casino[0] + casino[1], inline=True)
 
         embed.add_field(name=":warning: Количество предупреждений:", value=len(moderation_stats[1]["user_warn_story"]), inline=True)
 
@@ -179,7 +182,9 @@ class UserStats(Cog, name='Статистика'):
         usage=cmd["setbio"]["usage"],
         help=cmd["setbio"]["help"],
         hidden=cmd["setbio"]["hidden"], enabled=True)
+    @is_channel(STATS_CHANNEL)
     @guild_only()
+    @cooldown(cmd["setbio"]["cooldown_rate"], cmd["setbio"]["cooldown_per_second"], BucketType.member)
     @logger.catch
     async def setbio_command(self, ctx, *, bio: str = None):
         if bio is None:
@@ -229,6 +234,7 @@ class UserStats(Cog, name='Статистика'):
                 embed = Embed(title='❗ Внимание!', color = Color.red(),
                             description = f"{ctx.author.mention}, пожалуйста, напишите Вашу биографию. Учитывайте, что максимальная длина текста — **255** символов.")
                 await ctx.send(embed=embed)
+                ctx.command.reset_cooldown(ctx)
 
         elif len(bio.strip()) > 255:
             embed = Embed(title='❗ Внимание!', color = Color.red(),
@@ -256,6 +262,7 @@ class UserStats(Cog, name='Статистика'):
         usage=cmd["setprivacy"]["usage"],
         help=cmd["setprivacy"]["help"],
         hidden=cmd["setprivacy"]["hidden"], enabled=True)
+    @is_channel(STATS_CHANNEL)
     @guild_only()
     @logger.catch
     async def set_user_profile_privacy_command(self, ctx):
@@ -331,6 +338,7 @@ class UserStats(Cog, name='Статистика'):
         usage=cmd["amount"]["usage"],
         help=cmd["amount"]["help"],
         hidden=cmd["amount"]["hidden"], enabled=True)
+    @is_channel(STATS_CHANNEL)
     @guild_only()
     @logger.catch
     async def amount_command(self, ctx):
@@ -372,6 +380,7 @@ class UserStats(Cog, name='Статистика'):
         usage=cmd["myrep"]["usage"],
         help=cmd["myrep"]["help"],
         hidden=cmd["myrep"]["hidden"], enabled=True)
+    @is_channel(STATS_CHANNEL)
     @guild_only()
     @logger.catch
     async def myrep_command(self, ctx):
@@ -418,6 +427,7 @@ class UserStats(Cog, name='Статистика'):
         usage=cmd["rep"]["usage"],
         help=cmd["rep"]["help"],
         hidden=cmd["rep"]["hidden"], enabled=True)
+    @is_channel(STATS_CHANNEL)
     @guild_only()
     @logger.catch
     async def how_rep_sys_works_command(self, ctx):
