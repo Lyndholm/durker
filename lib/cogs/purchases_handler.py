@@ -10,6 +10,8 @@ from discord.utils import get
 from loguru import logger
 
 from ..db import db
+from ..utils.checks import is_channel, is_any_channel
+from ..utils.constants import STATS_CHANNEL, CONSOLE_CHANNEL
 from ..utils.paginator import Paginator
 from ..utils.utils import edit_user_reputation, load_commands_from_json
 
@@ -188,6 +190,7 @@ class PurchasesHandler(Cog, name='Покупки и не только'):
             usage=cmd["purchases"]["usage"],
             help=cmd["purchases"]["help"],
             hidden=cmd["purchases"]["hidden"], enabled=True)
+    @is_channel(STATS_CHANNEL)
     @guild_only()
     @logger.catch
     async def fetch_purchases_command(self, ctx):
@@ -238,6 +241,7 @@ class PurchasesHandler(Cog, name='Покупки и не только'):
             usage=cmd["faq"]["usage"],
             help=cmd["faq"]["help"],
             hidden=cmd["faq"]["hidden"], enabled=True)
+    @is_any_channel([STATS_CHANNEL, CONSOLE_CHANNEL])
     @guild_only()
     @logger.catch
     async def faq_command(self, ctx):

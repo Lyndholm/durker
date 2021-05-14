@@ -1,7 +1,7 @@
 from datetime import datetime
 
-from discord import Color, DMChannel, Embed
-from discord.ext.commands import Cog, command
+from discord import DMChannel, Embed
+from discord.ext.commands import Cog
 
 
 class ModMail(Cog, name='ModMail'):

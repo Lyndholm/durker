@@ -12,7 +12,7 @@ from discord.errors import NotFound
 from discord.ext.commands import (BadArgument, Cog, Converter, Greedy,
                                   bot_has_permissions, check_any, command,
                                   guild_only, has_any_role, has_permissions)
-from discord.utils import find, get
+from discord.utils import find
 from jishaku.functools import executor_function
 from loguru import logger
 

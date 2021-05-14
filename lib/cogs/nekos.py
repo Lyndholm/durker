@@ -3,9 +3,11 @@ from random import choice, randint
 
 from aiohttp import ClientSession
 from discord import Color, Embed, File
-from discord.ext.commands import Cog, command
+from discord.ext.commands import BucketType, Cog, command, cooldown, guild_only
 from loguru import logger
 
+from ..utils.checks import is_channel, required_level
+from ..utils.constants import CONSOLE_CHANNEL
 from ..utils.utils import load_commands_from_json
 
 cmd = load_commands_from_json("nekos")
@@ -30,6 +32,10 @@ class Nekos(Cog, name='Аниме'):
             usage=cmd["anipic"]["usage"],
             help=cmd["anipic"]["help"],
             hidden=cmd["anipic"]["hidden"], enabled=True)
+    @required_level(cmd["anipic"]["required_level"])
+    @is_channel(CONSOLE_CHANNEL)
+    @guild_only()
+    @cooldown(cmd["anipic"]["cooldown_rate"], cmd["anipic"]["cooldown_per_second"], BucketType.member)
     @logger.catch
     async def random_anime_picture_command(self, ctx):
         embed = Embed(color=Color.random(), timestamp=ctx.message.created_at)

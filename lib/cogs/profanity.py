@@ -2,12 +2,13 @@ from random import choice, randint
 
 import aiofiles
 from discord import File, Member, TextChannel
-from discord.ext.commands import (Cog, command, dm_only, guild_only,
-                                  has_any_role, is_owner)
+from discord.ext.commands import (Cog, check_any, command, dm_only, guild_only,
+                                  has_any_role, has_permissions, is_owner)
 from discord.utils import remove_markdown
 from loguru import logger
 
 from ..db import db
+from ..utils.constants import CHASOVOY_ROLE_ID
 from ..utils.decorators import listen_for_guilds
 from ..utils.utils import (edit_user_reputation,
                            find_n_term_of_arithmetic_progression,
@@ -82,8 +83,11 @@ class Profanity(Cog, name='Мат-фильтр'):
             usage=cmd["swear"]["usage"],
             help=cmd["swear"]["help"],
             hidden=cmd["swear"]["hidden"], enabled=True)
+    @check_any(
+        has_any_role(CHASOVOY_ROLE_ID),
+        has_permissions(administrator=True)
+    )
     @guild_only()
-    @has_any_role(790664227706241068,746487982659338422)
     @logger.catch
     async def swear_command(self, ctx, target: Member = None):
         await ctx.message.delete()
