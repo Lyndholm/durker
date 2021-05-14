@@ -8,6 +8,8 @@ from discord.utils import remove_markdown
 from loguru import logger
 
 from ..db import db
+from ..utils.checks import is_channel
+from ..utils.constants import STATS_CHANNEL
 from ..utils.decorators import listen_for_guilds
 from ..utils.utils import (edit_user_reputation,
                            find_n_term_of_arithmetic_progression,
@@ -116,6 +118,7 @@ class Leveling(Cog, name='Система уровней'):
             usage=cmd["rank"]["usage"],
             help=cmd["rank"]["help"],
             hidden=cmd["rank"]["hidden"], enabled=True)
+    @is_channel(STATS_CHANNEL)
     @guild_only()
     @logger.catch
     async def rank_command(self, ctx):

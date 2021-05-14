@@ -6,6 +6,8 @@ from discord.ext.menus import ListPageSource, MenuPages
 from loguru import logger
 
 from ..db import db
+from ..utils.checks import is_channel
+from ..utils.constants import STATS_CHANNEL
 from ..utils.utils import load_commands_from_json
 
 cmd = load_commands_from_json('leaderboards')
@@ -171,6 +173,7 @@ class Leaderboards(Cog, name='Списки лидеров'):
             usage=cmd["achievementboard"]["usage"],
             help=cmd["achievementboard"]["help"],
             hidden=cmd["achievementboard"]["hidden"], enabled=True)
+    @is_channel(STATS_CHANNEL)
     @guild_only()
     @logger.catch
     async def achievements_leaderboard_command(self, ctx):
@@ -187,6 +190,7 @@ class Leaderboards(Cog, name='Списки лидеров'):
             usage=cmd["levelboard"]["usage"],
             help=cmd["levelboard"]["help"],
             hidden=cmd["levelboard"]["hidden"], enabled=True)
+    @is_channel(STATS_CHANNEL)
     @guild_only()
     @logger.catch
     async def leveling_leaderboard_command(self, ctx):
@@ -201,6 +205,7 @@ class Leaderboards(Cog, name='Списки лидеров'):
             usage=cmd["messageboard"]["usage"],
             help=cmd["messageboard"]["help"],
             hidden=cmd["messageboard"]["hidden"], enabled=True)
+    @is_channel(STATS_CHANNEL)
     @guild_only()
     @logger.catch
     async def messages_leaderboard_command(self, ctx):
@@ -215,6 +220,7 @@ class Leaderboards(Cog, name='Списки лидеров'):
             usage=cmd["reputationboard"]["usage"],
             help=cmd["reputationboard"]["help"],
             hidden=cmd["reputationboard"]["hidden"], enabled=True)
+    @is_channel(STATS_CHANNEL)
     @guild_only()
     @logger.catch
     async def reputation_leaderboard_command(self, ctx):
@@ -229,6 +235,7 @@ class Leaderboards(Cog, name='Списки лидеров'):
             usage=cmd["vbucksboard"]["usage"],
             help=cmd["vbucksboard"]["help"],
             hidden=cmd["vbucksboard"]["hidden"], enabled=True)
+    @is_channel(STATS_CHANNEL)
     @guild_only()
     @logger.catch
     async def vbucks_leaderboard_command(self, ctx):
