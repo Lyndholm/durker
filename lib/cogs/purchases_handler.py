@@ -205,7 +205,7 @@ class PurchasesHandler(Cog, name='Покупки и не только'):
             description='**Пожалуйста, выберите, покупки в какой валюте вы желаете просмотреть:\n\n'
                         '1️⃣ — покупки за В-Баксы.\n2️⃣ — покупки за реальные деньги (рубли).**'
         )
-        message = await ctx.send(embed=embed)
+        message = await ctx.reply(embed=embed, mention_author=False)
         for r in reactions:
             await message.add_reaction(r)
         try:
@@ -349,7 +349,7 @@ class PurchasesHandler(Cog, name='Покупки и не только'):
             'и засчитывать покупки наперекор правилам.'
         ).set_image(url='https://cdn.discordapp.com/attachments/774698479981297664/835853888041123840/why.png'))
 
-        message = await ctx.send(embed=embeds[0])
+        message = await ctx.reply(embed=embeds[0], mention_author=False)
         page = Paginator(self.bot, message, only=ctx.author, embeds=embeds)
         await page.start()
 

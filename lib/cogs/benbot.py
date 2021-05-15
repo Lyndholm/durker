@@ -38,11 +38,14 @@ class BenBot(Cog, name='Fortnite API 1'):
         async with ClientSession() as session:
             async with session.get('https://benbotfn.tk/api/v1/status') as r:
                 if r.status != 200:
-                    await ctx.send(f"""```json\n{await r.text()}```""")
+                    await ctx.reply(
+                        f"""```json\n{await r.text()}```""",
+                        mention_author=False
+                    )
                     return
 
                 data = await r.json()
-                await ctx.send(
+                await ctx.reply(
                     embed=Embed(title="BenBot Status", color=Color.random())
                     .add_field(
                         name="Version",
@@ -58,7 +61,8 @@ class BenBot(Cog, name='Fortnite API 1'):
                         name="Pak Count",
                         value=f"`{len(data.get('mountedPaks', []))}/{data.get('totalPakCount', 'Unknown')}`",
                         inline=False,
-                    )
+                    ),
+                    mention_author=False
                 )
 
 
@@ -77,7 +81,10 @@ class BenBot(Cog, name='Fortnite API 1'):
         async with ClientSession() as session:
             async with session.get('https://benbotfn.tk/api/v1/aes', params={"version":version} if version else None) as r:
                 if r.status != 200:
-                    await ctx.send(f"""```json\n{await r.text()}```""")
+                    await ctx.reply(
+                        f"""```json\n{await r.text()}```""",
+                        mention_author=False
+                    )
                     return
 
                 data = await r.json()
@@ -91,7 +98,7 @@ class BenBot(Cog, name='Fortnite API 1'):
                                 color=Color.teal())
                     aes_embeds.append(embed)
 
-                message = await ctx.send(embed=aes_embeds[0])
+                message = await ctx.reply(embed=aes_embeds[0], mention_author=False)
                 page = Paginator(self.bot, message, only=ctx.author, embeds=aes_embeds)
                 await page.start()
 
@@ -110,7 +117,10 @@ class BenBot(Cog, name='Fortnite API 1'):
         async with ClientSession() as session:
             async with session.get(f"https://benbotfn.tk/api/v1/cosmetics/br/{id}", params={"lang":"ru"}) as r:
                 if r.status != 200:
-                    await ctx.send(f"""```json\n{await r.text()}```""")
+                    await ctx.reply(
+                        f"""```json\n{await r.text()}```""",
+                        mention_author=False
+                    )
                     return
 
                 cosmetic = await r.json()
@@ -141,7 +151,7 @@ class BenBot(Cog, name='Fortnite API 1'):
                         embed.set_thumbnail(url=cosmetic["icons"]["icon"])
                     if cosmetic["icons"].get("featured", None) is not None:
                         embed.set_image(url=cosmetic["icons"]["featured"])
-                await ctx.send(embed=embed)
+                await ctx.reply(embed=embed, mention_author=False)
 
 
     @command(name=cmd["extractasset"]["name"], aliases=cmd["extractasset"]["aliases"],
@@ -158,28 +168,37 @@ class BenBot(Cog, name='Fortnite API 1'):
         async with ClientSession() as session:
             async with session.get(f"https://benbotfn.tk/api/v1/exportAsset?path={path}") as r:
                 if r.status != 200:
-                    await ctx.send(f"""```json\n{await r.text()}```""")
+                    await ctx.reply(
+                        f"""```json\n{await r.text()}```""",
+                        mention_author=False
+                    )
                     return
 
                 elif r.headers.get("Content-Type", None) == "audio/ogg":
-                    await ctx.send(
+                    await ctx.reply(
                         file=File(
                             fp=BytesIO(await r.read()),
-                            filename=r.headers.get("filename", "audio.ogg"),
-                        )
+                            filename=r.headers.get("filename", "audio.ogg")
+                        ),
+                        mention_author=False
                     )
                 elif r.headers.get("Content-Type", None) == "image/png":
-                    await ctx.send(
+                    await ctx.reply(
                         file=File(
                             fp=BytesIO(await r.read()),
                             filename=r.headers.get("filename", "image.png"),
-                        )
+                        ),
+                        mention_author=False
                     )
                 elif r.headers.get("Content-Type", None) == "application/json":
-                    await ctx.send(f"```json\n{await r.text()}```")
+                    await ctx.reply(
+                        f"""```json\n{await r.text()}```""",
+                        mention_author=False
+                    )
                 else:
-                    await ctx.send(
-                        f"```Unknown Content-Type: {r.headers.get('Content-Type', 'Unknown')}```"
+                    await ctx.reply(
+                        f"```Unknown Content-Type: {r.headers.get('Content-Type', 'Unknown')}```",
+                        mention_author=False
                     )
 
 
@@ -198,7 +217,10 @@ class BenBot(Cog, name='Fortnite API 1'):
         async with ClientSession() as session:
             async with session.get("https://benbotfn.tk/api/v1/calendar") as r:
                 if r.status != 200:
-                    await ctx.send(f"""```json\n{await r.text()}```""")
+                    await ctx.reply(
+                        f"""```json\n{await r.text()}```""",
+                        mention_author=False
+                    )
                     return
 
                 data = await r.json()
@@ -218,7 +240,7 @@ class BenBot(Cog, name='Fortnite API 1'):
 
                 embed.description = var
 
-                await ctx.send(embed=embed)
+                await ctx.reply(embed=embed, mention_author=False)
 
 
 def setup(bot):

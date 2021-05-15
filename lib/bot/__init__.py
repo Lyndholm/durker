@@ -196,7 +196,10 @@ class Bot(BotBase):
 
 
             print("\nReady to use!\n")
-            #await self.get_user(OWNER_IDS[0]).send("I am online!\nReady to use!")
+            await self.get_user(OWNER_IDS[0]).send(
+               "I am online!\nReady to use!\nStart time: "
+               f"{datetime.now().strftime('%d.%m.%Y %H.%M.%S')}"
+               )
 
         else:
             print("Bot reconnected")

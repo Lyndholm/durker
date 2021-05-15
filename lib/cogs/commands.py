@@ -44,7 +44,10 @@ class Commands(Cog, name='Базовые команды'):
     @logger.catch
     async def suggest_song_command(self, ctx, *, song: str = None):
         if song is None:
-            return await ctx.send('Пожалуйста, укажите название трека, который вы хотите предложить добавить в плейлист радио.')
+            return await ctx.reply(
+                'Пожалуйста, укажите название трека, который вы хотите предложить добавить в плейлист радио.',
+                mention_author=False
+            )
 
         song = song.replace('`', '­')
         date = datetime.now()
@@ -65,7 +68,7 @@ class Commands(Cog, name='Базовые команды'):
             description = f'Заявка на добавление трека `{song}` в плейлист радио отправлена администрации.\nНомер вашей заявки: {rec[0]}\n'
                         "**Пожалуйста, разрешите личные сообщения от участников сервера, чтобы вы могли получить ответ на заявку.**"
         )
-        await ctx.send(embed=embed)
+        await ctx.reply(embed=embed, mention_author=False)
 
         for i in [375722626636578816, 195637386221191170]:
             embed = Embed(
@@ -121,7 +124,7 @@ class Commands(Cog, name='Базовые команды'):
             inline=False
         )
 
-        await ctx.send(content=content, embed=embed, delete_after=90)
+        await ctx.reply(content=content, embed=embed, mention_author=False)
         if ctx.author.top_role.position >= self.chasovoy.position:
             ctx.command.reset_cooldown(ctx)
 
@@ -135,12 +138,12 @@ class Commands(Cog, name='Базовые команды'):
     @logger.catch
     async def redirect_to_question_channel_command(self, ctx, targets: Greedy[Member]):
         users = " ".join([member.mention for member in targets]) or ctx.author.mention
-        await ctx.send(
+        await ctx.reply(
             f'{users}\nВопросы по игре следует задавать в канале <#546700132390010882>.'
             ' Так они не потеряются в общем чате, вследствие чего их увидет большее количество людей. '
             'Участники сервера постараются дать вам ответ.\n'
             'Также в этом канале вы можете задать вопрос администрации сервера.',
-            delete_after=90
+            mention_author=False, delete_after=90
         )
 
     @command(name=cmd["media"]["name"], aliases=cmd["media"]["aliases"],

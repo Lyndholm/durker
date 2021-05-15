@@ -39,7 +39,7 @@ class UserStats(Cog, name='Статистика'):
                 embed = Embed(title="❗ Внимание!", color=Color.red(), timestamp=datetime.utcnow(),
                             description=f"Профиль участника **{member.display_name}** ({member.mention}) скрыт. Просматривать его может только владелец.")
                 embed.set_footer(text=ctx.author, icon_url=ctx.author.avatar_url)
-                await ctx.send(embed=embed)
+                await ctx.reply(embed=embed, mention_author=False)
                 return
             else:
                 target = member
@@ -195,7 +195,7 @@ class UserStats(Cog, name='Статистика'):
                     embed = Embed(title='❗ Внимание!', color = Color.red(), timestamp = datetime.utcnow(),
                             description = f"{ctx.author.mention}, ваша биография уже написана. Вы желаете её сбросить?\n\n"
                             "🟩 — нет.\n\n🟥 — да, сбросить мою биографию.")
-                    msg = await ctx.send(embed=embed)
+                    msg = await ctx.reply(embed=embed, mention_author=False)
 
                     for r in r_list:
                         await msg.add_reaction(r)
@@ -207,7 +207,7 @@ class UserStats(Cog, name='Статистика'):
                     except TimeoutError:
                         await msg.clear_reactions()
                         embed = Embed(title="Время вышло", color=Color.magenta(), timestamp=datetime.utcnow(),
-                                    description=f"{ctx.author.mention}, время на выбор вышло, дейсвтие оменено.")
+                                    description=f"{ctx.author.mention}, время на выбор вышло, действие отменено.")
                         await msg.reply(embed=embed)
                         return
 
@@ -218,7 +218,8 @@ class UserStats(Cog, name='Статистика'):
                                         description = f"Сброс биографии отменён.\n"
                                         "Если вы хотите изменить биографию, введите команду ещё раз, указав необходимый текст.\n"
                                         "**Пример:** +setbio Это моя новая биография!")
-                            await ctx.send(embed=embed)
+                            await ctx.reply(embed=embed, mention_author=False)
+                            ctx.command.reset_cooldown(ctx)
                             return
 
                         if str(react.emoji) == r_list[1]:
@@ -228,18 +229,19 @@ class UserStats(Cog, name='Статистика'):
 
                             embed = Embed(title=':white_check_mark: Выполнено!', color = Color.green(), timestamp = datetime.utcnow(),
                                         description = f"Биография пользователя **{ctx.author.display_name}** сброшена.")
-                            await ctx.send(embed=embed)
+                            await ctx.reply(embed=embed, mention_author=False)
+                            ctx.command.reset_cooldown(ctx)
                             return
             else:
                 embed = Embed(title='❗ Внимание!', color = Color.red(),
                             description = f"{ctx.author.mention}, пожалуйста, напишите Вашу биографию. Учитывайте, что максимальная длина текста — **255** символов.")
-                await ctx.send(embed=embed)
+                await ctx.reply(embed=embed, mention_author=False)
                 ctx.command.reset_cooldown(ctx)
 
         elif len(bio.strip()) > 255:
             embed = Embed(title='❗ Внимание!', color = Color.red(),
                         description = f"{ctx.author.mention}, пожалуйста, уменьшите длину Вашей биографии. Вы превысили допустимый объём на {len(bio) - 255} символ(-а).")
-            await ctx.send(embed=embed)
+            await ctx.reply(embed=embed, mention_author=False)
 
         else:
             bio = bio.replace('`', '`­')
@@ -250,7 +252,7 @@ class UserStats(Cog, name='Статистика'):
 
                 embed = Embed(title=':white_check_mark: Выполнено!', color = Color.green(), timestamp = datetime.utcnow(),
                             description = f"Поздравляем, **{ctx.author.display_name}**! Ваша биография обновлена:\n```{bio}```")
-                await ctx.send(embed=embed)
+                await ctx.reply(embed=embed, mention_author=False)
 
             except Exception as e:
                 raise e
@@ -273,7 +275,7 @@ class UserStats(Cog, name='Статистика'):
                 "🟩 — Открытый, просматривать его могут все пользователи в любое время.\n🟥 — Закрытый, просматровать профиль можете только вы."
                 "\n\n❌ — выход."
             )
-        msg = await ctx.send(embed=embed)
+        msg = await ctx.reply(embed=embed, mention_author=False)
 
         for r in r_list:
             await msg.add_reaction(r)
@@ -371,7 +373,7 @@ class UserStats(Cog, name='Статистика'):
                 desc += f" и **{old+1}** {russian_plural(old+1,['день','дня','дней'])} пребывания на сервере."
 
         embed.description = desc
-        await ctx.send(embed=embed)
+        await ctx.reply(embed=embed, mention_author=False)
 
 
     @command(name=cmd["myrep"]["name"], aliases=cmd["myrep"]["aliases"],
@@ -418,7 +420,7 @@ class UserStats(Cog, name='Статистика'):
             embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/774698479981297664/815299017948004402/rank_perfection.png")
 
         embed.description = desc
-        await ctx.send(embed=embed)
+        await ctx.reply(embed=embed, mention_author=False)
 
 
     @command(name=cmd["rep"]["name"], aliases=cmd["rep"]["aliases"],
@@ -453,7 +455,7 @@ class UserStats(Cog, name='Статистика'):
             f"\n\nУзнать свой уровень репутации можно по команде `{ctx.prefix or self.bot.PREFIX}myrep`"
         )
         embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/774698479981297664/815282991668133888/reputation.png")
-        await ctx.send(embed=embed)
+        await ctx.reply(embed=embed, mention_author=False)
 
 
 def setup(bot):

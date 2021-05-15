@@ -43,10 +43,10 @@ class Owner(Cog, name='Команды разработчика'):
             self.bot.load_extension(cog)
         except Exception as e:
             embed = Embed(title='❗ Ошибка!', description=f'{type(e).__name__} - {e}', color = Color.red())
-            await ctx.send(embed=embed)
+            await ctx.reply(embed=embed, mention_author=False)
         else:
             embed = Embed(title='👍 Успешно!', description=f'Cog **`{cog}`** успешно загружен и активирован!', color = Color.green())
-            await ctx.send(embed=embed)
+            await ctx.reply(embed=embed, mention_author=False)
 
 
     @command(name=cmd["unloadcog"]["name"], aliases=cmd["unloadcog"]["aliases"],
@@ -63,10 +63,10 @@ class Owner(Cog, name='Команды разработчика'):
             self.bot.unload_extension(cog)
         except Exception as e:
             embed = Embed(title='❗ Ошибка!', description=f'{type(e).__name__} - {e}', color = Color.red())
-            await ctx.send(embed=embed)
+            await ctx.reply(embed=embed, mention_author=False)
         else:
             embed = Embed(title='👍 Успешно!', description=f'Cog **`{cog}`** успешно деактивирован и выгружен!', color = Color.green())
-            await ctx.send(embed=embed)
+            await ctx.reply(embed=embed, mention_author=False)
 
 
     @command(name=cmd["reloadcog"]["name"], aliases=cmd["reloadcog"]["aliases"],
@@ -84,10 +84,10 @@ class Owner(Cog, name='Команды разработчика'):
             self.bot.load_extension(cog)
         except Exception as e:
             embed = Embed(title='❗ Ошибка!', description=f'{type(e).__name__} - {e}', color = Color.red())
-            await ctx.send(embed=embed)
+            await ctx.reply(embed=embed, mention_author=False)
         else:
             embed = Embed(title='👍 Успешно!', description=f'Cog **`{cog}`** успешно перезагружен!', color = Color.green())
-            await ctx.send(embed=embed)
+            await ctx.reply(embed=embed, mention_author=False)
 
 
     @command(name=cmd["disablecmd"]["name"], aliases=cmd["disablecmd"]["aliases"],
@@ -106,13 +106,13 @@ class Owner(Cog, name='Команды разработчика'):
                 self.modified_commands[cmd] = command.cog.qualified_name
                 command.update(enabled=False, hidden=True)
                 embed = Embed(title='👍 Успешно!', description=f'Команда **`{cmd}`** отключена!', color = Color.green())
-                await ctx.send(embed=embed)
+                await ctx.reply(embed=embed, mention_author=False)
             else:
                 embed = Embed(title='❗ Ошибка!', description=f'Команда `{cmd}` уже отключена.', color = Color.red())
-                await ctx.send(embed=embed)
+                await ctx.reply(embed=embed, mention_author=False)
         except Exception as e:
             embed = Embed(title='❗ Ошибка!', description=f'{type(e).__name__} - {e}', color = Color.red())
-            await ctx.send(embed=embed)
+            await ctx.reply(embed=embed, mention_author=False)
 
 
     @command(name=cmd["enablecmd"]["name"], aliases=cmd["enablecmd"]["aliases"],
@@ -133,13 +133,13 @@ class Owner(Cog, name='Команды разработчика'):
                 command.cog = command_cog
                 del self.modified_commands[cmd]
                 embed = Embed(title='👍 Успешно!', description=f'Команда **`{cmd}`** включена!', color = Color.green())
-                await ctx.send(embed=embed)
+                await ctx.reply(embed=embed, mention_author=False)
             else:
                 embed = Embed(title='❗ Ошибка!', description=f'Команда `{cmd}` сейчас активна. Повторное включение невозможно', color = Color.red())
-                await ctx.send(embed=embed)
+                await ctx.reply(embed=embed, mention_author=False)
         except Exception as e:
             embed = Embed(title='❗ Ошибка!', description=f'{type(e).__name__} - {e}', color = Color.red())
-            await ctx.send(embed=embed)
+            await ctx.reply(embed=embed, mention_author=False)
 
 
     @command(name=cmd["disabledcmds"]["name"], aliases=cmd["disabledcmds"]["aliases"],
@@ -157,7 +157,7 @@ class Owner(Cog, name='Команды разработчика'):
             if not command.enabled:
                 disabled_cmds.append(str(command))
         embed = Embed(title=':arrow_down: Отключённые команды.', description="\n".join(disabled_cmds) if disabled_cmds else "Все команды работают в штатном режиме.", color = Color.red())
-        await ctx.send(embed=embed)
+        await ctx.reply(embed=embed, mention_author=False)
 
     @command(name=cmd["ping"]["name"], aliases=cmd["ping"]["aliases"],
             brief=cmd["ping"]["brief"],
@@ -170,7 +170,10 @@ class Owner(Cog, name='Команды разработчика'):
     @logger.catch
     async def ping_bot_command(self, ctx):
         start = time.monotonic()
-        message = await ctx.send(f'🏓 DWSP latency: {self.bot.latency*1000:,.0f} ms.')
+        message = await ctx.reply(
+            f'🏓 DWSP latency: {self.bot.latency*1000:,.0f} ms.',
+            mention_author=False
+        )
         end = time.monotonic()
         await message.edit(content=f'🏓 DWSP latency: {self.bot.latency*1000:,.0f} ms.\n📶 Responce time: {(end-start)*1000:,.0f} ms.')
 
@@ -185,7 +188,7 @@ class Owner(Cog, name='Команды разработчика'):
     @logger.catch
     async def ping_fortnite_apis_command(self, ctx):
         """Get the response time for APIs."""
-        message = await ctx.send("Response time for APIs:")
+        message = await ctx.reply("Response time for APIs:", mention_author=False)
         async with ClientSession() as session:
             now = time.monotonic()
             async with session.get('https://benbotfn.tk/api/v1/status') as r:
@@ -254,8 +257,10 @@ class Owner(Cog, name='Команды разработчика'):
         async with ClientSession() as session:
             async with session.get('https://api.nitestats.com/v1/epic/bearer') as r:
                 if r.status != 200:
-                    await ctx.send(f"""```json\n{await r.text()}```""")
-                    return
+                    await ctx.reply(
+                        f"""```json\n{await r.text()}```""",
+                        mention_author=False
+                    )
 
                 data = await r.json()
                 embed = Embed(
@@ -265,7 +270,7 @@ class Owner(Cog, name='Команды разработчика'):
                     description=f'**Token:** {data.get("accessToken", "Unknown")}\n'
                                 f'**Updated:** {datetime.fromtimestamp(data.get("lastUpdated", 0)).strftime("%d.%m.%Y %H:%M:%S")}'
                 )
-                await ctx.send(embed=embed)
+                await ctx.reply(embed=embed, mention_author=False)
 
 
     @logger.catch
@@ -303,7 +308,7 @@ class Owner(Cog, name='Команды разработчика'):
                     color=Color.orange(),
                     description=f"Администратор <@{rec[0]}> {'одобрил' if rec[1] else 'отклонил'} это предложение {rec[2].strftime('%d.%m.%Y %H:%M:%S')}."
                 )
-                await ctx.send(embed=embed)
+                await ctx.reply(embed=embed, mention_author=False)
         except TypeError:
             await ctx.message.add_reaction('❌')
 
@@ -319,7 +324,7 @@ class Owner(Cog, name='Команды разработчика'):
     @logger.catch
     async def approve_suggestion_command(self, ctx, suggestion_id: int = None, *, comment: str = 'Отсутсвует.'):
         if suggestion_id is None:
-            return await ctx.send('Укажите номер заявки.')
+            return await ctx.reply('Укажите номер заявки.', mention_author=False)
 
         await self.pass_suggesion_decision(ctx, suggestion_id, True, comment)
 
@@ -334,7 +339,7 @@ class Owner(Cog, name='Команды разработчика'):
     @logger.catch
     async def reject_suggestion_command(self, ctx, suggestion_id: int = None, *, comment: str = 'Отсутсвует.'):
         if suggestion_id is None:
-            return await ctx.send('Укажите номер заявки.')
+            return await ctx.reply('Укажите номер заявки.', mention_author=False)
 
         await self.pass_suggesion_decision(ctx, suggestion_id, False, comment)
 

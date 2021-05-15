@@ -114,7 +114,7 @@ class Profanity(Cog, name='Мат-фильтр'):
             await f.write("".join([f"{w}\n" for w in words]))
 
         self.bot.profanity.load_censor_words_from_file("./data/txt/profanity.txt")
-        await ctx.send("Словарь обновлен!")
+        await ctx.reply("Словарь обновлён!", mention_author=False)
 
 
     @command(name=cmd["delprofanity"]["name"], aliases=cmd["delprofanity"]["aliases"],
@@ -135,7 +135,7 @@ class Profanity(Cog, name='Мат-фильтр'):
             await f.write("".join([f"{w}\n" for w in stored if w not in words]))
 
         self.bot.profanity.load_censor_words_from_file("./data/txt/profanity.txt")
-        await ctx.send("Словарь обновлен!")
+        await ctx.reply("Словарь обновлён!", mention_author=False)
 
 
     @Cog.listener()
