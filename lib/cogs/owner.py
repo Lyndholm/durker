@@ -1,10 +1,14 @@
+import json
+import os
 import time
 from datetime import datetime
+from typing import Optional
 
 import aiofiles
 from aiohttp import ClientSession
-from discord import Color, Embed, User
+from discord import Color, Embed, File, User
 from discord.ext.commands import Cog, Greedy, command, dm_only, is_owner
+from discord.utils import get
 from loguru import logger
 
 from ..db import db
@@ -442,6 +446,49 @@ class Owner(Cog, name='Команды разработчика'):
             description=f'Количество сообщений пользователя <@{user_id}> изменено.\n'
                         f'**Действие:** `{action}`\n**Значение:** `{value}`'
         ), mention_author=False)
+
+
+    @command(name=cmd["rolelist"]["name"], aliases=cmd["rolelist"]["aliases"],
+            brief=cmd["rolelist"]["brief"],
+            description=cmd["rolelist"]["description"],
+            usage=cmd["rolelist"]["usage"],
+            help=cmd["rolelist"]["help"],
+            hidden=cmd["rolelist"]["hidden"], enabled=True)
+    @dm_only()
+    @is_owner()
+    @logger.catch
+    async def rolelist_command(self, ctx, role_id: Optional[int]):
+        if not role_id:
+            await ctx.reply(
+                'Укажите ID запрашиваемой роли сервера.',
+                mention_author=False
+            )
+            return
+
+        role = get(self.bot.guild.roles, id=role_id)
+        data = {
+            "created": str(datetime.now()),
+            "role_name": role.name,
+            "role_id": role.id,
+            "members": [
+                {
+                    str(i.id): i.display_name
+                    for i in role.members
+                }
+            ]
+        }
+        with open(f"./data/json/{role.id}.json", "w", encoding='utf-8') as f:
+            json.dump(data, f, indent=2, sort_keys=True, ensure_ascii=False)
+
+        await ctx.reply(
+            f'Список участников с ролью **{role.name}**.',
+            file=File(
+                f'./data/json/{role.id}.json',
+                filename=f'{role.id}.json'
+            ),
+            mention_author=False
+        )
+        os.remove(f"./data/json/{role.id}.json")
 
 
     @command(name=cmd["shutdown"]["name"], aliases=cmd["shutdown"]["aliases"],

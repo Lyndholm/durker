@@ -1448,6 +1448,20 @@
       "cooldown_type": "None",
       "hidden": true
     },
+    "rolelist": {
+      "name": "rolelist",
+      "aliases": [],
+      "brief": "Список участников с ролью.",
+      "description": "Генерация списка участника с определённой ролью.",
+      "usage": "rolelist <role>",
+      "help": "Бот генерирует json файл, в котором содержится список участников с определённой ролью на сервере.\nРаботает только в личных сообщениях.\nДоступно только разработчику бота.\n\n**Кулдаун:** отсутствует.\n**Необходимый уровень:** 0",
+      "required_level": 0,
+      "has_cooldown": false,
+      "cooldown_rate": 0,
+      "cooldown_per_second": 0,
+      "cooldown_type": "None",
+      "hidden": true
+    },
     "shutdown": {
       "name": "shutdown",
       "aliases": [
