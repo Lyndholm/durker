@@ -124,7 +124,10 @@ class Leveling(Cog, name='Система уровней'):
     async def rank_command(self, ctx):
         xp, xp_total, level = db.fetchone(['xp', 'xp_total', 'level'], 'leveling', 'user_id', ctx.author.id)
         xp_end = floor(5 * (level ^ 2) + 50 * level + 100)
-        boxes = int((xp/(200*((1/2) * (level+1)))) * 20)
+        try:
+            boxes = int((xp / (200 * ((1/2) * level))) * 20)
+        except ZeroDivisionError:
+            boxes = 0
 
         cursor = db.get_cursor()
         cursor.execute("SELECT user_id FROM leveling ORDER BY xp_total DESC")
@@ -144,7 +147,7 @@ class Leveling(Cog, name='Система уровней'):
         for name, value, inline in fields:
             embed.add_field(name=name, value=value, inline=inline)
 
-        await ctx.send(embed=embed)
+        await ctx.reply(embed=embed, mention_author=False)
 
 
 def setup(bot):
