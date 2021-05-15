@@ -1,4 +1,5 @@
 import json
+import os
 from asyncio import TimeoutError
 from datetime import datetime
 from typing import Optional
@@ -10,8 +11,10 @@ from discord.utils import get
 from loguru import logger
 
 from ..db import db
-from ..utils.checks import is_channel, is_any_channel
-from ..utils.constants import STATS_CHANNEL, CONSOLE_CHANNEL
+from ..utils.checks import is_any_channel, is_channel
+from ..utils.constants import (CONSOLE_CHANNEL, SAC_SCREENSHOTS_CHANNEL,
+                               STATS_CHANNEL)
+from ..utils.decorators import listen_for_guilds
 from ..utils.paginator import Paginator
 from ..utils.utils import edit_user_reputation, load_commands_from_json
 
@@ -349,6 +352,23 @@ class PurchasesHandler(Cog, name='Покупки и не только'):
         message = await ctx.send(embed=embeds[0])
         page = Paginator(self.bot, message, only=ctx.author, embeds=embeds)
         await page.start()
+
+
+    @Cog.listener()
+    @listen_for_guilds()
+    async def on_message(self, message):
+        if message.channel.id == SAC_SCREENSHOTS_CHANNEL:
+            if message.attachments:
+                if not os.path.exists(f'./data/purchases_photos/{message.author.id}'):
+                    os.makedirs(f'./data/purchases_photos/{message.author.id}')
+
+                time_now = datetime.now().strftime('%d.%m.%Y %H.%M.%S')
+                for attachment in message.attachments:
+                    await attachment.save(
+                        f'./data/purchases_photos/{message.author.id}/'
+                        f'{time_now} — {str(message.id)} — {attachment.filename}'
+                    )
+
 
     @Cog.listener()
     async def on_ready(self):
