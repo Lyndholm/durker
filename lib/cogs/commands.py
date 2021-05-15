@@ -118,11 +118,6 @@ class Commands(Cog, name='Базовые команды'):
             value="Новичкам недоступен просмотр истории канала <#546408250158088192>, но это не мешает отправлять скрины поддержки.",
             inline=False
         )
-        embed.add_field(
-            name="P.S.S.",
-            value="Все покупки засчитываются вручную. Время засчитывания может составлять от пары минут до нескольких дней. Это зависит от нагруженности модератора.",
-            inline=False
-        )
 
         await ctx.reply(content=content, embed=embed, mention_author=False)
         if ctx.author.top_role.position >= self.chasovoy.position:
