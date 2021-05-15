@@ -15,7 +15,8 @@ from psutil import Process, cpu_percent, virtual_memory
 
 from ..db import db
 from ..utils.checks import is_channel, required_level
-from ..utils.constants import CONSOLE_CHANNEL, MUSIC_COMMANDS_CHANNEL
+from ..utils.constants import (CHASOVOY_ROLE_ID, CONSOLE_CHANNEL,
+                               MUSIC_COMMANDS_CHANNEL)
 from ..utils.utils import load_commands_from_json
 
 cmd = load_commands_from_json("commands")
@@ -29,6 +30,7 @@ class Commands(Cog, name='Базовые команды'):
     async def on_ready(self):
         if not self.bot.ready:
            self.bot.cogs_ready.ready_up("commands")
+           self.chasovoy = self.bot.guild.get_role(CHASOVOY_ROLE_ID)
 
     @command(name=cmd["suggest"]["name"], aliases=cmd["suggest"]["aliases"],
             brief=cmd["suggest"]["brief"],
@@ -120,7 +122,7 @@ class Commands(Cog, name='Базовые команды'):
         )
 
         await ctx.send(content=content, embed=embed, delete_after=90)
-        if ctx.author.top_role.position >= 28:
+        if ctx.author.top_role.position >= self.chasovoy.position:
             ctx.command.reset_cooldown(ctx)
 
     @command(name=cmd["question"]["name"], aliases=cmd["question"]["aliases"],
@@ -140,8 +142,6 @@ class Commands(Cog, name='Базовые команды'):
             'Также в этом канале вы можете задать вопрос администрации сервера.',
             delete_after=90
         )
-        if ctx.author.top_role.position >= 28:
-            ctx.command.reset_cooldown(ctx)
 
     @command(name=cmd["media"]["name"], aliases=cmd["media"]["aliases"],
             brief=cmd["media"]["brief"],
@@ -151,7 +151,7 @@ class Commands(Cog, name='Базовые команды'):
             hidden=cmd["media"]["hidden"], enabled=True)
     @check_any(
         required_level(cmd["media"]["required_level"]),
-        has_any_role(643879247433433108, 682157177959481363),
+        has_any_role(CHASOVOY_ROLE_ID),
         has_permissions(administrator=True))
     @guild_only()
     @cooldown(cmd["media"]["cooldown_rate"], cmd["media"]["cooldown_per_second"], BucketType.member)
@@ -160,7 +160,7 @@ class Commands(Cog, name='Базовые команды'):
         await ctx.message.delete()
         await ctx.send(' '.join(member.mention for member in targets) +  f' Изображениям и прочим медиафайлам, '
                        'не относящимся к теме разговора, нет места в чате! Пожалуйста, используйте канал <#644523860326219776>')
-        if ctx.author.top_role.position >= 28:
+        if ctx.author.top_role.position >= self.chasovoy.position:
             ctx.command.reset_cooldown(ctx)
 
     async def gachi_poisk_feature(self, ctx, targets):
@@ -186,7 +186,7 @@ class Commands(Cog, name='Базовые команды'):
             hidden=cmd["poisk"]["hidden"], enabled=True)
     @check_any(
         required_level(cmd["poisk"]["required_level"]),
-        has_any_role(643879247433433108, 682157177959481363),
+        has_any_role(CHASOVOY_ROLE_ID),
         has_permissions(administrator=True))
     @guild_only()
     @cooldown(cmd["poisk"]["cooldown_rate"], cmd["poisk"]["cooldown_per_second"], BucketType.member)
@@ -202,7 +202,7 @@ class Commands(Cog, name='Базовые команды'):
                 ' '.join(member.mention for member in targets) + ' **Данный канал не предназначен для поиска игроков!** '
                 'Пожалуйста, используйте соответствующий канал <#546416181871902730>. Любые сообщения с поиском игроков '
                 'в данном канале будут удалены.', file=File(f'./data/images/search_for_players/common/{choice(images)}'))
-        if ctx.author.top_role.position >= 28:
+        if ctx.author.top_role.position >= self.chasovoy.position:
             ctx.command.reset_cooldown(ctx)
 
     @command(name=cmd["ppo"]["name"], aliases=cmd["ppo"]["aliases"],
