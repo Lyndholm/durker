@@ -48,6 +48,15 @@ class Moderation(Cog, name='Модерация'):
         self.DISCORD_INVITE_REGEX = r'discord(?:\.com|app\.com|\.gg)[\/invite\/]?(?:[a-zA-Z0-9\-]{2,32})'
         self.EMOJI_REGEX = r'<(?P<animated>a?):(?P<name>[a-zA-Z0-9_]{2,32}):(?P<id>[0-9]{18,22})>'
         self.UNICODE_EMOJI_REGEX = r'[\U00010000-\U0010ffff]'
+        bot.loop.create_task(self.init_vars())
+
+    @logger.catch
+    async def init_vars(self):
+        self.moderation_channel = self.bot.get_channel(MODERATION_PUBLIC_CHANNEL)
+        self.audit_channel = self.bot.get_channel(AUDIT_LOG_CHANNEL)
+        self.mute_role = self.bot.guild.get_role(MUTE_ROLE_ID)
+        self.read_role = self.bot.guild.get_role(READ_ROLE_ID)
+        self.helper_role = self.bot.guild.get_role(CHASOVOY_ROLE_ID)
 
     @logger.catch
     async def kick_members(self, message, targets, reason):
@@ -870,11 +879,6 @@ class Moderation(Cog, name='Модерация'):
     @Cog.listener()
     async def on_ready(self):
         if not self.bot.ready:
-            self.moderation_channel = self.bot.get_channel(MODERATION_PUBLIC_CHANNEL)
-            self.audit_channel = self.bot.get_channel(AUDIT_LOG_CHANNEL)
-            self.mute_role = self.bot.guild.get_role(MUTE_ROLE_ID)
-            self.read_role = self.bot.guild.get_role(READ_ROLE_ID)
-            self.helper_role = self.bot.guild.get_role(CHASOVOY_ROLE_ID)
             self.bot.cogs_ready.ready_up("moderation")
 
 

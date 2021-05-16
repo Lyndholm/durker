@@ -19,12 +19,16 @@ from ..utils.constants import (ADMINS_CHANNEL, AUDIT_LOG_CHANNEL,
 class Audit(Cog, name='Система Аудита'):
     def __init__(self, bot):
         self.bot = bot
+        bot.loop.create_task(self.init_vars())
+
+    @logger.catch
+    async def init_vars(self):
+        self.log_channel = self.bot.get_channel(AUDIT_LOG_CHANNEL)
 
     @Cog.listener()
     async def on_ready(self):
         if not self.bot.ready:
             self.bot.cogs_ready.ready_up("audit_logging")
-            self.log_channel = self.bot.get_channel(AUDIT_LOG_CHANNEL)
 
     @staticmethod
     def list_diff(l1: List, l2: List) -> Tuple[List, List, List]:

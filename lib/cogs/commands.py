@@ -25,12 +25,16 @@ cmd = load_commands_from_json("commands")
 class Commands(Cog, name='Базовые команды'):
     def __init__(self, bot):
         self.bot = bot
+        bot.loop.create_task(self.init_vars())
+
+    @logger.catch
+    async def init_vars(self):
+        self.chasovoy = self.bot.guild.get_role(CHASOVOY_ROLE_ID)
 
     @Cog.listener()
     async def on_ready(self):
         if not self.bot.ready:
            self.bot.cogs_ready.ready_up("commands")
-           self.chasovoy = self.bot.guild.get_role(CHASOVOY_ROLE_ID)
 
     @command(name=cmd["suggest"]["name"], aliases=cmd["suggest"]["aliases"],
             brief=cmd["suggest"]["brief"],

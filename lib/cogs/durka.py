@@ -70,6 +70,11 @@ class Durka(Cog, name='Родина-Дурка'):
         self.one_target_emoji = f"{self.durka_emoji}{self.durka_emoji}{self.shizoid_emoji}{self.durka_emoji}{self.durka_emoji}"
         self.multiple_targets_emoji = f"{self.durka_emoji}{self.shizoid_emoji}{self.shizoid_emoji}{self.shizoid_emoji}{self.durka_emoji}"
         self.schedule_durka_calls_update(self.bot.scheduler)
+        bot.loop.create_task(self.init_vars())
+
+    @logger.catch
+    async def init_vars(self):
+        self.chasovoy = self.bot.guild.get_role(CHASOVOY_ROLE_ID)
 
     def update_available_durka_calls(self):
         for member in self.bot.guild:
@@ -300,7 +305,6 @@ class Durka(Cog, name='Родина-Дурка'):
     async def on_ready(self):
         if not self.bot.ready:
            self.bot.cogs_ready.ready_up("durka")
-           self.chasovoy = self.bot.guild.get_role(CHASOVOY_ROLE_ID)
 
 
 def setup(bot):
