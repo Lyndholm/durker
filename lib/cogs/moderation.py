@@ -229,7 +229,8 @@ class Moderation(Cog, name='Модерация'):
                     "moderator": f"{message.author.name} | {message.author.id}"
                 }
             )
-            db.execute("UPDATE users_stats SET mutes_story = %s WHERE user_id = %s", json.dumps(rec), target.id)
+            db.execute("UPDATE users_stats SET mutes_story = %s WHERE user_id = %s",
+                        json.dumps(rec, ensure_ascii=False), target.id)
             db.commit()
 
         unmutes = []
@@ -596,7 +597,8 @@ class Moderation(Cog, name='Модерация'):
                     }
                 )
 
-                db.execute("UPDATE users_stats SET warns_story = %s WHERE user_id = %s", json.dumps(rec), target.id)
+                db.execute("UPDATE users_stats SET warns_story = %s WHERE user_id = %s",
+                            json.dumps(rec, ensure_ascii=False), target.id)
                 db.commit()
                 rec = db.fetchone(["warns_story"], "users_stats", "user_id", target.id)[0]
                 await self.warn_member(ctx.message, target, rec['user_warn_story'], reason)

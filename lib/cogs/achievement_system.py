@@ -112,7 +112,7 @@ class AchievementSystem(Cog, name='Система достижений'):
                 }
             data['user_achievements_list'].append(transaction)
             db.execute("UPDATE users_stats SET achievements_list = %s WHERE user_id = %s",
-                       json.dumps(data), target_id)
+                       json.dumps(data, ensure_ascii=False), target_id)
             db.commit()
             self.edit_rep_for_achievement(target_id, achievement, '+')
 
@@ -124,7 +124,7 @@ class AchievementSystem(Cog, name='Система достижений'):
             new_list = [a for a in temp if achievement not in list(a.keys())]
             data['user_achievements_list'] = new_list
             db.execute("UPDATE users_stats SET achievements_list = %s WHERE user_id = %s",
-                       json.dumps(data), target_id)
+                       json.dumps(data, ensure_ascii=False), target_id)
             db.commit()
             self.edit_rep_for_achievement(target_id, achievement, '-')
 
@@ -531,7 +531,7 @@ class AchievementSystem(Cog, name='Система достижений'):
                 for member in self.bot.guild.members:
                     data = {'user_achievements_list': []}
                     db.execute("UPDATE users_stats SET achievements_list = %s WHERE user_id = %s",
-                            json.dumps(data), member.id)
+                            json.dumps(data, ensure_ascii=False), member.id)
                     db.commit()
                 embed = Embed(
                         title='✅ Успешно!',
@@ -547,7 +547,7 @@ class AchievementSystem(Cog, name='Система достижений'):
 
         data = {'user_achievements_list': []}
         db.execute("UPDATE users_stats SET achievements_list = %s WHERE user_id = %s",
-                json.dumps(data), user_id)
+                json.dumps(data, ensure_ascii=False), user_id)
         db.commit()
         embed = Embed(
                 title='✅ Успешно!',

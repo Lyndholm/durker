@@ -121,7 +121,7 @@ class PurchasesHandler(Cog, name='Покупки и не только'):
         }
         purchases['vbucks_purchases'].append(transaction)
         db.execute("UPDATE users_stats SET purchases = %s WHERE user_id = %s",
-                   json.dumps(purchases), user_id)
+                   json.dumps(purchases, ensure_ascii=False), user_id)
         db.commit()
         await self.check_support_roles(member)
         await ctx.reply(embed=Embed(
@@ -153,7 +153,7 @@ class PurchasesHandler(Cog, name='Покупки и не только'):
         }
         purchases['realMoney_purchases'].append(transaction)
         db.execute("UPDATE users_stats SET purchases = %s WHERE user_id = %s",
-                   json.dumps(purchases), user_id)
+                   json.dumps(purchases, ensure_ascii=False), user_id)
         db.commit()
         await ctx.reply(embed=Embed(
             title='Рубли добавлены',
@@ -173,16 +173,16 @@ class PurchasesHandler(Cog, name='Покупки и не только'):
     @dm_only()
     @is_owner()
     @logger.catch
-    async def reset_user_purchases_command(self, ctx, user_id: int, reason: Optional[str] = 'Не указана'):
+    async def reset_user_purchases_command(self, ctx, user_id: int, *, reason: Optional[str] = 'Не указана'):
         data = db.fetchone(['purchases'], 'users_stats', 'user_id', user_id)[0]
         data['reason'] = reason
         time_now = datetime.now().strftime("%d.%m.%Y %H.%M.%S")
-        with open(f"./data/purchases_backup/{user_id} [{time_now}].json", "w") as f:
+        with open(f"./data/purchases_backup/{user_id} [{time_now}].json", "w", encoding='utf-8') as f:
             json.dump(data, f, indent=2, sort_keys=True, ensure_ascii=False)
 
         purchases = {"vbucks_purchases":[],"realMoney_purchases":[]}
         db.execute("UPDATE users_stats SET purchases = %s WHERE user_id = %s",
-                   json.dumps(purchases), user_id)
+                   json.dumps(purchases, ensure_ascii=False), user_id)
         db.commit()
         await ctx.message.add_reaction('✅')
 
