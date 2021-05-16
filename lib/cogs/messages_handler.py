@@ -105,16 +105,16 @@ class MessagesHandler(Cog, name='Messages handler'):
         if await self.can_message_be_counted(message):
             self.increase_user_messages_counter(message.author.id)
 
-        rep = get_close_matches(message.clean_content.lower(), self.rep_filter)
+        rep = get_close_matches(message.clean_content.lower(), self.rep_filter, cutoff=0.75)
         if rep:
             await self.invoke_command(message, 'rep')
 
-        question = get_close_matches(message.clean_content.lower(), self.question_filter)
+        question = get_close_matches(message.clean_content.lower(), self.question_filter, cutoff=0.75)
         if question:
             if message.channel.id != 546700132390010882:
                 await self.invoke_command(message, 'question')
 
-        sac = get_close_matches(message.clean_content.lower(), self.sac_filter)
+        sac = get_close_matches(message.clean_content.lower(), self.sac_filter, cutoff=0.8)
         if sac:
             await self.invoke_command(message, 'support')
 

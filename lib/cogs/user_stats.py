@@ -429,7 +429,6 @@ class UserStats(Cog, name='Статистика'):
         usage=cmd["rep"]["usage"],
         help=cmd["rep"]["help"],
         hidden=cmd["rep"]["hidden"], enabled=True)
-    @is_channel(STATS_CHANNEL)
     @guild_only()
     @logger.catch
     async def how_rep_sys_works_command(self, ctx):

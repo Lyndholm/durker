@@ -86,9 +86,7 @@ class Commands(Cog, name='Базовые команды'):
             usage=cmd["support"]["usage"],
             help=cmd["support"]["help"],
             hidden=cmd["support"]["hidden"], enabled=True)
-    @required_level(cmd["support"]["required_level"])
     @guild_only()
-    @cooldown(cmd["support"]["cooldown_rate"], cmd["support"]["cooldown_per_second"], BucketType.member)
     @logger.catch
     async def redirect_to_support_channel_command(self, ctx, targets: Greedy[Member]):
         content = " ".join([member.mention for member in targets]) or ctx.author.mention
