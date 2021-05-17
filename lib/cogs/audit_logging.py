@@ -19,7 +19,8 @@ from ..utils.constants import (ADMINS_CHANNEL, AUDIT_LOG_CHANNEL,
 class Audit(Cog, name='Система Аудита'):
     def __init__(self, bot):
         self.bot = bot
-        bot.loop.create_task(self.init_vars())
+        if self.bot.ready:
+            bot.loop.create_task(self.init_vars())
 
     @logger.catch
     async def init_vars(self):
@@ -28,6 +29,7 @@ class Audit(Cog, name='Система Аудита'):
     @Cog.listener()
     async def on_ready(self):
         if not self.bot.ready:
+            self.log_channel = self.bot.get_channel(AUDIT_LOG_CHANNEL)
             self.bot.cogs_ready.ready_up("audit_logging")
 
     @staticmethod

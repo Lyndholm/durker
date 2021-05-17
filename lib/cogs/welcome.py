@@ -15,7 +15,8 @@ from ..utils.utils import (delete_user_from_db, dump_user_data_in_json,
 class Welcome(Cog, name='Greetings'):
     def __init__(self, bot):
         self.bot = bot
-        bot.loop.create_task(self.init_vars())
+        if self.bot.ready:
+            bot.loop.create_task(self.init_vars())
 
     @logger.catch
     async def init_vars(self):
@@ -24,6 +25,7 @@ class Welcome(Cog, name='Greetings'):
     @Cog.listener()
     async def on_ready(self):
         if not self.bot.ready:
+            self.mute_role = self.bot.guild.get_role(MUTE_ROLE_ID)
             self.bot.cogs_ready.ready_up("welcome")
 
 
