@@ -95,86 +95,86 @@ class UserStats(Cog, name='Статистика'):
         embed.set_thumbnail(url=target.avatar_url)
 
         if member:
-            embed.add_field(name=':pencil: О пользователе:', value=biography[0] if biography[0] else "Пользователь не указал свою биографию.",
+            embed.add_field(name='📝 О пользователе:', value=biography[0] if biography[0] else "Пользователь не указал свою биографию.",
                             inline=False)
         else:
-            embed.add_field(name=':pencil: О себе:', value=biography[0] if biography[0] else "Вы ничего не написали о себе. "
+            embed.add_field(name='📝 О себе:', value=biography[0] if biography[0] else "Вы ничего не написали о себе. "
                                                                                             "Сделать это можно по команде "
                                                                                             f"`{ctx.prefix or self.bot.PREFIX}"
                                                                                             "setbio <ваша биография>`",
                             inline=False)
 
-        embed.add_field(name=':calendar: Аккаунт создан:', value=target.created_at.strftime("%d.%m.%Y %H:%M"),
+        embed.add_field(name='📆 Аккаунт создан:', value=target.created_at.strftime("%d.%m.%Y %H:%M"),
                         inline=True)
 
-        embed.add_field(name=':calendar_spiral: Дата захода на сервер:',
+        embed.add_field(name='📆 Дата захода на сервер:',
                         value=target.joined_at.strftime("%d.%m.%Y %H:%M"), inline=True)
 
-        embed.add_field(name=':calendar_spiral: Количество дней на сервере:',
+        embed.add_field(name='📆 Количество дней на сервере:',
                         value=(datetime.now() - target.joined_at).days, inline=True)
         if len(target.roles) > 1:
-            embed.add_field(name=f":grinning: Роли ({len(target.roles) - 1})",
+            embed.add_field(name=f"😀 Роли ({len(target.roles) - 1})",
                         value=" ".join([role.mention for role in target.roles[1:]]), inline=True)
         else:
-            embed.add_field(name=f":grinning: Роли ({len(target.roles)})",
+            embed.add_field(name=f"😀 Роли ({len(target.roles)})",
                                     value=" ".join([role.mention for role in target.roles]), inline=True)
 
-        embed.add_field(name=":sunglasses: Наивысшая роль:", value=target.top_role.mention, inline=True)
+        embed.add_field(name="😎 Наивысшая роль:", value=target.top_role.mention, inline=True)
 
-        embed.add_field(name=":military_medal: Количество достижений:", value=len(user_stats[0]["user_achievements_list"]), inline=True)
+        embed.add_field(name="🎖️ Количество достижений:", value=len(user_stats[0]["user_achievements_list"]), inline=True)
 
-        embed.add_field(name=":envelope: Количество сообщений:", value=user_stats[1], inline=True)
+        embed.add_field(name="✉️ Количество сообщений:", value=user_stats[1], inline=True)
 
-        embed.add_field(name=":green_circle: Уровень:", value=leveling[0], inline=True)
+        embed.add_field(name="🟢 Уровень:", value=leveling[0], inline=True)
 
-        embed.add_field(name=":green_circle: XP:", value=leveling[1], inline=True)
+        embed.add_field(name="🟢 XP:", value=leveling[1], inline=True)
 
-        embed.add_field(name=":face_with_monocle: Репутация:", value=user_stats[2], inline=True)
+        embed.add_field(name="🧐 Репутация:", value=user_stats[2], inline=True)
 
-        embed.add_field(name=":thumbsdown: Потеряно репутации:", value=user_stats[4], inline=True)
+        embed.add_field(name="👎 Потеряно репутации:", value=user_stats[4], inline=True)
 
-        embed.add_field(name="<:durka:745936793148588083>  Получено путёвок в дурку:", value=durka_stats[0],
+        embed.add_field(name="<:durka:684794973358522426>  Получено путёвок в дурку:", value=durka_stats[0],
                         inline=True)
 
-        embed.add_field(name=":face_with_symbols_over_mouth: Количество триггеров мат-фильтра:", value=moderation_stats[2],
+        embed.add_field(name="🤬 Количество триггеров мат-фильтра:", value=moderation_stats[2],
                         inline=True)
 
-        embed.add_field(name=":moneybag:  Потрачено В-Баксов с тегом FNFUN:",
+        embed.add_field(name="💰  Потрачено В-Баксов с тегом FNFUN:",
                         value=vbucks_count, inline=True)
 
         if len(purchases[0]['vbucks_purchases']) > 0:
 
-            embed.add_field(name=":slight_smile: Количество покупок с тегом FNFUN:",
+            embed.add_field(name="🙂 Количество покупок с тегом FNFUN:",
                             value=len(purchases[0]['vbucks_purchases']), inline=True)
 
-            embed.add_field(name=":date: Дата последней покупки с тегом FNFUN:",
+            embed.add_field(name="📅 Дата последней покупки с тегом FNFUN:",
                             value=purchases[0]['vbucks_purchases'][-1]['date'][:-3])
 
         if kapitalist not in target.roles:
-            embed.add_field(name=f":moneybag: До роли `{kapitalist.name}` осталось: ",
+            embed.add_field(name=f"💰 До роли `{kapitalist.name}` осталось: ",
                             value=f"{int(10000 - vbucks_count)} В-Баксов", inline=True)
 
         if magnat not in target.roles and kapitalist in target.roles:
-            embed.add_field(name=f":moneybag: До роли `{magnat.name}` осталось: ",
+            embed.add_field(name=f"💰 До роли `{magnat.name}` осталось: ",
                             value=f"{int(25000 - vbucks_count)} В-Баксов", inline=True)
 
         if len(purchases[0]['realMoney_purchases']) > 0:
-            embed.add_field(name=":money_with_wings: Поддержка автора в рублях:",
+            embed.add_field(name="💸 Поддержка автора в рублях:",
                             value=realMoney, inline=True)
 
-        embed.add_field(name=":speaker: Время, проведенное в голосовых каналах:",
+        embed.add_field(name="🔈 Время, проведенное в голосовых каналах:",
                         value=timedelta(seconds=user_stats[3]), inline=True)
 
-        #embed.add_field(name=":coin: FUN-коинов:", value=casino[0] + casino[1], inline=True)
+        #embed.add_field(name=":coin: FUN-коинов:", value=casino[0] + casino[1], inline=True)  fuck the economy system
 
-        embed.add_field(name=":warning: Количество предупреждений:", value=len(moderation_stats[1]["user_warn_story"]), inline=True)
+        embed.add_field(name="⚠️ Количество предупреждений:", value=len(moderation_stats[1]["user_warn_story"]), inline=True)
 
-        embed.add_field(name=":speak_no_evil: Количество мутов:", value=(len(moderation_stats[0]["user_mute_story"]) + len(moderation_stats[1]["user_warn_story"])), inline=True)
+        embed.add_field(name="🙊 Количество мутов:", value=(len(moderation_stats[0]["user_mute_story"]) + len(moderation_stats[1]["user_warn_story"])), inline=True)
 
-        embed.add_field(name=":timer: Время, проведенное в муте:", value=timedelta(seconds=total_mute_time),
+        embed.add_field(name="⏲️ Время, проведенное в муте:", value=timedelta(seconds=total_mute_time),
                         inline=True)
 
-        embed.add_field(name=":zap: Бустер сервера:", value='Да' if bool(target.premium_since) else 'Нет',
+        embed.add_field(name="⚡ Бустер сервера:", value='Да' if bool(target.premium_since) else 'Нет',
                         inline=True)
 
         if member:

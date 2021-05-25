@@ -10,7 +10,7 @@ from loguru import logger
 from transliterate import translit
 
 from ..utils.checks import is_any_channel
-from ..utils.constants import CONSOLE_CHANNEL, PLACEHOLDER, STATS_CHANNEL
+from ..utils.constants import CONSOLE_CHANNEL, PLACEHOLDER, STATS_CHANNEL, CHASOVOY_ROLE_ID
 from ..utils.lazy_paginator import paginate
 from ..utils.utils import load_commands_from_json
 
@@ -71,7 +71,8 @@ class Help(Cog, name='Help меню'):
                 await paginate(ctx, self.cog_helper(ctx, thing))
             else:
                 await ctx.reply(
-                    'Ничего не найдено. Проверьте правильность написания команды/раздела.',
+                    'Ничего не найдено. Проверьте правильность написания команды/раздела.'
+                    'Учитывайте, что названия разделов чувствительны к регистру.',
                     delete_after=15
                 )
 
@@ -87,7 +88,7 @@ class Help(Cog, name='Help меню'):
         sorted_cogs = sorted(ctx.bot.cogs, key=lambda x: translit(x, 'ru'))
         cogs = sorted_cogs.copy()
         if ctx.guild:
-            chasovoy = get(ctx.guild.roles, id=686495834241761280)
+            chasovoy = get(ctx.guild.roles, id=CHASOVOY_ROLE_ID)
             for cog in sorted_cogs:
                 if cog.lower() in hidden_cogs:
                     if ctx.author.top_role.position < chasovoy.position:

@@ -152,11 +152,13 @@ class Owner(Cog, name='Команды разработчика'):
     @is_owner()
     @logger.catch
     async def show_disabled_cmds_command(self, ctx):
-        disabled_cmds = []
-        for command in self.bot.commands:
-            if not command.enabled:
-                disabled_cmds.append(str(command))
-        embed = Embed(title=':arrow_down: Отключённые команды.', description="\n".join(disabled_cmds) if disabled_cmds else "Все команды работают в штатном режиме.", color = Color.red())
+        disabled_cmds = [str(c) for c in self.bot.commands if not c.enabled]
+        embed = Embed(
+            title='⬇️ Отключённые команды.',
+            description="\n".join(disabled_cmds) if disabled_cmds else "Все команды работают в штатном режиме.",
+            color=Color.red(),
+            timestamp=datetime.utcnow()
+        )
         await ctx.reply(embed=embed, mention_author=False)
 
     @command(name=cmd["ping"]["name"], aliases=cmd["ping"]["aliases"],

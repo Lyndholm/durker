@@ -171,7 +171,7 @@ class Audit(Cog, name='Система Аудита'):
                         embed.description = f"```diff\n{diff_str[:2030]}\n```"
                         embed.add_field(name='Автор:', value=f'**{after.author.display_name}** ({after.author.mention})', inline=True)
                         embed.add_field(name="Канал:", value=before.channel.mention)
-                        embed.add_field(name=f"Jump url:", value=f"[Click]({before.jump_url})")
+                        embed.add_field(name=f"Jump URL:", value=f"[Click]({before.jump_url})")
                         embed.set_footer(text=f"ID сообщения: {after.id}")
                         await self.log_channel.send(embed=embed)
 
@@ -206,7 +206,7 @@ class Audit(Cog, name='Система Аудита'):
                     except UnboundLocalError:
                         embed.add_field(name='Автор:', value=f'**{data.get("author", None)}**')
                     embed.add_field(name="Канал", value=channel.mention)
-                    embed.add_field(name=f"Jump url:", value=f"[Click](https://discordapp.com/channels/{guild.id}/{channel.id}/{payload.message_id})")
+                    embed.add_field(name=f"Jump URL:", value=f"[Click](https://discordapp.com/channels/{guild.id}/{channel.id}/{payload.message_id})")
                     embed.set_footer(text=f"ID сообщения: {payload.message_id}")
                     await self.log_channel.send(embed=embed)
 
@@ -231,6 +231,7 @@ class Audit(Cog, name='Система Аудита'):
         embed.add_field(name="Время, проведённое на сервере:", value=f"{timedelta(seconds=server_age)}")
         embed.set_footer(text=f"ID пользователя: {member.id}")
 
+        await asleep(2)
         async for entry in self.log_channel.guild.audit_logs(action=AuditLogAction.kick, limit=1):
             if int((datetime.utcnow() - entry.created_at).total_seconds()) <= 5:
                 embed.title = "Пользователь был кикнут с сервера"

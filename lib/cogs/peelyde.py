@@ -42,29 +42,31 @@ class PeelyDE(Cog, name='Fortnite API 4'):
 
         async with ClientSession() as session:
             if mode.lower() == "full":
-                async with session.get(f'https://api.peely.de/cdn/current/leaks?lang={language}') as r:
-                    if r.status != 200:
-                        await ctx.reply(
-                            f"""```json\n{await r.text()}```""",
-                            mention_author=False
-                        )
-                        return
+                async with ctx.typing():
+                    async with session.get(f'https://api.peely.de/cdn/current/leaks?lang={language}') as r:
+                        if r.status != 200:
+                            await ctx.reply(
+                                f"""```json\n{await r.text()}```""",
+                                mention_author=False
+                            )
+                            return
 
-                    f = File(BytesIO(await r.read()), filename="fn_upcoming_full.png")
-                    embed.set_image(url="attachment://fn_upcoming_full.png")
-                    await ctx.reply(embed=embed, file=f, mention_author=False)
+                        f = File(BytesIO(await r.read()), filename="fn_upcoming_full.png")
+                        embed.set_image(url="attachment://fn_upcoming_full.png")
+                await ctx.reply(embed=embed, file=f, mention_author=False)
             else:
-                async with session.get(f'https://api.peely.de/cdn/current/leaks.png') as r:
-                    if r.status != 200:
-                        await ctx.reply(
-                            f"""```json\n{await r.text()}```""",
-                            mention_author=False
-                        )
-                        return
+                async with ctx.typing():
+                    async with session.get(f'https://api.peely.de/cdn/current/leaks.png') as r:
+                        if r.status != 200:
+                            await ctx.reply(
+                                f"""```json\n{await r.text()}```""",
+                                mention_author=False
+                            )
+                            return
 
-                    f = File(BytesIO(await r.read()), filename="fn_upcoming_current.png")
-                    embed.set_image(url="attachment://fn_upcoming_current.png")
-                    await ctx.reply(embed=embed, file=f, mention_author=False)
+                        f = File(BytesIO(await r.read()), filename="fn_upcoming_current.png")
+                        embed.set_image(url="attachment://fn_upcoming_current.png")
+                await ctx.reply(embed=embed, file=f, mention_author=False)
 
 
     @command(name=cmd["fnseason"]["name"], aliases=cmd["fnseason"]["aliases"],

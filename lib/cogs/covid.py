@@ -62,7 +62,8 @@ class Covid(Cog, name='COVID-19'):
                 embed = Embed(
                     title=f'Статистика Коронавируса | {country.upper()}',
                     description=f"Дата обновления статистики: **{date}**",
-                    color = Color.red())
+                    color = Color.red()
+                )
 
                 embed.add_field(name=f'Заболеваний:', value=f'{item["cases"]:,}')
 
@@ -89,7 +90,9 @@ class Covid(Cog, name='COVID-19'):
         else:
             embed = Embed(
                 title='❗ Внимание!',
-                description =f"**{country.capitalize()}** нет в списке стран.",
+                description=f'**{country.capitalize()}** нет в списке стран. ' \
+                            'Учитывайте, что названия стран необходимо писать на '
+                            'английском языке.',
                 color=Color.red()
             )
             await ctx.reply(embed=embed, mention_author=False)

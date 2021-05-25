@@ -233,7 +233,7 @@ class Bot(BotBase):
                 embed = Embed(
                     title='❗ Ошибка!',
                     description=f"Команда `{ctx.command}` отключена.",
-                    color=Color.red
+                    color=Color.red()
                 )
                 await ctx.reply(embed=embed, mention_author=False, delete_after=10)
 
