@@ -6,7 +6,8 @@ from typing import Optional
 import aiofiles
 from aiohttp import ClientSession
 from discord import Color, Embed, Member
-from discord.ext.commands import BucketType, Cog, command, cooldown, guild_only
+from discord.ext.commands import (BucketType, Cog, Greedy, command, cooldown,
+                                  guild_only)
 from discord.ext.commands.errors import MissingRequiredArgument
 from loguru import logger
 
@@ -43,9 +44,10 @@ class Fun(Cog, name='Развлечения'):
     @guild_only()
     @cooldown(cmd["hug"]["cooldown_rate"], cmd["hug"]["cooldown_per_second"], BucketType.member)
     @logger.catch
-    async def hug_command(self, ctx, *, member: Optional[Member]):
+    async def hug_command(self, ctx, targets: Greedy[Member]):
         await ctx.message.delete()
-        if not member:
+        if not len(targets):
+            ctx.command.reset_cooldown(ctx)
             return
 
         async with ClientSession() as session:
@@ -56,7 +58,11 @@ class Fun(Cog, name='Развлечения'):
                 else:
                     hug_gif_url = choice(self.hug_gifs)
 
-        embed = Embed(title = f'**Обнимашки!**',description = f'{ctx.author.mention} обнял(-а) {member.mention} :heart::sparkles:', color=ctx.author.color)
+        embed = Embed(
+            title = f'**Обнимашки!**',
+            description = f'{ctx.author.mention} обнял(-а) {" ".join(member.mention for member in targets)} ❤️✨',
+            color=ctx.author.color
+        )
         embed.set_image(url=hug_gif_url)
         await ctx.send(embed=embed, delete_after=180)
 

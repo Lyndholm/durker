@@ -85,7 +85,10 @@ async def paginate(ctx, input_):
                 m = await ctx.send(f'Введите номер желаемой страницы: 1-{len(input_)}')
 
                 def pager(m_):
-                    return m_.author == ctx.author and m_.channel == ctx.channel and int(m_.content) > 1 <= len(input_)
+                    try:
+                        return m_.author == ctx.author and m_.channel == ctx.channel and int(m_.content) > 1 <= len(input_)
+                    except ValueError:
+                        return
 
                 try:
                     message = await ctx.bot.wait_for('message', check=pager, timeout=60)

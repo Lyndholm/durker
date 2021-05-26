@@ -490,23 +490,29 @@ class FortniteAPIcom(Cog, name='Fortnite API 2'):
     @guild_only()
     @logger.catch
     async def show_battle_royale_shop_command(self, ctx):
-        shop_img = File("athena/itemshop.jpg", filename="itemshop.jpg")
+        shop_img = File("athena/itemshop.png", filename="itemshop.png")
 
         embed = Embed(
             title="Магазин Королевской Битвы",
             color=Color.magenta(),
             timestamp=datetime.utcnow(),
-            description=f":hourglass: Дата: {datetime.now().strftime('%d.%m.%Y')}\n:game_die: Тег автора: FNFUN"
+            description=f"⌛ Дата: {datetime.now().strftime('%d.%m.%Y')}\n🎲 Тег автора: FNFUN"
         )
-        embed.set_image(url="attachment://itemshop.jpg")
+        embed.set_image(url="attachment://itemshop.png")
         try:
             await ctx.reply(embed=embed, file=shop_img, mention_author=False)
         except HTTPException:
-            embed = Embed(title='❗ HTTPException',
-            description =f"Если вы видите это сообщение, значит, вес изображения с магазином превышает 8 Мб, вследствие чего его невозможно отправить.\n"
-                        "Пожалуйста, сообщите об этом <@375722626636578816>",
-            color= Color.red())
-            await ctx.reply(embed=embed, mention_author=False)
+            try:
+                shop_img = File("athena/itemshop.jpg", filename="itemshop.jpg")
+                embed.set_image(url="attachment://itemshop.jpg")
+                await ctx.reply(embed=embed, file=shop_img, mention_author=False)
+            except:
+                embed = Embed(title='❗ HTTPException',
+                description=f"Если вы видите это сообщение, значит, вес изображения с магазином превышает 8 Мб, "
+                            "вследствие чего картинку невозможно отправить.\n"
+                            "Пожалуйста, сообщите об этом <@375722626636578816>",
+                color=Color.red())
+                await ctx.reply(embed=embed, mention_author=False)
 
 
 def setup(bot):
