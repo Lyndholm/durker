@@ -323,24 +323,35 @@ class Audit(Cog, name='Система Аудита'):
     @logger.catch
     async def on_voice_state_update(self, member: Member, before: VoiceState, after: VoiceState):
         if before.channel is None:
-            embed = Embed(description = f"Участник **{member.display_name}** ({member.mention}) зашел в голосовой канал :loud_sound: **{after.channel.name}**",
-                        color=Color.purple(), timestamp=datetime.utcnow())
-            embed.set_footer(text = f"ID участника: {member.id}")
+            embed = Embed(
+                description=f"Участник **{member.display_name}** ({member.mention}) зашел в голосовой канал 🔊 "
+                f"**{after.channel.name}** ({after.channel.mention})",
+                color=Color.purple(),
+                timestamp=datetime.utcnow()
+            )
+            embed.set_footer(text=f"ID участника: {member.id}")
             await self.log_channel.send(embed=embed)
 
         if after.channel is None:
-            embed = Embed(description = f"Участник **{member.display_name}** ({member.mention}) покинул голосовой канал :loud_sound: **{before.channel.name}**",
-                    color=Color.purple(), timestamp=datetime.utcnow())
-            embed.set_footer(text = f"ID участника: {member.id}")
+            embed = Embed(
+                description=f"Участник **{member.display_name}** ({member.mention}) покинул голосовой канал 🔊 "
+                f"**{before.channel.name}** ({before.channel.mention})",
+                color=Color.purple(),
+                timestamp=datetime.utcnow()
+            )
+            embed.set_footer(text=f"ID участника: {member.id}")
             await self.log_channel.send(embed=embed)
 
         if before.channel is not None and after.channel is not None:
             if before.channel.id != after.channel.id:
-                embed = Embed(description = f"Участник **{member.display_name}** ({member.mention}) перешел в другой голосовой канал :loud_sound:",
-                    color=Color.purple(), timestamp=datetime.utcnow())
-                embed.add_field(name = "Новый канал:", value = f"**{after.channel.name}** (#{after.channel.name})", inline=True)
-                embed.add_field(name = "Предыдущий канал:", value = f"**{before.channel.name}** ({before.channel.mention})", inline=True)
-                embed.set_footer(text = f"ID участника: {member.id}")
+                embed = Embed(
+                    description=f"Участник **{member.display_name}** ({member.mention}) перешел в другой голосовой канал 🔊",
+                    color=Color.purple(),
+                    timestamp=datetime.utcnow()
+                )
+                embed.add_field(name="Новый канал:", value=f"**{after.channel.name}** ({after.channel.mention})", inline=True)
+                embed.add_field(name="Предыдущий канал:", value=f"**{before.channel.name}** ({before.channel.mention})", inline=True)
+                embed.set_footer(text=f"ID участника: {member.id}")
                 await self.log_channel.send(embed=embed)
 
 
