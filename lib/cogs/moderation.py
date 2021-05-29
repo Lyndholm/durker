@@ -850,7 +850,10 @@ class Moderation(Cog, name='Модерация'):
         ### Find discord invites in message content
         if self.find_discord_invites(message):
             regex = re.compile(self.DISCORD_INVITE_REGEX)
-            guild_invite = await self.bot.fetch_invite(url=regex.search(message.clean_content).group(0))
+            try:
+                guild_invite = await self.bot.fetch_invite(url=regex.search(message.clean_content).group(0))
+            except NotFound:
+                return
 
             if message.author.guild_permissions.administrator or self.helper_role in message.author.roles:
                 pass
