@@ -1,7 +1,7 @@
 from random import choice, randint
 
 import aiofiles
-from discord import File, Member, TextChannel
+from discord import File, Member, RawMessageUpdateEvent, TextChannel
 from discord.ext.commands import (Cog, check_any, command, dm_only, guild_only,
                                   has_any_role, has_permissions, is_owner)
 from discord.utils import remove_markdown
@@ -61,21 +61,37 @@ class Profanity(Cog, name='Мат-фильтр'):
         else:
             await channel.send(reply)
 
+    async def process_profanity(self, channel: TextChannel, member: Member):
+        self.increase_user_profanity_counter(member.id)
+        profanity_counter = self.fetch_user_profanity_counter(member.id)
+        minus_rep = find_n_term_of_arithmetic_progression(5, 3, profanity_counter)
+        edit_user_reputation(member.id, '-', minus_rep)
+        await self.reply_profanity(channel, member, minus_rep)
+
     @Cog.listener()
     @listen_for_guilds()
     @logger.catch
     async def on_message(self, message):
         content = remove_markdown(message.clean_content)
+        if isinstance(message.channel, TextChannel) and not message.author.bot:
+            if self.bot.profanity.contains_profanity(content):
+                if message.author.id not in self.whitelisted_users:
+                    if message.channel.id not in self.whitelisted_channels:
+                        await self.process_profanity(message.channel, message.author)
 
-        if isinstance(message.channel, TextChannel) and not message.author.bot and self.bot.profanity.contains_profanity(content):
-            if message.author.id not in self.whitelisted_users:
-                if message.channel.id not in self.whitelisted_channels:
-                    self.increase_user_profanity_counter(message.author.id)
-                    profanity_counter = self.fetch_user_profanity_counter(message.author.id)
-                    minus_rep = find_n_term_of_arithmetic_progression(5, 3, profanity_counter)
-                    edit_user_reputation(message.author.id, '-', minus_rep)
-                    await self.reply_profanity(message.channel, message.author, minus_rep)
-
+    @Cog.listener()
+    @logger.catch
+    async def on_raw_message_edit(self, payload: RawMessageUpdateEvent):
+        data = payload.data
+        channel = self.bot.get_channel(payload.channel_id)
+        if isinstance(channel, TextChannel):
+            if 'author' in data:
+                if 'id' in data['author']:
+                    member = await self.bot.fetch_user(data['author']['id'])
+                    if not member.bot and self.bot.profanity.contains_profanity(remove_markdown(data['content'])):
+                        if member.id not in self.whitelisted_users:
+                            if channel.id not in self.whitelisted_channels:
+                                await self.process_profanity(channel, member)
 
     @command(name=cmd["swear"]["name"], aliases=cmd["swear"]["aliases"],
             brief=cmd["swear"]["brief"],
@@ -93,12 +109,8 @@ class Profanity(Cog, name='Мат-фильтр'):
         await ctx.message.delete()
         if target:
             if not target.bot:
-                self.increase_user_profanity_counter(target.id)
-                profanity_counter = self.fetch_user_profanity_counter(target.id)
-                minus_rep = find_n_term_of_arithmetic_progression(5, 3, profanity_counter)
-                edit_user_reputation(target.id, '-', minus_rep)
-                await self.reply_profanity(ctx.channel, target, minus_rep)
-
+                if target.id not in self.whitelisted_users:
+                    await self.process_profanity(ctx.channel, target)
 
     @command(name=cmd["addprofanity"]["name"], aliases=cmd["addprofanity"]["aliases"],
             brief=cmd["addprofanity"]["brief"],
