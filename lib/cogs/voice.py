@@ -7,6 +7,8 @@ from discord.utils import get
 from loguru import logger
 
 from ..db import db
+from ..utils.constants import (AFK_VOICE_ROOM, PRIVATE_CHANNEL_GENERATOR,
+                               PRIVATE_CHANNELS_CATEGORY)
 
 
 class Voice(Cog, name='VoiceChannels Management'):
@@ -21,12 +23,12 @@ class Voice(Cog, name='VoiceChannels Management'):
 
     @logger.catch
     async def create_temporary_channels(self, member: Member, before: VoiceState, after: VoiceState):
-        voice_category = get(self.bot.guild.categories, id=814768982388506634)
+        voice_category = get(self.bot.guild.categories, id=PRIVATE_CHANNELS_CATEGORY)
 
         voice_channel = await voice_category.create_voice_channel(name=member.display_name)
         text_channel = await voice_category.create_text_channel(name=member.display_name)
         self.temporary_channels[voice_channel.id] = text_channel.id
-        await voice_channel.set_permissions(member, manage_channels=True, move_members=True)
+        await voice_channel.set_permissions(member, manage_channels=True)
         await text_channel.set_permissions(member, manage_channels=True)
         await text_channel.set_permissions(get(member.guild.roles, name='@everyone'), view_channel=False, read_messages=False, send_messages=False)
 
@@ -79,8 +81,11 @@ class Voice(Cog, name='VoiceChannels Management'):
     @Cog.listener()
     async def on_voice_state_update(self, member: Member, before: VoiceState, after: VoiceState):
         if after.channel is not None:
-            if after.channel.id == 814769110042411068:
-                await self.create_temporary_channels(member, before, after)
+            if after.channel.id == PRIVATE_CHANNEL_GENERATOR:
+                if member.id not in self.bot.banlist:
+                    await self.create_temporary_channels(member, before, after)
+                else:
+                    await member.move_to(channel=None)
 
         if after.channel is not None:
             if after.channel.id in self.temporary_channels:
@@ -101,7 +106,7 @@ class Voice(Cog, name='VoiceChannels Management'):
 
         ### Voice time count
         if after.channel is not None:
-            if after.channel.id != 774672094281465856:
+            if after.channel.id != AFK_VOICE_ROOM:
                 rec = db.fetchone(["entered_at"], "voice_activity", "user_id", member.id)
                 if rec is None:
                     db.insert("voice_activity",
@@ -115,7 +120,7 @@ class Voice(Cog, name='VoiceChannels Management'):
                 self.update_member_invoce_time(member.id)
 
         if before.channel is not None and after.channel is not None:
-            if after.channel.id == 774672094281465856:
+            if after.channel.id == AFK_VOICE_ROOM:
                 rec = db.fetchone(["entered_at"], "voice_activity", "user_id", member.id)
                 if rec is not None:
                     self.update_member_invoce_time(member.id)

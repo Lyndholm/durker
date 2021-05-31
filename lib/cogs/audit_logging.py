@@ -332,7 +332,7 @@ class Audit(Cog, name='Система Аудита'):
             embed.set_footer(text=f"ID участника: {member.id}")
             await self.log_channel.send(embed=embed)
 
-        if after.channel is None:
+        if after.channel is None and before.channel is not None:
             embed = Embed(
                 description=f"Участник **{member.display_name}** ({member.mention}) покинул голосовой канал 🔊 "
                 f"**{before.channel.name}** ({before.channel.mention})",
