@@ -1,0 +1,189 @@
+[
+  {
+    "name": "DJ Респиратор",
+    "description": {
+      "index": "Открывает парад безумства Респиратор. Он стоит у Торговой точки и почему-то не диджействует.",
+      "secondary": "\n\nОн продает экзотическое оружие Шестизарядник и маскировку."
+    },
+    "images": {
+      "icon": "https://fortnite-api.com/images/cosmetics/br/cid_121_athena_commando_m_graffiti/icon.png"
+    },
+    "map": "https://fortnitefun.ru/wp-content/uploads/2021/06/DJ-%D0%A0%D0%B5%D1%81%D0%BF%D0%B8%D1%80%D0%B0%D1%82%D0%BE%D1%80-1.jpg"
+  },
+  {
+    "name": "Кимера",
+    "description": {
+      "index": "Если вы думали, что к началу 17 сезона обойдется без багов персонажей, то увы, нет.  2 персонаж, а именно Кимера, пока не показывается.",
+      "secondary": "\n\nВ файлах у него есть точка спавна — это Коралловая крепость, но пока его там нет. Ждите фикса, а после фикса отправляйтесь искать его. Как заверяют датамайнеры, он будет там."
+    },
+    "images": {
+      "icon": "https://fortnite-api.com/images/cosmetics/br/cid_a_110_athena_commando_m_alientrooper/icon.png"
+    },
+    "map": "https://fortnitefun.ru/wp-content/uploads/2021/06/%D0%9A%D0%B8%D0%BC%D0%B5%D1%80%D0%B0-2.jpg"
+  },
+  {
+    "name": "Гигимон",
+    "description": {
+      "index": "Гигимон расположился у Маяка. И там он не просто так, ведь этот ушастый — боссяра. Если захотите убить его, держитесь на расстоянии, ведь эта зайка носит автомат, правда стреляет с него не как спецназовец. Заяц все-таки.",
+      "secondary": "\n\nПосле убийства он может дать вам пару заданий. Он продает экзотическую пушку Ночной ястреб и предлагает дать небольшие или щедрые чаевые водителю."
+    },
+    "images": {
+      "icon": "https://fortnite-api.com/images/cosmetics/br/cid_a_115_athena_commando_m_antique/icon.png"
+    },
+    "map": "https://fortnitefun.ru/wp-content/uploads/2021/06/%D0%93%D0%B8%D0%B3%D0%B8%D0%BC%D0%BE%D0%BD-3.jpg"
+  },
+  {
+    "name": "Санни",
+    "description": {
+      "index": "Четвертой в списке становится Санни. Не сани, на которых ездят, а Санни, которая стоит на Беспечном берегу. Она доброжелательна, поэтому бояться ее не надо. Пусть она боится вас.",
+      "secondary": "\n\nОна может дать пару заданий. Продает она дробовик и чаевые."
+    },
+    "images": {
+      "icon": "https://fortnite-api.com/images/cosmetics/br/cid_a_114_athena_commando_f_believer/icon.png"
+    },
+    "map": "https://fortnitefun.ru/wp-content/uploads/2021/06/%D0%A1%D0%B0%D0%BD%D0%BD%D0%B8-4.jpg"
+  },
+  {
+    "name": "Затворник Джоунси",
+    "description": {
+      "index": "Затворник обзавелся домом. Спасибо эпик геймс за выгодную ставку по ипотеке. Он находится на юге карты или в других локациях. Карта, в общем, есть.",
+      "secondary": "\n\nОн продает активацию разлома и бинты. Негусто, но зато заданий можно набрать. Помогите оплатить бедняге жилье!"
+    },
+    "images": {
+      "icon": "https://fortnite-api.com/images/cosmetics/br/cid_409_athena_commando_m_bunkerman/icon.png"
+    },
+    "map": "https://fortnitefun.ru/wp-content/uploads/2021/06/%D0%97%D0%B0%D1%82%D0%B2%D0%BE%D1%80%D0%BD%D0%B8%D0%BA-%D0%94%D0%B6%D0%BE%D1%83%D0%BD%D1%81%D0%B8-5.jpg"
+  },
+  {
+    "name": "Леший",
+    "description": {
+      "index": "Леший поменял свою точку спавна с прошлого сезона и теперь тусуется у центра.",
+      "secondary": "\n\nНаша любимая деревяшка продает яблоки и маскировку. Также, предлагает пару заданий."
+    },
+    "images": {
+      "icon": "https://fortnite-api.com/images/cosmetics/br/cid_611_athena_commando_m_weepingwoods/icon.png"
+    },
+    "map": "https://fortnitefun.ru/wp-content/uploads/2021/06/%D0%9B%D0%B5%D1%88%D0%B8%D0%B9-6.jpg"
+  },
+  {
+    "name": "Дженис",
+    "description": {
+      "index": "Дженис — это девушка под номером 7. Не по значению, а в списке коллекций. Она стоит у дома или в доме между деревней и оградами.",
+      "secondary": "\n\nОна продает баночку с зельем, чаевые и может вас полечить. Конечно, у нее есть задание."
+    },
+    "images": {
+      "icon": "https://fortnite-api.com/images/cosmetics/br/cid_193_athena_commando_f_hippie/icon.png"
+    },
+    "map": "https://fortnitefun.ru/wp-content/uploads/2021/06/%D0%94%D0%B6%D0%B5%D0%BD%D0%B8%D1%81-7.jpg"
+  },
+  {
+    "name": "Джои",
+    "description": {
+      "index": "Джои по-модному и по-молодежному застолбился в Дрянных доках.",
+      "secondary": "\n\nОн продает автомат и маскировку."
+    },
+    "images": {
+      "icon": "https://fortnite-api.com/images/cosmetics/br/cid_a_111_athena_commando_m_faux/icon.png"
+    },
+    "map": "https://fortnitefun.ru/wp-content/uploads/2021/06/%D0%94%D0%B6%D0%BE%D0%B8-8.jpg"
+  },
+  {
+    "name": "Фермер",
+    "description": {
+      "index": "Фермер наверняка не очень рад тому, что его прямые конкуренты восстали из пепла. В смысле тому, что ферма снова на карте.",
+      "secondary": "\n\nОн продает маскировку и может вас подлечить. Также он может дать пару заданий."
+    },
+    "images": {
+      "icon": "https://fortnite-api.com/images/cosmetics/br/cid_355_athena_commando_m_farmer/icon.png"
+    },
+    "map": "https://fortnitefun.ru/wp-content/uploads/2021/06/%D0%A4%D0%B5%D1%80%D0%BC%D0%B5%D1%80-9.jpg"
+  },
+  {
+    "name": "Злата",
+    "description": {
+      "index": "Злата живет в элитном районе столицы — в богатом доме на Одиноком озере.",
+      "secondary": "\n\nОчевидно, что раз он богачка, то она владеет всеми винтиками и шпунтиками этого мира, а именно — она продает 8 болтов. У нее можно купить и грузы с припасами, так что вот она — сладкая жизнь."
+    },
+    "images": {
+      "icon": "https://fortnite-api.com/images/cosmetics/br/cid_a_034_athena_commando_f_catburglar/icon.png"
+    },
+    "map": "https://fortnitefun.ru/wp-content/uploads/2021/06/%D0%97%D0%BB%D0%B0%D1%82%D0%B0-10.jpg"
+  },
+  {
+    "name": "Умница",
+    "description": {
+      "index": "Умница живет у радио.",
+      "secondary": "\n\nПродает пистолет обычный и экзотический пистолет Ищейка. Также она предлагает раскрыть следующий круг бури."
+    },
+    "images": {
+      "icon": "https://fortnite-api.com/images/cosmetics/br/cid_297_athena_commando_f_math/icon.png"
+    },
+    "map": "https://fortnitefun.ru/wp-content/uploads/2021/06/%D0%A3%D0%BC%D0%BD%D0%B8%D1%86%D0%B0-11.jpg"
+  },
+  {
+    "name": "Рик",
+    "description": {
+      "index": "Рик не тот, что живет в Ходячих, а тот, что из Рика и Морти. Он стоит на отшибе, на одной из баз ОП.",
+      "secondary": "\n\nОн продает болты, бинты и активацию разлома."
+    },
+    "images": {
+      "icon": "https://fortnite-api.com/images/cosmetics/br/cid_a_112_athena_commando_m_ruckus/icon.png"
+    },
+    "map": "https://fortnitefun.ru/wp-content/uploads/2021/06/%D0%A0%D0%B8%D0%BA-12.jpg"
+  },
+  {
+    "name": "Игги",
+    "description": {
+      "index": "Игги живет у моста на юге и он не просто живет, он яростно проживает эту жизнь. Это, как вы могли догадаться, босс, который весьма агрессивен. Он ходит с автоматом.",
+      "secondary": "\n\nПосле смерти он предлагает взять пару заданий и купить экзотическую снайперскую винтовку Синоптик. Еще, он может активировать множество грузов с припасами."
+    },
+    "images": {
+      "icon": "https://fortnite-api.com/images/cosmetics/br/cid_268_athena_commando_m_rockerpunk/icon.png"
+    },
+    "map": "https://fortnitefun.ru/wp-content/uploads/2021/06/%D0%98%D0%B3%D0%B3%D0%B8-13.jpg"
+  },
+  {
+    "name": "Стажер",
+    "description": {
+      "index": "Стажер стоит на одной из баз ОП. Просто стоит.",
+      "secondary": "\n\nПродает снайперку, малое зелье и грузы с припасами."
+    },
+    "images": {
+      "icon": "https://fortnite-api.com/images/cosmetics/br/cid_173_athena_commando_f_starfishuniform/icon.png"
+    },
+    "map": "https://fortnitefun.ru/wp-content/uploads/2021/06/%D0%A1%D1%82%D0%B0%D0%B6%D0%B5%D1%80-14.jpg"
+  },
+  {
+    "name": "Спецназовец",
+    "description": {
+      "index": "Спецназовец стоит у бункера и похоже, там появилось, что надо охранять.",
+      "secondary": "\n\nОн предлагает задания, ПП, себя нанять и сразиться в дуэли. За победу в дуэли можно получить компактный ПП."
+    },
+    "images": {
+      "icon": "https://fortnite-api.com/images/cosmetics/br/cid_020_athena_commando_m/icon.png"
+    },
+    "map": "https://fortnitefun.ru/wp-content/uploads/2021/06/%D0%A1%D0%BF%D0%B5%D1%86%D0%BD%D0%B0%D0%B7%D0%BE%D0%B2%D0%B5%D1%86-15.jpg"
+  },
+  {
+    "name": "Болотная разведчица",
+    "description": {
+      "index": "Болото нынче не то, ведь живет там не Шрек, а какая-то деваха по имени Болотная разведчица.",
+      "secondary": "\n\nОна продает рыбу, гайки и древесину."
+    },
+    "images": {
+      "icon": "https://fortnite-api.com/images/cosmetics/br/cid_526_athena_commando_f_desertopsswamp/icon.png"
+    },
+    "map": "https://fortnitefun.ru/wp-content/uploads/2021/06/%D0%91%D0%BE%D0%BB%D0%BE%D1%82%D0%BD%D0%B0%D1%8F-%D1%80%D0%B0%D0%B7%D0%B2%D0%B5%D0%B4%D1%87%D0%B8%D1%86%D0%B0-16.jpg"
+  },
+  {
+    "name": "Доктор Слоун",
+    "description": {
+      "index": "Доктор Слоун жесткий противник, ведь это, как вы можете понять, босс. И не простой, а со способностью теневого клонирования. Она живет под фермой. Если не знаете где это, то смотрите [геймплей](https://youtu.be/cxmN2Ld7vCc?t=366).",
+      "secondary": "\n\nПосле убийства вы можете получить с нее мифический автомат нового типа. Достойная награда, ничего не скажешь. Но большего получить от нее не получится."
+    },
+    "images": {
+      "icon": "https://fortnite-api.com/images/cosmetics/br/cid_a_113_athena_commando_f_innovator/icon.png"
+    },
+    "map": "https://fortnitefun.ru/wp-content/uploads/2021/06/%D0%94%D0%BE%D0%BA%D1%82%D0%BE%D1%80-%D0%A1%D0%BB%D0%BE%D1%83%D0%BD-17.jpg"
+  }
+]

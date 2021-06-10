@@ -107,7 +107,7 @@ class FortniteAPIio(Cog, name='Fortnite API 3'):
     @guild_only()
     @logger.catch
     async def show_fortnite_fish_list_command(self, ctx, number: int = 0):
-        async with aiofiles.open('./data/json/fish_s16.json', mode='r', encoding='utf-8') as f:
+        async with aiofiles.open('./data/json/fish_s17.json', mode='r', encoding='utf-8') as f:
             data = json.loads(await f.read())
 
         if number == 0:
@@ -141,7 +141,10 @@ class FortniteAPIio(Cog, name='Fortnite API 3'):
 
         else:
             if number > len(data['fish']) or number < 0:
-                embed = Embed(title='Некорректный номер рыбки!', color= Color.red())
+                embed = Embed(
+                    title=f'Некорректный номер рыбки! Введите номер от 1 до {len(data["fish"])}.',
+                    color= Color.red()
+                )
                 await ctx.reply(embed=embed, mention_author=False)
                 return
 
@@ -180,7 +183,7 @@ class FortniteAPIio(Cog, name='Fortnite API 3'):
     @cooldown(cmd["challenges"]["cooldown_rate"], cmd["challenges"]["cooldown_per_second"], BucketType.member)
     @logger.catch
     async def show_fortnite_rare_challenges_command(self, ctx, language: str = "ru"):
-        QUEST_ID = "Quest_S16_Milestone"
+        QUEST_ID = "Quest_S17_Milestone"
         quest_embeds = []
         xp_total = 0
         async with ClientSession(headers=self.headers) as session:
@@ -235,19 +238,21 @@ class FortniteAPIio(Cog, name='Fortnite API 3'):
     @guild_only()
     @logger.catch
     async def show_fortnite_characters_command(self, ctx, number: int = 0):
-        async with aiofiles.open('./data/json/characters_s16.json', mode='r', encoding='utf-8') as f:
+        async with aiofiles.open('./data/json/characters_s17.json', mode='r', encoding='utf-8') as f:
             data = json.loads(await f.read())
 
         if number == 0:
             npc_embeds = []
             embed = Embed(
-                title="Все персонажи и боссы в 16 сезоне фортнайт",
+                title="Все персонажи и боссы в 17 сезоне фортнайт",
                 color=Color.random(),
-                description="Персонажей на карте 16 сезона фортнайт суммарно 46. Это аж на 6 больше, чем в начале прошлого сезона!\n"
-                            "Среди них присутствует 4 босса (к ним стражи охраняющие свои башни не относятся). После смерти боссы становятся персонажами, которые также предлагают что-то к покупке.\n"
-                            "Сразу отметим, что некоторых персонажей очень сложно найти. Они либо через раз спавнятся, либо вообще появляются только в командной потасовке, или наоборот, в обыкновенных режимах. Поэтому, если какого-то персонажа вы найти не можете, смените режим, возможно, это вам поможет."
+                description=\
+                    "17 сезон фортнайт оказался весьма хилым на разнообразие персонажей, а потому мы имеем только 17 NPC. "
+                    "Да, тут явно сыграл символизм — 17 сезон, значит и персонажей 17.\n\n"
+                    "Сейчас вы видите карту всех персонажей фортнайт. Как обычно, есть отличившиеся, которые спавнятся не в одном месте. "
+                    "Красным кругляшом отмечены персонажи — боссы, так что подходите к ним аккуратнее, а то съедят."
             )
-            embed.set_image(url="https://fortnitefun.ru/wp-content/uploads/2021/03/%D0%B2%D1%81%D0%B5-%D0%BF%D0%B5%D1%80%D1%81%D0%BE%D0%BD%D0%B0%D0%B6%D0%B8.jpg")
+            embed.set_image(url="https://fortnitefun.ru/wp-content/uploads/2021/06/%D0%92%D0%A1%D0%95.jpg")
             npc_embeds.append(embed)
 
             for count, entry in enumerate(data):
@@ -268,7 +273,10 @@ class FortniteAPIio(Cog, name='Fortnite API 3'):
 
         else:
             if number > len(data) or number < 0:
-                embed = Embed(title='Некорректный номер NPC!', color= Color.red())
+                embed = Embed(
+                    title=f'Некорректный номер NPC! Введите номер от 1 до {len(data)}.',
+                    color= Color.red()
+                )
                 await ctx.reply(embed=embed, mention_author=False)
                 return
 
