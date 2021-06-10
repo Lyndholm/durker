@@ -309,7 +309,7 @@ class Commands(Cog, name='Базовые команды'):
             "▫️ **Название:** Durker\n" \
             f"▫️ **Версия:** {self.bot.VERSION}\n" \
             "▫️ **Автор:** Lyndholm#7200\n" \
-            "▫️ **Веб сайт:** [click](https://youtu.be/dQw4w9WgXcQ)\n" \
+            "▫️ **Веб сайт:** [docs.durker.fun](https://docs.durker.fun)\n" \
             "▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬\n" \
             "**Статистика сервера**\n" \
             "▫️ **OS Info:** Debian GNU/Linux 10\n" \
