@@ -1,7 +1,7 @@
 from random import choice, randint
 
 import aiofiles
-from discord import File, Member, RawMessageUpdateEvent, TextChannel
+from discord import File, Member, NotFound, RawMessageUpdateEvent, TextChannel
 from discord.ext.commands import (Cog, check_any, command, dm_only, guild_only,
                                   has_any_role, has_permissions, is_owner)
 from discord.utils import remove_markdown
@@ -87,7 +87,10 @@ class Profanity(Cog, name='Мат-фильтр'):
         if isinstance(channel, TextChannel):
             if 'author' in data:
                 if 'id' in data['author']:
-                    member = await self.bot.fetch_user(data['author']['id'])
+                    try:
+                        member = await self.bot.fetch_user(data['author']['id'])
+                    except NotFound:
+                        return
                     if not member.bot and self.bot.profanity.contains_profanity(remove_markdown(data['content'])):
                         if member.id not in self.whitelisted_users:
                             if channel.id not in self.whitelisted_channels:
