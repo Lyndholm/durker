@@ -1,8 +1,7 @@
-from discord.ext import commands
-
 from typing import List
 
-from ..utils import constants
+from discord.ext import commands
+
 from ..db import db
 
 radio_whitelisted_users = [

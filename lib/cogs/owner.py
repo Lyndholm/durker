@@ -193,7 +193,7 @@ class Owner(Cog, name='Команды разработчика'):
         message = await ctx.reply("Response time for APIs:", mention_author=False)
         async with ClientSession() as session:
             now = time.monotonic()
-            async with session.get('https://benbotfn.tk/api/v1/status') as r:
+            async with session.get('https://benbot.app/api/v1/status') as r:
                 benbot_ping = time.monotonic() - now if r.status == 200 else 0
 
             now = time.monotonic()
@@ -276,7 +276,7 @@ class Owner(Cog, name='Команды разработчика'):
 
 
     @logger.catch
-    async def pass_suggesion_decision(self, ctx, suggestion_id: int = None, decision: bool = None, comment: str = 'Отсутсвует'):
+    async def pass_suggesion_decision(self, ctx, suggestion_id: int = None, decision: bool = None, comment: str = 'Отсутствует'):
         answer_text = f"Ваша заявка **№{suggestion_id}** {'одобрена' if decision else 'отклонена'}.\n" + f"Комментарий администратора: {comment}"
         attachments = ''
         if ctx.message.attachments:
@@ -324,7 +324,7 @@ class Owner(Cog, name='Команды разработчика'):
     @dm_only()
     @can_manage_radio_suggestions()
     @logger.catch
-    async def approve_suggestion_command(self, ctx, suggestion_id: int = None, *, comment: str = 'Отсутсвует.'):
+    async def approve_suggestion_command(self, ctx, suggestion_id: int = None, *, comment: str = 'Отсутствует.'):
         if suggestion_id is None:
             return await ctx.reply('Укажите номер заявки.', mention_author=False)
 
@@ -339,7 +339,7 @@ class Owner(Cog, name='Команды разработчика'):
     @dm_only()
     @can_manage_radio_suggestions()
     @logger.catch
-    async def reject_suggestion_command(self, ctx, suggestion_id: int = None, *, comment: str = 'Отсутсвует.'):
+    async def reject_suggestion_command(self, ctx, suggestion_id: int = None, *, comment: str = 'Отсутствует.'):
         if suggestion_id is None:
             return await ctx.reply('Укажите номер заявки.', mention_author=False)
 

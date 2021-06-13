@@ -18,7 +18,8 @@ from ..utils.utils import edit_user_reputation
 ITEM_SHOP_ENDPOINT = "https://fortnite-api.com/v2/shop/br/combined"
 ACTIVITIES = cycle([
     '+help | V3.0.0 🥳',
-    #'+help | docs.lyndholm.dev',
+    '+help | durker.fun',
+    '+help | docs.durker.fun',
     '+help | fortnitefun.ru',
     '+help | youtube.com/c/fnfun',
     '+help | vk.com/fnfun',

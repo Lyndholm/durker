@@ -97,7 +97,9 @@ class PeelyDE(Cog, name='Fortnite API 4'):
                     return
 
                 data = await r.json()
-                embed.description = f'Продолжительность текущего сезона в днях: **{data["data"]["SeasonLength"]}**\n\n' + f'Прошло дней с начала сезона: **{data["data"]["DaysGone"]}**\n\n' + f'Осталось до конца сезона: **{data["data"]["DaysLeft"]}**'
+                embed.description = f'Продолжительность текущего сезона в днях: **{data["data"]["SeasonLength"]}**\n\n' \
+                                    f'Прошло дней с начала сезона: **{abs(data["data"]["DaysGone"])}**\n\n' \
+                                    f'Осталось до конца сезона: **{data["data"]["DaysLeft"]}**'
 
             async with session.get("https://api.peely.de/v1/br/progress") as r:
                 f = File(BytesIO(await r.read()), filename="br_progress.png")

@@ -382,7 +382,6 @@ class FortniteAPIcom(Cog, name='Fortnite API 2'):
     @logger.catch
     async def show_fortnite_news_command(self, ctx, mode: str = "br", language: str = "ru"):
         mode = mode.lower()
-        placeholder = PLACEHOLDER
 
         if mode not in ["br", "stw", "creative"]:
             embed = Embed(title='❗ Внимание!', description ="Укажите режим корректно: `br`, `stw`, `creative`.", color= Color.red())
@@ -399,7 +398,7 @@ class FortniteAPIcom(Cog, name='Fortnite API 2'):
                     return
 
                 data = await r.json()
-                gif = data.get("data", {}).get("image", placeholder)
+                gif = data.get("data", {}).get("image", PLACEHOLDER)
                 embed=Embed(color=Color.random(), timestamp=datetime.utcnow())
                 embed.set_footer(text=f'{ctx.author.name}', icon_url=ctx.author.avatar_url)
                 if mode == "br":

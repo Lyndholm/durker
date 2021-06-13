@@ -82,7 +82,7 @@ class FortniteTracker(Cog, name='Fortnite Stats'):
 
         elif str(api_react.emoji) == '❌':
             await main_message.clear_reactions()
-            await main_message.edit(embed=Embed(title="Операция прервана пользоватем"))
+            await main_message.edit(embed=Embed(title="Операция прервана пользователем."))
             return
 
         await main_message.clear_reactions()

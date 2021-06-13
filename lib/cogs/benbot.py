@@ -36,7 +36,7 @@ class BenBot(Cog, name='Fortnite API 1'):
     @logger.catch
     async def fetch_benbot_status_command(self, ctx):
         async with ClientSession() as session:
-            async with session.get('https://benbotfn.tk/api/v1/status') as r:
+            async with session.get('https://benbot.app/api/v1/status') as r:
                 if r.status != 200:
                     await ctx.reply(
                         f"""```json\n{await r.text()}```""",
@@ -79,7 +79,7 @@ class BenBot(Cog, name='Fortnite API 1'):
     @logger.catch
     async def fetch_fortnite_aes_command(self, ctx, version: Optional[str]):
         async with ClientSession() as session:
-            async with session.get('https://benbotfn.tk/api/v1/aes', params={"version":version} if version else None) as r:
+            async with session.get('https://benbot.app/api/v1/aes', params={"version":version} if version else None) as r:
                 if r.status != 200:
                     await ctx.reply(
                         f"""```json\n{await r.text()}```""",
@@ -115,7 +115,7 @@ class BenBot(Cog, name='Fortnite API 1'):
     @logger.catch
     async def show_fn_cosmetic_info_command(self, ctx, id: str):
         async with ClientSession() as session:
-            async with session.get(f"https://benbotfn.tk/api/v1/cosmetics/br/{id}", params={"lang":"ru"}) as r:
+            async with session.get(f"https://benbot.app/api/v1/cosmetics/br/{id}", params={"lang":"ru"}) as r:
                 if r.status != 200:
                     await ctx.reply(
                         f"""```json\n{await r.text()}```""",
@@ -166,7 +166,7 @@ class BenBot(Cog, name='Fortnite API 1'):
     @logger.catch
     async def extract_fn_asset_command(self, ctx, path: str):
         async with ClientSession() as session:
-            async with session.get(f"https://benbotfn.tk/api/v1/exportAsset?path={path}") as r:
+            async with session.get(f"https://benbot.app/api/v1/exportAsset?path={path}") as r:
                 if r.status != 200:
                     await ctx.reply(
                         f"""```json\n{await r.text()}```""",
@@ -215,7 +215,7 @@ class BenBot(Cog, name='Fortnite API 1'):
     @logger.catch
     async def display_fortnite_section_store_command(self, ctx):
         async with ClientSession() as session:
-            async with session.get("https://benbotfn.tk/api/v1/calendar") as r:
+            async with session.get("https://benbot.app/api/v1/calendar") as r:
                 if r.status != 200:
                     await ctx.reply(
                         f"""```json\n{await r.text()}```""",

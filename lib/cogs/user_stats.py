@@ -46,7 +46,7 @@ class UserStats(Cog, name='Статистика'):
     @is_channel(STATS_CHANNEL)
     @guild_only()
     @logger.catch
-    async def fetch_member_profile_command(self, ctx, member: Member = None):
+    async def fetch_member_profile_command(self, ctx, *, member: Member = None):
         if member and member != ctx.author:
             is_member_profile_public = db.fetchone(["is_profile_public"], "users_info", "user_id", member.id)
             if is_member_profile_public[0] is False:

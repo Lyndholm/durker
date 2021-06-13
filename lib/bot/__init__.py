@@ -83,7 +83,7 @@ class Bot(BotBase):
                          case_insensitive=True,
                          owner_ids=OWNER_IDS,
                          intents=Intents.all(),
-                         max_messages=5000
+                         max_messages=10000
                         )
 
     @logger.catch

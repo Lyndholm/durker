@@ -112,7 +112,7 @@ class FortniteDevServers(Cog, name='Fortnite Dev'):
             wait_embed = Embed(
                 title="Fornite Dev Servers",
                 color=Color.magenta(),
-                description=":hourglass_flowing_sand: Сбор данных. Пожалуйста, подождите."
+                description="⏳ Сбор данных. Пожалуйста, подождите."
             )
             wait_msg = await ctx.reply(embed=wait_embed, mention_author=False)
 
