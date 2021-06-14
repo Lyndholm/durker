@@ -9,7 +9,7 @@ from loguru import logger
 from ..db import db
 from ..utils.checks import is_channel
 from ..utils.constants import STATS_CHANNEL
-from ..utils.utils import load_commands_from_json, russian_plural
+from ..utils.utils import joined_date, load_commands_from_json, russian_plural
 
 cmd = load_commands_from_json("user_stats")
 
@@ -108,10 +108,10 @@ class UserStats(Cog, name='Статистика'):
                         inline=True)
 
         embed.add_field(name='📆 Дата захода на сервер:',
-                        value=target.joined_at.strftime("%d.%m.%Y %H:%M"), inline=True)
+                        value=joined_date(target).strftime("%d.%m.%Y %H:%M"), inline=True)
 
         embed.add_field(name='📆 Количество дней на сервере:',
-                        value=(datetime.now() - target.joined_at).days, inline=True)
+                        value=(datetime.now() - joined_date(target)).days, inline=True)
         if len(target.roles) > 1:
             embed.add_field(name=f"😀 Роли ({len(target.roles) - 1})",
                         value=" ".join([role.mention for role in target.roles[1:]]), inline=True)
@@ -371,19 +371,19 @@ class UserStats(Cog, name='Статистика'):
 
         if activity_role_1 not in ctx.author.roles:
             desc += f"\n\nДо роли {activity_role_1.mention} осталось **{750-msg_counter}** {russian_plural(750-msg_counter,['сообщение','сообщения','сообщений'])}"
-            if old := (datetime.now() - ctx.author.joined_at).days <= 7:
+            if old := (datetime.now() - joined_date(ctx.author)).days <= 7:
                 desc += f" и **{old+1}** {russian_plural(old+1,['день','дня','дней'])} пребывания на сервере."
         elif activity_role_2 not in ctx.author.roles:
             desc += f"\n\nДо роли {activity_role_2.mention} осталось **{3500-msg_counter}** {russian_plural(3500-msg_counter,['сообщение','сообщения','сообщений'])}"
-            if old := (datetime.now() - ctx.author.joined_at).days <= 30:
+            if old := (datetime.now() - joined_date(ctx.author)).days <= 30:
                 desc += f" и **{old+1}** {russian_plural(old+1,['день','дня','дней'])} пребывания на сервере."
         elif activity_role_3 not in ctx.author.roles:
             desc += f"\n\nДо роли {activity_role_3.mention} осталось **{10000-msg_counter}** {russian_plural(10000-msg_counter,['сообщение','сообщения','сообщений'])}"
-            if old := (datetime.now() - ctx.author.joined_at).days <= 90:
+            if old := (datetime.now() - joined_date(ctx.author)).days <= 90:
                 desc += f" и **{old+1}** {russian_plural(old+1,['день','дня','дней'])} пребывания на сервере."
         elif activity_role_4 not in ctx.author.roles:
             desc += f"\n\nДо роли {activity_role_4.mention} осталось **{25000-msg_counter}** {russian_plural(25000-msg_counter,['сообщение','сообщения','сообщений'])}"
-            if old := (datetime.now() - ctx.author.joined_at).days <= 180:
+            if old := (datetime.now() - joined_date(ctx.author)).days <= 180:
                 desc += f" и **{old+1}** {russian_plural(old+1,['день','дня','дней'])} пребывания на сервере."
 
         embed.description = desc

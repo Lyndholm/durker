@@ -81,7 +81,7 @@ def dump_user_data_in_json(member: discord.Member):
 
     cursor.execute("SELECT * FROM users_info where user_id = %s", (member.id,))
     rec = cursor.fetchone()
-    data["users_info"] = {"joined_at":str(member.joined_at),"brief_biography":rec[4]}
+    data["users_info"] = {"joined_at":str(rec[3]),"brief_biography":rec[4]}
 
     cursor.execute("SELECT * FROM users_stats where user_id = %s", (member.id,))
     rec = cursor.fetchone()
@@ -159,3 +159,11 @@ def cooldown_timer_str(retry_after: float) -> str:
     time_str += f"**{seconds+1} {seconds_plural}**."
 
     return time_str
+
+def joined_date(member: discord.Member) -> datetime:
+    """
+    Return a datetime object that specifies the date and time that the member joined the guild.
+    The data is taken from the database, not from Discord API.
+    """
+    joined_at = db.fetchone(['joined_at'], 'users_info', 'user_id', member.id)[0]
+    return joined_at

@@ -13,7 +13,7 @@ from jishaku.functools import executor_function
 from loguru import logger
 
 from ..db import db
-from ..utils.utils import edit_user_reputation
+from ..utils.utils import edit_user_reputation, joined_date
 
 ITEM_SHOP_ENDPOINT = "https://fortnite-api.com/v2/shop/br/combined"
 ACTIVITIES = cycle([
@@ -59,7 +59,7 @@ class BackgroundTasks(Cog, name='Фоновые процессы'):
         veteran = get(self.bot.guild.roles, id=765956910544715787)
 
         for member in self.bot.guild.members:
-            joined_at = db.fetchone(['joined_at'], 'users_info', 'user_id', member.id)[0]
+            joined_at = joined_date(member)
             messages_count, rep_rank = db.fetchone(['messages_count', 'rep_rank'], 'users_stats', 'user_id', member.id)
             time_delta = (datetime.utcnow() - joined_at).days
 

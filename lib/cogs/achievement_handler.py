@@ -8,6 +8,7 @@ from discord.utils import get
 from loguru import logger
 
 from ..db import db
+from ..utils.utils import joined_date
 
 
 class AchievementHandler(Cog, name='AchievementHandler'):
@@ -89,7 +90,7 @@ class AchievementHandler(Cog, name='AchievementHandler'):
 
     @logger.catch
     async def old_handler(self, member, achievements, cog):
-        diff = datetime.utcnow() - member.joined_at
+        diff = datetime.utcnow() - joined_date(member)
         OLD_1 = 'AID_Old_1'
         OLD_2 = 'AID_Old_2'
         OLD_3 = 'AID_Old_3'
