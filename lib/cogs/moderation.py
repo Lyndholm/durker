@@ -872,7 +872,7 @@ class Moderation(Cog, name='Модерация'):
         if message.content and not message.author.bot:
             emoji = re.findall(self.EMOJI_REGEX, message.content)
             unicode_emoji = re.findall(self.UNICODE_EMOJI_REGEX, message.content)
-            if (len(emoji) + len(unicode_emoji)) > 10:
+            if (len(emoji) + len(unicode_emoji)) > 7:
                 if message.author.guild_permissions.administrator or self.helper_role in message.author.roles:
                     pass
                 else:

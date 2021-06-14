@@ -156,14 +156,12 @@ class Commands(Cog, name='Базовые команды'):
         has_any_role(CHASOVOY_ROLE_ID),
         has_permissions(administrator=True))
     @guild_only()
-    @cooldown(cmd["media"]["cooldown_rate"], cmd["media"]["cooldown_per_second"], BucketType.member)
+    @cooldown(cmd["media"]["cooldown_rate"], cmd["media"]["cooldown_per_second"], BucketType.guild)
     @logger.catch
     async def redirect_to_media_channel_command(self, ctx, targets: Greedy[Member]):
         await ctx.message.delete()
         await ctx.send(' '.join(member.mention for member in targets) +  f' Изображениям и прочим медиафайлам, '
                        'не относящимся к теме разговора, нет места в чате! Пожалуйста, используйте канал <#644523860326219776>')
-        if ctx.author.top_role.position >= self.chasovoy.position:
-            ctx.command.reset_cooldown(ctx)
 
     async def gachi_poisk_feature(self, ctx, targets):
         gachi_replies = (
@@ -191,7 +189,7 @@ class Commands(Cog, name='Базовые команды'):
         has_any_role(CHASOVOY_ROLE_ID),
         has_permissions(administrator=True))
     @guild_only()
-    @cooldown(cmd["poisk"]["cooldown_rate"], cmd["poisk"]["cooldown_per_second"], BucketType.member)
+    @cooldown(cmd["poisk"]["cooldown_rate"], cmd["poisk"]["cooldown_per_second"], BucketType.guild)
     @logger.catch
     async def redirect_to_poisk_channel_command(self, ctx, targets: Greedy[Member]):
         await ctx.message.delete()
@@ -204,8 +202,6 @@ class Commands(Cog, name='Базовые команды'):
                 ' '.join(member.mention for member in targets) + ' **Данный канал не предназначен для поиска игроков!** '
                 'Пожалуйста, используйте соответствующий канал <#546416181871902730>. Любые сообщения с поиском игроков '
                 'в данном канале будут удалены.', file=File(f'./data/images/search_for_players/common/{choice(images)}'))
-        if ctx.author.top_role.position >= self.chasovoy.position:
-            ctx.command.reset_cooldown(ctx)
 
     @command(name=cmd["ppo"]["name"], aliases=cmd["ppo"]["aliases"],
             brief=cmd["ppo"]["brief"],

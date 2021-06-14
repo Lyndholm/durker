@@ -349,6 +349,17 @@ class PurchasesHandler(Cog, name='Покупки и не только'):
             'и засчитывать покупки наперекор правилам.'
         ).set_image(url='https://cdn.discordapp.com/attachments/774698479981297664/835853888041123840/why.png'))
 
+        embeds.append(Embed(
+            title='📝 Краткий список действий при покупке',
+            color=ctx.author.color,
+            timestamp=datetime.utcnow(),
+            description= \
+            '> **1.** Проверьте тег **FNFUN** в игровом магазине.\n\n'
+            '> **2.** Купите нужный предмет.\n\n'
+            '> **3.** Нажмите кнопку «Принять» для всех предметов.\n\n'
+            '> **4.** Сделайте скриншот и отправьте его в <#546408250158088192>'
+        ).set_image(url='https://cdn.discordapp.com/attachments/774698479981297664/835805462716743690/unknown.png'))
+
         message = await ctx.reply(embed=embeds[0], mention_author=False)
         page = Paginator(self.bot, message, only=ctx.author, embeds=embeds)
         await page.start()
