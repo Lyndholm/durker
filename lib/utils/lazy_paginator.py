@@ -34,9 +34,10 @@ async def paginate(ctx, input_):
             except discord.Forbidden:
                 await pages.delete()
             finally:
+                for future in done:
+                    future.exception()
+                paging = False
                 return
-
-            paging = False
 
         for future in pending:
             future.cancel()
