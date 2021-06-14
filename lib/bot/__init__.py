@@ -107,11 +107,16 @@ class Bot(BotBase):
     @logger.catch
     async def load_mein_radio_cog_scheduler(self):
         try:
-            try:
-                self.unload_extension("lib.cogs.music.gachi_radio")
-                self.unload_extension("lib.cogs.music.music_player")
-            except ExtensionNotLoaded:
-                pass
+            cogs = (
+                "lib.cogs.music.lofi_radio",
+                "lib.cogs.music.music_player",
+                "lib.cogs.music.gachi_radio"
+            )
+            for c in cogs:
+                try:
+                    self.unload_extension(c)
+                except ExtensionNotLoaded:
+                    continue
             self.load_extension("lib.cogs.music.mein_radio")
         except ExtensionAlreadyLoaded:
             pass
@@ -119,23 +124,50 @@ class Bot(BotBase):
     @logger.catch
     async def load_gachi_radio_cog_scheduler(self):
         try:
-            try:
-                self.unload_extension("lib.cogs.music.mein_radio")
-                self.unload_extension("lib.cogs.music.music_player")
-            except ExtensionNotLoaded:
-                pass
+            cogs = (
+                "lib.cogs.music.lofi_radio",
+                "lib.cogs.music.music_player",
+                "lib.cogs.music.mein_radio"
+            )
+            for c in cogs:
+                try:
+                    self.unload_extension(c)
+                except ExtensionNotLoaded:
+                    continue
             self.load_extension("lib.cogs.music.gachi_radio")
+        except ExtensionAlreadyLoaded:
+            pass
+
+    @logger.catch
+    async def load_lofi_radio_cog_scheduler(self):
+        try:
+            cogs = (
+                "lib.cogs.music.music_player",
+                "lib.cogs.music.mein_radio",
+                "lib.cogs.music.gachi_radio"
+            )
+            for c in cogs:
+                try:
+                    self.unload_extension(c)
+                except ExtensionNotLoaded:
+                    continue
+            self.load_extension("lib.cogs.music.lofi_radio")
         except ExtensionAlreadyLoaded:
             pass
 
     @logger.catch
     async def load_music_player_cog_scheduler(self):
         try:
-            try:
-                self.unload_extension("lib.cogs.music.mein_radio")
-                self.unload_extension("lib.cogs.music.gachi_radio")
-            except ExtensionNotLoaded:
-                pass
+            cogs = (
+                "lib.cogs.music.lofi_radio",
+                "lib.cogs.music.mein_radio",
+                "lib.cogs.music.gachi_radio"
+            )
+            for c in cogs:
+                try:
+                    self.unload_extension(c)
+                except ExtensionNotLoaded:
+                    continue
             self.load_extension("lib.cogs.music.music_player")
         except ExtensionAlreadyLoaded:
             pass
@@ -145,8 +177,8 @@ class Bot(BotBase):
         sched.add_job(self.load_mein_radio_cog_scheduler, CronTrigger(day_of_week=0, hour=3))
         sched.add_job(self.load_mein_radio_cog_scheduler, CronTrigger(day_of_week=2, hour=3))
         sched.add_job(self.load_mein_radio_cog_scheduler, CronTrigger(day_of_week=4, hour=3))
-        sched.add_job(self.load_gachi_radio_cog_scheduler, CronTrigger(day_of_week=1, hour=3))
-        sched.add_job(self.load_gachi_radio_cog_scheduler, CronTrigger(day_of_week=3, hour=3))
+        sched.add_job(self.load_lofi_radio_cog_scheduler, CronTrigger(day_of_week=1, hour=3))
+        sched.add_job(self.load_lofi_radio_cog_scheduler, CronTrigger(day_of_week=3, hour=3))
         sched.add_job(self.load_music_player_cog_scheduler, CronTrigger(day_of_week=5, hour=3))
 
     @logger.catch
@@ -197,9 +229,9 @@ class Bot(BotBase):
 
             print("\nReady to use!\n")
             await self.get_user(OWNER_IDS[0]).send(
-               "I am online!\nReady to use!\nStart time: "
-               f"{datetime.now().strftime('%d.%m.%Y %H.%M.%S')}"
-               )
+                "I am online!\nReady to use!\nStart time: "
+                f"{datetime.now().strftime('%d.%m.%Y %H.%M.%S')}"
+            )
 
         else:
             print("Bot reconnected")
