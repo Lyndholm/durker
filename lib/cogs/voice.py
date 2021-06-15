@@ -107,17 +107,30 @@ class Voice(Cog, name='VoiceChannels Management'):
         ### Voice time count
         if after.channel is not None:
             if after.channel.id != AFK_VOICE_ROOM:
-                rec = db.fetchone(["entered_at"], "voice_activity", "user_id", member.id)
-                if rec is None:
-                    db.insert("voice_activity",
-                    {"user_id": member.id,
-                    "entered_at": datetime.now()}
-                    )
+                members = [m for m in after.channel.members if not m.bot]
+                if len(members) > 1:
+                    for member in members:
+                        rec = db.fetchone(["entered_at"], "voice_activity", "user_id", member.id)
+                        if rec is None:
+                            db.insert("voice_activity",
+                            {"user_id": member.id,
+                            "entered_at": datetime.now()}
+                        )
 
         if after.channel is None:
             rec = db.fetchone(["entered_at"], "voice_activity", "user_id", member.id)
             if rec is not None:
                 self.update_member_invoce_time(member.id)
+
+            try:
+                members = [m for m in before.channel.members if not m.bot]
+            except AttributeError:
+                return
+            if len(members) < 2:
+                for member in members:
+                    rec = db.fetchone(["entered_at"], "voice_activity", "user_id", member.id)
+                    if rec is not None:
+                        self.update_member_invoce_time(member.id)
 
         if before.channel is not None and after.channel is not None:
             if after.channel.id == AFK_VOICE_ROOM:
