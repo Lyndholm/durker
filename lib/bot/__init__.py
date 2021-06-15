@@ -20,7 +20,10 @@ from loguru import logger
 
 from ..db import db
 from ..utils.constants import AUDIT_LOG_CHANNEL, GUILD_ID
-from ..utils.utils import cooldown_timer_str, insert_new_user_in_db
+from ..utils.exceptions import (InForbiddenTextChannel, InsufficientLevel,
+                                NotInAllowedTextChannel)
+from ..utils.utils import (cooldown_timer_str, get_command_required_level,
+                           get_command_text_channels, insert_new_user_in_db)
 
 logger.add("logs/{time:DD-MM-YYYY---HH-mm-ss}.log",
            format="{time:DD-MM-YYYY HH:mm:ss} | {level} | {message}",
@@ -312,11 +315,31 @@ class Bot(BotBase):
                 )
                 await ctx.reply(embed=embed, mention_author=False, delete_after=15)
 
+            elif isinstance(exc, InsufficientLevel):
+                level = await get_command_required_level(ctx.command)
+                member_level = db.fetchone(['level'], 'leveling', 'user_id', ctx.author.id)[0]
+                embed = Embed(
+                    title='🔒 Недостаточный уровень!',
+                    description=f"Команда `{ctx.command.name}` требует наличия **{level}** уровня " \
+                                f"и выше.\nВаш текущий уровень: **{member_level}**.",
+                    color=Color.red()
+                )
+                await ctx.reply(embed=embed, mention_author=False, delete_after=15)
+
+            elif isinstance(exc, NotInAllowedTextChannel) or isinstance(exc, InForbiddenTextChannel):
+                txt = await get_command_text_channels(ctx.command)
+                embed = Embed(
+                    title='⚠️ Неправильный канал!',
+                    description=f"Команда `{ctx.command.name}` {txt.lower()}",
+                    color=Color.red()
+                )
+                await ctx.reply(embed=embed, mention_author=False, delete_after=15)
+
             elif isinstance(exc, CheckFailure) or isinstance(exc, CheckAnyFailure):
                 embed = Embed(
                     title='❗ Ошибка!',
                     description=f"{ctx.author.mention}\nНевозможно выполнить указанную команду."
-                                "\nВозможно, вы используете неправильный канал, у вас недостаточный уровень или отсутствуют права на выполнение запрошенного метода.",
+                                "\nВозможно, у вас отсутствуют права на выполнение запрошенного метода.",
                     color=Color.red()
                 )
                 await ctx.reply(embed=embed, mention_author=False, delete_after=15)

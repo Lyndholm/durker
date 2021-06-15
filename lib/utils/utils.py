@@ -1,9 +1,14 @@
+import inspect
 import json
+from datetime import datetime
+from pathlib import Path
+
+import aiofiles
 import discord
+from discord.ext import commands
+from discord.ext.buttons import Paginator
 
 from ..db import db
-from datetime import datetime
-from discord.ext.buttons import Paginator
 
 
 class Pag(Paginator):
@@ -160,6 +165,7 @@ def cooldown_timer_str(retry_after: float) -> str:
 
     return time_str
 
+
 def joined_date(member: discord.Member) -> datetime:
     """
     Return a datetime object that specifies the date and time that the member joined the guild.
@@ -167,3 +173,25 @@ def joined_date(member: discord.Member) -> datetime:
     """
     joined_at = db.fetchone(['joined_at'], 'users_info', 'user_id', member.id)[0]
     return joined_at
+
+
+async def get_command_required_level(cmd: commands.Command) -> int:
+    """
+    Return the level that is required to run the command.
+    """
+    path = Path(inspect.getfile(cmd.cog.__class__)).stem
+    async with aiofiles.open('./data/commands.json', mode='r', encoding='utf-8') as f:
+        data = json.loads(await f.read())
+    level = data[path][cmd.name]['required_level']
+    return level
+
+async def get_command_text_channels(cmd: commands.Command) -> str:
+    """
+    Return a string with channels where command can be invoked.
+    """
+    path = Path(inspect.getfile(cmd.cog.__class__)).stem
+    async with aiofiles.open('./data/commands.json', mode='r', encoding='utf-8') as f:
+        data = json.loads(await f.read())
+    help = data[path][cmd.name]['help'].split('\n')
+    txt = str(*[i for i in help if 'Работает ' in i])
+    return txt
