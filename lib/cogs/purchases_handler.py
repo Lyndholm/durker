@@ -368,7 +368,7 @@ class PurchasesHandler(Cog, name='Покупки и не только'):
     @Cog.listener()
     @listen_for_guilds()
     async def on_message(self, message):
-        if message.channel.id == SAC_SCREENSHOTS_CHANNEL:
+        if message.channel.id == SAC_SCREENSHOTS_CHANNEL and not message.author.bot:
             if message.attachments:
                 if not os.path.exists(f'./data/purchases_photos/{message.author.id}'):
                     os.makedirs(f'./data/purchases_photos/{message.author.id}')
