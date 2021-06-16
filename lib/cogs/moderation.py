@@ -410,7 +410,7 @@ class Moderation(Cog, name='Модерация'):
         unmutes = await self.mute_members(ctx.message, targets, 0.5, reason, "ugol")
         if len(unmutes):
             await sleep(1800)
-            await self.unmute_members(ctx, targets, "Время пребывания в угле истекло.")
+            await self.unmute_members(ctx, targets, "Время пребывания в углу истекло.")
 
 
     @command(name=cmd["isolator"]["name"], aliases=cmd["isolator"]["aliases"],
