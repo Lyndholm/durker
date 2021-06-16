@@ -84,6 +84,10 @@ class PurchasesHandler(Cog, name='Покупки и не только'):
 
     @logger.catch
     async def check_support_roles(self, member):
+        mod_cog = self.bot.get_cog('Модерация')
+        if mod_cog.is_member_muted(member):
+            return
+
         purchases = db.fetchone(['purchases'], 'users_stats', 'user_id', member.id)[0]
         vbucks_count = sum(purchases['vbucks_purchases'][i]['price'] for i in range(len(purchases['vbucks_purchases'])))
 

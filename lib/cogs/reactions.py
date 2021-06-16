@@ -14,11 +14,18 @@ cmd = load_commands_from_json('reactions')
 class ReactionRole(Cog, name='Роли за реакции'):
     def __init__(self, bot):
         self.bot = bot
+        if self.bot.ready:
+            bot.loop.create_task(self.init_vars())
+
+    @logger.catch
+    async def init_vars(self):
+        self.mod_cog = self.bot.get_cog('Модерация')
 
     @Cog.listener()
     async def on_ready(self):
         if not self.bot.ready:
-           self.bot.cogs_ready.ready_up("reactions")
+            self.mod_cog = self.bot.get_cog('Модерация')
+            self.bot.cogs_ready.ready_up("reactions")
 
     @logger.catch
     async def edit_member_roles(self, guild_id: int, role_id: int, user_id: int, action: str):
@@ -27,7 +34,8 @@ class ReactionRole(Cog, name='Роли за реакции'):
         member = guild.get_member(user_id)
         if not member.bot:
             if action == '+':
-                await member.add_roles(role)
+                if not self.mod_cog.is_member_muted(member):
+                    await member.add_roles(role)
             elif action == '-':
                 await member.remove_roles(role)
 

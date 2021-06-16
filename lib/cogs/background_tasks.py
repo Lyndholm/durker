@@ -34,11 +34,18 @@ class BackgroundTasks(Cog, name='Фоновые процессы'):
         self.check_supporter_role.start()
         self.update_user_nickname.start()
         self.update_fortnite_shop_hash.start()
+        if self.bot.ready:
+            bot.loop.create_task(self.init_vars())
+
+    @logger.catch
+    async def init_vars(self):
+        self.mod_cog = self.bot.get_cog('Модерация')
 
     @Cog.listener()
     async def on_ready(self):
         if not self.bot.ready:
-           self.bot.cogs_ready.ready_up("background_tasks")
+            self.mod_cog = self.bot.get_cog('Модерация')
+            self.bot.cogs_ready.ready_up("background_tasks")
 
 
     @tasks.loop(minutes=3.0)
@@ -59,6 +66,9 @@ class BackgroundTasks(Cog, name='Фоновые процессы'):
         veteran = get(self.bot.guild.roles, id=765956910544715787)
 
         for member in self.bot.guild.members:
+            if self.mod_cog.is_member_muted(member):
+                continue
+
             joined_at = joined_date(member)
             messages_count, rep_rank = db.fetchone(['messages_count', 'rep_rank'], 'users_stats', 'user_id', member.id)
             time_delta = (datetime.utcnow() - joined_at).days
@@ -112,6 +122,9 @@ class BackgroundTasks(Cog, name='Фоновые процессы'):
         magnat = get(self.bot.guild.roles, id=774686818356428841)
 
         for member in self.bot.guild.members:
+            if self.mod_cog.is_member_muted(member):
+                continue
+
             purchases = db.fetchone(['purchases'], 'users_stats', 'user_id', member.id)[0]
             vbucks_count = sum(purchases['vbucks_purchases'][i]['price'] for i in range(len(purchases['vbucks_purchases'])))
 
