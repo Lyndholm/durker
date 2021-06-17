@@ -319,6 +319,25 @@ class Commands(Cog, name='Базовые команды'):
 
         await ctx.send(embed=embed)
 
+    @command(name=cmd["wipe"]["name"], aliases=cmd["wipe"]["aliases"],
+            brief=cmd["wipe"]["brief"],
+            description=cmd["wipe"]["description"],
+            usage=cmd["wipe"]["usage"],
+            help=cmd["wipe"]["help"],
+            hidden=cmd["wipe"]["hidden"], enabled=True)
+    @guild_only()
+    @cooldown(cmd["wipe"]["cooldown_rate"], cmd["wipe"]["cooldown_per_second"], BucketType.member)
+    @logger.catch
+    async def wipe_command(self, ctx):
+        await ctx.message.delete()
+        await ctx.send(
+            'После обновления бота от 1 июля 2021 г. '
+            'статистика покупок всех пользователей была сброшена. '
+            'Это произошло по двум причинам:\n\n'
+            '**1.** Изменение структуры базы данных бота.\n'
+            '**2.** Появление новых правил засчитывания покупок. '
+            'Ознакомиться с правилами можно по команде `+faq`.'
+    )
 
 def setup(bot):
     bot.add_cog(Commands(bot))

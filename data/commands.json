@@ -377,6 +377,22 @@
       "cooldown_per_second": 600,
       "cooldown_type": "member",
       "hidden": false
+    },
+    "wipe": {
+      "name": "wipe",
+      "aliases": [
+        "вайп"
+      ],
+      "brief": "Информация о вайпе.",
+      "description": "Подробности о вайпе статистики.",
+      "usage": "info",
+      "help": "Подробности о вайпе статистики покупок после обновления бота от 1 июля 2021.\nРаботает только на сервере.\n\n**Кулдаун:** 10 минут, действует на определённого пользователя.\n**Необходимый уровень:** 0",
+      "required_level": 0,
+      "has_cooldown": true,
+      "cooldown_rate": 1,
+      "cooldown_per_second": 600,
+      "cooldown_type": "member",
+      "hidden": false
     }
   },
   "contests": {
