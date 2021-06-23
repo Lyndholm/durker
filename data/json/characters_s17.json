@@ -11,15 +11,15 @@
     "map": "https://fortnitefun.ru/wp-content/uploads/2021/06/DJ-%D0%A0%D0%B5%D1%81%D0%BF%D0%B8%D1%80%D0%B0%D1%82%D0%BE%D1%80-1.jpg"
   },
   {
-    "name": "Кимера",
+    "name": "Простой парень",
     "description": {
-      "index": "Если вы думали, что к началу 17 сезона обойдется без багов персонажей, то увы, нет.  2 персонаж, а именно Кимера, пока не показывается.",
-      "secondary": "\n\nВ файлах у него есть точка спавна — это Коралловая крепость, но пока его там нет. Ждите фикса, а после фикса отправляйтесь искать его. Как заверяют датамайнеры, он будет там."
+      "index": "Инопланетный персонаж под именем «Простой парень» облюбовал Градирни. Появился в [обновлении 17.10](https://fortnitefun.ru/opisanie-obnovlenija-17-10-fortnajt-pohititeli-parazity-i-sekretnye-stili/).",
+      "secondary": "\n\nОн продает болты."
     },
     "images": {
-      "icon": "https://fortnite-api.com/images/cosmetics/br/cid_a_110_athena_commando_m_alientrooper/icon.png"
+      "icon": "https://fortnite-api.com/images/cosmetics/br/cid_npc_athena_commando_m_aliensummer/icon.png"
     },
-    "map": "https://fortnitefun.ru/wp-content/uploads/2021/06/%D0%9A%D0%B8%D0%BC%D0%B5%D1%80%D0%B0-2.jpg"
+    "map": "https://fortnitefun.ru/wp-content/uploads/2021/06/2-%D0%BF%D1%80%D0%BE%D1%81%D1%82%D0%BE%D0%B9-%D0%BF%D0%B0%D1%80%D0%B5%D0%BD%D1%8C.jpg"
   },
   {
     "name": "Гигимон",
@@ -185,5 +185,16 @@
       "icon": "https://fortnite-api.com/images/cosmetics/br/cid_a_113_athena_commando_f_innovator/icon.png"
     },
     "map": "https://fortnitefun.ru/wp-content/uploads/2021/06/%D0%94%D0%BE%D0%BA%D1%82%D0%BE%D1%80-%D0%A1%D0%BB%D0%BE%D1%83%D0%BD-17.jpg"
+  },
+  {
+    "name": "Неизвестно",
+    "description": {
+      "index": "С [обновлением 17.10](https://fortnitefun.ru/opisanie-obnovlenija-17-10-fortnajt-pohititeli-parazity-i-sekretnye-stili/) в игру пришел 18 персонаж. Пока никто не знает кто это, но претендента есть два — Зик или Здоровяк. ",
+      "secondary": "После разговора с ними ничего не происходит. Если у вас есть информация о 18 персонаже (вдруг вы держите его в заложниках), сообщите, пожалуйста, об этом."
+    },
+    "images": {
+      "icon": "https://cdn.discordapp.com/attachments/774698479981297664/774700936958312468/placeholder.png"
+    },
+    "map": "https://fortnitefun.ru/wp-content/uploads/2021/06/%D0%BF%D0%B5%D1%80%D1%81%D0%BE%D0%BD%D0%B0%D0%B6%D0%B8-1.jpg"
   }
 ]
