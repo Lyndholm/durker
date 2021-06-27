@@ -14,4 +14,5 @@ wavelink
 better-profanity==0.6.1
 psutil
 transliterate
+python-dotenv
 git+https://github.com/Rapptz/discord-ext-menus

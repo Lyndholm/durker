@@ -3,12 +3,15 @@ from typing import Dict, List
 
 import psycopg2
 from apscheduler.triggers.cron import CronTrigger
+from dotenv import load_dotenv
+
+load_dotenv()
 
 conn = psycopg2.connect(
-    dbname=os.environ.get('DB_NAME'),
-    user=os.environ.get('DB_USER'),
-    password=os.environ.get('DB_PASS'),
-    host=os.environ.get('DB_HOST')
+    dbname=os.getenv('DB_NAME'),
+    user=os.getenv('DB_USER'),
+    password=os.getenv('DB_PASS'),
+    host=os.getenv('DB_HOST')
 )
 cursor = conn.cursor()
 

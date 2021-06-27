@@ -16,6 +16,7 @@ from discord.ext.commands import (CommandNotFound, CommandOnCooldown, Context,
                                   PrivateMessageOnly)
 from discord.ext.commands.errors import (CheckAnyFailure, CheckFailure,
                                          MissingPermissions)
+from dotenv import load_dotenv
 from loguru import logger
 
 from ..db import db
@@ -25,6 +26,7 @@ from ..utils.exceptions import (InForbiddenTextChannel, InsufficientLevel,
 from ..utils.utils import (cooldown_timer_str, get_command_required_level,
                            get_command_text_channels, insert_new_user_in_db)
 
+load_dotenv()
 logger.add("logs/{time:DD-MM-YYYY---HH-mm-ss}.log",
            format="{time:DD-MM-YYYY HH:mm:ss} | {level} | {message}",
            level="DEBUG",
