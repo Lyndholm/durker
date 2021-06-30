@@ -82,14 +82,12 @@ class BackgroundTasks(Cog, name='Фоновые процессы'):
                 edit_user_reputation(member.id, '+', 750)
 
             if captain not in member.roles and messages_count >= 10000 and time_delta >= 91:
-                if rep_rank >= 0:
-                    await member.add_roles(captain)
-                    edit_user_reputation(member.id, '+', 1500)
+                await member.add_roles(captain)
+                edit_user_reputation(member.id, '+', 1500)
 
             if veteran not in member.roles and messages_count >= 25000 and time_delta >= 181:
-                if rep_rank >= 0:
-                    await member.add_roles(veteran)
-                    edit_user_reputation(member.id, '+', 3000)
+                await member.add_roles(veteran)
+                edit_user_reputation(member.id, '+', 3000)
 
     @check_activity_role.before_loop
     async def before_check_activity_role(self):

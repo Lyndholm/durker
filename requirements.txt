@@ -5,6 +5,7 @@ aiofiles
 asyncio
 loguru
 psycopg2
+psycopg2-binary
 jishaku
 buttons
 pillow
