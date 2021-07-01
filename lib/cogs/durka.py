@@ -65,8 +65,8 @@ def have_enough_perms_for_calling() -> bool:
 class Durka(Cog, name='Родина-Дурка'):
     def __init__(self, bot):
         self.bot = bot
-        self.durka_emoji = "<:durka:745936793148588083>"
-        self.shizoid_emoji = "<:shizoid:826199531598905366>"
+        self.durka_emoji = "<:durka:684794973358522426>"
+        self.shizoid_emoji = "<:shizoid:717756757958459443>"
         self.one_target_emoji = f"{self.durka_emoji}{self.durka_emoji}{self.shizoid_emoji}{self.durka_emoji}{self.durka_emoji}"
         self.multiple_targets_emoji = f"{self.durka_emoji}{self.shizoid_emoji}{self.shizoid_emoji}{self.shizoid_emoji}{self.durka_emoji}"
         self.schedule_durka_calls_update(self.bot.scheduler)

@@ -60,10 +60,10 @@ class BackgroundTasks(Cog, name='Фоновые процессы'):
     @tasks.loop(minutes=10.0)
     @logger.catch
     async def check_activity_role(self):
-        worker = get(self.bot.guild.roles, id=720709053348708457)
-        old = get(self.bot.guild.roles, id=720709161150578783)
-        captain = get(self.bot.guild.roles, id=721006353396531241)
-        veteran = get(self.bot.guild.roles, id=765956910544715787)
+        worker = get(self.bot.guild.roles, id=643875511059218452)
+        old = get(self.bot.guild.roles, id=546417656018763793)
+        captain = get(self.bot.guild.roles, id=546417889884897293)
+        veteran = get(self.bot.guild.roles, id=765942949476302849)
 
         for member in self.bot.guild.members:
             if self.mod_cog.is_member_muted(member):
@@ -97,8 +97,8 @@ class BackgroundTasks(Cog, name='Фоновые процессы'):
     @tasks.loop(hours=24.0)
     @logger.catch
     async def check_mecenat_role(self):
-        mecenat = get(self.bot.guild.roles, id=731241570967486505)
-        kapitalist = get(self.bot.guild.roles, id=730017005029294121)
+        mecenat = get(self.bot.guild.roles, id=643877589479587841)
+        kapitalist = get(self.bot.guild.roles, id=672376974844493824)
 
         for member in self.bot.guild.members:
             purchases = db.fetchone(['purchases'], 'users_stats', 'user_id', member.id)[0]['vbucks_purchases']
@@ -116,8 +116,8 @@ class BackgroundTasks(Cog, name='Фоновые процессы'):
     @tasks.loop(hours=1.0)
     @logger.catch
     async def check_supporter_role(self):
-        kapitalist = get(self.bot.guild.roles, id=730017005029294121)
-        magnat = get(self.bot.guild.roles, id=774686818356428841)
+        kapitalist = get(self.bot.guild.roles, id=672376974844493824)
+        magnat = get(self.bot.guild.roles, id=765974953127313418)
 
         for member in self.bot.guild.members:
             if self.mod_cog.is_member_muted(member):

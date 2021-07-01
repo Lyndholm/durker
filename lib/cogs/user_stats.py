@@ -84,9 +84,9 @@ class UserStats(Cog, name='Статистика'):
 
         realMoney = sum(purchases[0]['realMoney_purchases'][i]['price'] for i in range(len(purchases[0]['realMoney_purchases'])))
 
-        kapitalist = ctx.guild.get_role(730017005029294121)
+        kapitalist = ctx.guild.get_role(672376974844493824)
 
-        magnat = ctx.guild.get_role(774686818356428841)
+        magnat = ctx.guild.get_role(765974953127313418)
 
         embed = Embed(color=target.color)
 

@@ -245,7 +245,7 @@ class MeinRadio(commands.Cog, wavelink.WavelinkMixin, name='Mein Radio'):
         return context
 
     async def launch_mein_radio(self):
-        context = await self.fetch_context(708601604353556491, 808087298632843294)
+        context = await self.fetch_context(546411393239220233, 855180960106676254)
         player: Player = self.bot.wavelink.get_player(
             guild_id=context.message.guild.id,
             cls=Player,
@@ -253,7 +253,7 @@ class MeinRadio(commands.Cog, wavelink.WavelinkMixin, name='Mein Radio'):
         )
         player.queue._queue.clear()
 
-        voice_channel = await discord.utils.get(context.guild.voice_channels, id=808072703663276103).edit(name="Mein Radio")
+        voice_channel = await discord.utils.get(context.guild.voice_channels, id=683251990284730397).edit(name="Mein Radio")
 
         if not player.is_connected:
             await context.invoke(self.connect)
@@ -433,7 +433,7 @@ class MeinRadio(commands.Cog, wavelink.WavelinkMixin, name='Mein Radio'):
 
         channel = getattr(ctx.author.voice, 'channel', channel)
         if channel is None:
-            channel = discord.utils.get(ctx.guild.voice_channels, id=808072703663276103)
+            channel = discord.utils.get(ctx.guild.voice_channels, id=683251990284730397)
             #raise NoChannelProvided
 
         await player.connect(channel.id)

@@ -94,7 +94,7 @@ class Audit(Cog, name='Система Аудита'):
                 if channel.id == ADMINS_CHANNEL or channel.id == GVARDIYA_CHANNEL:
                     return
                 else:
-                    embed = Embed(title="Сообщение было удалено [raw message delete event]",
+                    embed = Embed(title="Сообщение было удалено",
                                 description="Удаленноё сообщение не найдено в кэше, отображение о нём полной информации невозможно.",
                                 color=Color.red(), timestamp=datetime.utcnow())
                     embed.add_field(name="Канал:", value=channel.mention)
@@ -144,7 +144,7 @@ class Audit(Cog, name='Система Аудита'):
                 if channel.id == ADMINS_CHANNEL or channel.id == GVARDIYA_CHANNEL:
                     return
                 else:
-                    embed = Embed(title=f"Несколько {len(payload.message_ids)} сообщений были удалены [raw bulk message delete event]",
+                    embed = Embed(title=f"Несколько {len(payload.message_ids)} сообщений были удалены",
                                 description="Несколько сообщений были удалены, они не найдены в кэше, отображение полной информации невозможно.",
                                 color=Color.red(), timestamp=datetime.utcnow())
                     embed.add_field(name="ID удаленных сообщений:", value=f"```{', '.join([str(m.id) for m in payload.message_ids])}```", inline=False)
@@ -190,7 +190,7 @@ class Audit(Cog, name='Система Аудита'):
                     guild = channel.guild
                     data = payload.data
 
-                    embed = Embed(title="Сообщение было отредактировано [raw message edit event]", color=Color.blurple(), timestamp=datetime.utcnow())
+                    embed = Embed(title="Сообщение было отредактировано", color=Color.blurple(), timestamp=datetime.utcnow())
 
                     if "content" in data:
                         embed.description = "Поскольку сообщения нет в кэше, отображение старого содержимого невозможно.\n\n" + f"**Новое содержимое:**\n```{data['content'].replace('`', '`­')[:1940]}```"

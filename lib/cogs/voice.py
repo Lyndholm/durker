@@ -96,7 +96,7 @@ class Voice(Cog, name='VoiceChannels Management'):
                 await self.overwrite_text_channel_perms(member, self.temporary_channels[before.channel.id], False)
 
         if before.channel is not None and after.channel is not None:
-            if before.channel.id == 814769110042411068 or before.channel.id in self.temporary_channels:
+            if before.channel.id == PRIVATE_CHANNEL_GENERATOR or before.channel.id in self.temporary_channels:
                 channels_copy = self.temporary_channels.copy()
                 for k, v in channels_copy.items():
                     if k != after.channel.id:

@@ -323,14 +323,14 @@ class MusicPlayer(commands.Cog, wavelink.WavelinkMixin, name='Музыка'):
         return context
 
     async def launch_music_player(self):
-        context = await self.fetch_context(708601604353556491, 808087298632843294)
+        context = await self.fetch_context(546411393239220233, 855180960106676254)
         player: Player = self.bot.wavelink.get_player(
             guild_id=context.message.guild.id,
             cls=Player,
             context=context
         )
         player.queue._queue.clear()
-        voice_channel = await discord.utils.get(context.guild.voice_channels, id=808072703663276103).edit(name="Музыка-3")
+        voice_channel = await discord.utils.get(context.guild.voice_channels, id=683251990284730397).edit(name="Музыка-3")
 
     @commands.Cog.listener()
     async def on_ready(self):

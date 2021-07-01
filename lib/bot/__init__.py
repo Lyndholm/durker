@@ -36,8 +36,8 @@ logger.add("logs/{time:DD-MM-YYYY---HH-mm-ss}.log",
 
 
 TOKEN = getenv('DISCORD_BOT_TOKEN')
-PREFIX = "+"
-GUILD = 490181820353347584
+PREFIX = '+'
+GUILD = 546398541627785217
 OWNER_IDS = [375722626636578816]
 COGS = [path[:-3] for path in os.listdir('./lib/cogs') if path[-3:] == '.py']
 
@@ -71,9 +71,6 @@ class Bot(BotBase):
             721480135043448954, #общение
             546408250158088192, #поддержка
             644523860326219776, #медиа
-            546700132390010882, #ваши-вопросы
-            546700132390010882, #заявки-на-рассмотрение
-            809519845707743272  #spam (dev server)
         ]
         try:
             with open('./data/txt/banlist.txt', 'r', encoding='utf-8') as f:
