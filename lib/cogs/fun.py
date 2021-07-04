@@ -41,6 +41,7 @@ class Fun(Cog, name='Развлечения'):
             help=cmd["hug"]["help"],
             hidden=cmd["hug"]["hidden"], enabled=True)
     @required_level(cmd["hug"]["required_level"])
+    @is_channel(CONSOLE_CHANNEL)
     @guild_only()
     @cooldown(cmd["hug"]["cooldown_rate"], cmd["hug"]["cooldown_per_second"], BucketType.member)
     @logger.catch
@@ -378,6 +379,8 @@ class Fun(Cog, name='Развлечения'):
             help=cmd["8ball"]["help"],
             hidden=cmd["8ball"]["hidden"], enabled=True)
     @required_level(cmd["8ball"]["required_level"])
+    @is_channel(CONSOLE_CHANNEL)
+    @guild_only()
     @logger.catch
     async def magic_ball_command(self, ctx, *, question: str):
         posible_answers = {
