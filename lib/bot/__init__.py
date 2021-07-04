@@ -12,8 +12,8 @@ from discord.errors import Forbidden, HTTPException
 from discord.ext.commands import Bot as BotBase
 from discord.ext.commands import (CommandNotFound, CommandOnCooldown, Context,
                                   DisabledCommand, ExtensionAlreadyLoaded,
-                                  ExtensionNotLoaded, NoPrivateMessage,
-                                  PrivateMessageOnly)
+                                  ExtensionNotLoaded, MaxConcurrencyReached,
+                                  NoPrivateMessage, PrivateMessageOnly)
 from discord.ext.commands.errors import (CheckAnyFailure, CheckFailure,
                                          MissingPermissions)
 from dotenv import load_dotenv
@@ -311,6 +311,14 @@ class Bot(BotBase):
                     color=Color.red()
                 )
                 await ctx.reply(embed=embed, mention_author=False, delete_after=15)
+
+            elif isinstance(exc, MaxConcurrencyReached):
+                embed = Embed(
+                    title='❗ Внимание!',
+                    description=f"Команда `{ctx.command}` уже запущена.",
+                    color=Color.red()
+                )
+                await ctx.reply(embed=embed, mention_author=False)
 
             elif isinstance(exc, InsufficientLevel):
                 level = await get_command_required_level(ctx.command)

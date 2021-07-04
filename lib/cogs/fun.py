@@ -7,7 +7,7 @@ import aiofiles
 from aiohttp import ClientSession
 from discord import Color, Embed, Member
 from discord.ext.commands import (BucketType, Cog, Greedy, command, cooldown,
-                                  guild_only)
+                                  guild_only, max_concurrency)
 from discord.ext.commands.errors import MissingRequiredArgument
 from loguru import logger
 
@@ -220,6 +220,7 @@ class Fun(Cog, name='Развлечения'):
             usage=cmd["flags"]["usage"],
             help=cmd["flags"]["help"],
             hidden=cmd["flags"]["hidden"], enabled=True)
+    @max_concurrency(number=1, per=BucketType.guild, wait=False)
     @required_level(cmd["flags"]["required_level"])
     @is_channel(CONSOLE_CHANNEL)
     @guild_only()
