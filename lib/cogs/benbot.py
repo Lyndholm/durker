@@ -1,3 +1,5 @@
+import shlex
+from argparse import ArgumentParser
 from datetime import datetime
 from io import BytesIO
 from typing import Optional
@@ -14,6 +16,11 @@ from ..utils.paginator import Paginator
 from ..utils.utils import load_commands_from_json
 
 cmd = load_commands_from_json("benbot")
+
+
+class Arguments(ArgumentParser):
+    def error(self, message):
+        raise RuntimeError(message)
 
 
 class BenBot(Cog, name='Fortnite API 1'):
@@ -164,9 +171,48 @@ class BenBot(Cog, name='Fortnite API 1'):
     @is_channel(CONSOLE_CHANNEL)
     @guild_only()
     @logger.catch
-    async def extract_fn_asset_command(self, ctx, path: str):
+    async def extract_fn_asset_command(self, ctx, path: str, *, args: str = None):
+        if args is not None:
+            parser = Arguments(add_help=False, allow_abbrev=False)
+            parser.add_argument('-lang', nargs='+')
+            parser.add_argument('-rawIcon', nargs='+')
+            parser.add_argument('-noFeatured', nargs='+')
+            parser.add_argument('-noVariants', nargs='+')
+            parser.add_argument('-priceDaily', nargs='+')
+            parser.add_argument('-priceFeatured', nargs='+')
+
+            try:
+                args = parser.parse_args(shlex.split(args))
+            except Exception as e:
+                await ctx.reply(str(e), mention_author=False)
+
+            parameter = ""
+
+            if args.lang:
+                parameter += f"&lang={args.lang[0].lower()}"
+            else:
+                parameter += "&lang=ru"
+
+            if args.rawIcon:
+                parameter += f"&rawIcon={args.rawIcon[0].lower()}"
+
+            if args.noFeatured:
+                parameter += f"&noFeatured={args.noFeatured[0].lower()}"
+
+            if args.noVariants:
+                parameter += f"&noVariants={args.noVariants[0].lower()}"
+
+            if args.priceDaily:
+                parameter += f"&priceDaily={args.priceDaily[0].lower()}"
+
+            if args.priceFeatured:
+                parameter += f"&priceFeatured={args.priceFeatured[0].lower()}"
+
+        else:
+            parameter = "&lang=ru"
+
         async with ClientSession() as session:
-            async with session.get(f"https://benbot.app/api/v1/exportAsset?path={path}") as r:
+            async with session.get(f"https://benbot.app/api/v1/exportAsset?path={path}{parameter}") as r:
                 if r.status != 200:
                     await ctx.reply(
                         f"""```json\n{await r.text()}```""",
