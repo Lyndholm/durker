@@ -260,9 +260,8 @@ class Commands(Cog, name='Базовые команды'):
     async def display_member_avatar(self, ctx, member: Optional[Member]):
         await ctx.message.delete()
         if not member:
-            await ctx.send(f'{ctx.author.mention}, укажите пользователя, чей аватар вы хотите увидеть.', delete_after=10)
+            member = ctx.author
             ctx.command.reset_cooldown(ctx)
-            return
 
         embed = Embed(
             title=f'Аватар {member.display_name}',
