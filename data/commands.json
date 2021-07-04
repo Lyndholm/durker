@@ -361,6 +361,24 @@
       "cooldown_type": "member",
       "hidden": false
     },
+    "covid": {
+      "name": "covid",
+      "aliases": [
+        "ковид",
+        "coronastats",
+        "корона"
+      ],
+      "brief": "Статистика по коронавирусу.",
+      "description": "Отображение статистики по коронавирусу для конкретной страны.",
+      "usage": "covid <country>",
+      "help": "Бот отображает актуальную статистику по коронавирусу для конкретной страны.\nРаботает только на сервере в канале <#859921140805926932>.\n\n**Кулдаун:** 1 минута, действует на определённого пользователя.\n**Необходимый уровень:** 0",
+      "required_level": 0,
+      "has_cooldown": true,
+      "cooldown_rate": 1,
+      "cooldown_per_second": 60,
+      "cooldown_type": "member",
+      "hidden": false
+    },
     "info": {
       "name": "info",
       "aliases": [
@@ -411,26 +429,6 @@
       "cooldown_per_second": 0,
       "cooldown_type": "None",
       "hidden": true
-    }
-  },
-  "covid": {
-    "covid": {
-      "name": "covid",
-      "aliases": [
-        "ковид",
-        "coronastats",
-        "корона"
-      ],
-      "brief": "Статистика по коронавирусу.",
-      "description": "Отображение статистики по коронавирусу для конкретной страны.",
-      "usage": "covid <country>",
-      "help": "Бот отображает актуальную статистику по коронавирусу для конкретной страны.\nРаботает только на сервере в канале <#859921140805926932>.\n\n**Кулдаун:** 1 минута, действует на определённого пользователя.\n**Необходимый уровень:** 0",
-      "required_level": 0,
-      "has_cooldown": true,
-      "cooldown_rate": 1,
-      "cooldown_per_second": 60,
-      "cooldown_type": "member",
-      "hidden": false
     }
   },
   "durka": {
