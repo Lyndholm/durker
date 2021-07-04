@@ -44,10 +44,10 @@ class Welcome(Cog, name='Greetings'):
                     await after.send(embed=embed)
                 else:
                     embed = Embed(title=f"Добро пожаловать!", color=Color.orange(),
-                    description = f"Здравствуй, **{after.display_name}**! Приветствуем тебя в фортнайтерском логове сайта [FORTNITEFUN.RU](https://fortnitefun.ru) :tada::hugging:"
+                    description = f"Здравствуй, **{after.display_name}**! Приветствуем тебя в фортнайтерском логове сайта [FORTNITEFUN.RU](https://fortnitefun.ru) 🎉🤗"
                     "\nСпасибо, что заглянул к нам! Мы рады каждому новому участнику. "
                     "Настоятельно рекомендуем ознакомиться с разделом 'Для новичков'. "
-                    "\nВ канале <#546409230127595544> ты узнаешь много полезной информации, включая правила, которые необходимо соблюдать. "
+                    "\nВ <#546409230127595544> ты узнаешь много полезной информации, а в канале <#860252229986025502> найдёшь правила, которые необходимо соблюдать. "
                     "\nВ канале <#547390000120070152> представлен полный список ролей сервера, а также возможности их получения.")
 
                     embed.add_field(name="Хочешь поговорить?", value="Местечко для общения на разные темы: <#721480135043448954>", inline=False)
@@ -64,8 +64,8 @@ class Welcome(Cog, name='Greetings'):
             finally:
                 insert_new_user_in_db(after)
 
-                embed = Embed(description=f"Привет, **{after.display_name}** ({after.mention})!\nДобро пожаловать на сервер **{after.guild.name}** :tada::hugging:!",
-                            color=Color.green(), timestamp=datetime.now())
+                embed = Embed(description=f"Привет, **{after.display_name}** ({after.mention})!\nДобро пожаловать на сервер **{after.guild.name}** 🎉🤗!",
+                            color=Color.green(), timestamp=datetime.utcnow())
                 embed.set_author(name=f"Новый участник на сервере!", icon_url=f"{after.guild.icon_url}")
                 await self.bot.get_channel(WELCOME_CHANNEL).send(embed=embed)
 
@@ -80,18 +80,21 @@ class Welcome(Cog, name='Greetings'):
     @logger.catch
     async def on_member_remove(self, member):
         if member.pending is True:
-            embed = Embed(description=f"Пользователь **{member.display_name}** ({member.mention}) не завершил процесс верификации, не принял правила и покинул сервер.",
-                        color=Color.dark_red(), timestamp=datetime.now())
-            embed.set_author(name=f"Пользователь покинул сервер", icon_url=f"{member.guild.icon_url}")
-
+            embed = Embed(
+                title='Пользователь покинул сервер',
+                color=Color.dark_red(),
+                timestamp=datetime.utcnow(),
+                description=f"Пользователь **{member.display_name}** ({member.mention}) не завершил " \
+                            "процесс верификации, не принял правила и покинул сервер."
+                )
             await self.bot.get_channel(AUDIT_LOG_CHANNEL).send(embed=embed)
 
         else:
             dump_user_data_in_json(member)
             delete_user_from_db(member.id)
 
-            embed = Embed(description=f"К сожалению, пользователь **{member.display_name}** ({member.mention}) покинул сервер:disappointed:",
-                        color=Color.gold(), timestamp=datetime.now())
+            embed = Embed(description=f"К сожалению, пользователь **{member.display_name}** ({member.mention}) покинул сервер 😞",
+                        color=Color.gold(), timestamp=datetime.utcnow())
             embed.set_author(name=f"Участник покинул сервер", icon_url=f"{member.guild.icon_url}")
 
             await self.bot.get_channel(GOODBYE_CHANNEL).send(embed=embed)
