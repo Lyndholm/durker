@@ -11,7 +11,10 @@ from discord.utils import get
 from loguru import logger
 
 from ..db import db
-from ..utils.constants import CHASOVOY_ROLE_ID
+from ..utils.constants import (CACTUS_ROLE_ID, CAPTAIN_ROLE_ID,
+                               CHASOVOY_ROLE_ID, CREATOR_ROLE_ID,
+                               DOBRYAK_ROLE_ID, GVARDIYA_ROLE_ID,
+                               JOHN_WICK_ROLE_ID, OLD_ROLE_ID, VETERAN_ROLE_ID)
 from ..utils.utils import cooldown_timer_str, load_commands_from_json
 
 cmd = load_commands_from_json("durka")
@@ -43,15 +46,15 @@ def have_available_durka_calls() -> bool:
 def have_enough_perms_for_calling() -> bool:
     def predicate(ctx):
         allowed_roles = (
-            686499129895157761, #гвардия
-            546417656018763793, #олд
-            546417889884897293, #капитан
-            765942949476302849, #ветеран
-            643879247433433108, #часовой
-            682157177959481363, #добряк
-            546418128490332161, #джон уик
-            546403143643037696, #cactus' role
-            546409562631045170, #создатель
+            GVARDIYA_ROLE_ID,
+            OLD_ROLE_ID,
+            CAPTAIN_ROLE_ID,
+            VETERAN_ROLE_ID,
+            CHASOVOY_ROLE_ID,
+            DOBRYAK_ROLE_ID,
+            JOHN_WICK_ROLE_ID,
+            CACTUS_ROLE_ID,
+            CREATOR_ROLE_ID,
             790664227706241068, #dev role (dev server)
         )
         if set([int(r.id) for r in ctx.author.roles]).intersection(allowed_roles):

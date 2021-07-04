@@ -37,7 +37,6 @@ logger.add("logs/{time:DD-MM-YYYY---HH-mm-ss}.log",
 
 TOKEN = getenv('DISCORD_BOT_TOKEN')
 PREFIX = '+'
-GUILD = 546398541627785217
 OWNER_IDS = [375722626636578816]
 COGS = [path[:-3] for path in os.listdir('./lib/cogs') if path[-3:] == '.py']
 

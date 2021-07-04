@@ -16,7 +16,8 @@ from psutil import Process, cpu_percent, virtual_memory
 from ..db import db
 from ..utils.checks import is_channel, required_level
 from ..utils.constants import (CHASOVOY_ROLE_ID, CONSOLE_CHANNEL,
-                               MUSIC_COMMANDS_CHANNEL)
+                               KAPITALIST_ROLE_ID, MAGNAT_ROLE_ID,
+                               MECENAT_ROLE_ID, MUSIC_COMMANDS_CHANNEL)
 from ..utils.utils import load_commands_from_json
 
 cmd = load_commands_from_json("commands")
@@ -102,12 +103,12 @@ class Commands(Cog, name='Базовые команды'):
         )
         embed.add_field(
             name="Сделали покупку с нашим тегом автора?",
-            value="Присылайте скриншот в канал <#546408250158088192>. За это вы получите роль <@&643877589479587841>",
+            value=f"Присылайте скриншот в канал <#546408250158088192>. За это вы получите роль <@&{MECENAT_ROLE_ID}>",
             inline=False
         )
         embed.add_field(
             name="Больше ролей",
-            value="Потратив с тегом 10 000 и 25 000 В-Баксов, вы получите роль <@&672376974844493824> и <@&765974953127313418> соответственно.",
+            value=f"Потратив с тегом 10 000 и 25 000 В-Баксов, вы получите роли <@&{KAPITALIST_ROLE_ID}> и <@&{MAGNAT_ROLE_ID}> соответственно.",
             inline=False
         )
         embed.add_field(

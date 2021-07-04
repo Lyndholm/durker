@@ -13,6 +13,9 @@ from jishaku.functools import executor_function
 from loguru import logger
 
 from ..db import db
+from ..utils.constants import (CAPTAIN_ROLE_ID, KAPITALIST_ROLE_ID,
+                               MAGNAT_ROLE_ID, MECENAT_ROLE_ID, OLD_ROLE_ID,
+                               VETERAN_ROLE_ID, WORKER_ROLE_ID)
 from ..utils.utils import edit_user_reputation, joined_date
 
 ITEM_SHOP_ENDPOINT = "https://fortnite-api.com/v2/shop/br/combined"
@@ -60,10 +63,10 @@ class BackgroundTasks(Cog, name='Фоновые процессы'):
     @tasks.loop(minutes=10.0)
     @logger.catch
     async def check_activity_role(self):
-        worker = get(self.bot.guild.roles, id=643875511059218452)
-        old = get(self.bot.guild.roles, id=546417656018763793)
-        captain = get(self.bot.guild.roles, id=546417889884897293)
-        veteran = get(self.bot.guild.roles, id=765942949476302849)
+        worker = get(self.bot.guild.roles, id=WORKER_ROLE_ID)
+        old = get(self.bot.guild.roles, id=OLD_ROLE_ID)
+        captain = get(self.bot.guild.roles, id=CAPTAIN_ROLE_ID)
+        veteran = get(self.bot.guild.roles, id=VETERAN_ROLE_ID)
 
         for member in self.bot.guild.members:
             if self.mod_cog.is_member_muted(member):
@@ -97,8 +100,8 @@ class BackgroundTasks(Cog, name='Фоновые процессы'):
     @tasks.loop(hours=24.0)
     @logger.catch
     async def check_mecenat_role(self):
-        mecenat = get(self.bot.guild.roles, id=643877589479587841)
-        kapitalist = get(self.bot.guild.roles, id=672376974844493824)
+        mecenat = get(self.bot.guild.roles, id=MECENAT_ROLE_ID)
+        kapitalist = get(self.bot.guild.roles, id=KAPITALIST_ROLE_ID)
 
         for member in self.bot.guild.members:
             purchases = db.fetchone(['purchases'], 'users_stats', 'user_id', member.id)[0]['vbucks_purchases']
@@ -116,8 +119,8 @@ class BackgroundTasks(Cog, name='Фоновые процессы'):
     @tasks.loop(hours=1.0)
     @logger.catch
     async def check_supporter_role(self):
-        kapitalist = get(self.bot.guild.roles, id=672376974844493824)
-        magnat = get(self.bot.guild.roles, id=765974953127313418)
+        kapitalist = get(self.bot.guild.roles, id=KAPITALIST_ROLE_ID)
+        magnat = get(self.bot.guild.roles, id=MAGNAT_ROLE_ID)
 
         for member in self.bot.guild.members:
             if self.mod_cog.is_member_muted(member):

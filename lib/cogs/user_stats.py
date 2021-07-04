@@ -8,7 +8,7 @@ from loguru import logger
 
 from ..db import db
 from ..utils.checks import is_channel
-from ..utils.constants import STATS_CHANNEL
+from ..utils.constants import STATS_CHANNEL, KAPITALIST_ROLE_ID, MAGNAT_ROLE_ID
 from ..utils.utils import joined_date, load_commands_from_json, russian_plural
 
 cmd = load_commands_from_json("user_stats")
@@ -84,9 +84,9 @@ class UserStats(Cog, name='Статистика'):
 
         realMoney = sum(purchases[0]['realMoney_purchases'][i]['price'] for i in range(len(purchases[0]['realMoney_purchases'])))
 
-        kapitalist = ctx.guild.get_role(672376974844493824)
+        kapitalist = ctx.guild.get_role(KAPITALIST_ROLE_ID)
 
-        magnat = ctx.guild.get_role(765974953127313418)
+        magnat = ctx.guild.get_role(MAGNAT_ROLE_ID)
 
         embed = Embed(color=target.color)
 

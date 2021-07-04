@@ -12,8 +12,9 @@ from loguru import logger
 
 from ..db import db
 from ..utils.checks import is_any_channel, is_channel
-from ..utils.constants import (CONSOLE_CHANNEL, SAC_SCREENSHOTS_CHANNEL,
-                               STATS_CHANNEL)
+from ..utils.constants import (CONSOLE_CHANNEL, KAPITALIST_ROLE_ID,
+                               MAGNAT_ROLE_ID, MECENAT_ROLE_ID,
+                               SAC_SCREENSHOTS_CHANNEL, STATS_CHANNEL)
 from ..utils.decorators import listen_for_guilds
 from ..utils.paginator import Paginator
 from ..utils.utils import edit_user_reputation, load_commands_from_json
@@ -91,9 +92,9 @@ class PurchasesHandler(Cog, name='Покупки и не только'):
         purchases = db.fetchone(['purchases'], 'users_stats', 'user_id', member.id)[0]
         vbucks_count = sum(purchases['vbucks_purchases'][i]['price'] for i in range(len(purchases['vbucks_purchases'])))
 
-        mecenat = get(self.bot.guild.roles, id=643877589479587841)
-        kapitalist = get(self.bot.guild.roles, id=672376974844493824)
-        magnat = get(self.bot.guild.roles, id=765974953127313418)
+        mecenat = get(self.bot.guild.roles, id=MECENAT_ROLE_ID)
+        kapitalist = get(self.bot.guild.roles, id=KAPITALIST_ROLE_ID)
+        magnat = get(self.bot.guild.roles, id=MAGNAT_ROLE_ID)
 
         if mecenat not in member.roles:
             await member.add_roles(mecenat)
@@ -275,9 +276,9 @@ class PurchasesHandler(Cog, name='Покупки и не только'):
             'Присылайте скриншот/видео в <#546408250158088192> '
             '(новичкам недоступен просмотр истории канала, '
             ' но это не помеха для отправки скринов). '
-            'За поддержку и присланное фото вам достанется роль <@&643877589479587841>\n'
-            'Потратив с тегом **10 000** и **25 000** В-Баксов, вы получите роль '
-            '<@&672376974844493824> и <@&765974953127313418> соответственно.\n\n'
+            f'За поддержку и присланное фото вам достанется роль <@&{MECENAT_ROLE_ID}>\n'
+            'Потратив с тегом **10 000** и **25 000** В-Баксов, вы получите роли '
+            f'<@&{KAPITALIST_ROLE_ID}> и <@&{MAGNAT_ROLE_ID}> соответственно.\n\n'
             '💸 К сожалению, стартер паки и прочие платные наборы, в которых есть В-Баксы, '
             'не считаются за поддержку автора. Таковы правила Epic Games. Однако это '
             'не мешает вам прислать скрин такой покупки в <#546408250158088192>, но '
