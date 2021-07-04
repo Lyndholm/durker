@@ -5,7 +5,7 @@ from itertools import cycle
 
 import aiofiles
 from aiohttp import ClientSession
-from discord import Game
+from discord import Activity, ActivityType
 from discord.ext import tasks
 from discord.ext.commands import Cog
 from discord.utils import get
@@ -20,7 +20,6 @@ from ..utils.utils import edit_user_reputation, joined_date
 
 ITEM_SHOP_ENDPOINT = "https://fortnite-api.com/v2/shop/br/combined"
 ACTIVITIES = cycle([
-    '+help | V3.0.0 🥳',
     '+help | durker.fun',
     '+help | docs.durker.fun',
     '+help | fortnitefun.ru',
@@ -53,7 +52,7 @@ class BackgroundTasks(Cog, name='Фоновые процессы'):
 
     @tasks.loop(minutes=3.0)
     async def change_bot_activity(self):
-        await self.bot.change_presence(activity=Game(next(ACTIVITIES)))
+        await self.bot.change_presence(activity=Activity(type=ActivityType.listening, name=next(ACTIVITIES)))
 
     @change_bot_activity.before_loop
     async def before_change_bot_activity(self):
