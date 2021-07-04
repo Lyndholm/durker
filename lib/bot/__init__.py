@@ -78,7 +78,6 @@ class Bot(BotBase):
             self.banlist = []
 
         self.load_music_cogs(self.scheduler)
-        db.autosave(self.scheduler)
 
         super().__init__(command_prefix=PREFIX,
                          case_insensitive=True,
