@@ -440,7 +440,7 @@ class FortniteAPIcom(Cog, name='Fortnite API 2'):
         async with ClientSession() as session:
             async with session.get(f"https://fortnite-api.com/v2/creatorcode/search/all", params={"name": code}) as r:
                 if r.status == 404:
-                    embed = Embed(title='❗ Внимание!', description ="Указанный тег автора не найден.", color= Color.red())
+                    embed = Embed(title='❗ Внимание!', description ="Указанный тег автора не найден.", color= Color.gold())
                     await ctx.message.reply(embed=embed, mention_author=False)
                 elif r.status == 200:
                     data = await r.json()
@@ -450,24 +450,19 @@ class FortniteAPIcom(Cog, name='Fortnite API 2'):
                     for i in range(0,len(data)):
                         embed = Embed(
                             title=f'Код автора: {data[i]["code"]}',
-                            color=Color.random(),
+                            color=Color.green() if data[i]["status"] == 'ACTIVE' else Color.red(),
                             timestamp=datetime.utcnow()
                         )
                         embed.add_field(
                             name="Account",
                             value=f'Name: {data[i]["account"]["name"]}\nID: {data[i]["account"]["id"]}',
                             inline=False
-                            )
+                        )
                         embed.add_field(
                             name="Status",
                             value=data[i]["status"],
                             inline=True
-                            )
-                        embed.add_field(
-                            name="Verified",
-                            value=data[i]["verified"],
-                            inline=True
-                            )
+                        )
                         code_embeds.append(embed)
 
                     message = await ctx.reply(embed=code_embeds[0], mention_author=False)
