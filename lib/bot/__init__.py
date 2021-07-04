@@ -10,12 +10,12 @@ from discord import Color, Embed, Intents
 from discord.channel import DMChannel
 from discord.errors import Forbidden, HTTPException
 from discord.ext.commands import Bot as BotBase
-from discord.ext.commands import (CommandNotFound, CommandOnCooldown, Context,
+from discord.ext.commands import (CheckAnyFailure, CheckFailure,
+                                  CommandNotFound, CommandOnCooldown, Context,
                                   DisabledCommand, ExtensionAlreadyLoaded,
                                   ExtensionNotLoaded, MaxConcurrencyReached,
+                                  MissingPermissions, MissingRequiredArgument,
                                   NoPrivateMessage, PrivateMessageOnly)
-from discord.ext.commands.errors import (CheckAnyFailure, CheckFailure,
-                                         MissingPermissions)
 from dotenv import load_dotenv
 from loguru import logger
 
@@ -319,6 +319,37 @@ class Bot(BotBase):
                     color=Color.red()
                 )
                 await ctx.reply(embed=embed, mention_author=False)
+
+            elif isinstance(exc, MissingRequiredArgument):
+                if str(ctx.command) == 'knb':
+                    embed = Embed(
+                        title='❗ Внимание!',
+                        description=f'Укажите, что вы выбрали: камень, ножницы или бумагу.\n' \
+                                    f'`{ctx.command.usage}`',
+                        color= Color.red()
+                    )
+                    await ctx.send(embed=embed, delete_after=15)
+                elif str(ctx.command) == '8ball':
+                    embed = Embed(
+                        title='❗ Внимание!',
+                        description=f"Пожалуйста, укажите вопрос.",
+                        color = Color.red()
+                    )
+                    await ctx.reply(embed=embed, mention_author=False, delete_after=15)
+                elif str(ctx.command) == 'randint':
+                    embed = Embed(
+                        title='❗ Внимание!',
+                        description=f"Пожалуйста, укажите корректный диапазон **целых** чисел.",
+                        color = Color.red()
+                    )
+                    await ctx.reply(embed=embed, mention_author=False, delete_after=15)
+                else:
+                    embed = Embed(
+                        title='❗ Внимание!',
+                        description=f"Пропущен один или несколько параметров. Параметры команды можно узнать в help меню.",
+                        color=Color.red()
+                    )
+                    await ctx.reply(embed=embed, mention_author=False)
 
             elif isinstance(exc, InsufficientLevel):
                 level = await get_command_required_level(ctx.command)

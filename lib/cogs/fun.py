@@ -8,7 +8,6 @@ from aiohttp import ClientSession
 from discord import Color, Embed, Member
 from discord.ext.commands import (BucketType, Cog, Greedy, command, cooldown,
                                   guild_only, max_concurrency)
-from discord.ext.commands.errors import MissingRequiredArgument
 from loguru import logger
 
 from ..utils.checks import is_channel, required_level
@@ -366,12 +365,6 @@ class Fun(Cog, name='Развлечения'):
         embed.set_footer(icon_url=ctx.author.avatar_url)
         await ctx.send(embed=embed)
 
-    @stone_scissors_paper_command.error
-    async def stone_scissors_paper_command_error(self, ctx, exc):
-        if isinstance(exc, MissingRequiredArgument):
-            embed = Embed(title='❗ Внимание!', description =f"Укажите, что вы выбрали: камень, ножницы или бумагу.\n`{ctx.command} {ctx.command.usage}`", color= Color.red())
-            await ctx.send(embed=embed, delete_after=15)
-
 
     @command(name=cmd["8ball"]["name"], aliases=cmd["8ball"]["aliases"],
             brief=cmd["8ball"]["brief"],
@@ -418,13 +411,6 @@ class Fun(Cog, name='Развлечения'):
             await ctx.reply("Это не вопрос.", mention_author=False)
 
 
-    @magic_ball_command.error
-    async def magic_ball_command_error(self, ctx, exc):
-        if isinstance(exc, MissingRequiredArgument):
-            embed = Embed(title='❗ Внимание!', description =f"Пожалуйста, укажите вопрос.", color = Color.red())
-            await ctx.reply(embed=embed, mention_author=False, delete_after=30)
-
-
     @command(name=cmd["randint"]["name"], aliases=cmd["randint"]["aliases"],
             brief=cmd["randint"]["brief"],
             description=cmd["randint"]["description"],
@@ -435,12 +421,6 @@ class Fun(Cog, name='Развлечения'):
     async def randint_command(self, ctx, a: int, b: int):
         embed = Embed(title="Генератор случайных чисел", description=f"Случайное целое число: **{randint(a,b)}**", color=Color.random())
         await ctx.reply(embed=embed, mention_author=False)
-
-    @randint_command.error
-    async def randint_command_error(self, ctx, exc):
-        if isinstance(exc, MissingRequiredArgument):
-            embed = Embed(title='❗ Внимание!', description =f"Пожалуйста, укажите корректный диапазон **целых** чисел.", color = Color.red())
-            await ctx.reply(embed=embed, mention_author=False, delete_after=30)
 
 
 def setup(bot):
