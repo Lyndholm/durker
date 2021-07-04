@@ -323,7 +323,7 @@ class Audit(Cog, name='Система Аудита'):
     @Cog.listener()
     @logger.catch
     async def on_voice_state_update(self, member: Member, before: VoiceState, after: VoiceState):
-        if before.channel is None:
+        if before.channel is None and after.channel is not None:
             embed = Embed(
                 description=f"Участник **{member.display_name}** ({member.mention}) зашел в голосовой канал 🔊 "
                 f"**{after.channel.name}** ({after.channel.mention})",
