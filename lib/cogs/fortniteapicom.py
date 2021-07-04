@@ -284,7 +284,7 @@ class FortniteAPIcom(Cog, name='Fortnite API 2'):
                 pass
             try:
                 hist = "```\n"
-                for i2 in i["shopHistory"]:
+                for i2 in i["shopHistory"][::-1]:
                     i2 = i2.split("T")
                     i2 = i2[0].split("-")
                     hist += f"{i2[2]}.{i2[1]}.{i2[0]}\n"
