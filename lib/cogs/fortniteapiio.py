@@ -252,7 +252,7 @@ class FortniteAPIio(Cog, name='Fortnite API 3'):
                     "Сейчас вы видите карту всех персонажей фортнайт. Как обычно, есть отличившиеся, которые спавнятся не в одном месте. "
                     "Красным кругляшом отмечены персонажи — боссы, так что подходите к ним аккуратнее, а то съедят."
             )
-            embed.set_image(url="https://fortnitefun.ru/wp-content/uploads/2021/06/%D0%92%D0%A1%D0%95.jpg")
+            embed.set_image(url="https://fortnitefun.ru/wp-content/uploads/2021/06/%D0%B2%D1%81%D0%B5-%D0%BF%D0%B5%D1%80%D1%81%D0%BE%D0%BD%D0%B0%D0%B6%D0%B8-%D1%84%D0%BE%D1%80%D1%82%D0%BD%D0%B0%D0%B9%D1%82.jpg")
             npc_embeds.append(embed)
 
             for count, entry in enumerate(data):

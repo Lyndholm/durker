@@ -354,9 +354,9 @@ class Fun(Cog, name='Развлечения'):
         if win == win_list[0]:
             out["img"] = "https://image.flaticon.com/icons/png/512/445/445087.png"
         elif win == win_list[1]:
-            out["img"] = "https://cdn.discordapp.com/attachments/774698479981297664/774700936958312468/placeholder.png"
+            out["img"] = "https://pixelartmaker-data-78746291193.nyc3.digitaloceanspaces.com/image/dee02334ffed1f4.png"
         else:
-            out["img"] = "https://cdn.discordapp.com/attachments/774698479981297664/774700936958312468/placeholder.png"
+            out["img"] = "https://cdn.discordapp.com/attachments/774698479981297664/861361420141330462/handshake.png"
 
         embed = Embed(title="Результат игры", description = win, colour=Color.random(), timestamp=ctx.message.created_at)
         embed.add_field(name="Выбор бота:", value=robot_choice, inline=True)
