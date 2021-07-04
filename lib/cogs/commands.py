@@ -162,6 +162,12 @@ class Commands(Cog, name='Базовые команды'):
     @logger.catch
     async def redirect_to_media_channel_command(self, ctx, targets: Greedy[Member]):
         await ctx.message.delete()
+
+        for member in targets:
+            async for message in ctx.channel.history(limit=10):
+                if message.author == member and message.attachments:
+                    await message.delete()
+
         await ctx.send(' '.join(member.mention for member in targets) +  f' Изображениям и прочим медиафайлам, '
                        'не относящимся к теме разговора, нет места в чате! Пожалуйста, используйте канал <#644523860326219776>')
 
