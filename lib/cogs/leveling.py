@@ -99,7 +99,7 @@ class Leveling(Cog, name='Система уровней'):
             description=f'Участник {message.author.mention} достиг нового уровня: **{level + 1}** 🥳'
                         f'\nРепутация пользователя увеличена на **{rep_reward}** очков.'
         )
-        await message.channel.send(embed=embed, delete_after=15)
+        await message.channel.send(embed=embed, delete_after=30)
 
     @Cog.listener()
     async def on_ready(self):

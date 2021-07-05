@@ -191,7 +191,7 @@ class Durka(Cog, name='Родина-Дурка'):
                 "Судя по всему, в чате творится дурка. К счастью, наш оператор готов принять заказ на шизоидов. "
                 "Пожалуйста, укажите пользователей, которых необходимо забрать на лечение: `+дурка @users`\n"
                 "Учтите, места в дурко-мобиле ограничены, санитары не могут перевозить более 5 пациентов за раз. "
-                "Также за сутки вы можете вызвать дурку не более 3-х раз.", delete_after=60)
+                "Также за сутки вы можете вызвать дурку не более 3-х раз.")
             ctx.command.reset_cooldown(ctx)
             if ctx.author.top_role.position < self.chasovoy.position:
                 db.execute("UPDATE durka_stats SET available_durka_calls = available_durka_calls + 1 WHERE user_id = %s", ctx.author.id)
@@ -231,7 +231,7 @@ class Durka(Cog, name='Родина-Дурка'):
             await ctx.reply(
                 f'Дружище {ctx.author.mention}, ты пока не можешь вызывать дурку. '
                 'Тебе необходимо получить роль **Олд**, как минимум.',
-                mention_author=False, delete_after=30
+                mention_author=False
             )
         elif isinstance(exc, NoAvaliableDurkaCalls):
             await ctx.message.delete(delay=30)
@@ -239,7 +239,7 @@ class Durka(Cog, name='Родина-Дурка'):
                 f'{ctx.author.mention}, вы исчерпали суточный лимит использования дурки. '
                 'В день вы можете вызвать саниторов не более **трёх** раз. Количество '
                 'вызовов сбрасывается ежедневно в **03:00 МСК**.',
-                mention_author=False, delete_after=30
+                mention_author=False
             )
         elif isinstance(exc, CommandOnCooldown):
             await ctx.message.delete(delay=30)
@@ -247,7 +247,7 @@ class Durka(Cog, name='Родина-Дурка'):
                 f'Не так быстро! Дурка может принять заказ от одного пользователя раз в '
                 '**60 минут**. Новый вызов можно будет сделать через '
                 f'{cooldown_timer_str(exc.retry_after)}',
-                mention_author=False, delete_after=30
+                mention_author=False
             )
         elif isinstance(exc, NoPrivateMessage):
             await ctx.reply('Дурка не работает в личных сообщениях.', mention_author=False)
@@ -281,7 +281,7 @@ class Durka(Cog, name='Родина-Дурка'):
             await ctx.reply(
                 f'Дружище {ctx.author.mention}, ты пока не можешь вызывать дурку. '
                 'Тебе необходимо получить роль **Олд**, как минимум.',
-                mention_author=False, delete_after=30
+                mention_author=False
             )
         elif isinstance(exc, NoAvaliableDurkaCalls):
             await ctx.message.delete(delay=30)
@@ -289,7 +289,7 @@ class Durka(Cog, name='Родина-Дурка'):
                 f'{ctx.author.mention}, вы исчерпали суточный лимит использования дурки. '
                 'В день вы можете вызвать саниторов не более **трёх** раз. Количество '
                 'вызовов сбрасывается ежедневно в **03:00 МСК**.',
-                mention_author=False, delete_after=30
+                mention_author=False
             )
         elif isinstance(exc, CommandOnCooldown):
             await ctx.message.delete(delay=30)
@@ -297,7 +297,7 @@ class Durka(Cog, name='Родина-Дурка'):
                 f'Не так быстро! Дурку чату можно вызвать один раз в **15 минут**. '
                 'Новый вызов можно будет сделать через '
                 f'{cooldown_timer_str(exc.retry_after)}',
-                delete_after=30, mention_author=False
+                mention_author=False
             )
         elif isinstance(exc, NoPrivateMessage):
             await ctx.reply("Дурка не работает в личных сообщениях.", mention_author=False)

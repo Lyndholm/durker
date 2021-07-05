@@ -64,7 +64,7 @@ class Fun(Cog, name='Развлечения'):
             color=ctx.author.color
         )
         embed.set_image(url=hug_gif_url)
-        await ctx.send(embed=embed, delete_after=180)
+        await ctx.send(embed=embed)
 
 
     @command(name=cmd["coin"]["name"], aliases=cmd["coin"]["aliases"],

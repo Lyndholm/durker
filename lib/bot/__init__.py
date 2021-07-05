@@ -259,7 +259,7 @@ class Bot(BotBase):
                     description=f"Команда на откате. Ожидайте {cooldown_timer_str(exc.retry_after)}",
                     color=Color.red()
                 )
-                await ctx.reply(embed=embed, mention_author=False, delete_after=10)
+                await ctx.reply(embed=embed, mention_author=False, delete_after=15)
 
             elif isinstance(exc, DisabledCommand):
                 embed = Embed(
@@ -267,7 +267,7 @@ class Bot(BotBase):
                     description=f"Команда `{ctx.command}` отключена.",
                     color=Color.red()
                 )
-                await ctx.reply(embed=embed, mention_author=False, delete_after=10)
+                await ctx.reply(embed=embed, mention_author=False)
 
             elif isinstance(exc, NoPrivateMessage):
                 try:
@@ -310,7 +310,7 @@ class Bot(BotBase):
                     description=f"Невозможно отправить сообщение. Возможно, превышен лимит символов.",
                     color=Color.red()
                 )
-                await ctx.reply(embed=embed, mention_author=False, delete_after=15)
+                await ctx.reply(embed=embed, mention_author=False)
 
             elif isinstance(exc, MaxConcurrencyReached):
                 embed = Embed(
@@ -360,7 +360,7 @@ class Bot(BotBase):
                                 f"и выше.\nВаш текущий уровень: **{member_level}**.",
                     color=Color.red()
                 )
-                await ctx.reply(embed=embed, mention_author=False, delete_after=15)
+                await ctx.reply(embed=embed, mention_author=False)
 
             elif isinstance(exc, NotInAllowedTextChannel) or isinstance(exc, InForbiddenTextChannel):
                 txt = await get_command_text_channels(ctx.command)
@@ -369,7 +369,7 @@ class Bot(BotBase):
                     description=f"Команда `{ctx.command.name}` {txt.lower()}",
                     color=Color.red()
                 )
-                await ctx.reply(embed=embed, mention_author=False, delete_after=15)
+                await ctx.reply(embed=embed, mention_author=False)
 
             elif isinstance(exc, CheckFailure) or isinstance(exc, CheckAnyFailure):
                 embed = Embed(
