@@ -259,34 +259,39 @@ class BenBot(Cog, name='Fortnite API 1'):
     @guild_only()
     @cooldown(cmd["shopsections"]["cooldown_rate"], cmd["shopsections"]["cooldown_per_second"], BucketType.member)
     @logger.catch
-    async def display_fortnite_section_store_command(self, ctx):
+    async def display_fortnite_section_store_command(self, ctx, lang: str = 'ru'):
         async with ClientSession() as session:
-            async with session.get("https://benbot.app/api/v1/calendar") as r:
+            async with session.get(f'https://fn-api.com/api/shop/sections?lang={lang}') as r:
                 if r.status != 200:
                     await ctx.reply(
                         f"""```json\n{await r.text()}```""",
                         mention_author=False
                     )
                     return
-
                 data = await r.json()
-                embed = Embed(
-                    title="Разделы магазина предметов",
-                    color=Color.gold(),
-                    timestamp=datetime.utcnow()
-                )
-                try:
-                    sections_dict = data["channels"]["client-events"]["states"][1]["state"]["sectionStoreEnds"]
-                except (IndexError, KeyError):
-                    sections_dict = data["channels"]["client-events"]["states"][0]["state"]["sectionStoreEnds"]
 
-                var = "Дата напротив каждой категории обозначает время, до которого раздел будет существовать. Время указано в **UTC**.\n\n"
-                for key, value in sections_dict.items():
-                    var+= f"**{key}:** {value}\n"
+        time = ""
+        j = data['data']['timestamp'].split("T")
+        i = j[0].split("-")
+        time += f"{i[2]}.{i[1]}.{i[0]} {j[1][:-1]}"
 
-                embed.description = var
+        embed = Embed(
+            title="Разделы магазина предметов",
+            color=Color.gold(),
+            timestamp=datetime.utcnow(),
+            description=f'Актуально до: {time} UTC.\n\n'
+        )
 
-                await ctx.reply(embed=embed, mention_author=False)
+        var = ""
+        for section in data['data']['sections']:
+            var += f'— **{section["name"]}**'
+            if section['quantity'] > 1:
+                var += f' (x{section["quantity"]})\n'
+            else:
+                var += '\n'
+
+        embed.description += var
+        await ctx.reply(embed=embed, mention_author=False)
 
 
 def setup(bot):
