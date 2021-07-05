@@ -529,6 +529,9 @@ class AchievementSystem(Cog, name='Система достижений'):
 
             if str(method.emoji) == '🟩':
                 for member in self.bot.guild.members:
+                    if member.pending:
+                        continue
+
                     data = {'user_achievements_list': []}
                     db.execute("UPDATE users_stats SET achievements_list = %s WHERE user_id = %s",
                             json.dumps(data, ensure_ascii=False), member.id)

@@ -81,7 +81,10 @@ class Durka(Cog, name='Родина-Дурка'):
         self.chasovoy = self.bot.guild.get_role(CHASOVOY_ROLE_ID)
 
     def update_available_durka_calls(self):
-        for member in self.bot.guild:
+        for member in self.bot.guild.members:
+            if member.pending:
+                continue
+
             db.execute("UPDATE durka_stats SET available_durka_calls = 3 WHERE user_id = %s", member.id)
             db.commit()
 

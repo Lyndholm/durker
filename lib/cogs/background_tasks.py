@@ -68,7 +68,7 @@ class BackgroundTasks(Cog, name='Фоновые процессы'):
         veteran = get(self.bot.guild.roles, id=VETERAN_ROLE_ID)
 
         for member in self.bot.guild.members:
-            if self.mod_cog.is_member_muted(member):
+            if self.mod_cog.is_member_muted(member) or member.pending:
                 continue
 
             joined_at = joined_date(member)
@@ -103,6 +103,9 @@ class BackgroundTasks(Cog, name='Фоновые процессы'):
         kapitalist = get(self.bot.guild.roles, id=KAPITALIST_ROLE_ID)
 
         for member in self.bot.guild.members:
+            if self.mod_cog.is_member_muted(member) or member.pending:
+                continue
+
             purchases = db.fetchone(['purchases'], 'users_stats', 'user_id', member.id)[0]['vbucks_purchases']
             if purchases:
                 lpd = purchases[-1]['date']
@@ -122,7 +125,7 @@ class BackgroundTasks(Cog, name='Фоновые процессы'):
         magnat = get(self.bot.guild.roles, id=MAGNAT_ROLE_ID)
 
         for member in self.bot.guild.members:
-            if self.mod_cog.is_member_muted(member):
+            if self.mod_cog.is_member_muted(member) or member.pending:
                 continue
 
             purchases = db.fetchone(['purchases'], 'users_stats', 'user_id', member.id)[0]
@@ -144,6 +147,9 @@ class BackgroundTasks(Cog, name='Фоновые процессы'):
     @logger.catch
     async def update_user_nickname(self):
         for member in self.bot.guild.members:
+            if member.pending:
+                continue
+
             nickname = db.fetchone(['nickname'], 'users_info', 'user_id', member.id)[0]
             if nickname != member.display_name:
                 db.execute('UPDATE users_info SET nickname = %s WHERE user_id = %s', member.display_name, member.id)
