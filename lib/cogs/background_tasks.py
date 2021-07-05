@@ -140,7 +140,7 @@ class BackgroundTasks(Cog, name='Фоновые процессы'):
         await self.bot.wait_until_ready()
 
 
-    @tasks.loop(hours=1.0)
+    @tasks.loop(hours=3.5)
     @logger.catch
     async def update_user_nickname(self):
         for member in self.bot.guild.members:
