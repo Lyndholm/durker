@@ -171,8 +171,11 @@ def joined_date(member: discord.Member) -> datetime:
     Return a datetime object that specifies the date and time that the member joined the guild.
     The data is taken from the database, not from Discord API.
     """
-    joined_at = db.fetchone(['joined_at'], 'users_info', 'user_id', member.id)[0]
-    return joined_at
+    try:
+        joined_at = db.fetchone(['joined_at'], 'users_info', 'user_id', member.id)[0]
+        return joined_at
+    except TypeError:
+        return member.joined_at
 
 
 async def get_command_required_level(cmd: commands.Command) -> int:

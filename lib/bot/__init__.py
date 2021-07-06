@@ -10,12 +10,12 @@ from discord import Color, Embed, Intents
 from discord.channel import DMChannel
 from discord.errors import Forbidden, HTTPException
 from discord.ext.commands import Bot as BotBase
-from discord.ext.commands import (CommandNotFound, CommandOnCooldown, Context,
+from discord.ext.commands import (CheckAnyFailure, CheckFailure,
+                                  CommandNotFound, CommandOnCooldown, Context,
                                   DisabledCommand, ExtensionAlreadyLoaded,
-                                  ExtensionNotLoaded, NoPrivateMessage,
-                                  PrivateMessageOnly)
-from discord.ext.commands.errors import (CheckAnyFailure, CheckFailure,
-                                         MissingPermissions)
+                                  ExtensionNotLoaded, MaxConcurrencyReached,
+                                  MissingPermissions, MissingRequiredArgument,
+                                  NoPrivateMessage, PrivateMessageOnly)
 from dotenv import load_dotenv
 from loguru import logger
 
@@ -37,7 +37,6 @@ logger.add("logs/{time:DD-MM-YYYY---HH-mm-ss}.log",
 
 TOKEN = getenv('DISCORD_BOT_TOKEN')
 PREFIX = '+'
-GUILD = 546398541627785217
 OWNER_IDS = [375722626636578816]
 COGS = [path[:-3] for path in os.listdir('./lib/cogs') if path[-3:] == '.py']
 
@@ -79,7 +78,6 @@ class Bot(BotBase):
             self.banlist = []
 
         self.load_music_cogs(self.scheduler)
-        db.autosave(self.scheduler)
 
         super().__init__(command_prefix=PREFIX,
                          case_insensitive=True,
@@ -261,7 +259,7 @@ class Bot(BotBase):
                     description=f"Команда на откате. Ожидайте {cooldown_timer_str(exc.retry_after)}",
                     color=Color.red()
                 )
-                await ctx.reply(embed=embed, mention_author=False, delete_after=10)
+                await ctx.reply(embed=embed, mention_author=False, delete_after=15)
 
             elif isinstance(exc, DisabledCommand):
                 embed = Embed(
@@ -269,7 +267,7 @@ class Bot(BotBase):
                     description=f"Команда `{ctx.command}` отключена.",
                     color=Color.red()
                 )
-                await ctx.reply(embed=embed, mention_author=False, delete_after=10)
+                await ctx.reply(embed=embed, mention_author=False)
 
             elif isinstance(exc, NoPrivateMessage):
                 try:
@@ -312,7 +310,46 @@ class Bot(BotBase):
                     description=f"Невозможно отправить сообщение. Возможно, превышен лимит символов.",
                     color=Color.red()
                 )
-                await ctx.reply(embed=embed, mention_author=False, delete_after=15)
+                await ctx.reply(embed=embed, mention_author=False)
+
+            elif isinstance(exc, MaxConcurrencyReached):
+                embed = Embed(
+                    title='❗ Внимание!',
+                    description=f"Команда `{ctx.command}` уже запущена.",
+                    color=Color.red()
+                )
+                await ctx.reply(embed=embed, mention_author=False)
+
+            elif isinstance(exc, MissingRequiredArgument):
+                if str(ctx.command) == 'knb':
+                    embed = Embed(
+                        title='❗ Внимание!',
+                        description=f'Укажите, что вы выбрали: камень, ножницы или бумагу.\n' \
+                                    f'`{ctx.command.usage}`',
+                        color= Color.red()
+                    )
+                    await ctx.send(embed=embed, delete_after=15)
+                elif str(ctx.command) == '8ball':
+                    embed = Embed(
+                        title='❗ Внимание!',
+                        description=f"Пожалуйста, укажите вопрос.",
+                        color = Color.red()
+                    )
+                    await ctx.reply(embed=embed, mention_author=False, delete_after=15)
+                elif str(ctx.command) == 'randint':
+                    embed = Embed(
+                        title='❗ Внимание!',
+                        description=f"Пожалуйста, укажите корректный диапазон **целых** чисел.",
+                        color = Color.red()
+                    )
+                    await ctx.reply(embed=embed, mention_author=False, delete_after=15)
+                else:
+                    embed = Embed(
+                        title='❗ Внимание!',
+                        description=f"Пропущен один или несколько параметров. Параметры команды можно узнать в help меню.",
+                        color=Color.red()
+                    )
+                    await ctx.reply(embed=embed, mention_author=False)
 
             elif isinstance(exc, InsufficientLevel):
                 level = await get_command_required_level(ctx.command)
@@ -323,7 +360,7 @@ class Bot(BotBase):
                                 f"и выше.\nВаш текущий уровень: **{member_level}**.",
                     color=Color.red()
                 )
-                await ctx.reply(embed=embed, mention_author=False, delete_after=15)
+                await ctx.reply(embed=embed, mention_author=False)
 
             elif isinstance(exc, NotInAllowedTextChannel) or isinstance(exc, InForbiddenTextChannel):
                 txt = await get_command_text_channels(ctx.command)
@@ -332,7 +369,7 @@ class Bot(BotBase):
                     description=f"Команда `{ctx.command.name}` {txt.lower()}",
                     color=Color.red()
                 )
-                await ctx.reply(embed=embed, mention_author=False, delete_after=15)
+                await ctx.reply(embed=embed, mention_author=False)
 
             elif isinstance(exc, CheckFailure) or isinstance(exc, CheckAnyFailure):
                 embed = Embed(

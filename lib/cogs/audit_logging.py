@@ -116,16 +116,15 @@ class Audit(Cog, name='Система Аудита'):
                             color=Color.red(), timestamp=datetime.utcnow())
                 async with aiofiles.open(f'./data/audit/bulk-deleted-messages/{messages[0].id}.log', mode='w', encoding='utf-8') as f:
                     nl = '\n'
-                    time = datetime.now().strftime("%d.%m.%Y %H:%M:%S")
                     for msg in messages:
                         if msg.attachments:
                             attachments_url = [attachment for attachment in msg.attachments]
 
-                            await f.write(f"{time} | User: {msg.author} | UserID = {msg.author.id}" + "\n" +
+                            await f.write(f"{msg.created_at.strftime('%d.%m.%Y %H:%M:%S')} | User: {msg.author} | UserID = {msg.author.id}" + "\n" +
                                 f"MessageID = {msg.id}\nMessage content: {msg.clean_content}" + "\n" +
                                 f"Attachments: {nl.join([url.proxy_url for url in attachments_url]) + nl + nl.join([url.url for url in attachments_url])}" "\n\n")
                         else:
-                            await f.write(f"{time} | User: {msg.author} | UserID = {msg.author.id}" + nl +
+                            await f.write(f"{msg.created_at.strftime('%d.%m.%Y %H:%M:%S')} | User: {msg.author} | UserID = {msg.author.id}" + nl +
                                 f"MessageID = {msg.id}\nMessage content: {msg.clean_content}" + "\n\n")
 
                 embed.add_field(name="Канал:", value=f"{messages[0].channel.name} ({messages[0].channel.mention})")
@@ -323,7 +322,7 @@ class Audit(Cog, name='Система Аудита'):
     @Cog.listener()
     @logger.catch
     async def on_voice_state_update(self, member: Member, before: VoiceState, after: VoiceState):
-        if before.channel is None:
+        if before.channel is None and after.channel is not None:
             embed = Embed(
                 description=f"Участник **{member.display_name}** ({member.mention}) зашел в голосовой канал 🔊 "
                 f"**{after.channel.name}** ({after.channel.mention})",

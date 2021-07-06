@@ -103,7 +103,7 @@ class Help(Cog, name='Help меню'):
             if ctx.author.id == 375722626636578816:
                 cmds = [i for i in ctx.bot.get_cog(cog).get_commands()]
             else:
-                cmds = [i for i in ctx.bot.get_cog(cog).get_commands() if not i.hidden]
+                cmds = [i for i in ctx.bot.get_cog(cog).get_commands() if not i.hidden and i.enabled]
 
             for cmds_chunks in list(self.chuncks(list(cmds), 5)):
                 embed = Embed(
@@ -131,7 +131,7 @@ class Help(Cog, name='Help меню'):
         if ctx.author.id == 375722626636578816:
             cmds = [i for i in cog.get_commands()]
         else:
-            cmds = [i for i in cog.get_commands() if not i.hidden]
+            cmds = [i for i in cog.get_commands() if not i.hidden and i.enabled]
 
         if not cmds:
             no_entry_embed = Embed(
@@ -164,7 +164,7 @@ class Help(Cog, name='Help меню'):
     def command_helper(self, ctx, cmd):
         try:
             commands = []
-            command = [i for i in cmd.commands if not i.hidden]
+            command = [i for i in cmd.commands if not i.hidden and i.enabled]
 
             for cmd_chunks in list(self.chuncks(list(command), 5)):
                 aliases = '|'.join([*cmd.aliases])

@@ -7,7 +7,8 @@ from discord.utils import get
 from loguru import logger
 
 from ..db import db
-from ..utils.constants import (AFK_VOICE_ROOM, PRIVATE_CHANNEL_GENERATOR,
+from ..utils.constants import (AFK_VOICE_ROOM, CHASOVOY_ROLE_ID,
+                               PRIVATE_CHANNEL_GENERATOR,
                                PRIVATE_CHANNELS_CATEGORY)
 
 
@@ -30,7 +31,14 @@ class Voice(Cog, name='VoiceChannels Management'):
         self.temporary_channels[voice_channel.id] = text_channel.id
         await voice_channel.set_permissions(member, manage_channels=True)
         await text_channel.set_permissions(member, manage_channels=True)
-        await text_channel.set_permissions(get(member.guild.roles, name='@everyone'), view_channel=False, read_messages=False, send_messages=False)
+        await text_channel.set_permissions(
+            get(member.guild.roles, name='@everyone'),
+            view_channel=False, read_messages=False, send_messages=False
+        )
+        await text_channel.set_permissions(
+            get(member.guild.roles, id=CHASOVOY_ROLE_ID),
+            view_channel=True, read_messages=True, send_messages=True, manage_messages=True
+        )
 
         try:
             await member.move_to(voice_channel)
@@ -80,6 +88,11 @@ class Voice(Cog, name='VoiceChannels Management'):
 
     @Cog.listener()
     async def on_voice_state_update(self, member: Member, before: VoiceState, after: VoiceState):
+        ### I know it's a bullshit code but it works
+        if (before.deaf != after.deaf) or (before.mute != after.mute) or (before.self_deaf != after.self_deaf) \
+            or (before.self_mute != after.self_mute) or (before.self_stream != after.self_stream) \
+            or (before.self_video != after.self_video): return
+
         if after.channel is not None:
             if after.channel.id == PRIVATE_CHANNEL_GENERATOR:
                 if member.id not in self.bot.banlist:

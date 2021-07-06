@@ -1,3 +1,5 @@
+import shlex
+from argparse import ArgumentParser
 from datetime import datetime
 from io import BytesIO
 from typing import Optional
@@ -14,6 +16,11 @@ from ..utils.paginator import Paginator
 from ..utils.utils import load_commands_from_json
 
 cmd = load_commands_from_json("benbot")
+
+
+class Arguments(ArgumentParser):
+    def error(self, message):
+        raise RuntimeError(message)
 
 
 class BenBot(Cog, name='Fortnite API 1'):
@@ -164,9 +171,48 @@ class BenBot(Cog, name='Fortnite API 1'):
     @is_channel(CONSOLE_CHANNEL)
     @guild_only()
     @logger.catch
-    async def extract_fn_asset_command(self, ctx, path: str):
+    async def extract_fn_asset_command(self, ctx, path: str, *, args: str = None):
+        if args is not None:
+            parser = Arguments(add_help=False, allow_abbrev=False)
+            parser.add_argument('-lang', nargs='+')
+            parser.add_argument('-rawIcon', nargs='+')
+            parser.add_argument('-noFeatured', nargs='+')
+            parser.add_argument('-noVariants', nargs='+')
+            parser.add_argument('-priceDaily', nargs='+')
+            parser.add_argument('-priceFeatured', nargs='+')
+
+            try:
+                args = parser.parse_args(shlex.split(args))
+            except Exception as e:
+                await ctx.reply(str(e), mention_author=False)
+
+            parameter = ""
+
+            if args.lang:
+                parameter += f"&lang={args.lang[0].lower()}"
+            else:
+                parameter += "&lang=ru"
+
+            if args.rawIcon:
+                parameter += f"&rawIcon={args.rawIcon[0].lower()}"
+
+            if args.noFeatured:
+                parameter += f"&noFeatured={args.noFeatured[0].lower()}"
+
+            if args.noVariants:
+                parameter += f"&noVariants={args.noVariants[0].lower()}"
+
+            if args.priceDaily:
+                parameter += f"&priceDaily={args.priceDaily[0].lower()}"
+
+            if args.priceFeatured:
+                parameter += f"&priceFeatured={args.priceFeatured[0].lower()}"
+
+        else:
+            parameter = "&lang=ru"
+
         async with ClientSession() as session:
-            async with session.get(f"https://benbot.app/api/v1/exportAsset?path={path}") as r:
+            async with session.get(f"https://benbot.app/api/v1/exportAsset?path={path}{parameter}") as r:
                 if r.status != 200:
                     await ctx.reply(
                         f"""```json\n{await r.text()}```""",
@@ -213,34 +259,39 @@ class BenBot(Cog, name='Fortnite API 1'):
     @guild_only()
     @cooldown(cmd["shopsections"]["cooldown_rate"], cmd["shopsections"]["cooldown_per_second"], BucketType.member)
     @logger.catch
-    async def display_fortnite_section_store_command(self, ctx):
+    async def display_fortnite_section_store_command(self, ctx, lang: str = 'ru'):
         async with ClientSession() as session:
-            async with session.get("https://benbot.app/api/v1/calendar") as r:
+            async with session.get(f'https://fn-api.com/api/shop/sections?lang={lang}') as r:
                 if r.status != 200:
                     await ctx.reply(
                         f"""```json\n{await r.text()}```""",
                         mention_author=False
                     )
                     return
-
                 data = await r.json()
-                embed = Embed(
-                    title="Разделы магазина предметов",
-                    color=Color.gold(),
-                    timestamp=datetime.utcnow()
-                )
-                try:
-                    sections_dict = data["channels"]["client-events"]["states"][1]["state"]["sectionStoreEnds"]
-                except (IndexError, KeyError):
-                    sections_dict = data["channels"]["client-events"]["states"][0]["state"]["sectionStoreEnds"]
 
-                var = "Дата напротив каждой категории обозначает время, до которого раздел будет существовать. Время указано в **UTC**.\n\n"
-                for key, value in sections_dict.items():
-                    var+= f"**{key}:** {value}\n"
+        time = ""
+        j = data['data']['timestamp'].split("T")
+        i = j[0].split("-")
+        time += f"{i[2]}.{i[1]}.{i[0]} {j[1][:-1]}"
 
-                embed.description = var
+        embed = Embed(
+            title="Разделы магазина предметов",
+            color=Color.gold(),
+            timestamp=datetime.utcnow(),
+            description=f'Актуально до: {time} UTC.\n\n'
+        )
 
-                await ctx.reply(embed=embed, mention_author=False)
+        var = ""
+        for section in data['data']['sections']:
+            var += f'— **{section["name"]}**'
+            if section['quantity'] > 1:
+                var += f' (x{section["quantity"]})\n'
+            else:
+                var += '\n'
+
+        embed.description += var
+        await ctx.reply(embed=embed, mention_author=False)
 
 
 def setup(bot):

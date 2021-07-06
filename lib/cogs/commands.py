@@ -5,6 +5,7 @@ from random import choice, randint
 from time import time
 from typing import Optional
 
+from aiohttp import ClientSession
 from discord import Color, Embed, File, Member
 from discord import __version__ as discord_version
 from discord.ext.commands import (BucketType, Cog, Greedy, check_any, command,
@@ -16,7 +17,8 @@ from psutil import Process, cpu_percent, virtual_memory
 from ..db import db
 from ..utils.checks import is_channel, required_level
 from ..utils.constants import (CHASOVOY_ROLE_ID, CONSOLE_CHANNEL,
-                               MUSIC_COMMANDS_CHANNEL)
+                               KAPITALIST_ROLE_ID, MAGNAT_ROLE_ID,
+                               MECENAT_ROLE_ID, MUSIC_COMMANDS_CHANNEL)
 from ..utils.utils import load_commands_from_json
 
 cmd = load_commands_from_json("commands")
@@ -102,12 +104,12 @@ class Commands(Cog, name='Базовые команды'):
         )
         embed.add_field(
             name="Сделали покупку с нашим тегом автора?",
-            value="Присылайте скриншот в канал <#546408250158088192>. За это вы получите роль <@&643877589479587841>",
+            value=f"Присылайте скриншот в канал <#546408250158088192>. За это вы получите роль <@&{MECENAT_ROLE_ID}>",
             inline=False
         )
         embed.add_field(
             name="Больше ролей",
-            value="Потратив с тегом 10 000 и 25 000 В-Баксов, вы получите роль <@&672376974844493824> и <@&765974953127313418> соответственно.",
+            value=f"Потратив с тегом 10 000 и 25 000 В-Баксов, вы получите роли <@&{KAPITALIST_ROLE_ID}> и <@&{MAGNAT_ROLE_ID}> соответственно.",
             inline=False
         )
         embed.add_field(
@@ -160,6 +162,12 @@ class Commands(Cog, name='Базовые команды'):
     @logger.catch
     async def redirect_to_media_channel_command(self, ctx, targets: Greedy[Member]):
         await ctx.message.delete()
+
+        for member in targets:
+            async for message in ctx.channel.history(limit=10):
+                if message.author == member and message.attachments:
+                    await message.delete()
+
         await ctx.send(' '.join(member.mention for member in targets) +  f' Изображениям и прочим медиафайлам, '
                        'не относящимся к теме разговора, нет места в чате! Пожалуйста, используйте канал <#644523860326219776>')
 
@@ -259,9 +267,8 @@ class Commands(Cog, name='Базовые команды'):
     async def display_member_avatar(self, ctx, member: Optional[Member]):
         await ctx.message.delete()
         if not member:
-            await ctx.send(f'{ctx.author.mention}, укажите пользователя, чей аватар вы хотите увидеть.', delete_after=10)
+            member = ctx.author
             ctx.command.reset_cooldown(ctx)
-            return
 
         embed = Embed(
             title=f'Аватар {member.display_name}',
@@ -269,6 +276,81 @@ class Commands(Cog, name='Базовые команды'):
             timestamp=datetime.utcnow()
         ).set_image(url=member.avatar_url).set_footer(text=f'Запрос от {ctx.author}', icon_url=ctx.author.avatar_url)
         await ctx.send(embed=embed)
+
+    @command(name=cmd["covid"]["name"], aliases=cmd["covid"]["aliases"],
+            brief=cmd["covid"]["brief"],
+            description=cmd["covid"]["description"],
+            usage=cmd["covid"]["usage"],
+            help=cmd["covid"]["help"],
+            hidden=cmd["covid"]["hidden"], enabled=True)
+    @required_level(cmd["covid"]["required_level"])
+    @is_channel(CONSOLE_CHANNEL)
+    @guild_only()
+    @cooldown(cmd["covid"]["cooldown_rate"], cmd["covid"]["cooldown_per_second"], BucketType.member)
+    @logger.catch
+    async def covid_stats_command(self, ctx, country: str = None):
+        if not country:
+            embed = Embed(
+                title='❗ Внимание!',
+                description =f"Пожалуйста, введите название страны на английском языке.",
+                color=Color.red()
+            )
+            await ctx.reply(embed=embed, mention_author=False)
+            return
+
+        async with ClientSession() as session:
+            async with session.get("https://corona.lmao.ninja/v2/countries") as r:
+                if r.status == 200:
+                    data = await r.json()
+                else:
+                    embed = Embed(
+                        title='❗ Внимание!',
+                        description =f"Что-то пошло не так. API вернуло: {r.status}",
+                        color=Color.red()
+                    )
+                    await ctx.reply(embed=embed, mention_author=False)
+                    return
+
+        for item in data:
+            if item["country"].lower() == country.lower():
+                date = datetime.fromtimestamp(item["updated"]/1000).strftime("%d.%m.%Y %H:%M:%S")
+                embed = Embed(
+                    title=f'Статистика Коронавируса | {country.upper()}',
+                    description=f"Дата обновления статистики: **{date}**",
+                    color = Color.red()
+                )
+
+                embed.add_field(name=f'Заболеваний:', value=f'{item["cases"]:,}')
+
+                embed.add_field(name=f'Заболеваний за сутки:', value=f'+{item["todayCases"]:,}')
+
+                embed.add_field(name=f'Активные зараженные:', value=f'{item["active"]:,}')
+
+                embed.add_field(name=f'Выздоровело:', value=f'{item["recovered"]:,}')
+
+                embed.add_field(name=f'Выздоровело за сутки:', value=f'+{item["todayRecovered"]:,}')
+
+                embed.add_field(name=f'В тяжелом состоянии:', value=f'{item["critical"]:,}')
+
+                embed.add_field(name=f'Погибло:', value=f'{item["deaths"]:,}')
+
+                embed.add_field(name=f'Погибло за сутки:', value=f'{item["todayDeaths"]:,}')
+
+                embed.add_field(name=f'Проведено тестов:', value=f'{item["tests"]:,}')
+
+                embed.set_thumbnail(url=item["countryInfo"]['flag'])
+
+                await ctx.reply(embed=embed, mention_author=False)
+                break
+        else:
+            embed = Embed(
+                title='❗ Внимание!',
+                description=f'**{country.capitalize()}** нет в списке стран. ' \
+                            'Учитывайте, что названия стран необходимо писать на '
+                            'английском языке.',
+                color=Color.red()
+            )
+            await ctx.reply(embed=embed, mention_author=False)
 
     @command(name=cmd["info"]["name"], aliases=cmd["info"]["aliases"],
             brief=cmd["info"]["brief"],
@@ -335,8 +417,9 @@ class Commands(Cog, name='Базовые команды'):
             'статистика покупок всех пользователей была сброшена. '
             'Это произошло по двум причинам:\n\n'
             '**1.** Изменение структуры базы данных бота.\n'
-            '**2.** Появление новых правил засчитывания покупок. '
-            'Ознакомиться с правилами можно по команде `+faq`.'
+            '**2.** Появление новых правил засчитывания покупок.\n\n'
+            'Вы можете подать заявку на восстановление своей статистики. '
+            'Для этого обратитесь к Lyndholm#7200.'
     )
 
 def setup(bot):

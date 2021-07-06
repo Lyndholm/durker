@@ -284,7 +284,7 @@ class FortniteAPIcom(Cog, name='Fortnite API 2'):
                 pass
             try:
                 hist = "```\n"
-                for i2 in i["shopHistory"]:
+                for i2 in i["shopHistory"][::-1]:
                     i2 = i2.split("T")
                     i2 = i2[0].split("-")
                     hist += f"{i2[2]}.{i2[1]}.{i2[0]}\n"
@@ -354,11 +354,12 @@ class FortniteAPIcom(Cog, name='Fortnite API 2'):
     async def cosmetics_search_params_command(self, ctx):
         params_embeds = []
         params_images = (
-            'https://cdn.discordapp.com/attachments/774698479981297664/817861711813148752/cosmetics_search_params_1.png',
-            'https://cdn.discordapp.com/attachments/774698479981297664/817861722312146984/cosmetics_search_params_2.png',
-            'https://cdn.discordapp.com/attachments/774698479981297664/817861887441109012/cosmetics_search_params_3.png',
-            'https://cdn.discordapp.com/attachments/774698479981297664/817861907868287026/cosmetics_search_params_4.png',
-            'https://cdn.discordapp.com/attachments/774698479981297664/817861931984879627/cosmetics_search_params_5.png'
+            'https://cdn.discordapp.com/attachments/774698479981297664/861552271589376071/cosmetics_search_params_1.png',
+            'https://cdn.discordapp.com/attachments/774698479981297664/861552297565224970/cosmetics_search_params_2.png',
+            'https://cdn.discordapp.com/attachments/774698479981297664/861552316011905044/cosmetics_search_params_3.png',
+            'https://cdn.discordapp.com/attachments/774698479981297664/861552338070405130/cosmetics_search_params_4.png',
+            'https://cdn.discordapp.com/attachments/774698479981297664/861552361251536896/cosmetics_search_params_5.png',
+            'https://cdn.discordapp.com/attachments/774698479981297664/861552398308999168/cosmetics_search_params_6.png'
         )
 
         for image in params_images:
@@ -440,7 +441,7 @@ class FortniteAPIcom(Cog, name='Fortnite API 2'):
         async with ClientSession() as session:
             async with session.get(f"https://fortnite-api.com/v2/creatorcode/search/all", params={"name": code}) as r:
                 if r.status == 404:
-                    embed = Embed(title='❗ Внимание!', description ="Указанный тег автора не найден.", color= Color.red())
+                    embed = Embed(title='❗ Внимание!', description ="Указанный тег автора не найден.", color= Color.gold())
                     await ctx.message.reply(embed=embed, mention_author=False)
                 elif r.status == 200:
                     data = await r.json()
@@ -450,24 +451,19 @@ class FortniteAPIcom(Cog, name='Fortnite API 2'):
                     for i in range(0,len(data)):
                         embed = Embed(
                             title=f'Код автора: {data[i]["code"]}',
-                            color=Color.random(),
+                            color=Color.green() if data[i]["status"] == 'ACTIVE' else Color.red(),
                             timestamp=datetime.utcnow()
                         )
                         embed.add_field(
                             name="Account",
                             value=f'Name: {data[i]["account"]["name"]}\nID: {data[i]["account"]["id"]}',
                             inline=False
-                            )
+                        )
                         embed.add_field(
                             name="Status",
                             value=data[i]["status"],
                             inline=True
-                            )
-                        embed.add_field(
-                            name="Verified",
-                            value=data[i]["verified"],
-                            inline=True
-                            )
+                        )
                         code_embeds.append(embed)
 
                     message = await ctx.reply(embed=code_embeds[0], mention_author=False)

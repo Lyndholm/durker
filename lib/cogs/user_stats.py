@@ -8,7 +8,7 @@ from loguru import logger
 
 from ..db import db
 from ..utils.checks import is_channel
-from ..utils.constants import STATS_CHANNEL
+from ..utils.constants import STATS_CHANNEL, KAPITALIST_ROLE_ID, MAGNAT_ROLE_ID
 from ..utils.utils import joined_date, load_commands_from_json, russian_plural
 
 cmd = load_commands_from_json("user_stats")
@@ -84,9 +84,9 @@ class UserStats(Cog, name='Статистика'):
 
         realMoney = sum(purchases[0]['realMoney_purchases'][i]['price'] for i in range(len(purchases[0]['realMoney_purchases'])))
 
-        kapitalist = ctx.guild.get_role(672376974844493824)
+        kapitalist = ctx.guild.get_role(KAPITALIST_ROLE_ID)
 
-        magnat = ctx.guild.get_role(765974953127313418)
+        magnat = ctx.guild.get_role(MAGNAT_ROLE_ID)
 
         embed = Embed(color=target.color)
 
@@ -184,10 +184,11 @@ class UserStats(Cog, name='Статистика'):
             embed.set_footer(text='Данные актуальны на ' + datetime.now().strftime("%d.%m.%Y %H:%M:%S") + ' МСК')
 
         await ctx.reply(
-            'После обновления бота от 1 июля 2021 г. статистика '
-            'покупок (по В-Баксам) была сброшена у всех пользователей. '
-            'Ознакомится с причиной вайпа и новыми правилами засчитывания '
-            f'покупок можно по команде `{ctx.prefix or self.bot.PREFIX}faq`.', embed=embed)
+            'После обновления бота от 1 июля 2021 г. статистика покупок (по В-баксам) '
+            'была сброшена у всех пользователей. Ознакомиться с причинами вайпа можно '
+            f'по команде `{ctx.prefix or self.bot.PREFIX}wipe`.\nВы можете подать заявку '
+            'на восстановление своей статистики. Для этого обратитесь к Lyndholm#7200.',
+            embed=embed)
 
 
     @command(name=cmd["setbio"]["name"], aliases=cmd["setbio"]["aliases"],
@@ -371,20 +372,24 @@ class UserStats(Cog, name='Статистика'):
 
         if activity_role_1 not in ctx.author.roles:
             desc += f"\n\nДо роли {activity_role_1.mention} осталось **{750-msg_counter}** {russian_plural(750-msg_counter,['сообщение','сообщения','сообщений'])}"
-            if old := (datetime.now() - joined_date(ctx.author)).days <= 7:
-                desc += f" и **{old+1}** {russian_plural(old+1,['день','дня','дней'])} пребывания на сервере."
+            if (old := (datetime.now() - joined_date(ctx.author)).days) <= 7:
+                diff = 7 - old
+                desc += f" и **{diff+1}** {russian_plural(diff+1,['день','дня','дней'])} пребывания на сервере."
         elif activity_role_2 not in ctx.author.roles:
             desc += f"\n\nДо роли {activity_role_2.mention} осталось **{3500-msg_counter}** {russian_plural(3500-msg_counter,['сообщение','сообщения','сообщений'])}"
-            if old := (datetime.now() - joined_date(ctx.author)).days <= 30:
-                desc += f" и **{old+1}** {russian_plural(old+1,['день','дня','дней'])} пребывания на сервере."
+            if (old := (datetime.now() - joined_date(ctx.author)).days) <= 30:
+                diff = 30 - old
+                desc += f" и **{diff+1}** {russian_plural(diff+1,['день','дня','дней'])} пребывания на сервере."
         elif activity_role_3 not in ctx.author.roles:
             desc += f"\n\nДо роли {activity_role_3.mention} осталось **{10000-msg_counter}** {russian_plural(10000-msg_counter,['сообщение','сообщения','сообщений'])}"
-            if old := (datetime.now() - joined_date(ctx.author)).days <= 90:
-                desc += f" и **{old+1}** {russian_plural(old+1,['день','дня','дней'])} пребывания на сервере."
+            if (old := (datetime.now() - joined_date(ctx.author)).days) <= 90:
+                diff = 90 - old
+                desc += f" и **{diff+1}** {russian_plural(diff+1,['день','дня','дней'])} пребывания на сервере."
         elif activity_role_4 not in ctx.author.roles:
             desc += f"\n\nДо роли {activity_role_4.mention} осталось **{25000-msg_counter}** {russian_plural(25000-msg_counter,['сообщение','сообщения','сообщений'])}"
-            if old := (datetime.now() - joined_date(ctx.author)).days <= 180:
-                desc += f" и **{old+1}** {russian_plural(old+1,['день','дня','дней'])} пребывания на сервере."
+            if (old := (datetime.now() - joined_date(ctx.author)).days) <= 180:
+                diff = 180 - old
+                desc += f" и **{diff+1}** {russian_plural(diff+1,['день','дня','дней'])} пребывания на сервере."
 
         embed.description = desc
         await ctx.reply(embed=embed, mention_author=False)

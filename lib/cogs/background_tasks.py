@@ -5,7 +5,7 @@ from itertools import cycle
 
 import aiofiles
 from aiohttp import ClientSession
-from discord import Game
+from discord import Activity, ActivityType
 from discord.ext import tasks
 from discord.ext.commands import Cog
 from discord.utils import get
@@ -13,11 +13,13 @@ from jishaku.functools import executor_function
 from loguru import logger
 
 from ..db import db
+from ..utils.constants import (CAPTAIN_ROLE_ID, KAPITALIST_ROLE_ID,
+                               MAGNAT_ROLE_ID, MECENAT_ROLE_ID, OLD_ROLE_ID,
+                               VETERAN_ROLE_ID, WORKER_ROLE_ID)
 from ..utils.utils import edit_user_reputation, joined_date
 
 ITEM_SHOP_ENDPOINT = "https://fortnite-api.com/v2/shop/br/combined"
 ACTIVITIES = cycle([
-    '+help | V3.0.0 🥳',
     '+help | durker.fun',
     '+help | docs.durker.fun',
     '+help | fortnitefun.ru',
@@ -50,7 +52,7 @@ class BackgroundTasks(Cog, name='Фоновые процессы'):
 
     @tasks.loop(minutes=3.0)
     async def change_bot_activity(self):
-        await self.bot.change_presence(activity=Game(next(ACTIVITIES)))
+        await self.bot.change_presence(activity=Activity(type=ActivityType.listening, name=next(ACTIVITIES)))
 
     @change_bot_activity.before_loop
     async def before_change_bot_activity(self):
@@ -60,13 +62,13 @@ class BackgroundTasks(Cog, name='Фоновые процессы'):
     @tasks.loop(minutes=10.0)
     @logger.catch
     async def check_activity_role(self):
-        worker = get(self.bot.guild.roles, id=643875511059218452)
-        old = get(self.bot.guild.roles, id=546417656018763793)
-        captain = get(self.bot.guild.roles, id=546417889884897293)
-        veteran = get(self.bot.guild.roles, id=765942949476302849)
+        worker = get(self.bot.guild.roles, id=WORKER_ROLE_ID)
+        old = get(self.bot.guild.roles, id=OLD_ROLE_ID)
+        captain = get(self.bot.guild.roles, id=CAPTAIN_ROLE_ID)
+        veteran = get(self.bot.guild.roles, id=VETERAN_ROLE_ID)
 
         for member in self.bot.guild.members:
-            if self.mod_cog.is_member_muted(member):
+            if self.mod_cog.is_member_muted(member) or member.pending:
                 continue
 
             joined_at = joined_date(member)
@@ -97,10 +99,13 @@ class BackgroundTasks(Cog, name='Фоновые процессы'):
     @tasks.loop(hours=24.0)
     @logger.catch
     async def check_mecenat_role(self):
-        mecenat = get(self.bot.guild.roles, id=643877589479587841)
-        kapitalist = get(self.bot.guild.roles, id=672376974844493824)
+        mecenat = get(self.bot.guild.roles, id=MECENAT_ROLE_ID)
+        kapitalist = get(self.bot.guild.roles, id=KAPITALIST_ROLE_ID)
 
         for member in self.bot.guild.members:
+            if self.mod_cog.is_member_muted(member) or member.pending:
+                continue
+
             purchases = db.fetchone(['purchases'], 'users_stats', 'user_id', member.id)[0]['vbucks_purchases']
             if purchases:
                 lpd = purchases[-1]['date']
@@ -116,11 +121,11 @@ class BackgroundTasks(Cog, name='Фоновые процессы'):
     @tasks.loop(hours=1.0)
     @logger.catch
     async def check_supporter_role(self):
-        kapitalist = get(self.bot.guild.roles, id=672376974844493824)
-        magnat = get(self.bot.guild.roles, id=765974953127313418)
+        kapitalist = get(self.bot.guild.roles, id=KAPITALIST_ROLE_ID)
+        magnat = get(self.bot.guild.roles, id=MAGNAT_ROLE_ID)
 
         for member in self.bot.guild.members:
-            if self.mod_cog.is_member_muted(member):
+            if self.mod_cog.is_member_muted(member) or member.pending:
                 continue
 
             purchases = db.fetchone(['purchases'], 'users_stats', 'user_id', member.id)[0]
@@ -138,10 +143,13 @@ class BackgroundTasks(Cog, name='Фоновые процессы'):
         await self.bot.wait_until_ready()
 
 
-    @tasks.loop(hours=1.0)
+    @tasks.loop(hours=3.5)
     @logger.catch
     async def update_user_nickname(self):
         for member in self.bot.guild.members:
+            if member.pending:
+                continue
+
             nickname = db.fetchone(['nickname'], 'users_info', 'user_id', member.id)[0]
             if nickname != member.display_name:
                 db.execute('UPDATE users_info SET nickname = %s WHERE user_id = %s', member.display_name, member.id)

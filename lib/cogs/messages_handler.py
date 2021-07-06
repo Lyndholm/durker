@@ -109,7 +109,7 @@ class MessagesHandler(Cog, name='Messages handler'):
         if rep:
             await self.invoke_command(message, 'rep')
 
-        question = get_close_matches(message.clean_content.lower(), self.question_filter, cutoff=0.75)
+        question = get_close_matches(message.clean_content.lower(), self.question_filter, cutoff=0.85)
         if question:
             if message.channel.id != 546700132390010882:
                 await self.invoke_command(message, 'question')

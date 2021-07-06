@@ -7,8 +7,7 @@ import aiofiles
 from aiohttp import ClientSession
 from discord import Color, Embed, Member
 from discord.ext.commands import (BucketType, Cog, Greedy, command, cooldown,
-                                  guild_only)
-from discord.ext.commands.errors import MissingRequiredArgument
+                                  guild_only, max_concurrency)
 from loguru import logger
 
 from ..utils.checks import is_channel, required_level
@@ -41,6 +40,7 @@ class Fun(Cog, name='Развлечения'):
             help=cmd["hug"]["help"],
             hidden=cmd["hug"]["hidden"], enabled=True)
     @required_level(cmd["hug"]["required_level"])
+    @is_channel(CONSOLE_CHANNEL)
     @guild_only()
     @cooldown(cmd["hug"]["cooldown_rate"], cmd["hug"]["cooldown_per_second"], BucketType.member)
     @logger.catch
@@ -64,7 +64,7 @@ class Fun(Cog, name='Развлечения'):
             color=ctx.author.color
         )
         embed.set_image(url=hug_gif_url)
-        await ctx.send(embed=embed, delete_after=180)
+        await ctx.send(embed=embed)
 
 
     @command(name=cmd["coin"]["name"], aliases=cmd["coin"]["aliases"],
@@ -219,6 +219,7 @@ class Fun(Cog, name='Развлечения'):
             usage=cmd["flags"]["usage"],
             help=cmd["flags"]["help"],
             hidden=cmd["flags"]["hidden"], enabled=True)
+    @max_concurrency(number=1, per=BucketType.guild, wait=False)
     @required_level(cmd["flags"]["required_level"])
     @is_channel(CONSOLE_CHANNEL)
     @guild_only()
@@ -353,9 +354,9 @@ class Fun(Cog, name='Развлечения'):
         if win == win_list[0]:
             out["img"] = "https://image.flaticon.com/icons/png/512/445/445087.png"
         elif win == win_list[1]:
-            out["img"] = "https://cdn.discordapp.com/attachments/774698479981297664/774700936958312468/placeholder.png"
+            out["img"] = "https://pixelartmaker-data-78746291193.nyc3.digitaloceanspaces.com/image/dee02334ffed1f4.png"
         else:
-            out["img"] = "https://cdn.discordapp.com/attachments/774698479981297664/774700936958312468/placeholder.png"
+            out["img"] = "https://cdn.discordapp.com/attachments/774698479981297664/861361420141330462/handshake.png"
 
         embed = Embed(title="Результат игры", description = win, colour=Color.random(), timestamp=ctx.message.created_at)
         embed.add_field(name="Выбор бота:", value=robot_choice, inline=True)
@@ -363,12 +364,6 @@ class Fun(Cog, name='Развлечения'):
         embed.set_thumbnail(url=out["img"])
         embed.set_footer(icon_url=ctx.author.avatar_url)
         await ctx.send(embed=embed)
-
-    @stone_scissors_paper_command.error
-    async def stone_scissors_paper_command_error(self, ctx, exc):
-        if isinstance(exc, MissingRequiredArgument):
-            embed = Embed(title='❗ Внимание!', description =f"Укажите, что вы выбрали: камень, ножницы или бумагу.\n`{ctx.command} {ctx.command.usage}`", color= Color.red())
-            await ctx.send(embed=embed, delete_after=15)
 
 
     @command(name=cmd["8ball"]["name"], aliases=cmd["8ball"]["aliases"],
@@ -378,6 +373,8 @@ class Fun(Cog, name='Развлечения'):
             help=cmd["8ball"]["help"],
             hidden=cmd["8ball"]["hidden"], enabled=True)
     @required_level(cmd["8ball"]["required_level"])
+    @is_channel(CONSOLE_CHANNEL)
+    @guild_only()
     @logger.catch
     async def magic_ball_command(self, ctx, *, question: str):
         posible_answers = {
@@ -414,13 +411,6 @@ class Fun(Cog, name='Развлечения'):
             await ctx.reply("Это не вопрос.", mention_author=False)
 
 
-    @magic_ball_command.error
-    async def magic_ball_command_error(self, ctx, exc):
-        if isinstance(exc, MissingRequiredArgument):
-            embed = Embed(title='❗ Внимание!', description =f"Пожалуйста, укажите вопрос.", color = Color.red())
-            await ctx.reply(embed=embed, mention_author=False, delete_after=30)
-
-
     @command(name=cmd["randint"]["name"], aliases=cmd["randint"]["aliases"],
             brief=cmd["randint"]["brief"],
             description=cmd["randint"]["description"],
@@ -431,12 +421,6 @@ class Fun(Cog, name='Развлечения'):
     async def randint_command(self, ctx, a: int, b: int):
         embed = Embed(title="Генератор случайных чисел", description=f"Случайное целое число: **{randint(a,b)}**", color=Color.random())
         await ctx.reply(embed=embed, mention_author=False)
-
-    @randint_command.error
-    async def randint_command_error(self, ctx, exc):
-        if isinstance(exc, MissingRequiredArgument):
-            embed = Embed(title='❗ Внимание!', description =f"Пожалуйста, укажите корректный диапазон **целых** чисел.", color = Color.red())
-            await ctx.reply(embed=embed, mention_author=False, delete_after=30)
 
 
 def setup(bot):

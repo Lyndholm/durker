@@ -779,7 +779,7 @@ class Moderation(Cog, name='Модерация'):
                 color=Color.random(),
                 description=f"Удалено сообщений: {len(deleted)}\nУдаление выполнено пользователем {ctx.author.mention}"
             )
-            await ctx.send(embed=embed, delete_after=5)
+            await ctx.send(embed=embed, delete_after=10)
 
             embed.title = "purge command invoked"
             embed.description = f"Удалено сообщений: {len(deleted)}\nУдаление выполнено пользователем: {ctx.author.mention}\nКанал: {ctx.channel.mention}"
@@ -799,7 +799,7 @@ class Moderation(Cog, name='Модерация'):
                 color=Color.random(),
                 description=f"Удалено сообщений: {len(deleted)}\nУдаление выполнено пользователем {ctx.message.author.mention}"
             )
-            await ctx.send(embed=embed, delete_after=5)
+            await ctx.send(embed=embed, delete_after=10)
 
             embed.title = "purge (with targets) command invoked "
             embed.description = f"Удалено сообщений: {len(deleted)}\nУдаление выполнено пользователем: {ctx.author.mention}\nКанал: {ctx.channel.mention}"
@@ -880,7 +880,7 @@ class Moderation(Cog, name='Модерация'):
                     pass
                 else:
                     await message.delete()
-                    await message.channel.send(f'{message.author.mention}, побереги свои эмоции!', delete_after=10)
+                    await message.channel.send(f'{message.author.mention}, побереги свои эмоции!', delete_after=15)
 
 
     @Cog.listener()
