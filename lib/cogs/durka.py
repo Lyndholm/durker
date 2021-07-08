@@ -89,7 +89,7 @@ class Durka(Cog, name='Родина-Дурка'):
             db.commit()
 
     def schedule_durka_calls_update(self, sched):
-        sched.add_job(self.update_available_durka_calls, CronTrigger(hour=3))
+        sched.add_job(self.update_available_durka_calls, CronTrigger(hour=3), misfire_grace_time=300)
 
     async def durka_replies(self, ctx, targets):
         if len(targets) == 1:

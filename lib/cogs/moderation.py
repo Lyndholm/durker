@@ -60,7 +60,10 @@ class Moderation(Cog, name='Модерация'):
         self.helper_role = self.bot.guild.get_role(CHASOVOY_ROLE_ID)
 
     def is_member_muted(self, member: Member) -> bool:
-        return self.mute_role in member.roles or self.read_role in member.roles
+        if self.mute_role in member.roles or self.read_role in member.roles:
+            return True
+        else:
+            return False
 
     @logger.catch
     async def kick_members(self, message, targets, reason):

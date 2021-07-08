@@ -62,9 +62,8 @@ class Audit(Cog, name='Система Аудита'):
                     embed.description =  f"**Удалённое сообщение:**\n```{message.clean_content.replace('`', '`­')[:2020]}\n```"
 
                 if message.attachments:
-                    attachments_url = [attachment for attachment in message.attachments]
                     embed.add_field(name=f"Вложения ({len(message.attachments)}):",
-                                    value="```" + "\n".join([url.proxy_url for url in attachments_url]) + "\n" + "\n".join([url.url for url in attachments_url]) + "```",
+                                    value="```" + "\n".join([attachment.proxy_url for attachment in message.attachments]) + "```",
                                     inline = False)
 
                 embed.add_field(name = 'Автор:', value = f'**{message.author.display_name}** ({message.author.mention})', inline=True)

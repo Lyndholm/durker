@@ -126,7 +126,7 @@ def autosave(sched):
     """
     Scheduled method that makes commit to DB every 60 seconds
     """
-    sched.add_job(commit, CronTrigger(second=0))
+    sched.add_job(commit, CronTrigger(second=0), misfire_grace_time=300)
 
 def close():
     """
