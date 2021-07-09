@@ -247,7 +247,7 @@ class AchievementSystem(Cog, name='Система достижений'):
             timestamp=datetime.utcnow(),
             description=f'Поздравляем! Вы заработали достижение **{data[2]}** '
                         f'на сервере **{target.guild}**\n\nПосмотреть список '
-                        f'своих достижений можно по команде `{self.bot.PREFIX}inventory`.'
+                        f'своих достижений можно по команде `{self.bot.PREFIX[0]}inventory`.'
         ).set_thumbnail(url=data[4])
         try:
             await target.send(embed=embed)
@@ -278,7 +278,7 @@ class AchievementSystem(Cog, name='Система достижений'):
         'достижений выдаётся автоматически, но некоторые ачивки могут выдать ' \
         'только администраторы севрера. Со списком всех достижений можно ' \
         'ознакомиться в канале <#604621910386671616> по команде ' \
-        f'`{ctx.prefix or self.bot.PREFIX}achievements`\nСписок достижений пополняется. ' \
+        f'`{ctx.prefix or self.bot.PREFIX[0]}achievements`\nСписок достижений пополняется. ' \
         'Если у вас есть предложения по добавлению новой ачивки, напишите об ' \
         'этом в канале <#639925210849476608>\nВ случае возникновения ' \
         'каких-либо вопросов вы можете обратиться к <@375722626636578816>'
@@ -399,7 +399,7 @@ class AchievementSystem(Cog, name='Система достижений'):
             await ctx.reply(
                 'У вас нет ни одного достижения. Со списком всех достижений можно '
                 'ознакомиться в канале <#604621910386671616> по команде '
-                f'`{ctx.prefix or self.bot.PREFIX}achievements`',
+                f'`{ctx.prefix or self.bot.PREFIX[0]}achievements`',
                 mention_author=False
             )
 

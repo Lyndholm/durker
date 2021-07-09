@@ -49,7 +49,7 @@ class Contests(Cog, name='Контесты'):
 
         self.giveaways.append((message.channel.id, message.id))
         self.bot.scheduler.add_job(self.complete_giveaway, "date", run_date=datetime.now()+timedelta(minutes=mins),
-                                args=[message.channel.id, message.id, embed, winners])
+                                args=[message.channel.id, message.id, embed, winners], misfire_grace_time=600)
         await message.add_reaction('✅')
 
     @logger.catch

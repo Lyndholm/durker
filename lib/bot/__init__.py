@@ -36,7 +36,7 @@ logger.add("logs/{time:DD-MM-YYYY---HH-mm-ss}.log",
 
 
 TOKEN = getenv('DISCORD_BOT_TOKEN')
-PREFIX = '+'
+PREFIX = ('+', 'var ')
 OWNER_IDS = [375722626636578816]
 COGS = [path[:-3] for path in os.listdir('./lib/cogs') if path[-3:] == '.py']
 
@@ -174,12 +174,12 @@ class Bot(BotBase):
 
     @logger.catch
     def load_music_cogs(self, sched):
-        sched.add_job(self.load_mein_radio_cog_scheduler, CronTrigger(day_of_week=0, hour=3))
-        sched.add_job(self.load_mein_radio_cog_scheduler, CronTrigger(day_of_week=2, hour=3))
-        sched.add_job(self.load_mein_radio_cog_scheduler, CronTrigger(day_of_week=4, hour=3))
-        sched.add_job(self.load_lofi_radio_cog_scheduler, CronTrigger(day_of_week=1, hour=3))
-        sched.add_job(self.load_lofi_radio_cog_scheduler, CronTrigger(day_of_week=3, hour=3))
-        sched.add_job(self.load_music_player_cog_scheduler, CronTrigger(day_of_week=5, hour=3))
+        sched.add_job(self.load_mein_radio_cog_scheduler, CronTrigger(day_of_week=0, hour=3), misfire_grace_time=300)
+        sched.add_job(self.load_mein_radio_cog_scheduler, CronTrigger(day_of_week=2, hour=3), misfire_grace_time=300)
+        sched.add_job(self.load_mein_radio_cog_scheduler, CronTrigger(day_of_week=4, hour=3), misfire_grace_time=300)
+        sched.add_job(self.load_lofi_radio_cog_scheduler, CronTrigger(day_of_week=1, hour=3), misfire_grace_time=300)
+        sched.add_job(self.load_lofi_radio_cog_scheduler, CronTrigger(day_of_week=3, hour=3), misfire_grace_time=300)
+        sched.add_job(self.load_music_player_cog_scheduler, CronTrigger(day_of_week=5, hour=3), misfire_grace_time=300)
 
     @logger.catch
     async def process_commands(self, message):
