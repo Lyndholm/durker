@@ -216,8 +216,13 @@ class Audit(Cog, name='Система Аудита'):
     @Cog.listener()
     @logger.catch
     async def on_member_join(self, member):
-        embed = Embed(title=f"Новый участник на сервере.", description=f"Пользователь **{member.display_name}** ({member.mention}) присоединился к серверу, но пока что не принял правила. Пользователь в процессе верификации.",
-                    color=Color.dark_red(), timestamp=datetime.utcnow())
+        embed = Embed(
+            title=f"Новый участник на сервере.",
+            color=Color.dark_red(),
+            timestamp=datetime.utcnow(),
+            description=f"Пользователь **{member.display_name}** ({member.mention}) присоединился к серверу, "
+                        "но пока что не принял правила. Пользователь в процессе верификации.",
+        )
         await self.bot.get_channel(AUDIT_LOG_CHANNEL).send(embed=embed)
 
 
