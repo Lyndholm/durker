@@ -2,7 +2,9 @@ import json
 from random import choice
 
 import aiofiles
+from aiohttp import ClientSession
 from discord import Color, Embed
+from discord.ext import tasks
 from discord.ext.commands import BucketType, Cog, command, cooldown, guild_only
 from loguru import logger
 
@@ -17,14 +19,25 @@ class Nekos(Cog, name='Аниме'):
     def __init__(self, bot):
         self.bot = bot
         self.anime_images = []
+        self.parse_anime_images.start()
 
-        bot.loop.create_task(self.parse_anime_images())
-
+    @tasks.loop(hours=12.0)
     @logger.catch
     async def parse_anime_images(self):
-        async with aiofiles.open(f'data/json/anime_images.json', mode='r', encoding='utf-8') as f:
-            data = json.loads(await f.read())
-            self.anime_images = data['anime']
+        async with ClientSession() as session:
+            async with session.get("https://raw.githubusercontent.com/OlekLolKek/Escape-from-Anime/main/anime.json") as r:
+                if r.status == 200:
+                    data = await r.read()
+                    data = json.loads(data)
+                    self.anime_images = data['anime']
+                else:
+                    async with aiofiles.open(f'data/json/anime_images.json', mode='r', encoding='utf-8') as f:
+                        data = json.loads(await f.read())
+                        self.anime_images = data['anime']
+
+    @parse_anime_images.before_loop
+    async def before_parse_anime_images(self):
+        await self.bot.wait_until_ready()
 
     @Cog.listener()
     async def on_ready(self):
