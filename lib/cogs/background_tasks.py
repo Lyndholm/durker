@@ -71,9 +71,12 @@ class BackgroundTasks(Cog, name='Фоновые процессы'):
             if self.mod_cog.is_member_muted(member) or member.pending:
                 continue
 
-            joined_at = joined_date(member)
-            messages_count, rep_rank = db.fetchone(['messages_count', 'rep_rank'], 'users_stats', 'user_id', member.id)
-            time_delta = (datetime.utcnow() - joined_at).days
+            try:
+                joined_at = joined_date(member)
+                messages_count, rep_rank = db.fetchone(['messages_count', 'rep_rank'], 'users_stats', 'user_id', member.id)
+                time_delta = (datetime.utcnow() - joined_at).days
+            except TypeError:
+                continue
 
             if worker not in member.roles and messages_count >= 750 and time_delta >= 7:
                 await member.add_roles(worker)
@@ -106,7 +109,11 @@ class BackgroundTasks(Cog, name='Фоновые процессы'):
             if self.mod_cog.is_member_muted(member) or member.pending:
                 continue
 
-            purchases = db.fetchone(['purchases'], 'users_stats', 'user_id', member.id)[0]['vbucks_purchases']
+            try:
+                purchases = db.fetchone(['purchases'], 'users_stats', 'user_id', member.id)[0]['vbucks_purchases']
+            except TypeError:
+                continue
+
             if purchases:
                 lpd = purchases[-1]['date']
                 if mecenat in member.roles and kapitalist not in member.roles:
@@ -128,8 +135,11 @@ class BackgroundTasks(Cog, name='Фоновые процессы'):
             if self.mod_cog.is_member_muted(member) or member.pending:
                 continue
 
-            purchases = db.fetchone(['purchases'], 'users_stats', 'user_id', member.id)[0]
-            vbucks_count = sum(purchases['vbucks_purchases'][i]['price'] for i in range(len(purchases['vbucks_purchases'])))
+            try:
+                purchases = db.fetchone(['purchases'], 'users_stats', 'user_id', member.id)[0]
+                vbucks_count = sum(purchases['vbucks_purchases'][i]['price'] for i in range(len(purchases['vbucks_purchases'])))
+            except TypeError:
+                continue
 
             if vbucks_count >= 10000 and kapitalist not in member.roles:
                 await member.add_roles(kapitalist)
@@ -150,7 +160,11 @@ class BackgroundTasks(Cog, name='Фоновые процессы'):
             if member.pending:
                 continue
 
-            nickname = db.fetchone(['nickname'], 'users_info', 'user_id', member.id)[0]
+            try:
+                nickname = db.fetchone(['nickname'], 'users_info', 'user_id', member.id)[0]
+            except TypeError:
+                continue
+
             if nickname != member.display_name:
                 db.execute('UPDATE users_info SET nickname = %s WHERE user_id = %s', member.display_name, member.id)
                 db.commit()
@@ -192,6 +206,7 @@ class BackgroundTasks(Cog, name='Фоновые процессы'):
                 await f.write(json.dumps(cache, indent=2, sort_keys=True, ensure_ascii=False))
 
             await self.create_item_shop_image(data=cache)
+            date = datetime.now().strftime("%d.%m.%Y %H:%M:%S")
             await self.bot.get_user(self.bot.owner_ids[0]).send(
                 f"Shop updated & rendered for `{date}` | `{cache['hash']}` | `{cache['len']}`"
             )
