@@ -1,3 +1,4 @@
+from os import listdir
 from random import choice, randint
 
 import aiofiles
@@ -57,7 +58,8 @@ class Profanity(Cog, name='Мат-фильтр'):
         )
         reply = choice(profanity_replies) + f"\nТвоя репутация была уменьшена на **{lost_rep}** {russian_plural(lost_rep, ['единицу','единицы','единиц'])}."
         if 10 <= randint(1, 100) <= 25:
-            await channel.send(reply, file=File('./data/images/bez-mata.jpg'))
+            images = listdir('./data/images/bez_mata')
+            await channel.send(reply, file=File(f'./data/images/bez_mata/{choice(images)}'))
         else:
             await channel.send(reply)
 
