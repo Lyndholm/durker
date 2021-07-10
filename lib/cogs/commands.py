@@ -261,6 +261,7 @@ class Commands(Cog, name='Базовые команды'):
             help=cmd["avatar"]["help"],
             hidden=cmd["avatar"]["hidden"], enabled=True)
     @required_level(cmd["avatar"]["required_level"])
+    @is_channel(CONSOLE_CHANNEL)
     @guild_only()
     @cooldown(cmd["avatar"]["cooldown_rate"], cmd["avatar"]["cooldown_per_second"], BucketType.member)
     @logger.catch
