@@ -7,7 +7,8 @@ from random import choice, randint
 from typing import Optional
 
 import aiofiles
-from discord import Color, Embed, Invite, Member, Message, PartialInviteGuild
+from discord import (Color, DMChannel, Embed, Invite, Member, Message,
+                     PartialInviteGuild, TextChannel)
 from discord.errors import NotFound
 from discord.ext.commands import (BadArgument, Cog, Converter, Greedy,
                                   bot_has_permissions, check_any, command,
@@ -17,9 +18,9 @@ from jishaku.functools import executor_function
 from loguru import logger
 
 from ..db import db
-from ..utils.constants import (AUDIT_LOG_CHANNEL, CHASOVOY_ROLE_ID,
-                               MODERATION_PUBLIC_CHANNEL, MUTE_ROLE_ID,
-                               READ_ROLE_ID)
+from ..utils.constants import (AUDIT_LOG_CHANNEL, CHASOVIE_CHANNEL,
+                               CHASOVOY_ROLE_ID, MODERATION_PUBLIC_CHANNEL,
+                               MUTE_ROLE_ID, READ_ROLE_ID)
 from ..utils.decorators import listen_for_guilds
 from ..utils.utils import (edit_user_reputation, load_commands_from_json,
                            russian_plural)
@@ -45,6 +46,7 @@ class Moderation(Cog, name='Модерация'):
         self.bot = bot
         self.reading_members = {}
         self.pominki_url = "https://cdn.discordapp.com/attachments/774698479981297664/809142415310979082/RoflanPominki.png"
+        self.URL_REGEX = r'(https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9]+\.[^\s]{2,}|www\.[a-zA-Z0-9]+\.[^\s]{2,})'
         self.DISCORD_INVITE_REGEX = r'discord(?:\.com|app\.com|\.gg)[\/invite\/]?(?:[a-zA-Z0-9\-]{2,32})'
         self.EMOJI_REGEX = r'<(?P<animated>a?):(?P<name>[a-zA-Z0-9_]{2,32}):(?P<id>[0-9]{18,22})>'
         self.UNICODE_EMOJI_REGEX = r'[\U00010000-\U0010ffff]'
@@ -884,6 +886,38 @@ class Moderation(Cog, name='Модерация'):
                 else:
                     await message.delete()
                     await message.channel.send(f'{message.author.mention}, побереги свои эмоции!', delete_after=15)
+
+    ### Anti-Scam Steam trade
+    @Cog.listener()
+    async def on_message(self, message):
+        url = re.compile(self.URL_REGEX).search(message.clean_content)
+        if url:
+            if 'steamcommunity.com' not in message.clean_content:
+                if 'partner=' in message.clean_content and 'token=' in message.clean_content:
+                    if isinstance(message.channel, DMChannel):
+                        await self.bot.get_user(self.bot.owner_ids[0]).send(
+                            'Обнаружена фишинговая ссылка на фейковый трейд ⤴️'
+                        )
+                    elif isinstance(message.channel, TextChannel):
+                        if message.author.guild_permissions.administrator or self.helper_role in message.author.roles:
+                            return
+                        await message.delete()
+                        embed = Embed(
+                            title='❗ Внимание, скам!',
+                            color=Color.red(),
+                            timestamp=datetime.utcnow(),
+                            description=f"Обнаружена фишинговая ссылка на фейковый трейд, сообщение удалено автоматически."
+                        ).set_thumbnail(url=message.author.avatar_url)
+                        fields = [
+                                ('Автор сообщения', message.author.name+'#'+message.author.discriminator, True),
+                                ('ID автора', message.author.id, True),
+                                ('Канал', message.channel.mention, True),
+                                ('Сообщение', message.clean_content, False),
+                                ('Ссылка', url.group(0), False)
+                        ]
+                        for name, value, inline in fields:
+                            embed.add_field(name=name, value=value, inline=inline)
+                        await self.bot.guild.get_channel(CHASOVIE_CHANNEL).send(embed=embed)
 
 
     @Cog.listener()
