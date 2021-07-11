@@ -284,7 +284,8 @@ class BenBot(Cog, name='Fortnite API 1'):
 
         var = ""
         for section in data['data']['sections']:
-            var += f'— **{section["name"]}**'
+            name = section["name"] if section["name"] else section["id"]
+            var += f'— **{name}**'
             if section['quantity'] > 1:
                 var += f' (x{section["quantity"]})\n'
             else:
