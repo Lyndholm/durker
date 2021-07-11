@@ -172,6 +172,24 @@ class Commands(Cog, name='Базовые команды'):
         await ctx.send(' '.join(member.mention for member in targets) +  f' Изображениям и прочим медиафайлам, '
                        'не относящимся к теме разговора, нет места в чате! Пожалуйста, используйте канал <#644523860326219776>')
 
+    @command(name=cmd["general"]["name"], aliases=cmd["general"]["aliases"],
+            brief=cmd["general"]["brief"],
+            description=cmd["general"]["description"],
+            usage=cmd["general"]["usage"],
+            help=cmd["general"]["help"],
+            hidden=cmd["general"]["hidden"], enabled=True)
+    @check_any(
+        required_level(cmd["general"]["required_level"]),
+        has_any_role(CHASOVOY_ROLE_ID),
+        has_permissions(administrator=True))
+    @guild_only()
+    @cooldown(cmd["general"]["cooldown_rate"], cmd["general"]["cooldown_per_second"], BucketType.guild)
+    @logger.catch
+    async def redirect_to_general_channel_command(self, ctx, targets: Greedy[Member]):
+        await ctx.message.delete()
+        await ctx.send(' '.join(member.mention for member in targets) +  f' Пожалуйста, соблюдайте '
+                       'тематику канала! Для общения используйте <#721480135043448954>')
+
     async def gachi_poisk_feature(self, ctx, targets):
         gachi_replies = (
             ' Slave, ты пишешь не в тот Gym, тебе нужно в next door: <#546416181871902730>. ' \

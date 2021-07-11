@@ -278,6 +278,22 @@
       "cooldown_type": "guild",
       "hidden": false
     },
+    "general": {
+      "name": "general",
+      "aliases": [
+        "общение"
+      ],
+      "brief": "Перенаправление в #общение",
+      "description": "Перенаправляет пользователей в <#721480135043448954>.",
+      "usage": "общение <members>",
+      "help": "Перенаправляет пользователей в <#721480135043448954>, если нарушается тематика канала.\nРаботает только на сервере.\n\n**Кулдаун:** 5 секунд, действует на весь сервер.\n**Необходимый уровень:** 10",
+      "required_level": 10,
+      "has_cooldown": true,
+      "cooldown_rate": 1,
+      "cooldown_per_second": 5,
+      "cooldown_type": "guild",
+      "hidden": false
+    },
     "poisk": {
       "name": "poisk",
       "aliases": [
