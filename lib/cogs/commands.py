@@ -1,4 +1,5 @@
 from datetime import datetime, timedelta
+from io import BytesIO
 from os import listdir
 from platform import python_version
 from random import choice, randint
@@ -8,9 +9,9 @@ from typing import Optional
 from aiohttp import ClientSession
 from discord import Color, Embed, File, Member
 from discord import __version__ as discord_version
-from discord.ext.commands import (BucketType, Cog, Greedy, check_any, command,
-                                  cooldown, guild_only, has_any_role,
-                                  has_permissions)
+from discord.ext.commands import (BucketType, Cog, EmojiConverter, Greedy,
+                                  check_any, command, cooldown, guild_only,
+                                  has_any_role, has_permissions)
 from loguru import logger
 from psutil import Process, cpu_percent, virtual_memory
 
@@ -352,6 +353,34 @@ class Commands(Cog, name='Базовые команды'):
                 color=Color.red()
             )
             await ctx.reply(embed=embed, mention_author=False)
+
+    @command(name=cmd["emoji"]["name"], aliases=cmd["emoji"]["aliases"],
+            brief=cmd["emoji"]["brief"],
+            description=cmd["emoji"]["description"],
+            usage=cmd["emoji"]["usage"],
+            help=cmd["emoji"]["help"],
+            hidden=cmd["emoji"]["hidden"], enabled=True)
+    @required_level(cmd["emoji"]["required_level"])
+    @is_channel(CONSOLE_CHANNEL)
+    @guild_only()
+    @logger.catch
+    async def display_emoji_png(self, ctx, emoji: Greedy[EmojiConverter] = None):
+        if emoji is None:
+            await ctx.reply(
+                'Укажите валидный смайл. Эмодзи со сторонних серверов и unicode эмодзи не поддерживаются.',
+                mention_author=False
+            )
+            return
+        elif len(emoji) > 3:
+            await ctx.reply(
+                'Превышен лимит эмодзи в сообщении. Уменьшите количество смайликов до 3.',
+                mention_author=False
+            )
+            return
+
+        for e in emoji:
+            asset = File(BytesIO(await e.url.read()), filename=e.name+'.png')
+            await ctx.send(f'**Эмодзи:** {e.name}', file=asset)
 
     @command(name=cmd["info"]["name"], aliases=cmd["info"]["aliases"],
             brief=cmd["info"]["brief"],

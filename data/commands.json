@@ -379,6 +379,23 @@
       "cooldown_type": "member",
       "hidden": false
     },
+    "emoji": {
+      "name": "emoji",
+      "aliases": [
+        "смайл",
+        "эмодзи"
+      ],
+      "brief": "Эмодзи в PNG.",
+      "description": "Изображение эмодзи в PNG.",
+      "usage": "emoji <emoji>",
+      "help": "Бот присылает изображение эмодзи в PNG.\nРаботает только на сервере в канале <#859921140805926932>.\n\n**Кулдаун:** отсутствует.\n**Необходимый уровень:** 0",
+      "required_level": 0,
+      "has_cooldown": false,
+      "cooldown_rate": 0,
+      "cooldown_per_second": 0,
+      "cooldown_type": "None",
+      "hidden": false
+    },
     "info": {
       "name": "info",
       "aliases": [

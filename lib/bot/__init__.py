@@ -12,10 +12,11 @@ from discord.errors import Forbidden, HTTPException
 from discord.ext.commands import Bot as BotBase
 from discord.ext.commands import (CheckAnyFailure, CheckFailure,
                                   CommandNotFound, CommandOnCooldown, Context,
-                                  DisabledCommand, ExtensionAlreadyLoaded,
-                                  ExtensionNotLoaded, MaxConcurrencyReached,
-                                  MissingPermissions, MissingRequiredArgument,
-                                  NoPrivateMessage, PrivateMessageOnly)
+                                  DisabledCommand, EmojiNotFound,
+                                  ExtensionAlreadyLoaded, ExtensionNotLoaded,
+                                  MaxConcurrencyReached, MissingPermissions,
+                                  MissingRequiredArgument, NoPrivateMessage,
+                                  PrivateMessageOnly)
 from dotenv import load_dotenv
 from loguru import logger
 
@@ -316,6 +317,16 @@ class Bot(BotBase):
                 embed = Embed(
                     title='❗ Внимание!',
                     description=f"Команда `{ctx.command}` уже запущена.",
+                    color=Color.red()
+                )
+                await ctx.reply(embed=embed, mention_author=False)
+
+            elif isinstance(exc, EmojiNotFound):
+                embed = Embed(
+                    title='❗ Ошибка!',
+                    description='Указанные эмодзи не найдены. '
+                                'Возможно, вы указали глобальный эмодзи или эмодзи, '
+                                'которого нет на этом сервере.',
                     color=Color.red()
                 )
                 await ctx.reply(embed=embed, mention_author=False)
