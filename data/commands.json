@@ -1383,6 +1383,22 @@
       "cooldown_type": "None",
       "hidden": true
     },
+    "suggestions": {
+      "name": "suggestions",
+      "aliases": [
+        "заявки"
+      ],
+      "brief": "Радио заявки.",
+      "description": "Список открытых заявок на добавление/удаление треков.",
+      "usage": "suggestions",
+      "help": "Просмотр списка открытых заявок на добавление/удаление треков.\nРаботает только в личных сообщениях.\nДоступно только <@195637386221191170> и <@375722626636578816>\n\n**Кулдаун:** отсутствует.\n**Необходимый уровень:** 0",
+      "required_level": 0,
+      "has_cooldown": false,
+      "cooldown_rate": 0,
+      "cooldown_per_second": 0,
+      "cooldown_type": "None",
+      "hidden": true
+    },
     "approve": {
       "name": "approve",
       "aliases": [

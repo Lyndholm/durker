@@ -8,6 +8,7 @@ import aiofiles
 from aiohttp import ClientSession
 from discord import Color, Embed, File, User
 from discord.ext.commands import Cog, Greedy, command, dm_only, is_owner
+from discord.ext.menus import ListPageSource, MenuPages
 from discord.utils import get
 from loguru import logger
 
@@ -18,6 +19,37 @@ from ..utils.utils import (edit_user_messages_count, edit_user_reputation,
 
 cmd = load_commands_from_json("owner")
 
+
+class SuggestionsMenu(ListPageSource):
+    def __init__(self, ctx, data):
+        self.ctx = ctx
+
+        super().__init__(data, per_page=3)
+
+    async def write_page(self, menu, offset, fields=[]):
+        len_data = len(self.entries)
+
+        embed = Embed(title='🎵 Радио заявки', color=0xffc300)
+        embed.set_thumbnail(url='http://pngimg.com/uploads/radio/radio_PNG19281.png')
+        embed.set_footer(text=f'Заявки {offset:,} - {min(len_data, offset+self.per_page-1):,} из {len_data:,}.')
+
+        for name, value in fields:
+            embed.add_field(name=name, value=value, inline=False)
+
+        return embed
+
+    async def format_page(self, menu, entries):
+        offset = (menu.current_page*self.per_page) + 1
+
+        fields = []
+        table = ('\n'.join(
+            f'> Заявка №**{entry[0]}** на {"добавление" if entry[1] == "add" else "удаление"} трека.\n'
+            f'**Трек:** {entry[2]}\n**Комментарий:** {entry[3] if entry[3] else "отсутствует."}\n'
+            for entry in entries))
+
+        fields.append(("Открытые заявки:", table))
+
+        return await self.write_page(menu, offset, fields)
 
 class Owner(Cog, name='Команды разработчика'):
     def __init__(self, bot):
@@ -273,6 +305,25 @@ class Owner(Cog, name='Команды разработчика'):
                                 f'**Updated:** {datetime.fromtimestamp(data.get("lastUpdated", 0)).strftime("%d.%m.%Y %H:%M:%S")}'
                 )
                 await ctx.reply(embed=embed, mention_author=False)
+
+
+    @command(name=cmd["suggestions"]["name"], aliases=cmd["suggestions"]["aliases"],
+            brief=cmd["suggestions"]["brief"],
+            description=cmd["suggestions"]["description"],
+            usage=cmd["suggestions"]["usage"],
+            help=cmd["suggestions"]["help"],
+            hidden=cmd["suggestions"]["hidden"], enabled=True)
+    @dm_only()
+    @can_manage_radio_suggestions()
+    @logger.catch
+    async def radio_suggestions_command(self, ctx):
+        records = db.records("SELECT suggestion_id, suggestion_type, suggested_song, suggestion_comment "
+                            "FROM song_suggestions WHERE curator_id IS NULL")
+        if records:
+            menu = MenuPages(source=SuggestionsMenu(ctx, records))
+            await menu.start(ctx)
+        else:
+            await ctx.reply('Открытых заявок нет.', mention_author=False)
 
 
     @logger.catch
