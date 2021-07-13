@@ -1235,6 +1235,22 @@
       "cooldown_per_second": 5,
       "cooldown_type": "member",
       "hidden": false
+    },
+    "anisuggest": {
+      "name": "anisuggest",
+      "aliases": [
+        "анизаявка"
+      ],
+      "brief": "Заявка на добавление аниме картинки.",
+      "description": "Заявка на добавление аниме картинки в команду `anipic`.",
+      "usage": "anisuggest [image url]",
+      "help": "Оформите заявку на добавление аниме картинки (или гифки) в команду `anipic`. Вы можете как прикрепить изображения к сообщению, так и указать прямые ссылки на них.\nРаботает на сервере в канале <#859921140805926932>.\n\n**Кулдаун:** отсутствует.\n**Необходимый уровень:** 5",
+      "required_level": 5,
+      "has_cooldown": false,
+      "cooldown_rate": 0,
+      "cooldown_per_second": 0,
+      "cooldown_type": "None",
+      "hidden": false
     }
   },
   "owner": {
