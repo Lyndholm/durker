@@ -308,10 +308,11 @@ class Bot(BotBase):
             elif isinstance(exc, HTTPException):
                 embed = Embed(
                     title='❗ Ошибка!',
-                    description=f"Невозможно отправить сообщение. Возможно, превышен лимит символов.",
+                    description=f"Не удалось отправить сообщение. Возможно, превышен лимит символов "
+                                "или размер файла больше 8 МБ.",
                     color=Color.red()
                 )
-                await ctx.reply(embed=embed, mention_author=False)
+                await ctx.send(embed=embed)
 
             elif isinstance(exc, MaxConcurrencyReached):
                 embed = Embed(
