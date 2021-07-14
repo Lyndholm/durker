@@ -76,7 +76,7 @@ class Welcome(Cog, name='Greetings'):
     @Cog.listener()
     @logger.catch
     async def on_member_join(self, member):
-        insert_new_user_in_db(member)
+        await insert_new_user_in_db(member)
 
     @Cog.listener()
     @logger.catch
@@ -93,7 +93,7 @@ class Welcome(Cog, name='Greetings'):
             await self.bot.get_channel(AUDIT_LOG_CHANNEL).send(embed=embed)
 
         else:
-            dump_user_data_in_json(member)
+            await dump_user_data_in_json(member)
             delete_user_from_db(member.id)
 
             embed = Embed(description=f"К сожалению, пользователь **{member.display_name}** ({member.mention}) покинул сервер 😞",

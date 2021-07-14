@@ -211,8 +211,9 @@ class Bot(BotBase):
                 if guild.id == GUILD_ID:
                     for member in guild.members:
                         if member.pending is False:
-                            if rec := db.fetchone(["user_id"], "users_info", "user_id", member.id) is None:
-                                insert_new_user_in_db(member)
+                            rec = db.fetchone(["user_id"], "users_info", "user_id", member.id)
+                            if rec is None:
+                                await insert_new_user_in_db(member)
 
 
             db.execute("DELETE FROM voice_activity;")
