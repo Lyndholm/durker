@@ -1495,6 +1495,22 @@
       "cooldown_type": "None",
       "hidden": true
     },
+    "reply": {
+      "name": "reply",
+      "aliases": [
+        "ответь"
+      ],
+      "brief": "От имени бота отвечает на сообщение.",
+      "description": "От имени бота отвечает на указанное сообщение.",
+      "usage": "reply <channel id> <message id> [message content]",
+      "help": "От имени бота отвечает на указанное сообщение. Возможна отправка медиафайлов (не более 8 мб).\nРаботает только в личных сообщениях.\nДоступно только разработчику бота.\n\n**Кулдаун:** отсутствует.\n**Необходимый уровень:** 0",
+      "required_level": 0,
+      "has_cooldown": false,
+      "cooldown_rate": 0,
+      "cooldown_per_second": 0,
+      "cooldown_type": "None",
+      "hidden": true
+    },
     "setrep": {
       "name": "setrep",
       "aliases": [

@@ -466,6 +466,31 @@ class Owner(Cog, name='Команды разработчика'):
             await ctx.message.add_reaction('✅')
 
 
+    @command(name=cmd["reply"]["name"], aliases=cmd["reply"]["aliases"],
+            brief=cmd["reply"]["brief"],
+            description=cmd["reply"]["description"],
+            usage=cmd["reply"]["usage"],
+            help=cmd["reply"]["help"],
+            hidden=cmd["reply"]["hidden"], enabled=True)
+    @dm_only()
+    @is_owner()
+    @logger.catch
+    async def message_reply_command(self, ctx, channel_id: int = None, message_id: int = None, *, content: str = '_ _'):
+        try:
+            channel = self.bot.get_channel(channel_id)
+            message = await channel.fetch_message(message_id)
+        except:
+            return await ctx.message.add_reaction('❌')
+
+        if message and content:
+            await message.reply(
+                content=content,
+                files=[await attachment.to_file() for attachment in ctx.message.attachments] if ctx.message.attachments else None,
+                mention_author=False
+            )
+            await ctx.message.add_reaction('✅')
+
+
     @command(name=cmd["setrep"]["name"], aliases=cmd["setrep"]["aliases"],
             brief=cmd["setrep"]["brief"],
             description=cmd["setrep"]["description"],
