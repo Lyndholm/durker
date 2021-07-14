@@ -46,7 +46,7 @@ class PeelyDE(Cog, name='Fortnite API 4'):
                     async with session.get(f'https://api.peely.de/cdn/current/leaks?lang={language}') as r:
                         if r.status != 200:
                             await ctx.reply(
-                                f"""```json\n{await r.text()}```""",
+                                f"""```ini\nHTTP: {r.status}```""",
                                 mention_author=False
                             )
                             return
@@ -59,7 +59,7 @@ class PeelyDE(Cog, name='Fortnite API 4'):
                     async with session.get(f'https://api.peely.de/cdn/current/leaks.png') as r:
                         if r.status != 200:
                             await ctx.reply(
-                                f"""```json\n{await r.text()}```""",
+                                f"""```ini\nHTTP: {r.status}```""",
                                 mention_author=False
                             )
                             return
@@ -91,7 +91,7 @@ class PeelyDE(Cog, name='Fortnite API 4'):
             async with session.get("https://api.peely.de/v1/br/progress/data") as r:
                 if r.status != 200:
                     await ctx.reply(
-                            f"""```json\n{await r.text()}```""",
+                            f"""```ini\nHTTP: {r.status}```""",
                             mention_author=False
                     )
                     return
