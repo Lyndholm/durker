@@ -82,6 +82,7 @@ class Bot(BotBase):
 
         super().__init__(command_prefix=PREFIX,
                          case_insensitive=True,
+                         strip_after_prefix=True,
                          owner_ids=OWNER_IDS,
                          intents=Intents.all(),
                          max_messages=10000
