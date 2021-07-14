@@ -243,6 +243,16 @@ class LofiRadio(commands.Cog, wavelink.WavelinkMixin, name='Lofi Radio'):
 
         return context
 
+    async def remove_previous_controller(self):
+        channel = self.bot.guild.get_channel(MUSIC_COMMANDS_CHANNEL)
+        async for message in channel.history(limit=10):
+            if message.author == self.bot.guild.me and message.embeds:
+                try:
+                    if 'Radio' in message.embeds[0].title:
+                        await message.delete()
+                except:
+                    continue
+
     async def launch_lofi_radio(self):
         context = await self.fetch_context(546411393239220233, 855180960106676254)
         player: Player = self.bot.wavelink.get_player(
@@ -252,7 +262,8 @@ class LofiRadio(commands.Cog, wavelink.WavelinkMixin, name='Lofi Radio'):
         )
         player.queue._queue.clear()
 
-        voice_channel = await discord.utils.get(context.guild.voice_channels, id=683251990284730397).edit(name="Lofi Radio")
+        await self.remove_previous_controller()
+        await discord.utils.get(context.guild.voice_channels, id=683251990284730397).edit(name="Lofi Radio")
 
         if not player.is_connected:
             await context.invoke(self.connect)
@@ -265,15 +276,6 @@ class LofiRadio(commands.Cog, wavelink.WavelinkMixin, name='Lofi Radio'):
             for track in tracks.tracks:
                 track = Track(track.id, track.info, requester=context.author)
                 await player.queue.put(track)
-
-            embed = discord.Embed(
-                title="Плейлист загружен",
-                color=discord.Color.green(),
-                timestamp=datetime.datetime.utcnow(),
-                description=f'```ini\nПлейлист {tracks.data["playlistInfo"]["name"]}'
-                            f' (позиций: {len(tracks.tracks)}) добавлен в очередь.\n```'
-            )
-            await context.send(embed=embed, delete_after=15)
 
         random.shuffle(player.queue._queue)
 
