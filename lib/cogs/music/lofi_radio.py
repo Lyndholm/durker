@@ -268,14 +268,20 @@ class LofiRadio(commands.Cog, wavelink.WavelinkMixin, name='Lofi Radio'):
         if not player.is_connected:
             await context.invoke(self.connect)
 
-        tracks = await self.bot.wavelink.get_tracks("https://www.youtube.com/playlist?list=PLofht4PTcKYnaH8w5olJCI-wUVxuoMHqM")
-        if not tracks:
-            return await self.bot.get_user(self.bot.owner_ids[0]).send(f"{datetime.datetime.now()} | Не удалось загрузить плейлист `Lofi Radio`.")
+        playlists = ('https://www.youtube.com/playlist?list=PLofht4PTcKYnaH8w5olJCI-wUVxuoMHqM',
+                     'https://www.youtube.com/playlist?list=PLfMqck7-0P5IYRckqAmvnqKfGpt5SN8oz')
 
-        if isinstance(tracks, wavelink.TrackPlaylist):
-            for track in tracks.tracks:
-                track = Track(track.id, track.info, requester=context.author)
-                await player.queue.put(track)
+        for uri in playlists:
+            tracks = await self.bot.wavelink.get_tracks(uri)
+            if not tracks:
+                return await self.bot.get_user(self.bot.owner_ids[0]).send(
+                    f'{datetime.datetime.now()} | Не удалось загрузить один из плейлистов `Lofi Radio`.\n'
+                    f'`{uri}`')
+
+            if isinstance(tracks, wavelink.TrackPlaylist):
+                for track in tracks.tracks:
+                    track = Track(track.id, track.info, requester=context.author)
+                    await player.queue.put(track)
 
         random.shuffle(player.queue._queue)
 
