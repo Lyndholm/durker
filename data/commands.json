@@ -121,93 +121,6 @@
       "hidden": true
     }
   },
-  "benbot": {
-    "benbotstatus": {
-      "name": "benbotstatus",
-      "aliases": [
-        "benstatus",
-        "pingbenbot"
-      ],
-      "brief": "Состояние BenBot API.",
-      "description": "Отображает состояние BenBot API.",
-      "usage": "benstatus",
-      "help": "Отображает состояние BenBot API.\nРаботает только в личных сообщениях.\nДоступно только разработчику.\n\n**Кулдаун:** отсутствует.\n**Необходимый уровень:** 0",
-      "required_level": 0,
-      "has_cooldown": false,
-      "cooldown_rate": 0,
-      "cooldown_per_second": 0,
-      "cooldown_type": "None",
-      "hidden": true
-    },
-    "aes": {
-      "name": "aes",
-      "aliases": [
-        "fnaes"
-      ],
-      "brief": "AES ключи.",
-      "description": "Отображает AES ключи для доступа к файлам игры.",
-      "usage": "aes [version]",
-      "help": "Отображает AES ключи для доступа к файлам игры. По умолчанию отображаются ключи для текущей версии игры. В случае необходимости мы можете указать необходимую вам версию.\nРаботает только на сервере в канале <#859921140805926932>.\n\n**Кулдаун:** 1 минута, действует на определённого пользователя.\n**Необходимый уровень:** 10",
-      "required_level": 10,
-      "has_cooldown": true,
-      "cooldown_rate": 1,
-      "cooldown_per_second": 60,
-      "cooldown_type": "member",
-      "hidden": false
-    },
-    "cosmeticinfo": {
-      "name": "cosmeticinfo",
-      "aliases": [
-        "itemid",
-        "fnitem"
-      ],
-      "brief": "Информация о предмете Fortnite.",
-      "description": "Отображает информацию о косметическом предмете Fortnite по его ID.",
-      "usage": "cosmeticinfo <ID>",
-      "help": "Отображает информацию о косметическом предмете по его внутреннему ID.\nРаботает только на сервере в канале <#859921140805926932>.\n\n**Кулдаун:** отсутствует.\n**Необходимый уровень:** 10",
-      "required_level": 10,
-      "has_cooldown": false,
-      "cooldown_rate": 0,
-      "cooldown_per_second": 0,
-      "cooldown_type": "None",
-      "hidden": false
-    },
-    "extractasset": {
-      "name": "extractasset",
-      "aliases": [
-        "fnextract",
-        "fnexport",
-        "exportasset",
-        "export"
-      ],
-      "brief": "Извлечение asset'ов.",
-      "description": "Извлекает asset из файлов.",
-      "usage": "extractasset <path> [*params]",
-      "help": "Извлекает asset из файлов Fortnite.\nРаботает только на сервере в канале <#859921140805926932>.\n\n**Кулдаун:** отсутствует.\n**Необходимый уровень:** 10",
-      "required_level": 10,
-      "has_cooldown": false,
-      "cooldown_rate": 0,
-      "cooldown_per_second": 0,
-      "cooldown_type": "None",
-      "hidden": false
-    },
-    "shopsections": {
-      "name": "shopsections",
-      "aliases": [
-        "sectionstore"
-      ],
-      "brief": "Категории магазина предметов.",
-      "description": "Отображает категории магазина предметов Fortnite.",
-      "usage": "shopsections",
-      "help": "Позволяет просмотреть текущие категории магазина предметов Fortnite. С 01:00 до 02:59 МСК отображаются секции, которые будут в следующем магазине.\nРаботает только на сервере в канале <#859921140805926932>.\n\n**Кулдаун:** 5 минут, действует на определённого пользователя.\n**Необходимый уровень:** 5",
-      "required_level": 5,
-      "has_cooldown": true,
-      "cooldown_rate": 1,
-      "cooldown_per_second": 300,
-      "cooldown_type": "member",
-      "hidden": false
-    }
-  },
   "commands": {
     "suggest": {
       "name": "suggest",
@@ -516,25 +429,7 @@
       "hidden": true
     }
   },
-  "fn_devservers": {
-    "fndev": {
-      "name": "fndev",
-      "aliases": [
-        "devserv"
-      ],
-      "brief": "Состояние dev серверов Fortnite.",
-      "description": "Отображает данные о состоянии dev серверов Fortnite.",
-      "usage": "fndev [stage]",
-      "help": "Просмотр состояния серверов, на которых разработчики тестируют патчи Fortnite. Использование ключа `stage` отображает только состояние stage сервера.\nРаботает только на сервере в канале <#859921140805926932>.\n\n**Кулдаун:** 10 минут, действует на определённого пользователя.\n**Необходимый уровень:** 10",
-      "required_level": 10,
-      "has_cooldown": true,
-      "cooldown_rate": 1,
-      "cooldown_per_second": 600,
-      "cooldown_type": "member",
-      "hidden": false
-    }
-  },
-  "fortniteapicom": {
+  "fortnite": {
     "searchcosmetic": {
       "name": "searchcosmetic",
       "aliases": [
@@ -620,9 +515,7 @@
       "cooldown_per_second": 0,
       "cooldown_type": "None",
       "hidden": false
-    }
-  },
-  "fortniteapiio": {
+    },
     "map": {
       "name": "map",
       "aliases": [
@@ -707,9 +600,142 @@
       "cooldown_per_second": 0,
       "cooldown_type": "None",
       "hidden": false
-    }
-  },
-  "fortnitetracker": {
+    },
+    "benbotstatus": {
+      "name": "benbotstatus",
+      "aliases": [
+        "benstatus",
+        "pingbenbot"
+      ],
+      "brief": "Состояние BenBot API.",
+      "description": "Отображает состояние BenBot API.",
+      "usage": "benstatus",
+      "help": "Отображает состояние BenBot API.\nРаботает только в личных сообщениях.\nДоступно только разработчику.\n\n**Кулдаун:** отсутствует.\n**Необходимый уровень:** 0",
+      "required_level": 0,
+      "has_cooldown": false,
+      "cooldown_rate": 0,
+      "cooldown_per_second": 0,
+      "cooldown_type": "None",
+      "hidden": true
+    },
+    "aes": {
+      "name": "aes",
+      "aliases": [
+        "fnaes"
+      ],
+      "brief": "AES ключи.",
+      "description": "Отображает AES ключи для доступа к файлам игры.",
+      "usage": "aes [version]",
+      "help": "Отображает AES ключи для доступа к файлам игры. По умолчанию отображаются ключи для текущей версии игры. В случае необходимости мы можете указать необходимую вам версию.\nРаботает только на сервере в канале <#859921140805926932>.\n\n**Кулдаун:** 1 минута, действует на определённого пользователя.\n**Необходимый уровень:** 10",
+      "required_level": 10,
+      "has_cooldown": true,
+      "cooldown_rate": 1,
+      "cooldown_per_second": 60,
+      "cooldown_type": "member",
+      "hidden": false
+    },
+    "cosmeticinfo": {
+      "name": "cosmeticinfo",
+      "aliases": [
+        "itemid",
+        "fnitem"
+      ],
+      "brief": "Информация о предмете Fortnite.",
+      "description": "Отображает информацию о косметическом предмете Fortnite по его ID.",
+      "usage": "cosmeticinfo <ID>",
+      "help": "Отображает информацию о косметическом предмете по его внутреннему ID.\nРаботает только на сервере в канале <#859921140805926932>.\n\n**Кулдаун:** отсутствует.\n**Необходимый уровень:** 10",
+      "required_level": 10,
+      "has_cooldown": false,
+      "cooldown_rate": 0,
+      "cooldown_per_second": 0,
+      "cooldown_type": "None",
+      "hidden": false
+    },
+    "extractasset": {
+      "name": "extractasset",
+      "aliases": [
+        "fnextract",
+        "fnexport",
+        "exportasset",
+        "export"
+      ],
+      "brief": "Извлечение asset'ов.",
+      "description": "Извлекает asset из файлов.",
+      "usage": "extractasset <path> [*params]",
+      "help": "Извлекает asset из файлов Fortnite.\nРаботает только на сервере в канале <#859921140805926932>.\n\n**Кулдаун:** отсутствует.\n**Необходимый уровень:** 10",
+      "required_level": 10,
+      "has_cooldown": false,
+      "cooldown_rate": 0,
+      "cooldown_per_second": 0,
+      "cooldown_type": "None",
+      "hidden": false
+    },
+    "shopsections": {
+      "name": "shopsections",
+      "aliases": [
+        "sectionstore"
+      ],
+      "brief": "Категории магазина предметов.",
+      "description": "Отображает категории магазина предметов Fortnite.",
+      "usage": "shopsections",
+      "help": "Позволяет просмотреть текущие категории магазина предметов Fortnite. С 01:00 до 02:59 МСК отображаются секции, которые будут в следующем магазине.\nРаботает только на сервере в канале <#859921140805926932>.\n\n**Кулдаун:** 5 минут, действует на определённого пользователя.\n**Необходимый уровень:** 5",
+      "required_level": 5,
+      "has_cooldown": true,
+      "cooldown_rate": 1,
+      "cooldown_per_second": 300,
+      "cooldown_type": "member",
+      "hidden": false
+    },
+    "fndev": {
+      "name": "fndev",
+      "aliases": [
+        "devserv"
+      ],
+      "brief": "Состояние dev серверов Fortnite.",
+      "description": "Отображает данные о состоянии dev серверов Fortnite.",
+      "usage": "fndev [stage]",
+      "help": "Просмотр состояния серверов, на которых разработчики тестируют патчи Fortnite. Использование ключа `stage` отображает только состояние stage сервера.\nРаботает только на сервере в канале <#859921140805926932>.\n\n**Кулдаун:** 10 минут, действует на определённого пользователя.\n**Необходимый уровень:** 10",
+      "required_level": 10,
+      "has_cooldown": true,
+      "cooldown_rate": 1,
+      "cooldown_per_second": 600,
+      "cooldown_type": "member",
+      "hidden": false
+    },
+    "upcoming": {
+      "name": "upcoming",
+      "aliases": [
+        "fnupcoming",
+        "fnleaks"
+      ],
+      "brief": "Отображает картинку со сливами последнего обновления Fortnite или недавно расшифрованными предметами.",
+      "description": "Просмотр сливов Fortnite.",
+      "usage": "upcoming [full]",
+      "help": "Команда для просмотра сливов Fortnite. При использовании ключа `full` отображает полную картинку сливов последнего обновления, без него отображаются только недавно расшифрованные предметы.\nРаботает только на сервере в канале <#859921140805926932>.\n\n**Кулдаун:** 1 минута, действует на определённого пользователя.\n**Необходимый уровень:** 0",
+      "required_level": 0,
+      "has_cooldown": true,
+      "cooldown_rate": 1,
+      "cooldown_per_second": 60,
+      "cooldown_type": "member",
+      "hidden": false
+    },
+    "fnseason": {
+      "name": "fnseason",
+      "aliases": [
+        "seasonfn",
+        "fortseason"
+      ],
+      "brief": "Отображает продолжительность текущего сезона Королевской битвы.",
+      "description": "Просмотр продолжительности текущего сезона Королевской битвы в виде прогресс бара.",
+      "usage": "fnseason",
+      "help": "Команда для просмотра продолжительности текущего сезона Королевской битвы в виде прогресс бара.\nРаботает только на сервере в канале <#859921140805926932>.\n\n**Кулдаун:** 1 минута, действует на определённого пользователя.\n**Необходимый уровень:** 0",
+      "required_level": 0,
+      "has_cooldown": true,
+      "cooldown_rate": 1,
+      "cooldown_per_second": 60,
+      "cooldown_type": "member",
+      "hidden": false
+    },
     "fnstats": {
       "name": "fnstats",
       "aliases": [
@@ -1846,42 +1872,6 @@
       "cooldown_rate": 0,
       "cooldown_per_second": 0,
       "cooldown_type": "None",
-      "hidden": false
-    }
-  },
-  "peelyde": {
-    "upcoming": {
-      "name": "upcoming",
-      "aliases": [
-        "fnupcoming",
-        "fnleaks"
-      ],
-      "brief": "Отображает картинку со сливами последнего обновления Fortnite или недавно расшифрованными предметами.",
-      "description": "Просмотр сливов Fortnite.",
-      "usage": "upcoming [full]",
-      "help": "Команда для просмотра сливов Fortnite. При использовании ключа `full` отображает полную картинку сливов последнего обновления, без него отображаются только недавно расшифрованные предметы.\nРаботает только на сервере в канале <#859921140805926932>.\n\n**Кулдаун:** 1 минута, действует на определённого пользователя.\n**Необходимый уровень:** 0",
-      "required_level": 0,
-      "has_cooldown": true,
-      "cooldown_rate": 1,
-      "cooldown_per_second": 60,
-      "cooldown_type": "member",
-      "hidden": false
-    },
-    "fnseason": {
-      "name": "fnseason",
-      "aliases": [
-        "seasonfn",
-        "fortseason"
-      ],
-      "brief": "Отображает продолжительность текущего сезона Королевской битвы.",
-      "description": "Просмотр продолжительности текущего сезона Королевской битвы в виде прогресс бара.",
-      "usage": "fnseason",
-      "help": "Команда для просмотра продолжительности текущего сезона Королевской битвы в виде прогресс бара.\nРаботает только на сервере в канале <#859921140805926932>.\n\n**Кулдаун:** 1 минута, действует на определённого пользователя.\n**Необходимый уровень:** 0",
-      "required_level": 0,
-      "has_cooldown": true,
-      "cooldown_rate": 1,
-      "cooldown_per_second": 60,
-      "cooldown_type": "member",
       "hidden": false
     }
   },

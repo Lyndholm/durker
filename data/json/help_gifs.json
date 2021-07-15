@@ -13,12 +13,6 @@
   "BackgroundTasks": [
     "https://cdn.discordapp.com/attachments/774698479981297664/774700936958312468/placeholder.png"
   ],
-  "BenBot": [
-    "https://cdn.discordapp.com/attachments/774698479981297664/837788772041097276/hack_fortniteapi.gif",
-    "https://cdn.discordapp.com/attachments/774698479981297664/837789828430430218/fortnite_api_transparent.png",
-    "https://pbs.twimg.com/profile_images/1212454067252936711/o_2fRHGq_400x400.png",
-    "https://i.imgur.com/hJPVKUu.jpeg"
-  ],
   "Commands": [
     "https://cdn.discordapp.com/attachments/774698479981297664/837786901670395924/spinning_info_sign.gif",
     "https://cdn.discordapp.com/attachments/774698479981297664/837787240800714763/spinning_i_symbol.gif",
@@ -35,24 +29,7 @@
   "Eval": [
     "https://cdn.iconscout.com/icon/free/png-256/apple-settings-1-493162.png"
   ],
-  "FortniteDevServers": [
-    "https://cdn.discordapp.com/attachments/774698479981297664/837789460623392818/fortnite_dev.gif",
-    "https://cdn.discordapp.com/attachments/774698479981297664/838061176637358080/fortnite-server-locations.jpg",
-    "https://i.imgur.com/hJPVKUu.jpeg"
-  ],
-  "FortniteAPIcom": [
-    "https://cdn.discordapp.com/attachments/774698479981297664/837788772041097276/hack_fortniteapi.gif",
-    "https://cdn.discordapp.com/attachments/774698479981297664/837789828430430218/fortnite_api_transparent.png",
-    "https://pbs.twimg.com/profile_images/1212454067252936711/o_2fRHGq_400x400.png",
-    "https://i.imgur.com/hJPVKUu.jpeg"
-  ],
-  "FortniteAPIio": [
-    "https://cdn.discordapp.com/attachments/774698479981297664/837788772041097276/hack_fortniteapi.gif",
-    "https://cdn.discordapp.com/attachments/774698479981297664/837789828430430218/fortnite_api_transparent.png",
-    "https://pbs.twimg.com/profile_images/1212454067252936711/o_2fRHGq_400x400.png",
-    "https://i.imgur.com/hJPVKUu.jpeg"
-  ],
-  "FortniteTracker": [
+  "Fortnite": [
     "https://cdn.discordapp.com/attachments/774698479981297664/837789828430430218/fortnite_api_transparent.png",
     "https://pbs.twimg.com/profile_images/1212454067252936711/o_2fRHGq_400x400.png",
     "https://i.imgur.com/hJPVKUu.jpeg"
@@ -101,12 +78,6 @@
   ],
   "Owner": [
     "https://cdn.iconscout.com/icon/free/png-256/developer-2309864-1943774.png"
-  ],
-  "PeelyDE": [
-    "https://cdn.discordapp.com/attachments/774698479981297664/837788772041097276/hack_fortniteapi.gif",
-    "https://cdn.discordapp.com/attachments/774698479981297664/837789828430430218/fortnite_api_transparent.png",
-    "https://pbs.twimg.com/profile_images/1212454067252936711/o_2fRHGq_400x400.png",
-    "https://i.imgur.com/hJPVKUu.jpeg"
   ],
   "Profanity": [
     "https://image.flaticon.com/icons/png/512/1685/1685877.png"
