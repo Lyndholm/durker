@@ -382,6 +382,7 @@ class MusicPlayer(commands.Cog, wavelink.WavelinkMixin, name='Музыка'):
             context=context
         )
         player.queue._queue.clear()
+        await self.remove_previous_controller()
         await discord.utils.get(context.guild.voice_channels, id=683251990284730397).edit(name="Музыка-3")
 
     @commands.Cog.listener()
@@ -553,6 +554,10 @@ class MusicPlayer(commands.Cog, wavelink.WavelinkMixin, name='Музыка'):
         """Play or queue a song with the given query."""
         player: Player = self.bot.wavelink.get_player(guild_id=ctx.guild.id, cls=Player, context=ctx)
 
+        if ctx.author.voice is None:
+            return await ctx.send(f'**{ctx.author.display_name}**, для использования команды '
+                                    'вы должны находиться в голосовом канале.', delete_after=10)
+
         if not player.is_connected:
             await ctx.invoke(self.connect)
 
@@ -647,6 +652,12 @@ class MusicPlayer(commands.Cog, wavelink.WavelinkMixin, name='Музыка'):
         else:
             await ctx.send(f'**{ctx.author.display_name}** проголосовал за запуск плеера.', delete_after=15)
 
+    async def skip_track(self, player: Player) -> None:
+        if player.repeat is RepeatMode.track:
+            player.repeatable_track = await player.queue.get()
+        player.skip_votes.clear()
+        await player.stop()
+
     @commands.command(
         name=cmd["skip"]["name"],
         aliases=cmd["skip"]["aliases"],
@@ -667,23 +678,18 @@ class MusicPlayer(commands.Cog, wavelink.WavelinkMixin, name='Музыка'):
 
         if self.is_privileged(ctx):
             await ctx.send(f'**{ctx.author.display_name}** пропустил трек.', delete_after=10)
-            player.skip_votes.clear()
-
-            return await player.stop()
+            return await self.skip_track(player)
 
         if ctx.author == player.current.requester:
             await ctx.send('Автор трека пропустил композицию.', delete_after=10)
-            player.skip_votes.clear()
-
-            return await player.stop()
+            return await self.skip_track(player)
 
         required = self.required(ctx)
         player.skip_votes.add(ctx.author)
 
         if len(player.skip_votes) >= required:
             await ctx.send('Голосование успешно заверешно. Смена трека.', delete_after=10)
-            player.skip_votes.clear()
-            await player.stop()
+            return await self.skip_track(player)
         else:
             await ctx.send(f'**{ctx.author.display_name}** проголосовал за смену трека.', delete_after=15)
 
