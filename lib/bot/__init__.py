@@ -12,10 +12,11 @@ from discord.errors import Forbidden, HTTPException
 from discord.ext.commands import Bot as BotBase
 from discord.ext.commands import (CheckAnyFailure, CheckFailure,
                                   CommandNotFound, CommandOnCooldown, Context,
-                                  DisabledCommand, ExtensionAlreadyLoaded,
-                                  ExtensionNotLoaded, MaxConcurrencyReached,
-                                  MissingPermissions, MissingRequiredArgument,
-                                  NoPrivateMessage, PrivateMessageOnly)
+                                  DisabledCommand, EmojiNotFound,
+                                  ExtensionAlreadyLoaded, ExtensionNotLoaded,
+                                  MaxConcurrencyReached, MissingPermissions,
+                                  MissingRequiredArgument, NoPrivateMessage,
+                                  PrivateMessageOnly)
 from dotenv import load_dotenv
 from loguru import logger
 
@@ -81,6 +82,7 @@ class Bot(BotBase):
 
         super().__init__(command_prefix=PREFIX,
                          case_insensitive=True,
+                         strip_after_prefix=True,
                          owner_ids=OWNER_IDS,
                          intents=Intents.all(),
                          max_messages=10000
@@ -210,8 +212,9 @@ class Bot(BotBase):
                 if guild.id == GUILD_ID:
                     for member in guild.members:
                         if member.pending is False:
-                            if rec := db.fetchone(["user_id"], "users_info", "user_id", member.id) is None:
-                                insert_new_user_in_db(member)
+                            rec = db.fetchone(["user_id"], "users_info", "user_id", member.id)
+                            if rec is None:
+                                await insert_new_user_in_db(member)
 
 
             db.execute("DELETE FROM voice_activity;")
@@ -307,15 +310,26 @@ class Bot(BotBase):
             elif isinstance(exc, HTTPException):
                 embed = Embed(
                     title='❗ Ошибка!',
-                    description=f"Невозможно отправить сообщение. Возможно, превышен лимит символов.",
+                    description=f"Не удалось отправить сообщение. Возможно, превышен лимит символов "
+                                "или размер файла больше 8 МБ.",
                     color=Color.red()
                 )
-                await ctx.reply(embed=embed, mention_author=False)
+                await ctx.send(embed=embed)
 
             elif isinstance(exc, MaxConcurrencyReached):
                 embed = Embed(
                     title='❗ Внимание!',
                     description=f"Команда `{ctx.command}` уже запущена.",
+                    color=Color.red()
+                )
+                await ctx.reply(embed=embed, mention_author=False)
+
+            elif isinstance(exc, EmojiNotFound):
+                embed = Embed(
+                    title='❗ Ошибка!',
+                    description='Указанные эмодзи не найдены. '
+                                'Возможно, вы указали глобальный эмодзи или эмодзи, '
+                                'которого нет на этом сервере.',
                     color=Color.red()
                 )
                 await ctx.reply(embed=embed, mention_author=False)

@@ -1,5 +1,7 @@
+import fnmatch
 import inspect
 import json
+import os
 from datetime import datetime
 from pathlib import Path
 
@@ -43,7 +45,7 @@ def load_commands_from_json(cog_name:str = None) -> dict:
         return commands
 
 
-def insert_new_user_in_db(member: discord.Member):
+async def insert_new_user_in_db(member: discord.Member) -> None:
     """Adds user data to the database"""
 
     tables = ["casino", "durka_stats", "leveling", "users_stats"]
@@ -54,6 +56,7 @@ def insert_new_user_in_db(member: discord.Member):
                             "nickname": member.display_name,
                             "joined_at": member.joined_at,
                             "mention": member.mention})
+    await try_to_restore_stats(member)
 
 
 def delete_user_from_db(user_id: int):
@@ -66,7 +69,7 @@ def delete_user_from_db(user_id: int):
         db.commit()
 
 
-def dump_user_data_in_json(member: discord.Member):
+async def dump_user_data_in_json(member: discord.Member) -> None:
     """Dump part of the user's data to a json file"""
 
     data = {}
@@ -99,13 +102,45 @@ def dump_user_data_in_json(member: discord.Member):
         "invoice_time": rec[7],
         "purchases": rec[8],
         "mutes_story": rec[9],
-        "warns_story": rec[10]
+        "warns_story": rec[10],
+        "roles": [role.name for role in member.roles]
     }
 
-    time_now = datetime.now().strftime("%d.%m.%Y %H.%M.%S")
+    timestamp = int(datetime.now().timestamp())
 
-    with open(f"./data/users_backup/{member.id} [{time_now}].json", "w") as f:
-        json.dump(data, f, indent=2, sort_keys=True, ensure_ascii=False)
+    async with aiofiles.open(f'./data/users_backup/{member.id}_{timestamp}.json', 'w', encoding='utf-8') as f:
+        await f.write(json.dumps(data, indent=2, sort_keys=True, ensure_ascii=False))
+
+async def try_to_restore_stats(member: discord.Member) -> None:
+    backups = fnmatch.filter(os.listdir('./data/users_backup/'), f'{member.id}_*.json')
+    if not backups:
+        return
+
+    file = sorted(backups)[-1]
+    async with aiofiles.open(f'./data/users_backup/{file}', 'r', encoding='utf-8') as f:
+        data = json.loads(await f.read())
+
+    if (rep_rank := data['users_stats']['rep_rank']) < 0:
+        db.execute("UPDATE users_stats SET rep_rank = %s WHERE user_id = %s",
+        rep_rank, member.id)
+
+    if (lost_rep := data['users_stats']['lost_reputation']) > 0:
+        db.execute("UPDATE users_stats SET lost_reputation = %s WHERE user_id = %s",
+        lost_rep, member.id)
+
+    if (profanity_triggers := data['users_stats']['profanity_triggers']) > 0:
+        db.execute("UPDATE users_stats SET profanity_triggers = %s WHERE user_id = %s",
+        profanity_triggers, member.id)
+
+    if (mutes_story := data['users_stats']['mutes_story']):
+        db.execute("UPDATE users_stats SET mutes_story = %s WHERE user_id = %s",
+        json.dumps(mutes_story, ensure_ascii=False) , member.id)
+
+    if (warns_story := data['users_stats']['warns_story']):
+        db.execute("UPDATE users_stats SET warns_story = %s WHERE user_id = %s",
+        json.dumps(warns_story, ensure_ascii=False), member.id)
+
+    db.commit()
 
 
 def clean_code(content: str) -> str:

@@ -55,6 +55,7 @@ class AchievementHandler(Cog, name='AchievementHandler'):
         await self.philanthropist_handler(member, achievements, cog)
         await self.voice_master_handler(member, achievements, cog)
         await self.leveling_handler(member, achievements, cog)
+        await self.musicDJ_handler(member, achievements, cog)
 
     @logger.catch
     async def writer_handler(self, member, achievements, cog):
@@ -313,6 +314,30 @@ class AchievementHandler(Cog, name='AchievementHandler'):
             if LEVELING_6 not in achievements:
                 cog.give_achievement(self.bot.guild.me.id, member.id, LEVELING_6)
                 #await cog.achievement_award_notification(LEVELING_6, member)
+
+    @logger.catch
+    async def musicDJ_handler(self, member, achievements, cog):
+        suggestions = db.records(
+            "SELECT suggestion_id FROM song_suggestions "
+            "WHERE suggestion_type = 'add' AND curator_decision = 'true' "
+            "AND suggestion_author_id = %s", member.id
+        )
+        MUSIC_DJ_1 = 'AID_MusicDJ_1'
+        MUSIC_DJ_2 = 'AID_MusicDJ_2'
+        MUSIC_DJ_3 = 'AID_MusicDJ_3'
+
+        if len(suggestions) >= 5:
+            if MUSIC_DJ_1 not in achievements:
+                cog.give_achievement(self.bot.guild.me.id, member.id, MUSIC_DJ_1)
+                #await cog.achievement_award_notification(MUSIC_DJ_1, member)
+        if len(suggestions) >= 15:
+            if MUSIC_DJ_2 not in achievements:
+                cog.give_achievement(self.bot.guild.me.id, member.id, MUSIC_DJ_2)
+                #await cog.achievement_award_notification(MUSIC_DJ_2, member)
+        if len(suggestions) >= 25:
+            if MUSIC_DJ_3 not in achievements:
+                cog.give_achievement(self.bot.guild.me.id, member.id, MUSIC_DJ_3)
+                #await cog.achievement_award_notification(MUSIC_DJ_3, member)
 
 
 def setup(bot):

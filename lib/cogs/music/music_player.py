@@ -1,6 +1,8 @@
 import asyncio
 import copy
 import datetime
+import enum
+import itertools
 import math
 import random
 import re
@@ -33,6 +35,13 @@ class IncorrectChannelError(commands.CommandError):
     pass
 
 
+class RepeatMode(enum.Enum):
+    """Player repeat mode enums"""
+    default = 0
+    track = 1
+    queue = 2
+
+
 class Track(wavelink.Track):
     """Wavelink Track object with a requester attribute."""
 
@@ -57,6 +66,10 @@ class Player(wavelink.Player):
         self.queue = asyncio.Queue()
         self.controller = None
 
+        self.repeat_modes = itertools.cycle(RepeatMode)
+        self.repeat = next(self.repeat_modes)
+        self.repeatable_track = None
+
         self.waiting = False
         self.updating = False
 
@@ -65,6 +78,23 @@ class Player(wavelink.Player):
         self.skip_votes = set()
         self.shuffle_votes = set()
         self.stop_votes = set()
+
+    async def play_track(self) -> None:
+        try:
+            self.waiting = True
+            with async_timeout.timeout(180):
+                try:
+                    await self.controller.message.delete()
+                except:
+                    pass
+                track = await self.queue.get()
+                if self.repeat is RepeatMode.queue:
+                    await self.queue.put(track)
+        except asyncio.TimeoutError:
+            return await self.teardown()
+
+        await self.play(track)
+        self.waiting = False
 
     async def do_next(self) -> None:
         if self.is_playing or self.waiting:
@@ -77,17 +107,15 @@ class Player(wavelink.Player):
         self.shuffle_votes.clear()
         self.stop_votes.clear()
 
-        try:
-            self.waiting = True
-            with async_timeout.timeout(300):
-                track = await self.queue.get()
-        except asyncio.TimeoutError:
-            # No music has been played for 5 minutes, cleanup and disconnect...
-            print('teardown after 300 sec')
-            return await self.teardown()
+        if self.repeat is RepeatMode.default:
+            await self.play_track()
 
-        await self.play(track)
-        self.waiting = False
+        elif self.repeat is RepeatMode.queue:
+            await self.play_track()
+
+        elif self.repeat is RepeatMode.track:
+            track = self.repeatable_track
+            await self.play(track)
 
         # Invoke our players controller...
         await self.invoke_controller()
@@ -164,6 +192,7 @@ class Player(wavelink.Player):
             pass
 
         self.controller.stop()
+        self.repeat = RepeatMode.default
 
         try:
             await self.destroy()
@@ -203,7 +232,10 @@ class InteractiveController(menus.Menu):
         return payload.emoji in self.buttons
 
     async def send_initial_message(self, ctx: commands.Context, channel: discord.TextChannel) -> discord.Message:
-        return await channel.send(embed=self.embed)
+        try:
+            return await channel.send(embed=self.embed)
+        except discord.HTTPException:
+            pass
 
     @menus.button(emoji='\u25B6')
     async def resume_command(self, payload: discord.RawReactionActionEvent):
@@ -251,6 +283,16 @@ class InteractiveController(menus.Menu):
         ctx = self.update_context(payload)
 
         command = self.bot.get_command('shuffle')
+        ctx.command = command
+
+        await self.bot.invoke(ctx)
+
+    @menus.button(emoji='\U0001F501')
+    async def loop_command(self, payload: discord.RawReactionActionEvent):
+        """Loop button."""
+        ctx = self.update_context(payload)
+
+        command = self.bot.get_command('loop')
         ctx.command = command
 
         await self.bot.invoke(ctx)
@@ -322,6 +364,16 @@ class MusicPlayer(commands.Cog, wavelink.WavelinkMixin, name='Музыка'):
 
         return context
 
+    async def remove_previous_controller(self):
+        channel = self.bot.guild.get_channel(MUSIC_COMMANDS_CHANNEL)
+        async for message in channel.history(limit=10):
+            if message.author == self.bot.guild.me and message.embeds:
+                try:
+                    if 'Музыкальный контроллер' in message.embeds[0].title:
+                        await message.delete()
+                except:
+                    continue
+
     async def launch_music_player(self):
         context = await self.fetch_context(546411393239220233, 855180960106676254)
         player: Player = self.bot.wavelink.get_player(
@@ -330,7 +382,8 @@ class MusicPlayer(commands.Cog, wavelink.WavelinkMixin, name='Музыка'):
             context=context
         )
         player.queue._queue.clear()
-        voice_channel = await discord.utils.get(context.guild.voice_channels, id=683251990284730397).edit(name="Музыка-3")
+        await self.remove_previous_controller()
+        await discord.utils.get(context.guild.voice_channels, id=683251990284730397).edit(name="Музыка-3")
 
     @commands.Cog.listener()
     async def on_ready(self):
@@ -501,6 +554,10 @@ class MusicPlayer(commands.Cog, wavelink.WavelinkMixin, name='Музыка'):
         """Play or queue a song with the given query."""
         player: Player = self.bot.wavelink.get_player(guild_id=ctx.guild.id, cls=Player, context=ctx)
 
+        if ctx.author.voice is None:
+            return await ctx.send(f'**{ctx.author.display_name}**, для использования команды '
+                                    'вы должны находиться в голосовом канале.', delete_after=10)
+
         if not player.is_connected:
             await ctx.invoke(self.connect)
 
@@ -595,6 +652,12 @@ class MusicPlayer(commands.Cog, wavelink.WavelinkMixin, name='Музыка'):
         else:
             await ctx.send(f'**{ctx.author.display_name}** проголосовал за запуск плеера.', delete_after=15)
 
+    async def skip_track(self, player: Player) -> None:
+        if player.repeat is RepeatMode.track:
+            player.repeatable_track = await player.queue.get()
+        player.skip_votes.clear()
+        await player.stop()
+
     @commands.command(
         name=cmd["skip"]["name"],
         aliases=cmd["skip"]["aliases"],
@@ -615,23 +678,18 @@ class MusicPlayer(commands.Cog, wavelink.WavelinkMixin, name='Музыка'):
 
         if self.is_privileged(ctx):
             await ctx.send(f'**{ctx.author.display_name}** пропустил трек.', delete_after=10)
-            player.skip_votes.clear()
-
-            return await player.stop()
+            return await self.skip_track(player)
 
         if ctx.author == player.current.requester:
             await ctx.send('Автор трека пропустил композицию.', delete_after=10)
-            player.skip_votes.clear()
-
-            return await player.stop()
+            return await self.skip_track(player)
 
         required = self.required(ctx)
         player.skip_votes.add(ctx.author)
 
         if len(player.skip_votes) >= required:
             await ctx.send('Голосование успешно заверешно. Смена трека.', delete_after=10)
-            player.skip_votes.clear()
-            await player.stop()
+            return await self.skip_track(player)
         else:
             await ctx.send(f'**{ctx.author.display_name}** проголосовал за смену трека.', delete_after=15)
 
@@ -848,6 +906,49 @@ class MusicPlayer(commands.Cog, wavelink.WavelinkMixin, name='Музыка'):
             return
 
         await player.invoke_controller()
+
+    @commands.command(
+        name=cmd["loop"]["name"],
+        aliases=cmd["loop"]["aliases"],
+        brief=cmd["loop"]["brief"],
+        description=cmd["loop"]["description"],
+        usage=cmd["loop"]["usage"],
+        help=cmd["loop"]["help"],
+        hidden=cmd["loop"]["hidden"], enabled=True)
+    @commands.guild_only()
+    @is_channel(MUSIC_COMMANDS_CHANNEL)
+    @logger.catch
+    async def loop(self, ctx: commands.Context, mode: typing.Optional[typing.Union[int, str]]):
+        """Loop the player."""
+        player: Player = self.bot.wavelink.get_player(guild_id=ctx.guild.id, cls=Player, context=ctx)
+
+        if not player.is_connected:
+            return
+
+        if not self.is_privileged(ctx):
+            return await ctx.send('Только администраторы и DJ могут зацикливать воспроизведение.')
+
+        if mode in (0, 'off', 'none', 'disable', 'выкл'):
+            player.repeat = RepeatMode.default
+            await ctx.send(f'**{ctx.author.display_name}** отключил зацикливание музыки.', delete_after=10)
+        elif mode in (1, 'track', 't', 'трек'):
+            if player.current is None:
+                return await ctx.send(f'**{ctx.author.display_name}**, добавьте трек в очередь, чтобы зациклить его.', delete_after=10)
+            player.repeat = RepeatMode.track
+            player.repeatable_track = player.current
+            await ctx.send(f'**{ctx.author.display_name}** включил зацикливание текущего трека.', delete_after=10)
+        elif mode in (2, 'queue', 'q', 'очередь'):
+            player.repeat = RepeatMode.queue
+            await ctx.send(f'**{ctx.author.display_name}** включил зацикливание всей очереди.', delete_after=10)
+        else:
+            player.repeat = next(player.repeat_modes)
+            if player.repeat is RepeatMode.default:
+                await ctx.send(f'**{ctx.author.display_name}** отключил зацикливание музыки.', delete_after=10)
+            elif player.repeat is RepeatMode.track:
+                player.repeatable_track = player.current
+                await ctx.send(f'**{ctx.author.display_name}** включил зацикливание текущего трека.', delete_after=10)
+            elif player.repeat is RepeatMode.queue:
+                await ctx.send(f'**{ctx.author.display_name}** включил зацикливание всей очереди.', delete_after=10)
 
     @commands.command(
         name=cmd["swap_dj"]["name"],

@@ -51,8 +51,6 @@ class Player(wavelink.Player):
         super().__init__(*args, **kwargs)
 
         self.context: commands.Context = kwargs.get('context', None)
-        if self.context:
-            self.dj: discord.Member = self.context.author
 
         self.queue = asyncio.Queue()
         self.controller = None
@@ -60,22 +58,9 @@ class Player(wavelink.Player):
         self.waiting = False
         self.updating = False
 
-        self.pause_votes = set()
-        self.resume_votes = set()
-        self.skip_votes = set()
-        self.shuffle_votes = set()
-        self.stop_votes = set()
-
     async def do_next(self) -> None:
         if self.is_playing or self.waiting:
             return
-
-        # Clear the votes for a new song...
-        self.pause_votes.clear()
-        self.resume_votes.clear()
-        self.skip_votes.clear()
-        self.shuffle_votes.clear()
-        self.stop_votes.clear()
 
         try:
             self.waiting = True
@@ -243,6 +228,16 @@ class GachiRadio(commands.Cog, wavelink.WavelinkMixin, name='Gachi Radio'):
 
         return context
 
+    async def remove_previous_controller(self):
+        channel = self.bot.guild.get_channel(MUSIC_COMMANDS_CHANNEL)
+        async for message in channel.history(limit=10):
+            if message.author == self.bot.guild.me and message.embeds:
+                try:
+                    if 'Radio' in message.embeds[0].title:
+                        await message.delete()
+                except:
+                    continue
+
     async def launch_gachi_radio(self):
         context = await self.fetch_context(546411393239220233, 855180960106676254)
         player: Player = self.bot.wavelink.get_player(
@@ -252,7 +247,8 @@ class GachiRadio(commands.Cog, wavelink.WavelinkMixin, name='Gachi Radio'):
         )
         player.queue._queue.clear()
 
-        voice_channel = await discord.utils.get(context.guild.voice_channels, id=683251990284730397).edit(name="Gachi Radio")
+        await self.remove_previous_controller()
+        await discord.utils.get(context.guild.voice_channels, id=683251990284730397).edit(name="Gachi Radio")
 
         if not player.is_connected:
             await context.invoke(self.connect)
@@ -265,15 +261,6 @@ class GachiRadio(commands.Cog, wavelink.WavelinkMixin, name='Gachi Radio'):
             for track in tracks.tracks:
                 track = Track(track.id, track.info, requester=context.author)
                 await player.queue.put(track)
-
-            embed = discord.Embed(
-                title="Плейлист загружен",
-                color=discord.Color.green(),
-                timestamp=datetime.datetime.utcnow(),
-                description=f'```ini\nПлейлист {tracks.data["playlistInfo"]["name"]}'
-                            f' (позиций: {len(tracks.tracks)}) добавлен в очередь.\n```'
-            )
-            await context.send(embed=embed, delete_after=15)
 
         random.shuffle(player.queue._queue)
 
@@ -331,19 +318,6 @@ class GachiRadio(commands.Cog, wavelink.WavelinkMixin, name='Gachi Radio'):
             player.node.players.pop(member.guild.id)
             return
 
-        channel = self.bot.get_channel(int(player.channel_id))
-
-        if member == player.dj and after.channel is None:
-            for m in channel.members:
-                if m.bot:
-                    continue
-                else:
-                    player.dj = m
-                    return
-
-        elif after.channel == channel and player.dj not in channel.members:
-            player.dj = member
-
     async def cog_command_error(self, ctx: commands.Context, error: Exception):
         """Cog wide error handler."""
         if isinstance(error, IncorrectChannelError):
@@ -394,23 +368,9 @@ class GachiRadio(commands.Cog, wavelink.WavelinkMixin, name='Gachi Radio'):
                 await ctx.send(f'♂️ Slave {ctx.author.mention} ♂️, ты должен быть в качалке `{channel.name}`, чтобы использовать это.', delete_after=15)
                 #raise IncorrectChannelError
 
-    def required(self, ctx: commands.Context):
-        """Method which returns required votes based on amount of members in a channel."""
-        player: Player = self.bot.wavelink.get_player(guild_id=ctx.guild.id, cls=Player, context=ctx)
-        channel = self.bot.get_channel(int(player.channel_id))
-        required = math.ceil((len(channel.members) - 1) / 2.5)
-
-        if ctx.command.name == 'stop':
-            if len(channel.members) == 3:
-                required = 2
-
-        return required
-
     def is_privileged(self, ctx: commands.Context):
-        """Check whether the user is an Admin or DJ."""
-        player: Player = self.bot.wavelink.get_player(guild_id=ctx.guild.id, cls=Player, context=ctx)
-
-        return player.dj == ctx.author or ctx.author.guild_permissions.administrator or ctx.author.id in radio_whitelisted_users
+        """Check whether the user is whitelisted or an Admin."""
+        return ctx.author.guild_permissions.administrator or ctx.author.id in radio_whitelisted_users
 
     @commands.command(
         name=cmd["connect"]["name"],
@@ -498,19 +458,7 @@ class GachiRadio(commands.Cog, wavelink.WavelinkMixin, name='Gachi Radio'):
 
         if self.is_privileged(ctx):
             await ctx.send(f'**{ctx.author.display_name}** приостановил ♂️ Fisting ♂️', delete_after=10)
-            player.pause_votes.clear()
-
             return await player.set_pause(True)
-
-        required = self.required(ctx)
-        player.pause_votes.add(ctx.author)
-
-        if len(player.pause_votes) >= required:
-            await ctx.send('Голосование успешно заверешно. ♂️ Fisting ♂️ приостановлен.', delete_after=10)
-            player.pause_votes.clear()
-            await player.set_pause(True)
-        else:
-            await ctx.send(f'**{ctx.author.display_name}** проголосовал за остановку ♂️ Fisting ♂️', delete_after=15)
 
     @commands.command(
         name=cmd["resume"]["name"],
@@ -532,19 +480,7 @@ class GachiRadio(commands.Cog, wavelink.WavelinkMixin, name='Gachi Radio'):
 
         if self.is_privileged(ctx):
             await ctx.send(f'**{ctx.author.display_name}** продолжил ♂️ Fisting ♂️', delete_after=10)
-            player.resume_votes.clear()
-
             return await player.set_pause(False)
-
-        required = self.required(ctx)
-        player.resume_votes.add(ctx.author)
-
-        if len(player.resume_votes) >= required:
-            await ctx.send('Голосование успешно заверешно. ♂️ Fisting ♂️ запущен.', delete_after=10)
-            player.resume_votes.clear()
-            await player.set_pause(False)
-        else:
-            await ctx.send(f'**{ctx.author.display_name}** проголосовал за запуск ♂️ Fisting ♂️', delete_after=10)
 
     @commands.command(
         name=cmd["skip"]["name"],
@@ -566,25 +502,11 @@ class GachiRadio(commands.Cog, wavelink.WavelinkMixin, name='Gachi Radio'):
 
         if self.is_privileged(ctx):
             await ctx.send(f'**{ctx.author.display_name}** начал ♂️ fisting ♂️ следующего ♂️ slave ♂️', delete_after=10)
-            player.skip_votes.clear()
-
             return await player.stop()
 
         if ctx.author == player.current.requester:
             await ctx.send('♂️ Master ♂️ начал ♂️ fisting ♂️ следующего ♂️ slave ♂️', delete_after=10)
-            player.skip_votes.clear()
-
             return await player.stop()
-
-        required = self.required(ctx)
-        player.skip_votes.add(ctx.author)
-
-        if len(player.skip_votes) >= required:
-            await ctx.send('Голосование успешно заверешно. Начат ♂️ fisting ♂️ следующего ♂️ slave ♂️', delete_after=10)
-            player.skip_votes.clear()
-            await player.stop()
-        else:
-            await ctx.send(f'**{ctx.author.display_name}** проголосовал за ♂️ fisting ♂️ следующего ♂️ slave ♂️', delete_after=10)
 
     @commands.command(
         name=cmd["stop"]["name"],
@@ -608,15 +530,6 @@ class GachiRadio(commands.Cog, wavelink.WavelinkMixin, name='Gachi Radio'):
             await ctx.send(f'**{ctx.author.display_name}** приостановил ♂️ Fisting ♂️', delete_after=10)
             return await player.teardown()
 
-        required = self.required(ctx)
-        player.stop_votes.add(ctx.author)
-
-        if len(player.stop_votes) >= required:
-            await ctx.send('Голосование успешно заверешно. ♂️ Fisting ♂️ приостановлен.', delete_after=10)
-            await player.teardown()
-        else:
-            await ctx.send(f'**{ctx.author.display_name}** проголосовал за остановку ♂️ Fisting ♂️', delete_after=15)
-
     @commands.command(
         name=cmd["volume"]["name"],
         aliases=cmd["volume"]["aliases"],
@@ -636,7 +549,7 @@ class GachiRadio(commands.Cog, wavelink.WavelinkMixin, name='Gachi Radio'):
             return
 
         if not self.is_privileged(ctx):
-            return await ctx.send('Только администраторы и DJ могут менять громкость выходного сигнала.')
+            return await ctx.send('Только администраторы могут менять громкость выходного сигнала.')
 
         if not 0 < vol < 101:
             return await ctx.send('Пожалуйста, укажите значение от 1 до 100.')
@@ -667,91 +580,7 @@ class GachiRadio(commands.Cog, wavelink.WavelinkMixin, name='Gachi Radio'):
 
         if self.is_privileged(ctx):
             await ctx.send(f'♂️ Boss **{ctx.author.display_name}** ♂️ навел порядок в ♂️ leather club ♂️', delete_after=10)
-            player.shuffle_votes.clear()
             return random.shuffle(player.queue._queue)
-
-        required = self.required(ctx)
-        player.shuffle_votes.add(ctx.author)
-
-        if len(player.shuffle_votes) >= required:
-            await ctx.send('Голосование успешно заверешно. В ♂️ leather club ♂️ наведён порядок.', delete_after=10)
-            player.shuffle_votes.clear()
-            random.shuffle(player.queue._queue)
-        else:
-            await ctx.send(f'**{ctx.author.display_name}** проголосовал за перемешивание очереди.', delete_after=10)
-
-    @commands.command(hidden=True, enabled=True)
-    @can_manage_radio()
-    @is_channel(MUSIC_COMMANDS_CHANNEL)
-    @logger.catch
-    async def vol_up(self, ctx: commands.Context):
-        """Command used for volume up button."""
-        player: Player = self.bot.wavelink.get_player(guild_id=ctx.guild.id, cls=Player, context=ctx)
-
-        if not player.is_connected or not self.is_privileged(ctx):
-            return
-
-        vol = int(math.ceil((player.volume + 10) / 10)) * 10
-
-        if vol > 100:
-            vol = 100
-            await ctx.send('Достигнута максимальная громкость', delete_after=5)
-
-        await player.set_volume(vol)
-
-    @commands.command(hidden=True, enabled=True)
-    @can_manage_radio()
-    @is_channel(MUSIC_COMMANDS_CHANNEL)
-    @logger.catch
-    async def vol_down(self, ctx: commands.Context):
-        """Command used for volume down button."""
-        player: Player = self.bot.wavelink.get_player(guild_id=ctx.guild.id, cls=Player, context=ctx)
-
-        if not player.is_connected or not self.is_privileged(ctx):
-            return
-
-        vol = int(math.ceil((player.volume - 10) / 10)) * 10
-
-        if vol < 0:
-            vol = 0
-            await ctx.send('Плеер замьючен', delete_after=5)
-
-        await player.set_volume(vol)
-
-    @commands.command(
-        name=cmd["equalizer"]["name"],
-        aliases=cmd["equalizer"]["aliases"],
-        brief=cmd["equalizer"]["brief"],
-        description=cmd["equalizer"]["description"],
-        usage=cmd["equalizer"]["usage"],
-        help=cmd["equalizer"]["help"],
-        hidden=True, enabled=True)
-    @can_manage_radio()
-    @is_channel(MUSIC_COMMANDS_CHANNEL)
-    @logger.catch
-    async def equalizer(self, ctx: commands.Context, *, equalizer: str):
-        """Change the players equalizer."""
-        player: Player = self.bot.wavelink.get_player(guild_id=ctx.guild.id, cls=Player, context=ctx)
-
-        if not player.is_connected:
-            return
-
-        if not self.is_privileged(ctx):
-            return await ctx.send('Только администраторы и DJ могут менять настройки эквалайзера.')
-
-        eqs = {'flat': wavelink.Equalizer.flat(),
-               'boost': wavelink.Equalizer.boost(),
-               'metal': wavelink.Equalizer.metal(),
-               'piano': wavelink.Equalizer.piano()}
-
-        eq = eqs.get(equalizer.lower(), None)
-
-        if not eq:
-            joined = "\n".join(eqs.keys())
-            return await ctx.send(f'Указан неверный параметр эквалайзера. Доступные параметры:\n\n{joined}')
-
-        await ctx.send(f'Эквалайзер обновлён: **{equalizer}**', delete_after=10)
-        await player.set_eq(eq)
 
     @commands.command(
         name=cmd["queue"]["name"],
@@ -799,49 +628,6 @@ class GachiRadio(commands.Cog, wavelink.WavelinkMixin, name='Gachi Radio'):
             await player.invoke_controller()
         except discord.errors.HTTPException:
             pass
-
-    @commands.command(
-        name=cmd["swap_dj"]["name"],
-        aliases=cmd["swap_dj"]["aliases"],
-        brief=cmd["swap_dj"]["brief"],
-        description=cmd["swap_dj"]["description"],
-        usage=cmd["swap_dj"]["usage"],
-        help=cmd["swap_dj"]["help"],
-        hidden=True, enabled=True)
-    @can_manage_radio()
-    @is_channel(MUSIC_COMMANDS_CHANNEL)
-    @logger.catch
-    async def swap_dj(self, ctx: commands.Context, *, member: discord.Member = None):
-        """Swap the current DJ to another member in the voice channel."""
-        player: Player = self.bot.wavelink.get_player(guild_id=ctx.guild.id, cls=Player, context=ctx)
-
-        if not player.is_connected:
-            return
-
-        if not self.is_privileged(ctx):
-            return await ctx.send('Только администраторы и DJ могут использовать эту команду.', delete_after=10)
-
-        members = self.bot.get_channel(int(player.channel_id)).members
-
-        if member and member not in members:
-            return await ctx.send(f"{member} не в ♂️ gym'e ♂️.", delete_after=10)
-
-        if member and member == player.dj:
-            return await ctx.send(f'{member} уже ♂️ Boss of this gym ♂️)', delete_after=10)
-
-        if len(members) <= 2:
-            return await ctx.send("В ♂️ gym ♂️ нет того, кому можно передать права ♂️ Boss'a ♂️", delete_after=10)
-
-        if member:
-            player.dj = member
-            return await ctx.send(f'{member.mention} стал новым ♂️ Boss of this gym ♂️')
-
-        for m in members:
-            if m == player.dj or m.bot:
-                continue
-            else:
-                player.dj = m
-                return await ctx.send(f'{member.mention} стал диджеем.')
 
 
 def setup(bot: commands.Bot):

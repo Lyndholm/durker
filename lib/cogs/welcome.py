@@ -62,8 +62,6 @@ class Welcome(Cog, name='Greetings'):
                 pass
 
             finally:
-                insert_new_user_in_db(after)
-
                 embed = Embed(description=f"Привет, **{after.display_name}** ({after.mention})!\nДобро пожаловать на сервер **{after.guild.name}** 🎉🤗!",
                             color=Color.green(), timestamp=datetime.utcnow())
                 embed.set_author(name=f"Новый участник на сервере!", icon_url=f"{after.guild.icon_url}")
@@ -75,11 +73,16 @@ class Welcome(Cog, name='Greetings'):
                 managed_roles = [r for r in after.roles if r.managed]
                 await after.edit(roles=[self.mute_role] + managed_roles)
 
+    @Cog.listener()
+    @logger.catch
+    async def on_member_join(self, member):
+        await insert_new_user_in_db(member)
 
     @Cog.listener()
     @logger.catch
     async def on_member_remove(self, member):
         if member.pending is True:
+            delete_user_from_db(member.id)
             embed = Embed(
                 title='Пользователь покинул сервер',
                 color=Color.dark_red(),
@@ -90,7 +93,7 @@ class Welcome(Cog, name='Greetings'):
             await self.bot.get_channel(AUDIT_LOG_CHANNEL).send(embed=embed)
 
         else:
-            dump_user_data_in_json(member)
+            await dump_user_data_in_json(member)
             delete_user_from_db(member.id)
 
             embed = Embed(description=f"К сожалению, пользователь **{member.display_name}** ({member.mention}) покинул сервер 😞",
