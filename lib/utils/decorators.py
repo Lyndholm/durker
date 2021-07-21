@@ -1,5 +1,6 @@
 import asyncio
 import functools
+
 import discord
 
 
@@ -21,6 +22,14 @@ def listen_for_guilds():
         """Only allow message event to be called in guilds"""
         message = args[len(args) != 1]
         return message.guild is not None
+    return event_check(predicate)
+
+
+def listen_for_dms():
+    def predicate(*args):
+        """Only allow message event to be called in DMs"""
+        message = args[len(args) != 1]
+        return message.guild is None
     return event_check(predicate)
 
 
