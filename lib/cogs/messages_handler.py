@@ -2,7 +2,7 @@ from datetime import datetime
 from difflib import get_close_matches
 
 import aiofiles
-from discord import Message, TextChannel
+from discord import Message, TextChannel, NotFound
 from discord.ext.commands import Cog
 from discord.utils import remove_markdown
 from loguru import logger
@@ -119,8 +119,11 @@ class MessagesHandler(Cog, name='Messages handler'):
             await self.invoke_command(message, 'support')
 
         if message.channel.id == 639925210849476608 and message.author.id != 479499525921308703:
-            await message.add_reaction('\N{THUMBS UP SIGN}')
-            await message.add_reaction('\N{THUMBS DOWN SIGN}')
+            try:
+                await message.add_reaction('\N{THUMBS UP SIGN}')
+                await message.add_reaction('\N{THUMBS DOWN SIGN}')
+            except NotFound:
+                pass
 
     @Cog.listener()
     @listen_for_guilds()

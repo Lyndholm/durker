@@ -369,7 +369,7 @@ class MusicPlayer(commands.Cog, wavelink.WavelinkMixin, name='Музыка'):
         async for message in channel.history(limit=10):
             if message.author == self.bot.guild.me and message.embeds:
                 try:
-                    if 'Музыкальный контроллер' in message.embeds[0].title:
+                    if 'Музыкальный контроллер' or 'Radio' in message.embeds[0].title:
                         await message.delete()
                 except:
                     continue
