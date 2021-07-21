@@ -103,7 +103,8 @@ class MessagesHandler(Cog, name='Messages handler'):
     @listen_for_guilds()
     async def on_message(self, message):
         if await self.can_message_be_counted(message):
-            self.increase_user_messages_counter(message.author.id)
+            if message.author.id not in self.bot.banlist:
+                self.increase_user_messages_counter(message.author.id)
 
         rep = get_close_matches(message.clean_content.lower(), self.rep_filter, cutoff=0.75)
         if rep:

@@ -109,6 +109,9 @@ class Leveling(Cog, name='Система уровней'):
     @Cog.listener()
     @listen_for_guilds()
     async def on_message(self, message):
+        if message.author.id in self.bot.banlist:
+            return
+
         if await self.can_message_be_counted(message):
             await self.process_xp(message)
 

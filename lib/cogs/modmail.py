@@ -11,6 +11,9 @@ class ModMail(Cog, name='ModMail'):
     @Cog.listener()
     @listen_for_dms()
     async def on_message(self, message):
+        if message.author.id in self.bot.banlist:
+            return
+
         ctx = await self.bot.get_context(message)
         if not message.author.bot and not ctx.command:
             member = self.bot.guild.get_member(message.author.id)
