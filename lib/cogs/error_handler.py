@@ -53,7 +53,7 @@ class CommandErrorHandler(commands.Cog, name='Command error handler'):
                     color=discord.Color.red()
                 )
                 await ctx.reply(embed=embed, mention_author=False)
-            except commands.errors.HTTPException:
+            except discord.errors.HTTPException:
                 pass
 
         elif isinstance(exc, commands.PrivateMessageOnly):
@@ -72,7 +72,7 @@ class CommandErrorHandler(commands.Cog, name='Command error handler'):
             )
             await ctx.reply(embed=embed, mention_author=False, delete_after=15)
 
-        elif isinstance(exc, commands.Forbidden):
+        elif isinstance(exc, discord.errors.Forbidden):
             embed = discord.Embed(
                 title='❗ Forbidden',
                 description=f"Недостаточно прав для выполнения действия.",
@@ -80,7 +80,7 @@ class CommandErrorHandler(commands.Cog, name='Command error handler'):
             )
             await ctx.reply(embed=embed, mention_author=False, delete_after=15)
 
-        elif isinstance(exc, commands.HTTPException):
+        elif isinstance(exc, discord.errors.HTTPException):
             embed = discord.Embed(
                 title='❗ Ошибка!',
                 description=f"Не удалось отправить сообщение. Возможно, превышен лимит символов "
@@ -168,7 +168,7 @@ class CommandErrorHandler(commands.Cog, name='Command error handler'):
             await ctx.reply(embed=embed, mention_author=False, delete_after=15)
 
         else:
-            channel = self.get_channel(id=AUDIT_LOG_CHANNEL)
+            channel = self.bot.get_channel(id=AUDIT_LOG_CHANNEL)
             try:
                 if hasattr(ctx.command, 'on_error'):
                     embed = discord.Embed(

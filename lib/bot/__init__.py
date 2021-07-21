@@ -63,9 +63,9 @@ class Bot(BotBase):
             644523860326219776, #медиа
         ]
         try:
-            with open('./data/txt/banlist.txt', 'r', encoding='utf-8') as f:
-                self.banlist = [int(line.strip()) for line in f.readlines()]
-        except FileNotFoundError:
+            data = db.records('SELECT user_id FROM blacklist')
+            self.banlist = [i[0] for i in data]
+        except:
             self.banlist = []
 
         self.load_music_cogs(self.scheduler)

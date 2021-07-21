@@ -537,10 +537,9 @@ class Moderation(Cog, name='Модерация'):
             if len(warns) == 3:
                 edit_user_reputation(target.id, '-', 5000)
 
-                self.bot.banlist.append(target.id)
-
-                async with aiofiles.open('./data/txt/banlist.txt', 'a', encoding='utf-8') as f:
-                   await f.write(f"{target.id}\n")
+                if target.id not in self.bot.banlist:
+                    self.bot.banlist.append(target.id)
+                    db.insert('blacklist', {'user_id':target.id,'reason':'Получил 3 варна'})
 
             if len(warns) > 3:
                     await self.ban_members(message, [target], 1, "Максимум варнов | " + reason)

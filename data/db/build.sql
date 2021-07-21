@@ -15,6 +15,17 @@ ALTER TABLE public.achievements
     OWNER to postgres;
 
 
+CREATE TABLE public.blacklist
+(
+    user_id bigint,
+    added_at timestamp without time zone DEFAULT (now())::timestamp without time zone,
+    reason text
+);
+
+ALTER TABLE public.blacklist
+    OWNER to postgres;
+
+
 CREATE TABLE public.casino
 (
     user_id bigint,

@@ -4,10 +4,9 @@ import time
 from datetime import datetime
 from typing import Optional
 
-import aiofiles
 from aiohttp import ClientSession
-from discord import Color, Embed, File, User
-from discord.ext.commands import Cog, Greedy, command, dm_only, is_owner
+from discord import Color, Embed, File
+from discord.ext.commands import Cog, command, dm_only, is_owner
 from discord.ext.menus import ListPageSource, MenuPages
 from discord.utils import get
 from loguru import logger
@@ -406,14 +405,12 @@ class Owner(Cog, name='Команды разработчика'):
     @dm_only()
     @is_owner()
     @logger.catch
-    async def blacklist_user_command(self, ctx, targets: Greedy[User]):
-        if not targets:
+    async def blacklist_user_command(self, ctx, target_id: int = None, *, reason: Optional[str] = 'Не указана'):
+        if target_id is None:
             return await ctx.message.add_reaction('❌')
 
-        self.bot.banlist.extend([user.id for user in targets])
-
-        async with aiofiles.open('./data/txt/banlist.txt', 'a', encoding='utf-8') as f:
-            await f.writelines([f"{user.id}\n" for user in targets])
+        self.bot.banlist.append(target_id)
+        db.insert('blacklist', {'user_id':target_id,'reason':reason})
 
         await ctx.message.add_reaction('✅')
 
@@ -427,18 +424,16 @@ class Owner(Cog, name='Команды разработчика'):
     @dm_only()
     @is_owner()
     @logger.catch
-    async def whitelist_user_command(self, ctx, targets: Greedy[User]):
-        if not targets:
+    async def whitelist_user_command(self, ctx, target_id: int = None):
+        if target_id is None:
             return await ctx.message.add_reaction('❌')
 
-        async with aiofiles.open('./data/txt/banlist.txt', 'w', encoding='utf-8') as f:
-            await f.write("".join([f"{user}\n" for user in self.bot.banlist if user not in [u.id for u in targets]]))
-
-        for target in targets:
-            try:
-                self.bot.banlist.remove(target.id)
-            except ValueError:
-                pass
+        db.execute('DELETE FROM blacklist WHERE user_id = %s', target_id)
+        db.commit()
+        try:
+            self.bot.banlist.remove(target_id)
+        except ValueError:
+            pass
 
         await ctx.message.add_reaction('✅')
 
@@ -584,9 +579,6 @@ class Owner(Cog, name='Команды разработчика'):
     @is_owner()
     @logger.catch
     async def shutdown_command(self, ctx):
-        async with aiofiles.open('./data/txt/banlist.txt', 'w', encoding='utf-8') as f:
-            await f.writelines([f"{user}\n" for user in self.bot.banlist])
-
         db.commit()
         self.bot.scheduler.shutdown()
         await self.bot.close()
