@@ -117,6 +117,19 @@ ALTER TABLE public.song_suggestions
     OWNER to postgres;
 
 
+CREATE TABLE public.stats_customization
+(
+    user_id bigint,
+    rank_background_color character varying(7) DEFAULT '#292b2f',
+    rank_background_image text,
+    rank_bar_color character varying(7) DEFAULT '#11ebf2',
+    rank_level_int_color character varying(7) DEFAULT '#11ebf2'
+);
+
+ALTER TABLE public.stats_customization
+    OWNER to postgres;
+
+
 CREATE TABLE public.users_info
 (
     user_id bigint,
