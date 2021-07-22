@@ -223,6 +223,7 @@ async def get_command_required_level(cmd: commands.Command) -> int:
     level = data[path][cmd.name]['required_level']
     return level
 
+
 async def get_command_text_channels(cmd: commands.Command) -> str:
     """
     Return a string with channels where command can be invoked.
@@ -233,3 +234,18 @@ async def get_command_text_channels(cmd: commands.Command) -> str:
     help = data[path][cmd.name]['help'].split('\n')
     txt = str(*[i for i in help if 'Работает ' in i])
     return txt
+
+
+async def check_member_privacy(ctx: commands.Context, member: discord.Member) -> bool:
+    """Check the member's privacy settings"""
+    privacy_flag = db.fetchone(['is_profile_public'], 'users_info', 'user_id', member.id)[0]
+    if privacy_flag is False:
+        embed = discord.Embed(
+            title='❗ Внимание!', color=discord.Color.red(), timestamp=datetime.utcnow(),
+            description=f'Статистика участника **{member.display_name}** ({member.mention}) скрыта. '
+                        'Просматривать её может только владелец.')
+        embed.set_footer(text=ctx.author, icon_url=ctx.author.avatar_url)
+        await ctx.reply(embed=embed, mention_author=False)
+        return False
+    else:
+        return True

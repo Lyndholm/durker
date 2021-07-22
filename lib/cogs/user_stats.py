@@ -9,7 +9,7 @@ from loguru import logger
 from ..db import db
 from ..utils.checks import is_channel
 from ..utils.constants import STATS_CHANNEL, KAPITALIST_ROLE_ID, MAGNAT_ROLE_ID
-from ..utils.utils import joined_date, load_commands_from_json, russian_plural
+from ..utils.utils import joined_date, load_commands_from_json, russian_plural, check_member_privacy
 
 cmd = load_commands_from_json("user_stats")
 
@@ -48,12 +48,7 @@ class UserStats(Cog, name='Статистика'):
     @logger.catch
     async def fetch_member_profile_command(self, ctx, *, member: Member = None):
         if member and member != ctx.author:
-            is_member_profile_public = db.fetchone(["is_profile_public"], "users_info", "user_id", member.id)
-            if is_member_profile_public[0] is False:
-                embed = Embed(title="❗ Внимание!", color=Color.red(), timestamp=datetime.utcnow(),
-                            description=f"Профиль участника **{member.display_name}** ({member.mention}) скрыт. Просматривать его может только владелец.")
-                embed.set_footer(text=ctx.author, icon_url=ctx.author.avatar_url)
-                await ctx.reply(embed=embed, mention_author=False)
+            if (await check_member_privacy(ctx, member)) is False:
                 return
             else:
                 target = member
