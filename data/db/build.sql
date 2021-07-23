@@ -123,7 +123,15 @@ CREATE TABLE public.stats_customization
     rank_background_color character varying(7) DEFAULT '#292b2f',
     rank_background_image text,
     rank_bar_color character varying(7) DEFAULT '#11ebf2',
-    rank_level_int_color character varying(7) DEFAULT '#11ebf2'
+	rank_bar_background_color character varying(7) DEFAULT '#727175',
+    rank_level_int_color character varying(7) DEFAULT '#11ebf2',
+	rank_level_str_color character varying(7) DEFAULT '#ffffff',
+	rank_username_color character varying(7) DEFAULT '#ffffff',
+	rank_discriminator_color character varying(7) DEFAULT '#727175',
+	rank_xp_start_color character varying(7) DEFAULT '#ffffff',
+	rank_xp_end_color character varying(7) DEFAULT '#727175',
+	rank_placement_int_color character varying(7) DEFAULT '#ffffff',
+	rank_placement_str_color character varying(7) DEFAULT '#ffffff'
 );
 
 ALTER TABLE public.stats_customization
