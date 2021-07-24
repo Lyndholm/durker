@@ -1,20 +1,21 @@
+import re
 from datetime import datetime, timedelta
 from io import BytesIO
 from math import floor
 from random import randint
-from typing import Optional, Tuple
+from typing import Optional, Tuple, Union
 
 from aiohttp import ClientSession
 from discord import Embed, File, Member, Message, Status, TextChannel
-from discord.ext.commands import Cog, command, guild_only
+from discord.ext.commands import Cog, group, guild_only
 from discord.utils import remove_markdown
 from jishaku.functools import executor_function
 from loguru import logger
 from PIL import Image, ImageDraw, ImageFont
 
 from ..db import db
-from ..utils.checks import is_channel
-from ..utils.constants import STATS_CHANNEL
+from ..utils.checks import is_any_channel
+from ..utils.constants import CONSOLE_CHANNEL, STATS_CHANNEL
 from ..utils.decorators import listen_for_guilds
 from ..utils.utils import (check_member_privacy, edit_user_reputation,
                            find_n_term_of_arithmetic_progression,
@@ -25,6 +26,7 @@ cmd = load_commands_from_json("leveling")
 
 class RankCardImage():
     """Class for generating rank card image."""
+
     def __init__(self, member: Member) -> None:
         self.member = member
         self.bar_offset_x = 320
@@ -225,6 +227,15 @@ class Leveling(Cog, name='Система уровней'):
             708601604353556491,  # консоль на dev сервере
             777979537795055636,  # testing на dev сервере
         )
+        self.beta_testers = (
+            697505850343948318, # Jeffrey Fleck
+            375722626636578816, # Lyndholm
+            479499525921308703, # Cactus
+            195637386221191170, # NEDNAR
+            455302362131595274, # Mefewe
+            356512549287624724, # PandarenbI4
+        )
+        self.HEX_COLOR_REGEX = r"#(?:[0-9a-fA-F]{3}){1,2}"
 
     @logger.catch
     async def can_message_be_counted(self, message: Message) -> bool:
@@ -302,16 +313,17 @@ class Leveling(Cog, name='Система уровней'):
         if await self.can_message_be_counted(message):
             await self.process_xp(message)
 
-    @command(name=cmd["rank"]["name"], aliases=cmd["rank"]["aliases"],
-             brief=cmd["rank"]["brief"],
-             description=cmd["rank"]["description"],
-             usage=cmd["rank"]["usage"],
-             help=cmd["rank"]["help"],
-             hidden=cmd["rank"]["hidden"], enabled=True)
-    @is_channel(STATS_CHANNEL)
+    @group(name=cmd["rank"]["name"], aliases=cmd["rank"]["aliases"],
+           brief=cmd["rank"]["brief"],
+           description=cmd["rank"]["description"],
+           usage=cmd["rank"]["usage"],
+           help=cmd["rank"]["help"],
+           hidden=cmd["rank"]["hidden"], enabled=True,
+           invoke_without_command=True)
+    @is_any_channel([STATS_CHANNEL, CONSOLE_CHANNEL])
     @guild_only()
     @logger.catch
-    async def newrank_command(self, ctx, *, member: Optional[Member]):
+    async def rank(self, ctx, *, member: Optional[Member]):
         if member and member != ctx.author:
             if (await check_member_privacy(ctx, member)) is False:
                 return
@@ -324,6 +336,102 @@ class Leveling(Cog, name='Система уровней'):
             rank_card = RankCardImage(target)
             card = await rank_card.generate_rank_card()
             await ctx.send(file=card)
+
+    def get_hex_color(self, hex_value: str) -> Union[str, bool]:
+        if len(hex_value) > 7:
+            return False
+        if (color := re.compile(self.HEX_COLOR_REGEX).search(hex_value)):
+            color = color.group(0)
+            return color
+        else:
+            return False
+
+    def update_rank_customization(self, element: str, color: str, user_id: int) -> None:
+        db.execute(f'UPDATE stats_customization SET {element} = %s WHERE user_id = %s',
+                    color, user_id)
+        db.commit()
+
+    @rank.command(
+        name=cmd["background"]["name"], aliases=cmd["background"]["aliases"],
+        brief=cmd["background"]["brief"],
+        description=cmd["background"]["description"],
+        usage=cmd["background"]["usage"],
+        help=cmd["background"]["help"],
+        hidden=cmd["background"]["hidden"], enabled=True)
+    @is_any_channel([STATS_CHANNEL, CONSOLE_CHANNEL])
+    @guild_only()
+    async def rank_background_color(self, ctx, hex_value: Optional[str]):
+        if hex_value is None or not self.get_hex_color(hex_value):
+            await ctx.send('Укажите цвет в HEX формате. Пример: #FF25AB')
+            return
+        self.update_rank_customization('rank_background_color', hex_value, ctx.author.id)
+        await ctx.reply(f'Цвет фона `rank` изменён: `{hex_value}`', mention_author=False)
+
+    @rank.command(
+        name=cmd["image"]["name"], aliases=cmd["image"]["aliases"],
+        brief=cmd["image"]["brief"],
+        description=cmd["image"]["description"],
+        usage=cmd["image"]["usage"],
+        help=cmd["image"]["help"],
+        hidden=cmd["image"]["hidden"], enabled=True)
+    @is_any_channel([STATS_CHANNEL, CONSOLE_CHANNEL])
+    @guild_only()
+    async def rank_background_image_color(self, ctx, mode: Optional[str]):
+        if ctx.author.id not in self.beta_testers:
+            await ctx.reply('Изменять фоновое изображение `rank` могут '
+                            'только бета-тестеры бота. Вы им не являетесь.',
+                             mention_author=False)
+            return
+
+        if mode is not None:
+            if mode.lower() in ('reset', 'remove', 'delete'):
+                db.execute('UPDATE stats_customization SET rank_background_image = %s WHERE user_id = %s',
+                            None, ctx.author.id)
+                db.commit()
+                await ctx.reply(f'Фоновое изображение `rank` удалено.', mention_author=False)
+            return
+
+        if not ctx.message.attachments and mode is None:
+            await ctx.send('Прикрепите изображение к сообщению. Рекомендуемый '
+                           'размер картинки: 1000x240 пикселей.')
+            return
+
+        f = ctx.message.attachments[0]
+        if f.content_type in ('image/png', 'image/jpeg'):
+            self.update_rank_customization('rank_background_image', f.proxy_url, ctx.author.id)
+            await ctx.reply(f'Фоновое изображение `rank` изменено.', mention_author=False)
+
+    @rank.command(
+        name=cmd["bar"]["name"], aliases=cmd["bar"]["aliases"],
+        brief=cmd["bar"]["brief"],
+        description=cmd["bar"]["description"],
+        usage=cmd["bar"]["usage"],
+        help=cmd["bar"]["help"],
+        hidden=cmd["bar"]["hidden"], enabled=True)
+    @is_any_channel([STATS_CHANNEL, CONSOLE_CHANNEL])
+    @guild_only()
+    async def rank_bar_color(self, ctx, hex_value: Optional[str]):
+        if hex_value is None or not self.get_hex_color(hex_value):
+            await ctx.send('Укажите цвет в HEX формате. Пример: #FF25AB')
+            return
+        self.update_rank_customization('rank_bar_color', hex_value, ctx.author.id)
+        await ctx.send(f'Цвет прогресс бара `rank` изменён: `{hex_value}`', mention_author=False)
+
+    @rank.command(
+        name=cmd["level"]["name"], aliases=cmd["level"]["aliases"],
+        brief=cmd["level"]["brief"],
+        description=cmd["level"]["description"],
+        usage=cmd["level"]["usage"],
+        help=cmd["level"]["help"],
+        hidden=cmd["level"]["hidden"], enabled=True)
+    @is_any_channel([STATS_CHANNEL, CONSOLE_CHANNEL])
+    @guild_only()
+    async def rank_level_color(self, ctx, hex_value: Optional[str]):
+        if hex_value is None or not self.get_hex_color(hex_value):
+            await ctx.send('Укажите цвет в HEX формате. Пример: #FF25AB')
+            return
+        self.update_rank_customization('rank_level_int_color', hex_value, ctx.author.id)
+        await ctx.send(f'Цвет цифры уровня `rank` изменён: `{hex_value}`', mention_author=False)
 
 
 def setup(bot):

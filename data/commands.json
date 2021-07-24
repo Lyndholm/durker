@@ -1000,7 +1000,71 @@
       "brief": "Статистика уровней.",
       "description": "Просмотр своей статистики уровней.",
       "usage": "rank",
-      "help": "Отображает статистику уровней пользователя.\nРаботает только на сервере в канале <#604621910386671616>.\n\n**Кулдаун:** отсутствует.\n**Необходимый уровень:** 0",
+      "help": "Отображает статистику уровней пользователя.\nРаботает только на сервере в каналах <#604621910386671616>, <#859921140805926932>.\n\n**Кулдаун:** отсутствует.\n**Необходимый уровень:** 0",
+      "required_level": 0,
+      "has_cooldown": false,
+      "cooldown_rate": 0,
+      "cooldown_per_second": 0,
+      "cooldown_type": "None",
+      "hidden": false
+    },
+    "background": {
+      "name": "background",
+      "aliases": [
+        "bg"
+      ],
+      "brief": "Цвет фона rank.",
+      "description": "Изменение цвета фона rank.",
+      "usage": "rank background <hex color>",
+      "help": "Изменяет цвет фона в команде `rank`.\nРаботает только на сервере в каналах <#604621910386671616>, <#859921140805926932>.\n\n**Кулдаун:** отсутствует.\n**Необходимый уровень:** 0",
+      "required_level": 0,
+      "has_cooldown": false,
+      "cooldown_rate": 0,
+      "cooldown_per_second": 0,
+      "cooldown_type": "None",
+      "hidden": false
+    },
+    "image": {
+      "name": "image",
+      "aliases": [
+        "img"
+      ],
+      "brief": "Фоновое изображение rank.",
+      "description": "Изменение фонового изображения rank.",
+      "usage": "rank image",
+      "help": "Изменяет фоновое изображение в команде `rank`. Обязательно прикрепите картинку к сообщению с командой.\nРаботает только на сервере в каналах <#604621910386671616>, <#859921140805926932>.\n**Команда доступна только бета-тестерам бота.**\n\n**Кулдаун:** отсутствует.\n**Необходимый уровень:** 0",
+      "required_level": 0,
+      "has_cooldown": false,
+      "cooldown_rate": 0,
+      "cooldown_per_second": 0,
+      "cooldown_type": "None",
+      "hidden": true
+    },
+    "bar": {
+      "name": "bar",
+      "aliases": [
+        "barcolor"
+      ],
+      "brief": "Цвет прогресс бара rank.",
+      "description": "Изменение цвета прогресс бара rank.",
+      "usage": "rank bar <hex color>",
+      "help": "Изменяет цвет прогресс бара в команде `rank`.\nРаботает только на сервере в каналах <#604621910386671616>, <#859921140805926932>.\n\n**Кулдаун:** отсутствует.\n**Необходимый уровень:** 0",
+      "required_level": 0,
+      "has_cooldown": false,
+      "cooldown_rate": 0,
+      "cooldown_per_second": 0,
+      "cooldown_type": "None",
+      "hidden": false
+    },
+    "level": {
+      "name": "level",
+      "aliases": [
+        "lvl"
+      ],
+      "brief": "Цвет цифры уровня rank.",
+      "description": "Изменение цвета цифры уровня rank.",
+      "usage": "rank level <hex color>",
+      "help": "Изменяет цвет цифры уровня в команде `rank`.\nРаботает только на сервере в каналах <#604621910386671616>, <#859921140805926932>.\n\n**Кулдаун:** отсутствует.\n**Необходимый уровень:** 0",
       "required_level": 0,
       "has_cooldown": false,
       "cooldown_rate": 0,
