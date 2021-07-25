@@ -895,12 +895,13 @@ class Moderation(Cog, name='Модерация'):
                 if 'partner=' in message.clean_content and 'token=' in message.clean_content:
                     if isinstance(message.channel, DMChannel):
                         await self.bot.get_user(self.bot.owner_ids[0]).send(
-                            'Обнаружена фишинговая ссылка на фейковый трейд ⤴️'
+                            'Обнаружена фишинговая ссылка на фейковый трейд.'
                         )
                     elif isinstance(message.channel, TextChannel):
                         if message.author.guild_permissions.administrator or self.helper_role in message.author.roles:
                             return
                         await message.delete()
+                        await message.author.add_roles(self.mute_role)
                         embed = Embed(
                             title='❗ Внимание, скам!',
                             color=Color.red(),
