@@ -45,7 +45,6 @@ class Moderation(Cog, name='Модерация'):
     def __init__(self, bot):
         self.bot = bot
         self.reading_members = {}
-        self.pominki_url = "https://cdn.discordapp.com/attachments/774698479981297664/809142415310979082/RoflanPominki.png"
         self.URL_REGEX = r'(https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9]+\.[^\s]{2,}|www\.[a-zA-Z0-9]+\.[^\s]{2,})'
         self.DISCORD_INVITE_REGEX = r'discord(?:\.com|app\.com|\.gg)[\/invite\/]?(?:[a-zA-Z0-9\-]{2,32})'
         self.EMOJI_REGEX = r'<(?P<animated>a?):(?P<name>[a-zA-Z0-9_]{2,32}):(?P<id>[0-9]{18,22})>'
@@ -86,7 +85,6 @@ class Moderation(Cog, name='Модерация'):
                 color=Color.dark_red(),
                 timestamp=datetime.utcnow()
             )
-            embed.set_thumbnail(url=self.pominki_url)
 
             fields = [
                 ("Пользователь", f"{target.display_name} ({target.mention})", False),
@@ -137,7 +135,6 @@ class Moderation(Cog, name='Модерация'):
                 color=Color.dark_red(),
                 timestamp=datetime.utcnow()
             )
-            embed.set_thumbnail(url=self.pominki_url)
 
             fields = [
                 ("Пользователь", f"{target.display_name} ({target.mention})", False),
@@ -222,7 +219,7 @@ class Moderation(Cog, name='Модерация'):
                 color=Color.blue(),
                 timestamp=datetime.utcnow()
             )
-            embed.set_thumbnail(url=self.pominki_url)
+
             fields = [
                 ("Причина", reason.capitalize(), True),
                 time_field,
@@ -279,7 +276,7 @@ class Moderation(Cog, name='Модерация'):
                         target,
                         f"**Шизоид <:durka:684794973358522426> `{target.display_name}` ({target.mention}) <:durka:684794973358522426> в изоляторе. Кукуха чата в безопасности.**",
                         ("Срок мута", "3 часа", True)
-                    ).set_thumbnail(url='https://media1.giphy.com/media/pKPbddZ0OSoik/giphy.gif')
+                    )
                     _extend_mute_story(message, target, 10800, reason)
                     edit_user_reputation(target.id, '-', 250)
                     await self.moderation_channel.send(embed=embed)
@@ -353,7 +350,6 @@ class Moderation(Cog, name='Модерация'):
                     color=Color.green(),
                     timestamp=datetime.utcnow()
                 )
-                embed.set_thumbnail(url="https://media1.tenor.com/images/c44aff453bd34aa2f3a21ddd106ed641/tenor.gif")
 
                 fields = [("Пользователь", f"{target.display_name} ({target.mention})", False),
                           ("Причина", reason.capitalize(), False)]
@@ -510,7 +506,7 @@ class Moderation(Cog, name='Модерация'):
                 color=Color.red(),
                 timestamp=datetime.utcnow()
             )
-            embed.set_thumbnail(url="https://media1.tenor.com/images/ef7a7efecb259c77e77720ce991b5c4a/tenor.gif")
+
             fields = [
                 ("Причина", reason.capitalize(), True),
                 time_field,
@@ -666,7 +662,7 @@ class Moderation(Cog, name='Модерация'):
                 color=Color.orange(),
                 timestamp=datetime.utcnow(),
                 description=f'**Пользователь `{target.display_name}` ({target.mention}) отправлен изучать правила сервера и описание ролей.**'
-            ).set_thumbnail(url='https://avatanplus.ru/files/resources/original/574d7c1e7098b15506acd6fd.png')
+            )
 
             fields = [('Администратор', ctx.author.mention, True),
                       ('Срок', '5 минут', True)]
@@ -716,7 +712,7 @@ class Moderation(Cog, name='Модерация'):
                 color=Color.green(),
                 timestamp=datetime.utcnow(),
                 description=f'**Пользователь `{target.display_name}` ({target.mention}) завершил изучение правил и описания ролей сервера.**'
-            ).set_thumbnail(url='https://cdn.discordapp.com/emojis/703210723337306132.png')
+            )
             await self.moderation_channel.send(embed=embed)
 
     @command(name=cmd["removereadrole"]["name"], aliases=cmd["removereadrole"]["aliases"],
