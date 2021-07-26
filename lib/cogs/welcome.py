@@ -76,13 +76,13 @@ class Welcome(Cog, name='Greetings'):
     @Cog.listener()
     @logger.catch
     async def on_member_join(self, member):
-        await insert_new_user_in_db(member)
+        await insert_new_user_in_db(self.bot.db, self.bot.pg_pool, member)
 
     @Cog.listener()
     @logger.catch
     async def on_member_remove(self, member):
         if member.pending is True:
-            delete_user_from_db(member.id)
+            await delete_user_from_db(self.bot.pg_pool, member.id)
             embed = Embed(
                 title='Пользователь покинул сервер',
                 color=Color.dark_red(),
@@ -93,8 +93,8 @@ class Welcome(Cog, name='Greetings'):
             await self.bot.get_channel(AUDIT_LOG_CHANNEL).send(embed=embed)
 
         else:
-            await dump_user_data_in_json(member)
-            delete_user_from_db(member.id)
+            await dump_user_data_in_json(self.bot.pg_pool, member)
+            await delete_user_from_db(self.bot.pg_pool, member.id)
 
             embed = Embed(description=f"К сожалению, пользователь **{member.display_name}** ({member.mention}) покинул сервер 😞",
                         color=Color.gold(), timestamp=datetime.utcnow())

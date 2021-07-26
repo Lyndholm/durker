@@ -48,7 +48,7 @@ class UserStats(Cog, name='Статистика'):
     @logger.catch
     async def fetch_member_profile_command(self, ctx, *, member: Member = None):
         if member and member != ctx.author:
-            if (await check_member_privacy(ctx, member)) is False:
+            if (await check_member_privacy(self.bot.pg_pool, ctx, member)) is False:
                 return
             else:
                 target = member

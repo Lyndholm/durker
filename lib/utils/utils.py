@@ -6,11 +6,12 @@ from datetime import datetime
 from pathlib import Path
 
 import aiofiles
+import asyncpg
 import discord
 from discord.ext import commands
 from discord.ext.buttons import Paginator
 
-from ..db import db
+from ..db import async_db, db
 
 
 class Pag(Paginator):
@@ -45,90 +46,69 @@ def load_commands_from_json(cog_name: str = None) -> dict:
         return commands
 
 
-async def insert_new_user_in_db(member: discord.Member) -> None:
+async def insert_new_user_in_db(db: async_db.DatabaseWrapper, pool: asyncpg.Pool, member: discord.Member) -> None:
     """Adds user data to the database"""
 
-    tables = ["casino", "durka_stats", "leveling", "users_stats"]
+    tables = [
+        'casino', 'durka_stats', 'leveling', 'users_stats',
+        'stats_customization'
+    ]
     for table in tables:
-        db.insert(f"{table}", {"user_id": member.id})
+        await db.insert(f"{table}", {"user_id": member.id})
 
-    db.insert("users_info", {"user_id": member.id,
-                             "nickname": member.display_name,
-                             "joined_at": member.joined_at,
-                             "mention": member.mention})
-    await try_to_restore_stats(member)
+    await db.insert("users_info",
+                    {"user_id": member.id,
+                     "nickname": member.display_name,
+                     "joined_at": member.joined_at,
+                     "mention": member.mention})
+    await try_to_restore_stats(pool, member)
 
 
-def delete_user_from_db(user_id: int):
+async def delete_user_from_db(pool: asyncpg.Pool, user_id: int):
     """Deletes user data from the database"""
 
-    tables = [
+    tables = (
         'casino', 'durka_stats', 'fn_profiles', 'leveling',
         'users_stats', 'users_info', 'stats_customization'
-    ]
+    )
 
     for table in tables:
-        db.execute(f"DELETE FROM {table} WHERE user_id = {user_id}")
-        db.commit()
+        await pool.execute(f"DELETE FROM {table} WHERE user_id = {user_id}")
 
 
-async def dump_user_data_in_json(member: discord.Member) -> None:
-    """Dump part of the user's data to a json file"""
+def type_converter(obj):
+    if isinstance(obj, datetime):
+        return obj.isoformat()
+
+async def dump_user_data_in_json(pool: asyncpg.Pool, member: discord.Member) -> None:
+    """Dump the user's data to a json file"""
 
     data = {}
-    cursor = db.get_cursor()
+    tables = (
+        'casino', 'durka_stats', 'leveling','users_info',
+        'users_stats', 'stats_customization'
+    )
+    for table in tables:
+        rec = await pool.fetchrow(f'SELECT * FROM {table} WHERE user_id = $1', member.id)
+        temp = {}
+        for key, value in rec.items():
+            if isinstance(value, str):
+                try:
+                    value = json.loads(value)
+                except:
+                    pass
+            temp[key] = value
+        data[table] = temp
 
-    cursor.execute("SELECT * FROM casino where user_id = %s", (member.id,))
-    rec = cursor.fetchone()
-    data["casino"] = {"cash": rec[1], "e-cash": rec[2], "credits": rec[3]}
-
-    cursor.execute(
-        "SELECT * FROM durka_stats where user_id = %s", (member.id,))
-    rec = cursor.fetchone()
-    data["durka_stats"] = {"available_durka_calls": rec[1],
-                           "received_durka_calls": rec[2], "sent_durka_calls": rec[3]}
-
-    cursor.execute("SELECT * FROM leveling where user_id = %s", (member.id,))
-    rec = cursor.fetchone()
-    data["leveling"] = {"level": rec[1], "xp": rec[2], "xp_total": rec[3]}
-
-    cursor.execute("SELECT * FROM users_info where user_id = %s", (member.id,))
-    rec = cursor.fetchone()
-    data["users_info"] = {"joined_at": str(rec[3]), "brief_biography": rec[4]}
-
-    cursor.execute(
-        "SELECT * FROM users_stats where user_id = %s", (member.id,))
-    rec = cursor.fetchone()
-    data["users_stats"] = {
-        "achievements_list": rec[1],
-        "messages_count": rec[2],
-        "rep_rank": rec[4],
-        "lost_reputation": rec[5],
-        "profanity_triggers": rec[6],
-        "invoice_time": rec[7],
-        "purchases": rec[8],
-        "mutes_story": rec[9],
-        "warns_story": rec[10],
-        "roles": [role.name for role in member.roles]
-    }
-
-    cursor.execute(
-        "SELECT * FROM stats_customization where user_id = %s", (member.id,))
-    rec = cursor.fetchone()
-    data["stats_customization"] = {
-        "rank_background_color": rec[1],
-        "rank_background_image": rec[2],
-        "rank_bar_color": rec[3],
-        "rank_level_int_color": rec[4]
-    }
+    data['users_stats']['roles'] = [role.name for role in member.roles]
 
     timestamp = int(datetime.now().timestamp())
 
     async with aiofiles.open(f'./data/users_backup/{member.id}_{timestamp}.json', 'w', encoding='utf-8') as f:
-        await f.write(json.dumps(data, indent=2, sort_keys=True, ensure_ascii=False))
+        await f.write(json.dumps(data, indent=2, ensure_ascii=False, default=type_converter))
 
 
-async def try_to_restore_stats(member: discord.Member) -> None:
+async def try_to_restore_stats(pool: asyncpg.Pool, member: discord.Member) -> None:
     backups = fnmatch.filter(os.listdir(
         './data/users_backup/'), f'{member.id}_*.json')
     if not backups:
@@ -139,33 +119,24 @@ async def try_to_restore_stats(member: discord.Member) -> None:
         data = json.loads(await f.read())
 
     if (rep_rank := data['users_stats']['rep_rank']) < 0:
-        db.execute("UPDATE users_stats SET rep_rank = %s WHERE user_id = %s",
-                   rep_rank, member.id)
+        await pool.execute("UPDATE users_stats SET rep_rank = $1 WHERE user_id = $2",
+                           rep_rank, member.id)
 
     if (lost_rep := data['users_stats']['lost_reputation']) > 0:
-        db.execute("UPDATE users_stats SET lost_reputation = %s WHERE user_id = %s",
-                   lost_rep, member.id)
+        await pool.execute("UPDATE users_stats SET lost_reputation = $1 WHERE user_id = $2",
+                           lost_rep, member.id)
 
     if (profanity_triggers := data['users_stats']['profanity_triggers']) > 0:
-        db.execute("UPDATE users_stats SET profanity_triggers = %s WHERE user_id = %s",
-                   profanity_triggers, member.id)
+        await pool.execute("UPDATE users_stats SET profanity_triggers = $1 WHERE user_id = $2",
+                           profanity_triggers, member.id)
 
     if (mutes_story := data['users_stats']['mutes_story']):
-        db.execute("UPDATE users_stats SET mutes_story = %s WHERE user_id = %s",
-                   json.dumps(mutes_story, ensure_ascii=False), member.id)
+        await pool.execute("UPDATE users_stats SET mutes_story = $1 WHERE user_id = $2",
+                           json.dumps(mutes_story, ensure_ascii=False), member.id)
 
     if (warns_story := data['users_stats']['warns_story']):
-        db.execute("UPDATE users_stats SET warns_story = %s WHERE user_id = %s",
-                   json.dumps(warns_story, ensure_ascii=False), member.id)
-
-    if (customization := data['stats_customization']):
-        db.execute("UPDATE stats_customization SET rank_background_color = %s, "
-                   "rank_background_image = %s, rank_bar_color = %s, rank_level_int_color = %s "
-                   "WHERE user_id = %s", customization['rank_background_color'],
-                   customization['rank_background_image'], customization['rank_bar_color'],
-                   customization['rank_level_int_color'], member.id)
-
-    db.commit()
+        await pool.execute("UPDATE users_stats SET warns_story = $1 WHERE user_id = $2",
+                           json.dumps(warns_story, ensure_ascii=False), member.id)
 
 
 def clean_code(content: str) -> str:
@@ -264,10 +235,9 @@ async def get_command_text_channels(cmd: commands.Command) -> str:
     return txt
 
 
-async def check_member_privacy(ctx: commands.Context, member: discord.Member) -> bool:
+async def check_member_privacy(pool: asyncpg.Pool, ctx: commands.Context, member: discord.Member) -> bool:
     """Check the member's privacy settings"""
-    privacy_flag = db.fetchone(
-        ['is_profile_public'], 'users_info', 'user_id', member.id)[0]
+    privacy_flag = await pool.fetchval('SELECT is_profile_public FROM users_info WHERE user_id = $1', member.id)
     if privacy_flag is False:
         embed = discord.Embed(
             title='❗ Внимание!', color=discord.Color.red(), timestamp=datetime.utcnow(),

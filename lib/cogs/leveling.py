@@ -325,7 +325,7 @@ class Leveling(Cog, name='Система уровней'):
     @logger.catch
     async def rank(self, ctx, *, member: Optional[Member]):
         if member and member != ctx.author:
-            if (await check_member_privacy(ctx, member)) is False:
+            if (await check_member_privacy(self.bot.pg_pool, ctx, member)) is False:
                 return
             else:
                 target = member

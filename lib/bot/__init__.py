@@ -14,7 +14,7 @@ from discord.ext.commands import (Context, ExtensionAlreadyLoaded,
 from dotenv import load_dotenv
 from loguru import logger
 
-from ..db import db, async_db
+from ..db import async_db, db
 from ..utils.constants import GUILD_ID, OWNER_ID
 from ..utils.utils import insert_new_user_in_db
 
@@ -227,7 +227,7 @@ class Bot(BotBase):
                 if member.pending is False:
                     rec = await self.pg_pool.fetchval('SELECT user_id FROM users_info WHERE user_id = $1', member.id)
                     if rec is None:
-                        await insert_new_user_in_db(member)
+                        await insert_new_user_in_db(self.db, self.pg_pool, member)
 
             db.execute("DELETE FROM voice_activity;")
             db.commit()

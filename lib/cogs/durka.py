@@ -13,8 +13,8 @@ from loguru import logger
 from ..db import db
 from ..utils.constants import (CACTUS_ROLE_ID, CAPTAIN_ROLE_ID,
                                CHASOVOY_ROLE_ID, CREATOR_ROLE_ID,
-                               DOBRYAK_ROLE_ID, GVARDIYA_ROLE_ID,
-                               JOHN_WICK_ROLE_ID, OLD_ROLE_ID, VETERAN_ROLE_ID)
+                               GVARDIYA_ROLE_ID, JOHN_WICK_ROLE_ID,
+                               OLD_ROLE_ID, VETERAN_ROLE_ID)
 from ..utils.utils import cooldown_timer_str, load_commands_from_json
 
 cmd = load_commands_from_json("durka")
@@ -51,7 +51,6 @@ def have_enough_perms_for_calling() -> bool:
             CAPTAIN_ROLE_ID,
             VETERAN_ROLE_ID,
             CHASOVOY_ROLE_ID,
-            DOBRYAK_ROLE_ID,
             JOHN_WICK_ROLE_ID,
             CACTUS_ROLE_ID,
             CREATOR_ROLE_ID,
