@@ -14,7 +14,7 @@ from discord.ext.commands import (Context, ExtensionAlreadyLoaded,
 from dotenv import load_dotenv
 from loguru import logger
 
-from ..db import db
+from ..db import db, async_db
 from ..utils.constants import GUILD_ID, OWNER_ID
 from ..utils.utils import insert_new_user_in_db
 
@@ -53,6 +53,7 @@ class Bot(BotBase):
         self.cogs_ready = Ready()
         self.guild = None
         self.pg_pool = None
+        self.db = None
         self.scheduler = AsyncIOScheduler()
         self.profanity = Profanity()
         self.channels_with_message_counting = [
@@ -90,6 +91,7 @@ class Bot(BotBase):
             self.pg_pool = loop.run_until_complete(
                 asyncpg.create_pool(**db_credentials)
             )
+            self.db = async_db.DatabaseWrapper(self.pg_pool)
             print('Connected to the database')
         except Exception as e:
             raise e
