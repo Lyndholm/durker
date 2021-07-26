@@ -912,8 +912,7 @@ class Moderation(Cog, name='Модерация'):
                                 ('Автор сообщения', message.author.name+'#'+message.author.discriminator, True),
                                 ('ID автора', message.author.id, True),
                                 ('Канал', message.channel.mention, True),
-                                ('Сообщение', message.clean_content, False),
-                                ('Ссылка', url.group(0), False)
+                                ('Сообщение', message.clean_content, False)
                         ]
                         for name, value, inline in fields:
                             embed.add_field(name=name, value=value, inline=inline)
