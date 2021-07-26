@@ -177,7 +177,7 @@ class CommandErrorHandler(commands.Cog, name='Command error handler'):
                         timestamp=datetime.utcnow(),
                         color=discord.Color.red()
                     )
-                    await self.bot.get_user(self.bot.owner_ids[0]).send(embed=embed)
+                    await self.bot.owner.send(embed=embed)
                 else:
                     embed = discord.Embed(
                         title=f'Ошибка при выполнении команды {ctx.command}.',

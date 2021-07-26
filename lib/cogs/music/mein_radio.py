@@ -256,7 +256,7 @@ class MeinRadio(commands.Cog, wavelink.WavelinkMixin, name='Mein Radio'):
 
         tracks = await self.bot.wavelink.get_tracks("https://www.youtube.com/playlist?list=PLfMqck7-0P5LXjz7wcNgX2yMus0sfoFET")
         if not tracks:
-            return await self.bot.get_user(self.bot.owner_ids[0]).send(f"{datetime.datetime.now()} | Не удалось загрузить плейлист `Mein Radio`.")
+            return await self.bot.owner.send(f"{datetime.datetime.now()} | Не удалось загрузить плейлист `Mein Radio`.")
 
         if isinstance(tracks, wavelink.TrackPlaylist):
             for track in tracks.tracks:

@@ -38,7 +38,7 @@ class ModMail(Cog, name='ModMail'):
                     value="\n".join([attachment.url for attachment in message.attachments]),
                     inline=False
                 )
-            await self.bot.get_user(self.bot.owner_ids[0]).send(embed=embed)
+            await self.bot.owner.send(embed=embed)
 
     @Cog.listener()
     async def on_ready(self):

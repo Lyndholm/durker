@@ -76,7 +76,7 @@ class AchievementSystem(Cog, name='Система достижений'):
             yield l[i:i + n]
 
     def can_view_hidden_achievement(self, user_id: int, achievement: str) -> bool:
-        if user_id == self.bot.owner_ids[0]:
+        if user_id == self.bot.owner.id:
             return True
         return self.user_have_achievement(user_id, achievement)
 
@@ -191,7 +191,7 @@ class AchievementSystem(Cog, name='Система достижений'):
                 ('Выдаётся автоматически', "Да" if data[7] else "Нет", True),
                 ('Первое появление', data[5], True)
             ]
-        if ctx.author.id == self.bot.owner_ids[0]:
+        if ctx.author.id == self.bot.owner.id:
             fields.extend([
                 ('id', data[0], True),
                 ('internal_id', data[1], True),
@@ -296,12 +296,12 @@ class AchievementSystem(Cog, name='Система достижений'):
     @logger.catch
     async def achievements_list_command(self, ctx):
         data = db.records('SELECT * FROM achievements ORDER BY id')
-        if ctx.author.id != self.bot.owner_ids[0]:
+        if ctx.author.id != self.bot.owner.id:
             data = [i for i in data if i[8] is False]
         if not data:
             await ctx.reply(
                 '😳 Этого не должно было произойти, но база данных достижений пуста.'
-                '\nПожалуйста, сообщите об этом <@375722626636578816>',
+                f'\nПожалуйста, сообщите об этом **{self.bot.owner}**',
                 mention_author=False
             )
             return

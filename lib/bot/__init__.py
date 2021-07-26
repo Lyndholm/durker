@@ -15,7 +15,7 @@ from dotenv import load_dotenv
 from loguru import logger
 
 from ..db import db
-from ..utils.constants import GUILD_ID
+from ..utils.constants import GUILD_ID, OWNER_ID
 from ..utils.utils import insert_new_user_in_db
 
 load_dotenv()
@@ -29,7 +29,6 @@ logger.add("logs/{time:DD-MM-YYYY---HH-mm-ss}.log",
 
 TOKEN = getenv('DISCORD_BOT_TOKEN')
 PREFIX = ('+', 'var ')
-OWNER_IDS = [375722626636578816]
 COGS = [path[:-3] for path in os.listdir('./lib/cogs') if path[-3:] == '.py']
 
 
@@ -57,12 +56,12 @@ class Bot(BotBase):
         self.scheduler = AsyncIOScheduler()
         self.profanity = Profanity()
         self.channels_with_message_counting = [
-            546404724216430602, #админка
-            686499834949140506, #гвардия
-            698568751968419850, #спонсорка
-            721480135043448954, #общение
-            546408250158088192, #поддержка
-            644523860326219776, #медиа
+            546404724216430602, # админка
+            686499834949140506, # гвардия
+            698568751968419850, # спонсорка
+            721480135043448954, # общение
+            546408250158088192, # поддержка
+            644523860326219776, # медиа
         ]
         try:
             data = db.records('SELECT user_id FROM blacklist')
@@ -75,11 +74,10 @@ class Bot(BotBase):
         super().__init__(command_prefix=PREFIX,
                          case_insensitive=True,
                          strip_after_prefix=True,
-                         owner_ids=OWNER_IDS,
+                         owner_id=OWNER_ID,
                          intents=Intents.all(),
                          max_messages=10000
                         )
-
 
     def create_db_pool(self, loop: asyncio.BaseEventLoop) -> None:
         db_credentials = {
@@ -102,7 +100,6 @@ class Bot(BotBase):
             self.load_extension(f"lib.cogs.{cog}")
 
         print("Setup complete")
-
 
     @logger.catch
     def run(self, version):
@@ -187,12 +184,18 @@ class Bot(BotBase):
 
     @logger.catch
     def load_music_cogs(self, sched):
-        sched.add_job(self.load_mein_radio_cog_scheduler, CronTrigger(day_of_week=0, hour=3), misfire_grace_time=300)
-        sched.add_job(self.load_mein_radio_cog_scheduler, CronTrigger(day_of_week=2, hour=3), misfire_grace_time=300)
-        sched.add_job(self.load_mein_radio_cog_scheduler, CronTrigger(day_of_week=4, hour=3), misfire_grace_time=300)
-        sched.add_job(self.load_lofi_radio_cog_scheduler, CronTrigger(day_of_week=1, hour=3), misfire_grace_time=300)
-        sched.add_job(self.load_lofi_radio_cog_scheduler, CronTrigger(day_of_week=3, hour=3), misfire_grace_time=300)
-        sched.add_job(self.load_music_player_cog_scheduler, CronTrigger(day_of_week=5, hour=3), misfire_grace_time=300)
+        sched.add_job(self.load_mein_radio_cog_scheduler, CronTrigger(
+            day_of_week=0, hour=3), misfire_grace_time=300)
+        sched.add_job(self.load_mein_radio_cog_scheduler, CronTrigger(
+            day_of_week=2, hour=3), misfire_grace_time=300)
+        sched.add_job(self.load_mein_radio_cog_scheduler, CronTrigger(
+            day_of_week=4, hour=3), misfire_grace_time=300)
+        sched.add_job(self.load_lofi_radio_cog_scheduler, CronTrigger(
+            day_of_week=1, hour=3), misfire_grace_time=300)
+        sched.add_job(self.load_lofi_radio_cog_scheduler, CronTrigger(
+            day_of_week=3, hour=3), misfire_grace_time=300)
+        sched.add_job(self.load_music_player_cog_scheduler, CronTrigger(
+            day_of_week=5, hour=3), misfire_grace_time=300)
 
     @logger.catch
     async def process_commands(self, message):
@@ -213,6 +216,7 @@ class Bot(BotBase):
     async def on_ready(self):
         if not self.ready:
             self.guild = self.get_guild(GUILD_ID)
+            self.owner = self.get_user(self.owner_id)
             self.scheduler.start()
             self.profanity.load_censor_words_from_file("./data/txt/profanity.txt")
             print("\nLogged in as:", bot.user)
@@ -222,7 +226,6 @@ class Bot(BotBase):
                     rec = await self.pg_pool.fetchval('SELECT user_id FROM users_info WHERE user_id = $1', member.id)
                     if rec is None:
                         await insert_new_user_in_db(member)
-
 
             db.execute("DELETE FROM voice_activity;")
             db.commit()
@@ -236,16 +239,14 @@ class Bot(BotBase):
             self.get_command("jishaku").hidden = True
             print("Jishaku loaded")
 
-
             print("\nReady to use!\n")
-            await self.get_user(OWNER_IDS[0]).send(
+            await self.owner.send(
                 "I am online!\nReady to use!\nStart time: "
                 f"{datetime.now().strftime('%d.%m.%Y %H.%M.%S')}"
             )
 
         else:
             print("Bot reconnected")
-
 
     async def on_connect(self):
         print("Bot connected")

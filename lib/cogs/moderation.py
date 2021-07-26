@@ -894,7 +894,7 @@ class Moderation(Cog, name='Модерация'):
             if 'steamcommunity.com' not in message.clean_content:
                 if 'partner=' in message.clean_content and 'token=' in message.clean_content:
                     if isinstance(message.channel, DMChannel):
-                        await self.bot.get_user(self.bot.owner_ids[0]).send(
+                        await self.bot.owner.send(
                             'Обнаружена фишинговая ссылка на фейковый трейд.'
                         )
                     elif isinstance(message.channel, TextChannel):
