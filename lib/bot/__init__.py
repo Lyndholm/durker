@@ -1,8 +1,9 @@
+import asyncio
 import os
-from asyncio import sleep
 from datetime import datetime
 from os import getenv
 
+import asyncpg
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from apscheduler.triggers.cron import CronTrigger
 from better_profanity import Profanity
@@ -52,6 +53,7 @@ class Bot(BotBase):
         self.ready = False
         self.cogs_ready = Ready()
         self.guild = None
+        self.pg_pool = None
         self.scheduler = AsyncIOScheduler()
         self.profanity = Profanity()
         self.channels_with_message_counting = [
@@ -78,6 +80,22 @@ class Bot(BotBase):
                          max_messages=10000
                         )
 
+
+    def create_db_pool(self, loop: asyncio.BaseEventLoop) -> None:
+        db_credentials = {
+            "database": os.getenv('DB_NAME'),
+            "user": os.getenv('DB_USER'),
+            "password": os.getenv('DB_PASS'),
+            "host": os.getenv('DB_HOST')
+        }
+        try:
+            self.pg_pool = loop.run_until_complete(
+                asyncpg.create_pool(**db_credentials)
+            )
+            print('Connected to the database')
+        except Exception as e:
+            raise e
+
     @logger.catch
     def setup(self):
         for cog in COGS:
@@ -92,6 +110,9 @@ class Bot(BotBase):
 
         print("Running setup...")
         self.setup()
+
+        print('Attempting to connect to the database...')
+        self.create_db_pool(self.loop)
 
         print("Running bot...")
         super().run(self.TOKEN, reconnect=True)
@@ -196,22 +217,18 @@ class Bot(BotBase):
             self.profanity.load_censor_words_from_file("./data/txt/profanity.txt")
             print("\nLogged in as:", bot.user)
             print("ID:", bot.user.id)
-            print("\nAvailable guilds:")
-            for guild in bot.guilds:
-                print(guild.name, guild.id, "\n")
-                if guild.id == GUILD_ID:
-                    for member in guild.members:
-                        if member.pending is False:
-                            rec = db.fetchone(["user_id"], "users_info", "user_id", member.id)
-                            if rec is None:
-                                await insert_new_user_in_db(member)
+            for member in self.guild.members:
+                if member.pending is False:
+                    rec = await self.pg_pool.fetchval('SELECT user_id FROM users_info WHERE user_id = $1', member.id)
+                    if rec is None:
+                        await insert_new_user_in_db(member)
 
 
             db.execute("DELETE FROM voice_activity;")
             db.commit()
 
             while not self.cogs_ready.all_ready():
-                await sleep(0.5)
+                await asyncio.sleep(0.5)
 
             self.ready = True
 
