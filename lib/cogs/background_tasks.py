@@ -70,8 +70,10 @@ class BackgroundTasks(Cog, name='Фоновые процессы'):
                 continue
 
             try:
-                joined_at = joined_date(member)
-                messages_count, rep_rank = db.fetchone(['messages_count', 'rep_rank'], 'users_stats', 'user_id', member.id)
+                joined_at = await self.bot.pg_pool.fetchval(
+                    'SELECT joined_at FROM users_info WHERE user_id = $1', member.id)
+                messages_count = await self.bot.pg_pool.fetchval(
+                    'SELECT messages_count FROM users_stats WHERE user_id = $1', member.id)
                 time_delta = (datetime.utcnow() - joined_at).days
             except TypeError:
                 continue
@@ -80,17 +82,17 @@ class BackgroundTasks(Cog, name='Фоновые процессы'):
                 await member.add_roles(worker)
                 edit_user_reputation(member.id, '+', 250)
 
-            if old not in member.roles and messages_count >= 3500 and time_delta >= 31:
+            if old not in member.roles and messages_count >= 3_500 and time_delta >= 31:
                 await member.add_roles(old)
                 edit_user_reputation(member.id, '+', 750)
 
-            if captain not in member.roles and messages_count >= 10000 and time_delta >= 91:
+            if captain not in member.roles and messages_count >= 10_000 and time_delta >= 91:
                 await member.add_roles(captain)
-                edit_user_reputation(member.id, '+', 1500)
+                edit_user_reputation(member.id, '+', 1_500)
 
-            if veteran not in member.roles and messages_count >= 25000 and time_delta >= 181:
+            if veteran not in member.roles and messages_count >= 25_000 and time_delta >= 181:
                 await member.add_roles(veteran)
-                edit_user_reputation(member.id, '+', 3000)
+                edit_user_reputation(member.id, '+', 3_000)
 
     @check_activity_role.before_loop
     async def before_check_activity_role(self):
@@ -105,13 +107,16 @@ class BackgroundTasks(Cog, name='Фоновые процессы'):
                 continue
 
             try:
-                nickname = db.fetchone(['nickname'], 'users_info', 'user_id', member.id)[0]
+                nickname = await self.bot.pg_pool.fetchval(
+                    'SELECT nickname FROM users_info WHERE user_id = $1', member.id)
             except TypeError:
                 continue
 
             if nickname != member.display_name:
-                db.execute('UPDATE users_info SET nickname = %s WHERE user_id = %s', member.display_name, member.id)
-                db.commit()
+                await self.bot.pg_pool.execute(
+                    'UPDATE users_info SET nickname = $1 WHERE user_id = $2',
+                    member.display_name, member.id
+                )
 
     @update_user_nickname.before_loop
     async def before_update_user_nickname(self):
