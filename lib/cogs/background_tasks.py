@@ -32,8 +32,6 @@ class BackgroundTasks(Cog, name='Фоновые процессы'):
         self.bot = bot
         self.change_bot_activity.start()
         self.check_activity_role.start()
-        self.check_mecenat_role.start()
-        self.check_supporter_role.start()
         self.update_user_nickname.start()
         self.update_fortnite_shop_hash.start()
         if self.bot.ready:
@@ -96,60 +94,6 @@ class BackgroundTasks(Cog, name='Фоновые процессы'):
 
     @check_activity_role.before_loop
     async def before_check_activity_role(self):
-        await self.bot.wait_until_ready()
-
-
-    @tasks.loop(hours=24.0)
-    @logger.catch
-    async def check_mecenat_role(self):
-        mecenat = get(self.bot.guild.roles, id=MECENAT_ROLE_ID)
-        kapitalist = get(self.bot.guild.roles, id=KAPITALIST_ROLE_ID)
-
-        for member in self.bot.guild.members:
-            if self.mod_cog.is_member_muted(member) or member.pending:
-                continue
-
-            try:
-                purchases = db.fetchone(['purchases'], 'users_stats', 'user_id', member.id)[0]['vbucks_purchases']
-            except TypeError:
-                continue
-
-            if purchases:
-                lpd = purchases[-1]['date']
-                if mecenat in member.roles and kapitalist not in member.roles:
-                    if (datetime.now() - datetime.strptime(lpd, '%d.%m.%Y %H:%M:%S')).days > 90:
-                        await member.remove_roles(mecenat, reason='С момента последней покупки прошло более 3 месяцев')
-
-    @check_mecenat_role.before_loop
-    async def before_check_mecenat_role(self):
-        await self.bot.wait_until_ready()
-
-
-    @tasks.loop(hours=1.0)
-    @logger.catch
-    async def check_supporter_role(self):
-        kapitalist = get(self.bot.guild.roles, id=KAPITALIST_ROLE_ID)
-        magnat = get(self.bot.guild.roles, id=MAGNAT_ROLE_ID)
-
-        for member in self.bot.guild.members:
-            if self.mod_cog.is_member_muted(member) or member.pending:
-                continue
-
-            try:
-                purchases = db.fetchone(['purchases'], 'users_stats', 'user_id', member.id)[0]
-                vbucks_count = sum(purchases['vbucks_purchases'][i]['price'] for i in range(len(purchases['vbucks_purchases'])))
-            except TypeError:
-                continue
-
-            if vbucks_count >= 10000 and kapitalist not in member.roles:
-                await member.add_roles(kapitalist)
-                edit_user_reputation(member.id, '+', 1000)
-            if vbucks_count >= 25000 and magnat not in member.roles:
-                await member.add_roles(magnat)
-                edit_user_reputation(member.id, '+', 2500)
-
-    @check_supporter_role.before_loop
-    async def before_check_supporter_role(self):
         await self.bot.wait_until_ready()
 
 
