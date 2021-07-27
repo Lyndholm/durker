@@ -337,10 +337,10 @@ class UserStats(Cog, name='Статистика'):
         activity_role_3 = get(ctx.guild.roles, name='Капитан')
         activity_role_4 = get(ctx.guild.roles, name='Ветеран')
         msg_counter = db.fetchone(["messages_count"], "users_stats", 'user_id', ctx.author.id)[0]
-        desc = f"{ctx.author.mention}, ваше количество сообщений: **{msg_counter}**"
+        desc = f'Количество сообщений: **{msg_counter}**'
 
         embed = Embed(color=ctx.author.color)
-        embed.set_author(name="Количество сообщений", icon_url=ctx.author.avatar_url)
+        embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
         embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/774698479981297664/814988530219614249/message.png")
 
         if activity_role_1 not in ctx.author.roles:
