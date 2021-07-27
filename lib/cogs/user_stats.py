@@ -1,3 +1,4 @@
+import ast
 from asyncio.exceptions import TimeoutError
 from datetime import datetime, timedelta
 
@@ -8,8 +9,9 @@ from loguru import logger
 
 from ..db import db
 from ..utils.checks import is_channel
-from ..utils.constants import STATS_CHANNEL, KAPITALIST_ROLE_ID, MAGNAT_ROLE_ID
-from ..utils.utils import joined_date, load_commands_from_json, russian_plural, check_member_privacy
+from ..utils.constants import STATS_CHANNEL
+from ..utils.utils import (check_member_privacy, joined_date,
+                           load_commands_from_json, russian_plural)
 
 cmd = load_commands_from_json("user_stats")
 
@@ -21,14 +23,14 @@ class UserStats(Cog, name='Статистика'):
     @Cog.listener()
     async def on_ready(self):
         if not self.bot.ready:
-           self.bot.cogs_ready.ready_up("user_stats")
+            self.bot.cogs_ready.ready_up("user_stats")
 
     @command(name=cmd["profile"]["name"], aliases=cmd["profile"]["aliases"],
-        brief=cmd["profile"]["brief"],
-        description=cmd["profile"]["description"],
-        usage=cmd["profile"]["usage"],
-        help=cmd["profile"]["help"],
-        hidden=cmd["profile"]["hidden"], enabled=True)
+             brief=cmd["profile"]["brief"],
+             description=cmd["profile"]["description"],
+             usage=cmd["profile"]["usage"],
+             help=cmd["profile"]["help"],
+             hidden=cmd["profile"]["hidden"], enabled=True)
     @is_channel(STATS_CHANNEL)
     @guild_only()
     @logger.catch
@@ -41,136 +43,126 @@ class UserStats(Cog, name='Статистика'):
         else:
             target = ctx.author
 
+        biography = await self.bot.db.fetchone(
+            ['brief_biography'],
+            'users_info', 'user_id',
+            target.id)
 
-        casino = db.fetchone(["cash", "e_cash"], "casino", 'user_id', target.id)
+        user_stats = await self.bot.db.fetchone(
+            ['achievements_list', 'invoice_time'],
+            'users_stats', 'user_id',
+            target.id)
 
-        durka_stats = db.fetchone(["received_durka_calls"], "durka_stats", 'user_id', target.id)
+        durka_stats = await self.bot.db.fetchone(
+            ['received_durka_calls'],
+            'durka_stats', 'user_id',
+            target.id)
 
-        leveling = db.fetchone(["level", "xp"], "leveling", 'user_id', target.id)
+        moderation_stats = await self.bot.db.fetchone(
+            ['mutes_story', 'warns_story', 'profanity_triggers'],
+            'users_stats', 'user_id',
+            target.id)
 
-        biography = db.fetchone(["brief_biography"], "users_info", 'user_id', target.id)
-
-        purchases = db.fetchone(["purchases"], "users_stats", 'user_id', target.id)
-
-        user_stats = db.fetchone(["achievements_list", "messages_count", "rep_rank", "invoice_time", "lost_reputation"],
-                                "users_stats", 'user_id', target.id)
-
-        moderation_stats = db.fetchone(["mutes_story", "warns_story", "profanity_triggers"],
-                                    "users_stats", 'user_id', target.id)
-
-        total_mute_time = sum(moderation_stats[0]['user_mute_story'][i]['mute_time'] for i in range(len(moderation_stats[0]['user_mute_story']))) + \
-            sum(moderation_stats[1]['user_warn_story'][i]['mute_time'] for i in range(len(moderation_stats[1]['user_warn_story'])))
-
-        vbucks_count = sum(purchases[0]['vbucks_purchases'][i]['price'] for i in range(len(purchases[0]['vbucks_purchases'])))
-
-        realMoney = sum(purchases[0]['realMoney_purchases'][i]['price'] for i in range(len(purchases[0]['realMoney_purchases'])))
-
-        kapitalist = ctx.guild.get_role(KAPITALIST_ROLE_ID)
-
-        magnat = ctx.guild.get_role(MAGNAT_ROLE_ID)
+        mutes = ast.literal_eval(moderation_stats[0])
+        mute_time = sum(
+            moderation_stats[0]['user_mute_story'][i]['mute_time']
+            for i in range(len(mutes['user_mute_story']))
+        )
+        warns = ast.literal_eval(moderation_stats[1])
+        warn_time = sum(
+            moderation_stats[1]['user_warn_story'][i]['mute_time']
+            for i in range(len(warns['user_warn_story']))
+        )
+        total_mute_time = mute_time + warn_time
 
         embed = Embed(color=target.color)
-
-        embed.set_author(name=f"{target.display_name}", icon_url=target.avatar_url)
-
+        embed.set_author(name=target.display_name, icon_url=target.avatar_url)
         embed.set_thumbnail(url=target.avatar_url)
 
         if member:
-            embed.add_field(name='📝 О пользователе:', value=biography[0] if biography[0] else "Пользователь не указал свою биографию.",
-                            inline=False)
+            if biography[0]:
+                value = biography[0],
+            else:
+                value = 'Пользователь не указал свою биографию.'
+            embed.add_field(name='📝 О пользователе:',
+                            value=value, inline=False)
         else:
-            embed.add_field(name='📝 О себе:', value=biography[0] if biography[0] else "Вы ничего не написали о себе. "
-                                                                                            "Сделать это можно по команде "
-                                                                                            f"`{ctx.prefix or self.bot.PREFIX[0]}"
-                                                                                            "setbio <ваша биография>`",
-                            inline=False)
+            if biography[0]:
+                value = biography[0],
+            else:
+                value = f'Вы ничего не написали о себе. Сделать это можно по команде ' \
+                        f'`{ctx.prefix or self.bot.PREFIX[0]}setbio <ваша биография>`'
+            embed.add_field(name='📝 О себе:', value=value, inline=False)
 
-        embed.add_field(name='📆 Аккаунт создан:', value=target.created_at.strftime("%d.%m.%Y %H:%M"),
+        embed.add_field(name='📆 Аккаунт создан:',
+                        value=target.created_at.strftime('%d.%m.%Y %H:%M'),
                         inline=True)
 
         embed.add_field(name='📆 Дата захода на сервер:',
-                        value=joined_date(target).strftime("%d.%m.%Y %H:%M"), inline=True)
+                        value=joined_date(target).strftime('%d.%m.%Y %H:%M'),
+                        inline=True)
 
         embed.add_field(name='📆 Количество дней на сервере:',
-                        value=(datetime.now() - joined_date(target)).days, inline=True)
+                        value=(datetime.now() - joined_date(target)).days,
+                        inline=True)
+
         if len(target.roles) > 1:
-            embed.add_field(name=f"😀 Роли ({len(target.roles) - 1})",
-                        value=" ".join([role.mention for role in target.roles[1:]]), inline=True)
+            embed.add_field(name=f'😀 Роли ({len(target.roles) - 1})',
+                            value=" ".join(
+                                [role.mention for role in target.roles[1:]]),
+                            inline=True)
         else:
-            embed.add_field(name=f"😀 Роли ({len(target.roles)})",
-                                    value=" ".join([role.mention for role in target.roles]), inline=True)
+            embed.add_field(name=f'😀 Роли ({len(target.roles)})',
+                            value=' '.join(
+                                [role.mention for role in target.roles]),
+                            inline=True)
 
-        embed.add_field(name="😎 Наивысшая роль:", value=target.top_role.mention, inline=True)
-
-        embed.add_field(name="🎖️ Количество достижений:", value=len(user_stats[0]["user_achievements_list"]), inline=True)
-
-        embed.add_field(name="✉️ Количество сообщений:", value=user_stats[1], inline=True)
-
-        embed.add_field(name="🟢 Уровень:", value=leveling[0], inline=True)
-
-        embed.add_field(name="🟢 XP:", value=leveling[1], inline=True)
-
-        embed.add_field(name="🧐 Репутация:", value=user_stats[2], inline=True)
-
-        embed.add_field(name="👎 Потеряно репутации:", value=user_stats[4], inline=True)
-
-        embed.add_field(name="<:durka:684794973358522426>  Получено путёвок в дурку:", value=durka_stats[0],
+        embed.add_field(name='😎 Наивысшая роль:',
+                        value=target.top_role.mention,
                         inline=True)
 
-        embed.add_field(name="🤬 Количество триггеров мат-фильтра:", value=moderation_stats[2],
+        embed.add_field(name='🎖️ Количество достижений:',
+                        value=len(
+                            ast.literal_eval(user_stats[0])["user_achievements_list"]),
                         inline=True)
 
-        embed.add_field(name="💰  Потрачено В-Баксов с тегом FNFUN:",
-                        value=vbucks_count, inline=True)
+        embed.add_field(name="<:durka:684794973358522426>  Получено путёвок в дурку:",
+                        value=durka_stats[0],
+                        inline=True)
 
-        if len(purchases[0]['vbucks_purchases']) > 0:
-
-            embed.add_field(name="🙂 Количество покупок с тегом FNFUN:",
-                            value=len(purchases[0]['vbucks_purchases']), inline=True)
-
-            embed.add_field(name="📅 Дата последней покупки с тегом FNFUN:",
-                            value=purchases[0]['vbucks_purchases'][-1]['date'][:-3])
-
-        if kapitalist not in target.roles:
-            embed.add_field(name=f"💰 До роли `{kapitalist.name}` осталось: ",
-                            value=f"{int(10000 - vbucks_count)} В-Баксов", inline=True)
-
-        if magnat not in target.roles and kapitalist in target.roles:
-            embed.add_field(name=f"💰 До роли `{magnat.name}` осталось: ",
-                            value=f"{int(25000 - vbucks_count)} В-Баксов", inline=True)
-
-        if len(purchases[0]['realMoney_purchases']) > 0:
-            embed.add_field(name="💸 Поддержка автора в рублях:",
-                            value=realMoney, inline=True)
+        embed.add_field(name="🤬 Количество триггеров мат-фильтра:",
+                        value=moderation_stats[2],
+                        inline=True)
 
         embed.add_field(name="🔈 Время, проведенное в голосовых каналах:",
-                        value=timedelta(seconds=user_stats[3]), inline=True)
-
-        #embed.add_field(name=":coin: FUN-коинов:", value=casino[0] + casino[1], inline=True)  fuck the economy system
-
-        embed.add_field(name="⚠️ Количество предупреждений:", value=len(moderation_stats[1]["user_warn_story"]), inline=True)
-
-        embed.add_field(name="🙊 Количество мутов:", value=(len(moderation_stats[0]["user_mute_story"]) + len(moderation_stats[1]["user_warn_story"])), inline=True)
-
-        embed.add_field(name="⏲️ Время, проведенное в муте:", value=timedelta(seconds=total_mute_time),
+                        value=timedelta(seconds=user_stats[1]),
                         inline=True)
 
-        embed.add_field(name="⚡ Бустер сервера:", value='Да' if bool(target.premium_since) else 'Нет',
+        embed.add_field(name="⚠️ Количество предупреждений:",
+                        value=len(warns),
+                        inline=True)
+
+        embed.add_field(name="🙊 Количество мутов:",
+                        value=len(mutes) + len(warns),
+                        inline=True)
+
+        embed.add_field(name="⏲️ Время, проведенное в муте:",
+                        value=timedelta(seconds=total_mute_time),
+                        inline=True)
+
+        embed.add_field(name="⚡ Бустер сервера:",
+                        value='Да' if bool(target.premium_since) else 'Нет',
                         inline=True)
 
         if member:
             embed.timestamp = datetime.utcnow()
-            embed.set_footer(text=f"Запрос от: {ctx.author}", icon_url=ctx.author.avatar_url)
+            embed.set_footer(
+                text=f"Запрос от: {ctx.author}", icon_url=ctx.author.avatar_url)
         else:
-            embed.set_footer(text='Данные актуальны на ' + datetime.now().strftime("%d.%m.%Y %H:%M:%S") + ' МСК')
+            embed.set_footer(text='Данные актуальны на ' +
+                             datetime.now().strftime("%d.%m.%Y %H:%M:%S") + ' МСК')
 
-        await ctx.reply(
-            'После обновления бота от 1 июля 2021 г. статистика покупок (по В-баксам) '
-            'была сброшена у всех пользователей. Ознакомиться с причинами вайпа можно '
-            f'по команде `{ctx.prefix or self.bot.PREFIX[0]}wipe`.\nВы можете подать заявку '
-            'на восстановление своей статистики. Для этого обратитесь к Lyndholm#7200.',
-            embed=embed)
-
+        await ctx.reply(embed=embed, mention_author=False)
 
     @command(name=cmd["setbio"]["name"], aliases=cmd["setbio"]["aliases"],
         brief=cmd["setbio"]["brief"],
