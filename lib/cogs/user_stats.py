@@ -134,7 +134,7 @@ class UserStats(Cog, name='Статистика'):
                         value=moderation_stats[2],
                         inline=True)
 
-        embed.add_field(name="🔈 Время, проведенное в голосовых каналах:",
+        embed.add_field(name="🔈 Время, проведённое в голосовых каналах:",
                         value=timedelta(seconds=user_stats[1]),
                         inline=True)
 
@@ -146,7 +146,7 @@ class UserStats(Cog, name='Статистика'):
                         value=len(mutes) + len(warns),
                         inline=True)
 
-        embed.add_field(name="⏲️ Время, проведенное в муте:",
+        embed.add_field(name="⏲️ Время, проведённое в муте:",
                         value=timedelta(seconds=total_mute_time),
                         inline=True)
 
