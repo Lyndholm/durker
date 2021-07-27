@@ -378,37 +378,38 @@ class UserStats(Cog, name='Статистика'):
     @guild_only()
     @logger.catch
     async def myrep_command(self, ctx):
-        rep_rank = db.fetchone(["rep_rank"], "users_stats", 'user_id', ctx.author.id)[0]
-        desc = f"{ctx.author.mention}, количество ваших очков репутации: **{rep_rank}**"
+        rep_rank, lost_rep = db.fetchone(['rep_rank', 'lost_reputation'], 'users_stats', 'user_id', ctx.author.id)
+        desc = f'Количество очков репутации: **{rep_rank}**\n' \
+               f'Потеряно очков репутации: **{lost_rep}**'
 
         embed = Embed(color=ctx.author.color)
-        embed.set_author(name="Очки репутации", icon_url=ctx.author.avatar_url)
+        embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
         if rep_rank <= 0:
-            desc += f"\n\nВаш ранг: **Отсутствует**"
+            desc += f"\n\nРанг: **Отсутствует**"
             embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/774698479981297664/815298656462700634/no_rank.png")
         elif 1 <= rep_rank <= 1499:
-            desc += f"\n\nВаш ранг: **Бронза**"
+            desc += f"\n\nРанг: **Бронза**"
             embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/774698479981297664/815298685498949662/rank_bronze.png")
         elif 1500 <= rep_rank <= 2999:
-            desc += f"\n\nВаш ранг: **Серебро**"
+            desc += f"\n\nРанг: **Серебро**"
             embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/774698479981297664/815298847705792522/rank_silver.png")
         elif 3000 <= rep_rank <= 4499:
-            desc += f"\n\nВаш ранг: **Золото**"
+            desc += f"\n\nРанг: **Золото**"
             embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/774698479981297664/815298881285652550/rank_gold.png")
         elif 4500 <= rep_rank <= 6999:
-            desc += f"\n\nВаш ранг: **Платина**"
+            desc += f"\n\nРанг: **Платина**"
             embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/774698479981297664/815298909161259028/rank_platinum.png")
         elif 7000 <= rep_rank <= 9999:
-            desc += f"\n\nВаш ранг: **Алмаз**"
+            desc += f"\n\nРанг: **Алмаз**"
             embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/774698479981297664/815298936734220349/rank_diamond.png")
         elif 10000 <= rep_rank <= 14999:
-            desc += f"\n\nВаш ранг: **Мастер**"
+            desc += f"\n\nРанг: **Мастер**"
             embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/774698479981297664/815298973065543680/rank_master.png")
         elif 15000 <= rep_rank <= 19999:
-            desc += f"\n\nВаш ранг: **Элита**"
+            desc += f"\n\nРанг: **Элита**"
             embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/774698479981297664/815298996959445042/rank_grandmaster.png")
         elif rep_rank > 20000:
-            desc += f"\n\nВаш ранг: **Совершенство**"
+            desc += f"\n\nРанг: **Совершенство**"
             embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/774698479981297664/815299017948004402/rank_perfection.png")
 
         embed.description = desc
