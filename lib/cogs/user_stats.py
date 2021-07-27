@@ -23,20 +23,6 @@ class UserStats(Cog, name='Статистика'):
         if not self.bot.ready:
            self.bot.cogs_ready.ready_up("user_stats")
 
-    @command(name='me', aliases=['я'], hidden=True, enabled=True)
-    @is_channel(STATS_CHANNEL)
-    @guild_only()
-    @logger.catch
-    async def deprecated_me_command(self, ctx):
-        embed = Embed(
-            title='⚠️ Устаревший метод',
-            color=ctx.author.color,
-            description= \
-                'Команды `+я`, `+me` устарели и более недоступны. Для просмотра '
-                'статистики используйте `+profile`, `+stats`, `+account`, `+профиль`.'
-        )
-        await ctx.reply(embed=embed)
-
     @command(name=cmd["profile"]["name"], aliases=cmd["profile"]["aliases"],
         brief=cmd["profile"]["brief"],
         description=cmd["profile"]["description"],
