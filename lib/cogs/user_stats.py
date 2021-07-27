@@ -1,6 +1,7 @@
 import ast
 from asyncio.exceptions import TimeoutError
 from datetime import datetime, timedelta
+from typing import Optional
 
 from discord import Color, Embed, Member
 from discord.ext.commands import BucketType, Cog, command, cooldown, guild_only
@@ -10,7 +11,7 @@ from loguru import logger
 from ..db import db
 from ..utils.checks import is_channel
 from ..utils.constants import STATS_CHANNEL
-from ..utils.utils import (check_member_privacy, joined_date,
+from ..utils.utils import (get_context_target, joined_date,
                            load_commands_from_json, russian_plural)
 
 cmd = load_commands_from_json("user_stats")
@@ -34,14 +35,10 @@ class UserStats(Cog, name='Статистика'):
     @is_channel(STATS_CHANNEL)
     @guild_only()
     @logger.catch
-    async def fetch_member_profile_command(self, ctx, *, member: Member = None):
-        if member and member != ctx.author:
-            if (await check_member_privacy(self.bot.pg_pool, ctx, member)) is False:
-                return
-            else:
-                target = member
-        else:
-            target = ctx.author
+    async def fetch_member_profile_command(self, ctx, *, member: Optional[Member]):
+        target = await get_context_target(self.bot.pg_pool, ctx, member)
+        if not target:
+            return
 
         biography = await self.bot.db.fetchone(
             ['brief_biography'],
@@ -331,86 +328,42 @@ class UserStats(Cog, name='Статистика'):
     @is_channel(STATS_CHANNEL)
     @guild_only()
     @logger.catch
-    async def amount_command(self, ctx):
+    async def amount_command(self, ctx, *, member: Optional[Member]):
+        target = await get_context_target(self.bot.pg_pool, ctx, member)
+        if not target:
+            return
+
         activity_role_1 = get(ctx.guild.roles, name='Работяга')
         activity_role_2 = get(ctx.guild.roles, name='Олд')
         activity_role_3 = get(ctx.guild.roles, name='Капитан')
         activity_role_4 = get(ctx.guild.roles, name='Ветеран')
-        msg_counter = db.fetchone(["messages_count"], "users_stats", 'user_id', ctx.author.id)[0]
+        msg_counter = db.fetchone(['messages_count'], 'users_stats', 'user_id', target.id)[0]
         desc = f'Количество сообщений: **{msg_counter}**'
 
-        embed = Embed(color=ctx.author.color)
-        embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
+        embed = Embed(color=target.color)
+        embed.set_author(name=target.display_name, icon_url=target.avatar_url)
         embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/774698479981297664/814988530219614249/message.png")
 
-        if activity_role_1 not in ctx.author.roles:
+        if activity_role_1 not in target.roles:
             desc += f"\n\nДо роли {activity_role_1.mention} осталось **{750-msg_counter}** {russian_plural(750-msg_counter,['сообщение','сообщения','сообщений'])}"
-            if (old := (datetime.now() - joined_date(ctx.author)).days) <= 7:
+            if (old := (datetime.now() - joined_date(target)).days) <= 7:
                 diff = 7 - old
                 desc += f" и **{diff+1}** {russian_plural(diff+1,['день','дня','дней'])} пребывания на сервере."
-        elif activity_role_2 not in ctx.author.roles:
-            desc += f"\n\nДо роли {activity_role_2.mention} осталось **{3500-msg_counter}** {russian_plural(3500-msg_counter,['сообщение','сообщения','сообщений'])}"
-            if (old := (datetime.now() - joined_date(ctx.author)).days) <= 30:
+        elif activity_role_2 not in target.roles:
+            desc += f"\n\nДо роли {activity_role_2.mention} осталось **{3_500-msg_counter}** {russian_plural(3_500-msg_counter,['сообщение','сообщения','сообщений'])}"
+            if (old := (datetime.now() - joined_date(target)).days) <= 30:
                 diff = 30 - old
                 desc += f" и **{diff+1}** {russian_plural(diff+1,['день','дня','дней'])} пребывания на сервере."
-        elif activity_role_3 not in ctx.author.roles:
-            desc += f"\n\nДо роли {activity_role_3.mention} осталось **{10000-msg_counter}** {russian_plural(10000-msg_counter,['сообщение','сообщения','сообщений'])}"
-            if (old := (datetime.now() - joined_date(ctx.author)).days) <= 90:
+        elif activity_role_3 not in target.roles:
+            desc += f"\n\nДо роли {activity_role_3.mention} осталось **{10_000-msg_counter}** {russian_plural(10_000-msg_counter,['сообщение','сообщения','сообщений'])}"
+            if (old := (datetime.now() - joined_date(target)).days) <= 90:
                 diff = 90 - old
                 desc += f" и **{diff+1}** {russian_plural(diff+1,['день','дня','дней'])} пребывания на сервере."
-        elif activity_role_4 not in ctx.author.roles:
-            desc += f"\n\nДо роли {activity_role_4.mention} осталось **{25000-msg_counter}** {russian_plural(25000-msg_counter,['сообщение','сообщения','сообщений'])}"
-            if (old := (datetime.now() - joined_date(ctx.author)).days) <= 180:
+        elif activity_role_4 not in target.roles:
+            desc += f"\n\nДо роли {activity_role_4.mention} осталось **{25_000-msg_counter}** {russian_plural(25_000-msg_counter,['сообщение','сообщения','сообщений'])}"
+            if (old := (datetime.now() - joined_date(target)).days) <= 180:
                 diff = 180 - old
                 desc += f" и **{diff+1}** {russian_plural(diff+1,['день','дня','дней'])} пребывания на сервере."
-
-        embed.description = desc
-        await ctx.reply(embed=embed, mention_author=False)
-
-
-    @command(name=cmd["myrep"]["name"], aliases=cmd["myrep"]["aliases"],
-        brief=cmd["myrep"]["brief"],
-        description=cmd["myrep"]["description"],
-        usage=cmd["myrep"]["usage"],
-        help=cmd["myrep"]["help"],
-        hidden=cmd["myrep"]["hidden"], enabled=True)
-    @is_channel(STATS_CHANNEL)
-    @guild_only()
-    @logger.catch
-    async def myrep_command(self, ctx):
-        rep_rank, lost_rep = db.fetchone(['rep_rank', 'lost_reputation'], 'users_stats', 'user_id', ctx.author.id)
-        desc = f'Количество очков репутации: **{rep_rank}**\n' \
-               f'Потеряно очков репутации: **{lost_rep}**'
-
-        embed = Embed(color=ctx.author.color)
-        embed.set_author(name=ctx.author.display_name, icon_url=ctx.author.avatar_url)
-        if rep_rank <= 0:
-            desc += f"\n\nРанг: **Отсутствует**"
-            embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/774698479981297664/815298656462700634/no_rank.png")
-        elif 1 <= rep_rank <= 1499:
-            desc += f"\n\nРанг: **Бронза**"
-            embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/774698479981297664/815298685498949662/rank_bronze.png")
-        elif 1500 <= rep_rank <= 2999:
-            desc += f"\n\nРанг: **Серебро**"
-            embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/774698479981297664/815298847705792522/rank_silver.png")
-        elif 3000 <= rep_rank <= 4499:
-            desc += f"\n\nРанг: **Золото**"
-            embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/774698479981297664/815298881285652550/rank_gold.png")
-        elif 4500 <= rep_rank <= 6999:
-            desc += f"\n\nРанг: **Платина**"
-            embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/774698479981297664/815298909161259028/rank_platinum.png")
-        elif 7000 <= rep_rank <= 9999:
-            desc += f"\n\nРанг: **Алмаз**"
-            embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/774698479981297664/815298936734220349/rank_diamond.png")
-        elif 10000 <= rep_rank <= 14999:
-            desc += f"\n\nРанг: **Мастер**"
-            embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/774698479981297664/815298973065543680/rank_master.png")
-        elif 15000 <= rep_rank <= 19999:
-            desc += f"\n\nРанг: **Элита**"
-            embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/774698479981297664/815298996959445042/rank_grandmaster.png")
-        elif rep_rank > 20000:
-            desc += f"\n\nРанг: **Совершенство**"
-            embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/774698479981297664/815299017948004402/rank_perfection.png")
 
         embed.description = desc
         await ctx.reply(embed=embed, mention_author=False)
@@ -422,6 +375,58 @@ class UserStats(Cog, name='Статистика'):
         usage=cmd["rep"]["usage"],
         help=cmd["rep"]["help"],
         hidden=cmd["rep"]["hidden"], enabled=True)
+    @is_channel(STATS_CHANNEL)
+    @guild_only()
+    @logger.catch
+    async def reputation_command(self, ctx, *, member: Optional[Member]):
+        target = await get_context_target(self.bot.pg_pool, ctx, member)
+        if not target:
+            return
+
+        rep_rank, lost_rep = db.fetchone(['rep_rank', 'lost_reputation'], 'users_stats', 'user_id', target.id)
+        desc = f'Количество очков репутации: **{rep_rank}**\n' \
+               f'Потеряно очков репутации: **{lost_rep}**'
+
+        embed = Embed(color=target.color)
+        embed.set_author(name=target.display_name, icon_url=target.avatar_url)
+        if rep_rank <= 0:
+            desc += f"\n\nРанг: **Отсутствует**"
+            embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/774698479981297664/815298656462700634/no_rank.png")
+        elif 1 <= rep_rank <= 1_499:
+            desc += f"\n\nРанг: **Бронза**"
+            embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/774698479981297664/815298685498949662/rank_bronze.png")
+        elif 1_500 <= rep_rank <= 2_999:
+            desc += f"\n\nРанг: **Серебро**"
+            embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/774698479981297664/815298847705792522/rank_silver.png")
+        elif 3_000 <= rep_rank <= 4_499:
+            desc += f"\n\nРанг: **Золото**"
+            embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/774698479981297664/815298881285652550/rank_gold.png")
+        elif 4_500 <= rep_rank <= 6_999:
+            desc += f"\n\nРанг: **Платина**"
+            embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/774698479981297664/815298909161259028/rank_platinum.png")
+        elif 7_000 <= rep_rank <= 9_999:
+            desc += f"\n\nРанг: **Алмаз**"
+            embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/774698479981297664/815298936734220349/rank_diamond.png")
+        elif 10_000 <= rep_rank <= 14_999:
+            desc += f"\n\nРанг: **Мастер**"
+            embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/774698479981297664/815298973065543680/rank_master.png")
+        elif 15_000 <= rep_rank <= 19_999:
+            desc += f"\n\nРанг: **Элита**"
+            embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/774698479981297664/815298996959445042/rank_grandmaster.png")
+        elif rep_rank > 20_000:
+            desc += f"\n\nРанг: **Совершенство**"
+            embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/774698479981297664/815299017948004402/rank_perfection.png")
+
+        embed.description = desc
+        await ctx.reply(embed=embed, mention_author=False)
+
+
+    @command(name=cmd["repinfo"]["name"], aliases=cmd["repinfo"]["aliases"],
+        brief=cmd["repinfo"]["brief"],
+        description=cmd["repinfo"]["description"],
+        usage=cmd["repinfo"]["usage"],
+        help=cmd["repinfo"]["help"],
+        hidden=cmd["repinfo"]["hidden"], enabled=True)
     @guild_only()
     @logger.catch
     async def how_rep_sys_works_command(self, ctx):
@@ -444,7 +449,7 @@ class UserStats(Cog, name='Статистика'):
             "\n— **Мастер** (10000 - 14999)"
             "\n— **Элита** (15000 - 19999)"
             "\n— **Совершенство** (20000 и больше)"
-            f"\n\nУзнать свой уровень репутации можно по команде `{ctx.prefix or self.bot.PREFIX[0]}myrep`"
+            f"\n\nУзнать свой уровень репутации можно по команде `{ctx.prefix or self.bot.PREFIX[0]}rep`"
         )
         embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/774698479981297664/815282991668133888/reputation.png")
         await ctx.reply(embed=embed, mention_author=False)

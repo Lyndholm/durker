@@ -4,6 +4,7 @@ import json
 import os
 from datetime import datetime
 from pathlib import Path
+from typing import Optional, Union
 
 import aiofiles
 import asyncpg
@@ -80,12 +81,13 @@ def type_converter(obj):
     if isinstance(obj, datetime):
         return obj.isoformat()
 
+
 async def dump_user_data_in_json(pool: asyncpg.Pool, member: discord.Member) -> None:
     """Dump the user's data to a json file"""
 
     data = {}
     tables = (
-        'casino', 'durka_stats', 'leveling','users_info',
+        'casino', 'durka_stats', 'leveling', 'users_info',
         'users_stats', 'stats_customization'
     )
     for table in tables:
@@ -239,12 +241,25 @@ async def check_member_privacy(pool: asyncpg.Pool, ctx: commands.Context, member
     """Check the member's privacy settings"""
     privacy_flag = await pool.fetchval('SELECT is_profile_public FROM users_info WHERE user_id = $1', member.id)
     if privacy_flag is False:
-        embed = discord.Embed(
-            title='❗ Внимание!', color=discord.Color.red(), timestamp=datetime.utcnow(),
-            description=f'Статистика участника **{member.display_name}** ({member.mention}) скрыта. '
-                        'Просматривать её может только владелец.')
-        embed.set_footer(text=ctx.author, icon_url=ctx.author.avatar_url)
-        await ctx.reply(embed=embed, mention_author=False)
         return False
     else:
         return True
+
+
+async def get_context_target(pool: asyncpg.Pool,
+                             ctx: commands.Context,
+                             target: Optional[discord.Member]
+                            ) -> Union[discord.Member, bool]:
+    if target and target != ctx.author:
+        if (await check_member_privacy(pool, ctx, target)) is False:
+            embed = discord.Embed(
+                title='❗ Внимание!', color=discord.Color.red(), timestamp=datetime.utcnow(),
+                description=f'Статистика участника **{target.display_name}** ({target.mention}) скрыта. '
+                             'Просматривать её может только владелец.')
+            embed.set_footer(text=ctx.author, icon_url=ctx.author.avatar_url)
+            await ctx.send(embed=embed, mention_author=False)
+            return False
+        else:
+            return target
+    else:
+        return ctx.author

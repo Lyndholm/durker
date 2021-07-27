@@ -17,7 +17,7 @@ from ..db import db
 from ..utils.checks import is_any_channel
 from ..utils.constants import CONSOLE_CHANNEL, STATS_CHANNEL
 from ..utils.decorators import listen_for_guilds
-from ..utils.utils import (check_member_privacy, edit_user_reputation,
+from ..utils.utils import (get_context_target, edit_user_reputation,
                            find_n_term_of_arithmetic_progression,
                            load_commands_from_json)
 
@@ -324,13 +324,9 @@ class Leveling(Cog, name='Система уровней'):
     @guild_only()
     @logger.catch
     async def rank(self, ctx, *, member: Optional[Member]):
-        if member and member != ctx.author:
-            if (await check_member_privacy(self.bot.pg_pool, ctx, member)) is False:
-                return
-            else:
-                target = member
-        else:
-            target = ctx.author
+        target = await get_context_target(self.bot.pg_pool, ctx, member)
+        if not target:
+            return
 
         async with ctx.typing():
             rank_card = RankCardImage(target)

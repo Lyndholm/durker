@@ -108,7 +108,7 @@ class MessagesHandler(Cog, name='Messages handler'):
 
         rep = get_close_matches(message.clean_content.lower(), self.rep_filter, cutoff=0.75)
         if rep:
-            await self.invoke_command(message, 'rep')
+            await self.invoke_command(message, 'repinfo')
 
         question = get_close_matches(message.clean_content.lower(), self.question_filter, cutoff=0.85)
         if question:
