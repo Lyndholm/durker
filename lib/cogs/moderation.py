@@ -56,6 +56,7 @@ class Moderation(Cog, name='Модерация'):
     async def init_vars(self):
         self.moderation_channel = self.bot.get_channel(MODERATION_PUBLIC_CHANNEL)
         self.audit_channel = self.bot.get_channel(AUDIT_LOG_CHANNEL)
+        self.chasovie_channel = self.bot.get_channel(CHASOVIE_CHANNEL)
         self.mute_role = self.bot.guild.get_role(MUTE_ROLE_ID)
         self.read_role = self.bot.guild.get_role(READ_ROLE_ID)
         self.helper_role = self.bot.guild.get_role(CHASOVOY_ROLE_ID)
@@ -882,44 +883,54 @@ class Moderation(Cog, name='Модерация'):
                     await message.delete()
                     await message.channel.send(f'{message.author.mention}, побереги свои эмоции!', delete_after=15)
 
-    ### Anti-Scam Steam trade
-    @Cog.listener()
-    async def on_message(self, message):
-        url = re.compile(self.URL_REGEX).search(message.clean_content)
-        if url:
-            if 'steamcommunity.com' not in message.clean_content:
-                if 'partner=' in message.clean_content and 'token=' in message.clean_content:
-                    if isinstance(message.channel, DMChannel):
-                        await self.bot.owner.send(
-                            'Обнаружена фишинговая ссылка на фейковый трейд.'
-                        )
-                    elif isinstance(message.channel, TextChannel):
-                        if message.author.guild_permissions.administrator or self.helper_role in message.author.roles:
-                            return
-                        await message.delete()
-                        await message.author.add_roles(self.mute_role)
-                        embed = Embed(
-                            title='❗ Внимание, скам!',
-                            color=Color.red(),
-                            timestamp=datetime.utcnow(),
-                            description=f"Обнаружена фишинговая ссылка на фейковый трейд, сообщение удалено автоматически."
-                        ).set_thumbnail(url=message.author.avatar_url)
-                        fields = [
-                                ('Автор сообщения', message.author.name+'#'+message.author.discriminator, True),
-                                ('ID автора', message.author.id, True),
-                                ('Канал', message.channel.mention, True),
-                                ('Сообщение', message.clean_content, False)
-                        ]
-                        for name, value, inline in fields:
-                            embed.add_field(name=name, value=value, inline=inline)
-                        await self.bot.guild.get_channel(CHASOVIE_CHANNEL).send(embed=embed)
+    ### Anti-Scam logic
+    def scam_notifier(self, message: Message) -> Embed:
+        embed = Embed(
+            title='❗ Подозрительное сообщение.',
+            color=Color.red(),
+            timestamp=datetime.utcnow(),
+            description=f"Обнаружена фишинговая ссылка, сообщение удалено автоматически."
+        ).set_thumbnail(url=message.author.avatar_url)
+        fields = [
+                ('Автор сообщения', message.author, True),
+                ('ID автора', message.author.id, True),
+                ('Канал', message.channel.mention, True),
+                ('Сообщение', message.clean_content, False)
+        ]
+        for name, value, inline in fields:
+            embed.add_field(name=name, value=value, inline=inline)
+        return embed
 
+    async def delete_scam_message(self, message: Message) -> None:
+        await message.delete()
+        await message.author.add_roles(self.mute_role)
+        embed = self.scam_notifier(message)
+        await self.chasovie_channel.send(embed=embed)
+
+    @Cog.listener()
+    @listen_for_guilds()
+    async def on_message(self, message):
+        if message.author.guild_permissions.administrator or self.helper_role in message.author.roles:
+            return
+
+        if not (re.compile(self.URL_REGEX).search(message.clean_content)):
+            return
+
+        if 'steamcommunity.com' not in message.clean_content:
+            if 'partner=' and 'token=' in message.clean_content:
+                await self.delete_scam_message(message)
+                return
+
+        if 'gift' and 'steam' or 'nitro' in message.clean_content:
+            await self.delete_scam_message(message)
+            return
 
     @Cog.listener()
     async def on_ready(self):
         if not self.bot.ready:
             self.moderation_channel = self.bot.get_channel(MODERATION_PUBLIC_CHANNEL)
             self.audit_channel = self.bot.get_channel(AUDIT_LOG_CHANNEL)
+            self.chasovie_channel = self.bot.get_channel(CHASOVIE_CHANNEL)
             self.mute_role = self.bot.guild.get_role(MUTE_ROLE_ID)
             self.read_role = self.bot.guild.get_role(READ_ROLE_ID)
             self.helper_role = self.bot.guild.get_role(CHASOVOY_ROLE_ID)
