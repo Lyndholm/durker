@@ -94,7 +94,7 @@ class AchievementHandler(Cog, name='AchievementHandler'):
 
     @logger.catch
     async def old_handler(self, member, achievements, cog):
-        diff = datetime.utcnow() - joined_date(member)
+        diff = datetime.utcnow() - (await joined_date(self.bot.pg_pool, member))
         OLD_1 = 'AID_Old_1'
         OLD_2 = 'AID_Old_2'
         OLD_3 = 'AID_Old_3'

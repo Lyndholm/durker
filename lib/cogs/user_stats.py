@@ -71,7 +71,7 @@ class UserStats(Cog, name='Статистика'):
             for i in range(len(warns['user_warn_story']))
         )
         total_mute_time = mute_time + warn_time
-
+        joined = await joined_date(self.bot.pg_pool, target)
         embed = Embed(color=target.color)
         embed.set_author(name=target.display_name, icon_url=target.avatar_url)
         embed.set_thumbnail(url=target.avatar_url)
@@ -96,11 +96,11 @@ class UserStats(Cog, name='Статистика'):
                         inline=True)
 
         embed.add_field(name='📆 Дата захода на сервер:',
-                        value=joined_date(target).strftime('%d.%m.%Y %H:%M'),
+                        value=joined.strftime('%d.%m.%Y %H:%M'),
                         inline=True)
 
         embed.add_field(name='📆 Количество дней на сервере:',
-                        value=(datetime.now() - joined_date(target)).days,
+                        value=(datetime.now() - joined).days,
                         inline=True)
 
         if len(target.roles) > 1:
@@ -337,7 +337,10 @@ class UserStats(Cog, name='Статистика'):
         activity_role_2 = get(ctx.guild.roles, name='Олд')
         activity_role_3 = get(ctx.guild.roles, name='Капитан')
         activity_role_4 = get(ctx.guild.roles, name='Ветеран')
-        msg_counter = db.fetchone(['messages_count'], 'users_stats', 'user_id', target.id)[0]
+        joined = await joined_date(self.bot.pg_pool, target)
+        msg_counter = await self.bot.pg_pool.fetchval(
+            'SELECT messages_count FROM users_stats WHERE user_id = $1',  target.id)
+
         desc = f'Количество сообщений: **{msg_counter}**'
 
         embed = Embed(color=target.color)
@@ -346,22 +349,22 @@ class UserStats(Cog, name='Статистика'):
 
         if activity_role_1 not in target.roles:
             desc += f"\n\nДо роли {activity_role_1.mention} осталось **{750-msg_counter}** {russian_plural(750-msg_counter,['сообщение','сообщения','сообщений'])}"
-            if (old := (datetime.now() - joined_date(target)).days) <= 7:
+            if (old := (datetime.now() - joined).days) <= 7:
                 diff = 7 - old
                 desc += f" и **{diff+1}** {russian_plural(diff+1,['день','дня','дней'])} пребывания на сервере."
         elif activity_role_2 not in target.roles:
             desc += f"\n\nДо роли {activity_role_2.mention} осталось **{3_500-msg_counter}** {russian_plural(3_500-msg_counter,['сообщение','сообщения','сообщений'])}"
-            if (old := (datetime.now() - joined_date(target)).days) <= 30:
+            if (old := (datetime.now() - joined).days) <= 30:
                 diff = 30 - old
                 desc += f" и **{diff+1}** {russian_plural(diff+1,['день','дня','дней'])} пребывания на сервере."
         elif activity_role_3 not in target.roles:
             desc += f"\n\nДо роли {activity_role_3.mention} осталось **{10_000-msg_counter}** {russian_plural(10_000-msg_counter,['сообщение','сообщения','сообщений'])}"
-            if (old := (datetime.now() - joined_date(target)).days) <= 90:
+            if (old := (datetime.now() - joined).days) <= 90:
                 diff = 90 - old
                 desc += f" и **{diff+1}** {russian_plural(diff+1,['день','дня','дней'])} пребывания на сервере."
         elif activity_role_4 not in target.roles:
             desc += f"\n\nДо роли {activity_role_4.mention} осталось **{25_000-msg_counter}** {russian_plural(25_000-msg_counter,['сообщение','сообщения','сообщений'])}"
-            if (old := (datetime.now() - joined_date(target)).days) <= 180:
+            if (old := (datetime.now() - joined).days) <= 180:
                 diff = 180 - old
                 desc += f" и **{diff+1}** {russian_plural(diff+1,['день','дня','дней'])} пребывания на сервере."
 

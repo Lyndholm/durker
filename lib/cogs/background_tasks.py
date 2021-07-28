@@ -13,10 +13,9 @@ from jishaku.functools import executor_function
 from loguru import logger
 
 from ..db import db
-from ..utils.constants import (CAPTAIN_ROLE_ID, KAPITALIST_ROLE_ID,
-                               MAGNAT_ROLE_ID, MECENAT_ROLE_ID, OLD_ROLE_ID,
-                               VETERAN_ROLE_ID, WORKER_ROLE_ID)
-from ..utils.utils import edit_user_reputation, joined_date
+from ..utils.constants import (CAPTAIN_ROLE_ID, OLD_ROLE_ID, VETERAN_ROLE_ID,
+                               WORKER_ROLE_ID)
+from ..utils.utils import edit_user_reputation
 
 ITEM_SHOP_ENDPOINT = "https://fortnite-api.com/v2/shop/br/combined"
 ACTIVITIES = cycle([
