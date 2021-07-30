@@ -358,6 +358,22 @@
       "cooldown_per_second": 600,
       "cooldown_type": "member",
       "hidden": false
+    },
+    "fix": {
+      "name": "fix",
+      "aliases": [
+        "фикс"
+      ],
+      "brief": "Фикс музыкального плеера.",
+      "description": "Фикс музыкального плеера.",
+      "usage": "fix",
+      "help": "Может помочь в случае, если музыкальный плеер остановился и больше не воспроизводит музыку.\nРаботает только на сервере в канале <#546411393239220233>.\n\n**Кулдаун:** отсутствует.\n**Необходимый уровень:** 0",
+      "required_level": 0,
+      "has_cooldown": false,
+      "cooldown_rate": 0,
+      "cooldown_per_second": 0,
+      "cooldown_type": "None",
+      "hidden": true
     }
   },
   "contests": {

@@ -1,3 +1,4 @@
+import asyncio
 from datetime import datetime, timedelta
 from io import BytesIO
 from os import listdir
@@ -467,6 +468,23 @@ class Commands(Cog, name='Базовые команды'):
             '**1.** Изменение структуры базы данных бота.\n'
             '**2.** Появление новых правил засчитывания покупок.\n\n'
     )
+
+    @command(name=cmd["fix"]["name"], aliases=cmd["fix"]["aliases"],
+            brief=cmd["fix"]["brief"],
+            description=cmd["fix"]["description"],
+            usage=cmd["fix"]["usage"],
+            help=cmd["fix"]["help"],
+            hidden=cmd["fix"]["hidden"], enabled=True)
+    @is_channel(MUSIC_COMMANDS_CHANNEL)
+    @guild_only()
+    @logger.catch
+    async def fix_music_player(self, ctx):
+        if ctx.guild.me.voice is None:
+            return
+
+        await ctx.guild.me.edit(mute=True)
+        await asyncio.sleep(1)
+        await ctx.guild.me.edit(mute=False)
 
 def setup(bot):
     bot.add_cog(Commands(bot))
