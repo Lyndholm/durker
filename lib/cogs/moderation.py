@@ -6,10 +6,9 @@ from math import floor
 from random import choice, randint
 from typing import Optional
 
-import aiofiles
-from discord import (Color, DMChannel, Embed, Invite, Member, Message,
-                     PartialInviteGuild, TextChannel)
+from discord import Color, Embed, Invite, Member, Message, PartialInviteGuild
 from discord.errors import NotFound
+from discord.ext import tasks
 from discord.ext.commands import (BadArgument, Cog, Converter, Greedy,
                                   bot_has_permissions, check_any, command,
                                   guild_only, has_any_role, has_permissions)
@@ -49,6 +48,7 @@ class Moderation(Cog, name='Модерация'):
         self.DISCORD_INVITE_REGEX = r'discord(?:\.com|app\.com|\.gg)[\/invite\/]?(?:[a-zA-Z0-9\-]{2,32})'
         self.EMOJI_REGEX = r'<(?P<animated>a?):(?P<name>[a-zA-Z0-9_]{2,32}):(?P<id>[0-9]{18,22})>'
         self.UNICODE_EMOJI_REGEX = r'[\U00010000-\U0010ffff]'
+        self.ban_members_with_negative_reputaion.start()
         if self.bot.ready:
             bot.loop.create_task(self.init_vars())
 
@@ -924,6 +924,23 @@ class Moderation(Cog, name='Модерация'):
         if 'gift' and 'steam' or 'nitro' in message.clean_content:
             await self.delete_scam_message(message)
             return
+
+    ### Tasks
+    @tasks.loop(hours=6)
+    async def ban_members_with_negative_reputaion(self):
+        msg = await self.bot.guild.get_channel(604621910386671616).fetch_message(861627953736843294)
+        for member in self.bot.guild.members:
+            try:
+                rep = await self.bot.pg_pool.fetchval(
+                    'SELECT rep_rank FROM users_stats WHERE user_id = $1', member.id)
+                if rep <= -1000:
+                    await self.ban_members(msg, [member], 0, 'Критический уровень репутации (<= -1000).')
+            except:
+                continue
+
+    @ban_members_with_negative_reputaion.before_loop
+    async def before_ban_negative_members(self):
+        await self.bot.wait_until_ready()
 
     @Cog.listener()
     async def on_ready(self):
