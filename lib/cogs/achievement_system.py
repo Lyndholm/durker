@@ -76,14 +76,17 @@ class AchievementSystem(Cog, name='Система достижений'):
         for i in range(0, len(l), n):
             yield l[i:i + n]
 
-    def can_view_hidden_achievement(self, user_id: int, achievement: str) -> bool:
+    async def can_view_hidden_achievement(self, user_id: int, achievement: str) -> bool:
         if user_id == self.bot.owner.id:
             return True
-        return self.user_have_achievement(user_id, achievement)
+        return (await self.user_have_achievement(user_id, achievement))
 
-    def user_have_achievement(self, user_id: int, achievement: str) -> bool:
-        rec = db.fetchone(['achievements_list'], 'users_stats', 'user_id', user_id)
-        data = rec[0]['user_achievements_list']
+    async def user_have_achievement(self, user_id: int, achievement: str) -> bool:
+        data = await self.bot.pg_pool.fetchval(
+            'SELECT achievements_list FROM users_stats WHERE user_id = $1',
+            user_id)
+        data = ast.literal_eval(data)
+        data = data['user_achievements_list']
         user_achievements = [key for dic in data for key in dic.keys()]
         return achievement in user_achievements
 
@@ -95,7 +98,7 @@ class AchievementSystem(Cog, name='Система достижений'):
 
     @logger.catch
     async def give_achievement(self, admin_id: int, target_id: int, achievement: str):
-        if not self.user_have_achievement(target_id, achievement):
+        if not (await self.user_have_achievement(target_id, achievement)):
             rec = await self.bot.pg_pool.fetchval(
                 "SELECT id FROM achievements WHERE "
                 "to_tsvector(internal_id) @@ to_tsquery($1)",
@@ -121,7 +124,7 @@ class AchievementSystem(Cog, name='Система достижений'):
 
     @logger.catch
     async def take_achievement_away(self, target_id: int, achievement: str):
-        if self.user_have_achievement(target_id, achievement):
+        if (await self.user_have_achievement(target_id, achievement)):
             data = await self.bot.pg_pool.fetchval(
                 'SELECT achievements_list FROM users_stats WHERE user_id = $1',
                 target_id)
@@ -350,7 +353,7 @@ class AchievementSystem(Cog, name='Система достижений'):
                 if data[8] is False:
                     await paginate(ctx, self.achievement_helper(ctx, data))
                 else:
-                    if self.can_view_hidden_achievement(ctx.author.id, internal_id):
+                    if (await self.can_view_hidden_achievement(ctx.author.id, internal_id)):
                         await paginate(ctx, self.achievement_helper(ctx, data))
                     else:
                         await ctx.reply('🕵️ Достижение скрыто.', mention_author=False)
@@ -432,7 +435,7 @@ class AchievementSystem(Cog, name='Система достижений'):
                 "to_tsvector(internal_id) @@ to_tsquery(''%s'')",
                 achievement)
             if data is not None:
-                if not self.user_have_achievement(member.id, achievement):
+                if not (await self.user_have_achievement(member.id, achievement)):
                     await self.give_achievement(ctx.author.id, member.id, achievement)
                     await self.achievement_award_notification(achievement, member)
                     await ctx.reply(
@@ -477,7 +480,7 @@ class AchievementSystem(Cog, name='Система достижений'):
                 "to_tsvector(internal_id) @@ to_tsquery(''%s'')",
                 achievement)
             if data is not None:
-                if self.user_have_achievement(member.id, achievement):
+                if (await self.user_have_achievement(member.id, achievement)):
                     await self.take_achievement_away(member.id, achievement)
                     await ctx.reply(
                         f'✅ Достижение **{data[0]}** успешно отобрано у пользователя **{member.display_name}**.',
