@@ -1,3 +1,4 @@
+import ast
 import asyncio
 import json
 from datetime import datetime
@@ -87,22 +88,24 @@ class AchievementSystem(Cog, name='Система достижений'):
         return achievement in user_achievements
 
     async def edit_rep_for_achievement(self, target_id: int, achievement: str, action: str):
-        rep_boost = db.field(
+        rep_boost = await self.bot.pg_pool.fetchval(
                    'SELECT rep_boost FROM achievements WHERE internal_id '
-                   'LIKE %s', achievement
-                )
+                   'LIKE $1', achievement)
         await edit_user_reputation(self.bot.pg_pool, target_id, action, rep_boost)
 
     @logger.catch
-    def give_achievement(self, admin_id: int, target_id: int, achievement: str):
+    async def give_achievement(self, admin_id: int, target_id: int, achievement: str):
         if not self.user_have_achievement(target_id, achievement):
-            rec = db.record(
+            rec = await self.bot.pg_pool.fetchval(
                 "SELECT id FROM achievements WHERE "
-                "to_tsvector(internal_id) @@ to_tsquery(''%s'')",
+                "to_tsvector(internal_id) @@ to_tsquery($1)",
                 achievement)
             if rec is None:
                 return
-            data = db.fetchone(['achievements_list'], 'users_stats', 'user_id', target_id)[0]
+            data = await self.bot.pg_pool.fetchval(
+                'SELECT achievements_list FROM users_stats WHERE user_id = $1',
+                target_id)
+            data = ast.literal_eval(data)
             transaction = {
                 achievement: {
                     'id': len(data['user_achievements_list'])+1,
@@ -111,22 +114,25 @@ class AchievementSystem(Cog, name='Система достижений'):
                     }
                 }
             data['user_achievements_list'].append(transaction)
-            db.execute("UPDATE users_stats SET achievements_list = %s WHERE user_id = %s",
-                       json.dumps(data, ensure_ascii=False), target_id)
-            db.commit()
-            self.edit_rep_for_achievement(target_id, achievement, '+')
+            await self.bot.pg_pool.execute(
+                'UPDATE users_stats SET achievements_list = $1 WHERE user_id = $2',
+                json.dumps(data, ensure_ascii=False), target_id)
+            await self.edit_rep_for_achievement(target_id, achievement, '+')
 
     @logger.catch
-    def take_achievement_away(self, target_id: int, achievement: str):
+    async def take_achievement_away(self, target_id: int, achievement: str):
         if self.user_have_achievement(target_id, achievement):
-            data = db.fetchone(['achievements_list'], 'users_stats', 'user_id', target_id)[0]
+            data = await self.bot.pg_pool.fetchval(
+                'SELECT achievements_list FROM users_stats WHERE user_id = $1',
+                target_id)
+            data = ast.literal_eval(data)
             temp = data['user_achievements_list']
             new_list = [a for a in temp if achievement not in list(a.keys())]
             data['user_achievements_list'] = new_list
-            db.execute("UPDATE users_stats SET achievements_list = %s WHERE user_id = %s",
-                       json.dumps(data, ensure_ascii=False), target_id)
-            db.commit()
-            self.edit_rep_for_achievement(target_id, achievement, '-')
+            await self.bot.pg_pool.execute(
+                'UPDATE users_stats SET achievements_list = $1 WHERE user_id = $2',
+                json.dumps(data, ensure_ascii=False), target_id)
+            await self.edit_rep_for_achievement(target_id, achievement, '-')
 
     @logger.catch
     def advanced_achievements_memu(self, ctx, data):
@@ -427,7 +433,7 @@ class AchievementSystem(Cog, name='Система достижений'):
                 achievement)
             if data is not None:
                 if not self.user_have_achievement(member.id, achievement):
-                    self.give_achievement(ctx.author.id, member.id, achievement)
+                    await self.give_achievement(ctx.author.id, member.id, achievement)
                     await self.achievement_award_notification(achievement, member)
                     await ctx.reply(
                         f'✅ Достижение **{data[0]}** успешно выдано пользователю **{member.display_name}**.',
@@ -472,7 +478,7 @@ class AchievementSystem(Cog, name='Система достижений'):
                 achievement)
             if data is not None:
                 if self.user_have_achievement(member.id, achievement):
-                    self.take_achievement_away(member.id, achievement)
+                    await self.take_achievement_away(member.id, achievement)
                     await ctx.reply(
                         f'✅ Достижение **{data[0]}** успешно отобрано у пользователя **{member.display_name}**.',
                         mention_author=False
