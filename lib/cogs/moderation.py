@@ -921,8 +921,9 @@ class Moderation(Cog, name='Модерация'):
                 await self.delete_scam_message(message)
                 return
 
-        if 'discord.com' not in message.clean_content:
-            if 'gift' or 'nitro' in message.clean_content:
+        if 'discord.com' and 'steamcommunity.com' not in message.clean_content:
+            words = ('gift', 'nitro', 'steam')
+            if any(word in message.clean_content for word in words):
                 await self.delete_scam_message(message)
                 return
 
