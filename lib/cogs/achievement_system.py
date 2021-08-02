@@ -86,12 +86,12 @@ class AchievementSystem(Cog, name='Система достижений'):
         user_achievements = [key for dic in data for key in dic.keys()]
         return achievement in user_achievements
 
-    def edit_rep_for_achievement(self, target_id: int, achievement: str, action: str):
+    async def edit_rep_for_achievement(self, target_id: int, achievement: str, action: str):
         rep_boost = db.field(
                    'SELECT rep_boost FROM achievements WHERE internal_id '
                    'LIKE %s', achievement
                 )
-        edit_user_reputation(target_id, action, rep_boost)
+        await edit_user_reputation(self.bot.pg_pool, target_id, action, rep_boost)
 
     @logger.catch
     def give_achievement(self, admin_id: int, target_id: int, achievement: str):

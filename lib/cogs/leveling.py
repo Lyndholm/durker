@@ -289,7 +289,7 @@ class Leveling(Cog, name='Система уровней'):
         db.commit()
 
         rep_reward = find_n_term_of_arithmetic_progression(10, 10, level+1)
-        edit_user_reputation(message.author.id, '+', rep_reward)
+        await edit_user_reputation(self.bot.pg_pool, message.author.id, '+', rep_reward)
 
         embed = Embed(
             title='🎉 GG 🎉',

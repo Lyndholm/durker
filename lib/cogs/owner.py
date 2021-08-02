@@ -496,7 +496,7 @@ class Owner(Cog, name='Команды разработчика'):
     @is_owner()
     @logger.catch
     async def set_reputation_command(self, ctx, user_id: int, action: str, value: int):
-        edit_user_reputation(user_id, action, value)
+        await edit_user_reputation(self.bot.pg_pool, user_id, action, value)
         await ctx.reply(embed=Embed(
             title='Репутация обновлена',
             color=Color.green(),

@@ -152,13 +152,13 @@ class PurchasesHandler(Cog, name='Покупки и не только'):
             lpd = purchases[-1]['date']
             if (datetime.now() - datetime.strptime(lpd, '%d.%m.%Y %H:%M:%S')).days < 90:
                 await member.add_roles(self.mecenat)
-                edit_user_reputation(member.id, '+', 100)
+                await edit_user_reputation(self.bot.pg_pool, member.id, '+', 100)
         if self.kapitalist not in member.roles and vbucks_count >= 10_000:
             await member.add_roles(self.kapitalist)
-            edit_user_reputation(member.id, '+', 1000)
+            await edit_user_reputation(self.bot.pg_pool, member.id, '+', 1000)
         if self.magnat not in member.roles and vbucks_count >= 25_000:
             await member.add_roles(self.magnat)
-            edit_user_reputation(member.id, '+', 2500)
+            await edit_user_reputation(self.bot.pg_pool, member.id, '+', 2500)
 
     @command(name=cmd["addvbucks"]["name"], aliases=cmd["addvbucks"]["aliases"],
             brief=cmd["addvbucks"]["brief"],

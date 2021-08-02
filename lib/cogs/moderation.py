@@ -268,7 +268,7 @@ class Moderation(Cog, name='Модерация'):
                         ("Срок мута", "30 минут", True)
                     )
                     _extend_mute_story(message, target, 1800, reason)
-                    edit_user_reputation(target.id, '-', 100)
+                    await edit_user_reputation(self.bot.pg_pool, target.id, '-', 100)
                     await self.moderation_channel.send(embed=embed)
 
                 elif mute_type == "isolator":
@@ -279,7 +279,7 @@ class Moderation(Cog, name='Модерация'):
                         ("Срок мута", "3 часа", True)
                     )
                     _extend_mute_story(message, target, 10800, reason)
-                    edit_user_reputation(target.id, '-', 250)
+                    await edit_user_reputation(self.bot.pg_pool, target.id, '-', 250)
                     await self.moderation_channel.send(embed=embed)
 
                 elif mute_type == "dungeon":
@@ -290,7 +290,7 @@ class Moderation(Cog, name='Модерация'):
                         ("Срок мута", "12 часов", True)
                     )
                     _extend_mute_story(message, target, 43200, reason)
-                    edit_user_reputation(target.id, '-', 500)
+                    await edit_user_reputation(self.bot.pg_pool, target.id, '-', 500)
                     await self.moderation_channel.send(embed=embed)
 
                 elif mute_type == "gulag":
@@ -301,7 +301,7 @@ class Moderation(Cog, name='Модерация'):
                         ("Срок мута", "24 часа", True)
                     )
                     _extend_mute_story(message, target, 86400, reason)
-                    edit_user_reputation(target.id, '-', 1000)
+                    await edit_user_reputation(self.bot.pg_pool, target.id, '-', 1000)
                     await self.moderation_channel.send(embed=embed)
 
                 else:
@@ -310,7 +310,7 @@ class Moderation(Cog, name='Модерация'):
                             ("Срок мута", f"{time} {russian_plural(int(time),['час','часа','часов'])}" if time and time.isdigit() else "Бессрочно", True)
                     )
                     _extend_mute_story(message, target, int(time) * 3600 if time and time.isdigit() else 0, reason)
-                    edit_user_reputation(target.id, '-', floor(5 * (int(time) ^ 2) + 50 * int(time) + 100) if time and time.isdigit() else 0)
+                    await edit_user_reputation(self.bot.pg_pool, target.id, '-', floor(5 * (int(time) ^ 2) + 50 * int(time) + 100) if time and time.isdigit() else 0)
                     await self.moderation_channel.send(embed=embed)
 
                 db.insert("mutes", {"user_id": target.id,
@@ -526,13 +526,13 @@ class Moderation(Cog, name='Модерация'):
                 return
 
             if len(warns) == 1:
-                edit_user_reputation(target.id, '-', 1000)
+                await edit_user_reputation(self.bot.pg_pool, target.id, '-', 1000)
 
             if len(warns) == 2:
-                edit_user_reputation(target.id, '-', 2500)
+                await edit_user_reputation(self.bot.pg_pool, target.id, '-', 2500)
 
             if len(warns) == 3:
-                edit_user_reputation(target.id, '-', 5000)
+                await edit_user_reputation(self.bot.pg_pool, target.id, '-', 5000)
 
                 if target.id not in self.bot.banlist:
                     self.bot.banlist.append(target.id)
@@ -670,7 +670,7 @@ class Moderation(Cog, name='Модерация'):
             for name, value, inline in fields:
                 embed.add_field(name=name, value=value, inline=inline)
 
-            edit_user_reputation(target.id, '-', 100)
+            await edit_user_reputation(self.bot.pg_pool, target.id, '-', 100)
             await self.moderation_channel.send(embed=embed)
 
     @command(name=cmd["readrole"]["name"], aliases=cmd["readrole"]["aliases"],
@@ -838,7 +838,7 @@ class Moderation(Cog, name='Модерация'):
 
         for target in targets:
             lost_rep = randint(50, 150)
-            edit_user_reputation(target.id, '-', lost_rep)
+            await edit_user_reputation(self.bot.pg_pool, target.id, '-', lost_rep)
             await self.hat_replies(ctx, target, lost_rep)
 
 

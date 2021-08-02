@@ -67,7 +67,7 @@ class Profanity(Cog, name='Мат-фильтр'):
         self.increase_user_profanity_counter(member.id)
         profanity_counter = self.fetch_user_profanity_counter(member.id)
         minus_rep = find_n_term_of_arithmetic_progression(5, 3, profanity_counter)
-        edit_user_reputation(member.id, '-', minus_rep)
+        await edit_user_reputation(self.bot.pg_pool, member.id, '-', minus_rep)
         await self.reply_profanity(channel, member, minus_rep)
 
     @Cog.listener()

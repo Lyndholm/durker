@@ -153,19 +153,18 @@ def find_n_term_of_arithmetic_progression(a1: int, d: int, n: int) -> int:
     return (a1 + (n-1)*d)
 
 
-def edit_user_reputation(user_id: int = None, action: str = None, value: int = None):
+async def edit_user_reputation(pool: asyncpg.Pool, user_id: int = None, action: str = None, value: int = None):
     if action == '+':
-        db.execute("UPDATE users_stats SET rep_rank = rep_rank + %s WHERE user_id = %s",
-                   value, user_id)
+        await pool.execute("UPDATE users_stats SET rep_rank = rep_rank + $1 WHERE user_id = $2",
+                           value, user_id)
     elif action == '-':
-        db.execute("UPDATE users_stats SET rep_rank = rep_rank - %s WHERE user_id = %s",
-                   value, user_id)
-        db.execute("UPDATE users_stats SET lost_reputation = lost_reputation + %s WHERE user_id = %s",
-                   value, user_id)
+        await pool.execute("UPDATE users_stats SET rep_rank = rep_rank - $1 WHERE user_id = $2",
+                           value, user_id)
+        await pool.execute("UPDATE users_stats SET lost_reputation = lost_reputation + $1 WHERE user_id = $2",
+                           value, user_id)
     elif action == '=':
-        db.execute("UPDATE users_stats SET rep_rank = %s WHERE user_id = %s",
-                   value, user_id)
-    db.commit()
+        await pool.execute("UPDATE users_stats SET rep_rank = $1 WHERE user_id = $2",
+                           value, user_id)
 
 
 def edit_user_messages_count(user_id: int = None, action: str = None, value: int = None):
