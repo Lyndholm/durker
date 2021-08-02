@@ -848,9 +848,9 @@ class Moderation(Cog, name='Модерация'):
 
         return True if invites else False
 
-    @Cog.listener()
+    @Cog.listener('on_message')
     @listen_for_guilds()
-    async def on_message(self, message):
+    async def moderation_on_message_event(self, message):
         ### Find discord invites in message content
         if self.find_discord_invites(message):
             regex = re.compile(self.DISCORD_INVITE_REGEX)
@@ -907,9 +907,9 @@ class Moderation(Cog, name='Модерация'):
         embed = self.scam_notifier(message)
         await self.chasovie_channel.send(embed=embed)
 
-    @Cog.listener()
+    @Cog.listener('on_message')
     @listen_for_guilds()
-    async def on_message(self, message):
+    async def anti_scam_on_message_event(self, message):
         if message.author.guild_permissions.administrator or self.helper_role in message.author.roles:
             return
 
@@ -921,9 +921,10 @@ class Moderation(Cog, name='Модерация'):
                 await self.delete_scam_message(message)
                 return
 
-        if 'gift' and 'steam' or 'nitro' in message.clean_content:
-            await self.delete_scam_message(message)
-            return
+        if 'discord.com' not in message.clean_content:
+            if 'gift' or 'nitro' in message.clean_content:
+                await self.delete_scam_message(message)
+                return
 
     ### Tasks
     @tasks.loop(hours=6)
