@@ -128,7 +128,7 @@ class PurchasesHandler(Cog, name='Покупки и не только'):
     async def before_check_mecenat_role(self):
         await self.bot.wait_until_ready()
 
-    @tasks.loop(hours=1.0)
+    @tasks.loop(hours=1.5)
     @logger.catch
     async def check_support_role_task(self):
         for member in self.bot.guild.members:

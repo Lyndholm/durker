@@ -21,7 +21,7 @@ class AchievementHandler(Cog, name='AchievementHandler'):
         if not self.bot.ready:
            self.bot.cogs_ready.ready_up("achievement_handler")
 
-    @tasks.loop(hours=6.0)
+    @tasks.loop(hours=1.0)
     @logger.catch
     async def achievements_manager(self):
         AS_COG = self.bot.get_cog('Система достижений')
@@ -35,7 +35,7 @@ class AchievementHandler(Cog, name='AchievementHandler'):
             await self.handle_achievements(member, user_achievements, AS_COG)
 
     @achievements_manager.before_loop
-    async def before_handle(self):
+    async def wait_before_handle_achievements(self):
         await self.bot.wait_until_ready()
 
     def get_user_achievements(self, user: Member) -> List[str]:
