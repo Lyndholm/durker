@@ -12,7 +12,6 @@ from discord.ext.commands import (Cog, check_any, command, dm_only, guild_only,
 from discord.ext.menus import ListPageSource, MenuPages
 from loguru import logger
 
-from ..db import db
 from ..utils.checks import is_channel, required_level
 from ..utils.constants import STATS_CHANNEL
 from ..utils.lazy_paginator import paginate
@@ -246,9 +245,9 @@ class AchievementSystem(Cog, name='Система достижений'):
 
     @logger.catch
     async def achievement_award_notification(self, achievement: str, target: Member):
-        data = db.record(
-            "SELECT * FROM achievements WHERE "
-            "to_tsvector(internal_id) @@ to_tsquery(''%s'')",
+        data = await self.bot.pg_pool.fetchrow(
+            'SELECT * FROM achievements WHERE '
+            'to_tsvector(internal_id) @@ to_tsquery($1)',
             achievement)
         embed = Embed(
             title='Открыто новое достижение!',
@@ -304,7 +303,8 @@ class AchievementSystem(Cog, name='Система достижений'):
     @required_level(cmd["achievements"]["required_level"])
     @logger.catch
     async def achievements_list_command(self, ctx):
-        data = db.records('SELECT * FROM achievements ORDER BY id')
+        data = await self.bot.pg_pool.fetch(
+            'SELECT * FROM achievements ORDER BY id')
         if ctx.author.id != self.bot.owner.id:
             data = [i for i in data if i[8] is False]
         if not data:
@@ -340,16 +340,15 @@ class AchievementSystem(Cog, name='Система достижений'):
     @logger.catch
     async def get_achievement_command(self, ctx, *, achievement: Optional[str]):
         if achievement:
-            internal_id = db.field(
-                "SELECT internal_id FROM achievements WHERE "
-                "to_tsvector(name) @@ to_tsquery(''%s'')",
+            internal_id = await self.bot.pg_pool.fetchval(
+                'SELECT internal_id FROM achievements WHERE '
+                'to_tsvector(name) @@ plainto_tsquery($1)',
                 achievement)
 
             if internal_id is not None:
-                data = db.records(
+                data = await self.bot.pg_pool.fetchrow(
                    'SELECT * FROM achievements WHERE internal_id '
-                   'LIKE %s', internal_id
-                )[0]
+                   'LIKE $1', internal_id)
                 if data[8] is False:
                     await paginate(ctx, self.achievement_helper(ctx, data))
                 else:
@@ -373,16 +372,18 @@ class AchievementSystem(Cog, name='Система достижений'):
     @required_level(cmd["inventory"]["required_level"])
     @logger.catch
     async def inventory_command(self, ctx):
-        rec = db.fetchone(['achievements_list'], 'users_stats', 'user_id', ctx.author.id)
-        user_data = rec[0]['user_achievements_list']
+        rec = await self.bot.pg_pool.fetchval(
+            'SELECT achievements_list FROM users_stats WHERE user_id = $1',
+            ctx.author.id)
+        rec = ast.literal_eval(rec)
+        user_data = rec['user_achievements_list']
         if user_data:
             user_achievements = tuple(
                 [key for dic in user_data for key in dic.keys()]
             )
-            achievements_data = db.records(
-                'SELECT * FROM achievements WHERE internal_id IN %s ORDER BY id',
-                user_achievements
-            )
+            achievements_data = await self.bot.pg_pool.fetch(
+                'SELECT * FROM achievements WHERE internal_id = any($1::text[]) ORDER BY id',
+                user_achievements)
             achievements_data = [list(l) for l in achievements_data]
 
             for dic in user_data:
@@ -430,9 +431,9 @@ class AchievementSystem(Cog, name='Система достижений'):
             )
             return
         if achievement:
-            data = db.record(
-                "SELECT name, internal_id FROM achievements WHERE "
-                "to_tsvector(internal_id) @@ to_tsquery(''%s'')",
+            data = await self.bot.pg_pool.fetchrow(
+                'SELECT name, internal_id FROM achievements WHERE '
+                'to_tsvector(internal_id) @@ to_tsquery($1)',
                 achievement)
             if data is not None:
                 if not (await self.user_have_achievement(member.id, achievement)):
@@ -475,10 +476,11 @@ class AchievementSystem(Cog, name='Система достижений'):
             )
             return
         if achievement:
-            data = db.record(
-                "SELECT name, internal_id FROM achievements WHERE "
-                "to_tsvector(internal_id) @@ to_tsquery(''%s'')",
-                achievement)
+            data = await self.bot.pg_pool.fetchrow(
+                'SELECT name, internal_id FROM achievements WHERE '
+                'to_tsvector(internal_id) @@ to_tsquery($1)',
+                achievement
+            )
             if data is not None:
                 if (await self.user_have_achievement(member.id, achievement)):
                     await self.take_achievement_away(member.id, achievement)
@@ -542,9 +544,9 @@ class AchievementSystem(Cog, name='Система достижений'):
                         continue
 
                     data = {'user_achievements_list': []}
-                    db.execute("UPDATE users_stats SET achievements_list = %s WHERE user_id = %s",
-                            json.dumps(data, ensure_ascii=False), member.id)
-                    db.commit()
+                    await self.bot.pg_pool.execute(
+                        'UPDATE users_stats SET achievements_list = $1 WHERE user_id = $2',
+                        json.dumps(data, ensure_ascii=False), member.id)
                 embed = Embed(
                         title='✅ Успешно!',
                         color=Color.green(),
@@ -558,9 +560,9 @@ class AchievementSystem(Cog, name='Система достижений'):
                 return
 
         data = {'user_achievements_list': []}
-        db.execute("UPDATE users_stats SET achievements_list = %s WHERE user_id = %s",
-                json.dumps(data, ensure_ascii=False), user_id)
-        db.commit()
+        await self.bot.pg_pool.execute(
+            'UPDATE users_stats SET achievements_list = $1 WHERE user_id = $2',
+            json.dumps(data, ensure_ascii=False), user_id)
         embed = Embed(
                 title='✅ Успешно!',
                 color=Color.green(),
