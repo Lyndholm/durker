@@ -67,4 +67,4 @@ HIDEOUT_GUILD_ID = 872455569804509218
 
 OWNER_ID = 375722626636578816
 
-PLACEHOLDER = "https://cdn.discordapp.com/attachments/774698479981297664/774700936958312468/placeholder.png"
+PLACEHOLDER = "https://cdn.durker.fun/misc/placeholder.png"
