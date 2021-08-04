@@ -518,10 +518,16 @@ class AchievementSystem(Cog, name='Система достижений'):
         if user_id is None:
             return await ctx.message.add_reaction('🟥')
 
-        data = {'user_achievements_list': []}
-        await self.bot.pg_pool.execute(
-            'UPDATE users_stats SET achievements_list = $1 WHERE user_id = $2',
-            json.dumps(data, ensure_ascii=False), user_id)
+        data = await self.bot.pg_pool.fetchval(
+            'SELECT achievements_list FROM users_stats WHERE user_id = $1',
+            user_id)
+        data = ast.literal_eval(data)
+        data = data['user_achievements_list']
+        user_achievements = [key for dic in data for key in dic.keys()]
+
+        for achievement in user_achievements:
+            await self.take_achievement_away(user_id, achievement)
+
         self.achievements_banlist.append(user_id)
         embed = Embed(
                 title='✅ Успешно!',
