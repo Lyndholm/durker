@@ -186,7 +186,7 @@ class Durka(Cog, name='Родина-Дурка'):
     @cooldown(cmd["durka"]["cooldown_rate"], cmd["durka"]["cooldown_per_second"], BucketType.member)
     @logger.catch
     async def durka_command(self, ctx, targets: Greedy[Member]):
-        durka_ban_list = (ctx.guild.me, ctx.guild.get_member(375722626636578816))
+        durka_ban_list = (self.bot.owner, ctx.guild.me)
 
         if not targets:
             await ctx.send(f"Здравствуйте, **{ctx.author.display_name}**! Благодарим за звонок в психиатрическую больницу.\n"
@@ -219,7 +219,7 @@ class Durka(Cog, name='Родина-Дурка'):
                 db.commit()
 
         if 50 <= randint(1, 100) <= 55:
-            if ctx.author != ctx.guild.get_member(375722626636578816):
+            if ctx.author != self.bot.owner:
                 await ctx.channel.send(f'Шизоид {self.durka_emoji}{ctx.message.author.mention}{self.durka_emoji}, ты как из палаты выбрался?. Вернись обратно немедленно.\nСанитары уже в пути.')
             else:
                 await self.durka_replies(ctx, targets)

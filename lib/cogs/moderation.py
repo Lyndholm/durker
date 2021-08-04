@@ -761,8 +761,6 @@ class Moderation(Cog, name='Модерация'):
 
         users = {}
 
-        await ctx.message.delete()
-
         if not targets:
             async for message in ctx.channel.history(limit=limit):
                 if message.author not in users:
@@ -771,23 +769,20 @@ class Moderation(Cog, name='Модерация'):
             async for message in ctx.channel.history(limit=limit):
                 users[message.author.id] += 1
 
-            deleted = await ctx.channel.purge(limit=limit)
+            deleted = await ctx.channel.purge(limit=limit+1)
             if ctx.channel.id in self.bot.channels_with_message_counting:
                 decrease_message_counter(users)
 
             embed = Embed(
-                title="Выполнено!",
+                title='purge command invoked',
                 color=Color.random(),
-                description=f"Удалено сообщений: {len(deleted)}\nУдаление выполнено пользователем {ctx.author.mention}"
-            )
-            await ctx.send(embed=embed, delete_after=10)
-
-            embed.title = "purge command invoked"
-            embed.description = f"Удалено сообщений: {len(deleted)}\nУдаление выполнено пользователем: {ctx.author.mention}\nКанал: {ctx.channel.mention}"
-            await self.bot.get_user(375722626636578816).send(embed=embed)
+                description=f'Удалено сообщений: {len(deleted)}\n' \
+                            f'Удаление выполнено пользователем: {ctx.author.mention}\n' \
+                            f'Канал: {ctx.channel.mention}')
+            await self.bot.owner.send(embed=embed)
 
         else:
-            deleted = await ctx.channel.purge(limit=limit, check=_check)
+            deleted = await ctx.channel.purge(limit=limit+1, check=_check)
             msg_author_ids = [message.author.id for message in deleted]
             for entry in msg_author_ids:
                 users[entry] = msg_author_ids.count(entry)
@@ -796,15 +791,12 @@ class Moderation(Cog, name='Модерация'):
                 decrease_message_counter(users)
 
             embed = Embed(
-                title="Выполнено!",
+                title='purge (with targets) command invoked',
                 color=Color.random(),
-                description=f"Удалено сообщений: {len(deleted)}\nУдаление выполнено пользователем {ctx.message.author.mention}"
-            )
-            await ctx.send(embed=embed, delete_after=10)
-
-            embed.title = "purge (with targets) command invoked "
-            embed.description = f"Удалено сообщений: {len(deleted)}\nУдаление выполнено пользователем: {ctx.author.mention}\nКанал: {ctx.channel.mention}"
-            await self.bot.get_user(375722626636578816).send(embed=embed)
+                description=f'Удалено сообщений: {len(deleted)}\n' \
+                            f'Удаление выполнено пользователем: {ctx.author.mention}\n' \
+                            f'Канал: {ctx.channel.mention}')
+            await self.bot.owner.send(embed=embed)
 
 
     async def hat_replies(self, ctx, target, lost_rep):

@@ -58,7 +58,7 @@ class Help(Cog, name='Help меню'):
             if isinstance(thing, Command):
                 if not thing.hidden:
                     await paginate(ctx, self.command_helper(ctx, thing))
-                elif thing.hidden and ctx.author.id == 375722626636578816:
+                elif thing.hidden and ctx.author.id == self.bot.owner.id:
                     await paginate(ctx, self.command_helper(ctx, thing))
                 else:
                     embed = Embed(
@@ -100,7 +100,7 @@ class Help(Cog, name='Help меню'):
                     cogs.remove(cog)
 
         for cog in cogs:
-            if ctx.author.id == 375722626636578816:
+            if ctx.author.id == self.bot.owner.id:
                 cmds = [i for i in ctx.bot.get_cog(cog).get_commands()]
             else:
                 cmds = [i for i in ctx.bot.get_cog(cog).get_commands() if not i.hidden and i.enabled]
@@ -128,7 +128,7 @@ class Help(Cog, name='Help меню'):
     def cog_helper(self, ctx, cog):
         name = cog.qualified_name or cog.__class__.__name__
         commands = []
-        if ctx.author.id == 375722626636578816:
+        if ctx.author.id == self.bot.owner.id:
             cmds = [i for i in cog.get_commands()]
         else:
             cmds = [i for i in cog.get_commands() if not i.hidden and i.enabled]
