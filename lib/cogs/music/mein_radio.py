@@ -121,7 +121,7 @@ class Player(wavelink.Player):
 
         embed = discord.Embed(title=f'Радио FNFUN | {channel.name}', colour=0x00ff00)
         embed.description = f'**Сейчас играет:**\n```ini\n{track.author} — {track.title}\n```'
-        embed.set_thumbnail(url=track.thumb if track.thumb else "https://cdn.discordapp.com/attachments/774698479981297664/813684421370314772/radio_placeholder.jpg")
+        embed.set_thumbnail(url=track.thumb if track.thumb else "https://cdn.durker.fun/misc/radio_placeholder.jpg")
 
         try:
             embed.add_field(name='Продолжительность', value=str(datetime.timedelta(milliseconds=int(track.length))))
@@ -256,7 +256,7 @@ class MeinRadio(commands.Cog, wavelink.WavelinkMixin, name='Mein Radio'):
 
         tracks = await self.bot.wavelink.get_tracks("https://www.youtube.com/playlist?list=PLfMqck7-0P5LXjz7wcNgX2yMus0sfoFET")
         if not tracks:
-            return await self.bot.get_user(self.bot.owner_ids[0]).send(f"{datetime.datetime.now()} | Не удалось загрузить плейлист `Mein Radio`.")
+            return await self.bot.logs_channel.send(f"{datetime.datetime.now()} | Не удалось загрузить плейлист `Mein Radio`.")
 
         if isinstance(tracks, wavelink.TrackPlaylist):
             for track in tracks.tracks:
@@ -677,7 +677,10 @@ class MeinRadio(commands.Cog, wavelink.WavelinkMixin, name='Mein Radio'):
                 description = f"**Заявка на удаление трека из плейлиста.**\n\n**Номер заявки:** {rec[0]}\n"
                             f"**Трек:** {song}\n**Причина удаления:** {reason}\n**Заявка сформирована:** {date.strftime('%d.%m.%Y %H:%M:%S')}")
         for i in [375722626636578816, 195637386221191170]:
-            await self.bot.get_user(i).send(embed=embed)
+            try:
+                await self.bot.get_user(i).send(embed=embed)
+            except:
+                continue
 
 
 def setup(bot: commands.Bot):

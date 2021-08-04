@@ -1,3 +1,4 @@
+import ast
 import asyncio
 import json
 from datetime import datetime
@@ -11,7 +12,6 @@ from discord.ext.commands import (Cog, check_any, command, dm_only, guild_only,
 from discord.ext.menus import ListPageSource, MenuPages
 from loguru import logger
 
-from ..db import db
 from ..utils.checks import is_channel, required_level
 from ..utils.constants import STATS_CHANNEL
 from ..utils.lazy_paginator import paginate
@@ -69,40 +69,46 @@ class AchievementMenu(ListPageSource):
 class AchievementSystem(Cog, name='Система достижений'):
     def __init__(self, bot):
         self.bot = bot
+        self.achievements_banlist = []
 
     def chuncks(self, l, n):
         """Yield successive n-sized chunks from l."""
         for i in range(0, len(l), n):
             yield l[i:i + n]
 
-    def can_view_hidden_achievement(self, user_id: int, achievement: str) -> bool:
-        if user_id == self.bot.owner_ids[0]:
+    async def can_view_hidden_achievement(self, user_id: int, achievement: str) -> bool:
+        if user_id == self.bot.owner.id:
             return True
-        return self.user_have_achievement(user_id, achievement)
+        return (await self.user_have_achievement(user_id, achievement))
 
-    def user_have_achievement(self, user_id: int, achievement: str) -> bool:
-        rec = db.fetchone(['achievements_list'], 'users_stats', 'user_id', user_id)
-        data = rec[0]['user_achievements_list']
+    async def user_have_achievement(self, user_id: int, achievement: str) -> bool:
+        data = await self.bot.pg_pool.fetchval(
+            'SELECT achievements_list FROM users_stats WHERE user_id = $1',
+            user_id)
+        data = ast.literal_eval(data)
+        data = data['user_achievements_list']
         user_achievements = [key for dic in data for key in dic.keys()]
         return achievement in user_achievements
 
-    def edit_rep_for_achievement(self, target_id: int, achievement: str, action: str):
-        rep_boost = db.field(
+    async def edit_rep_for_achievement(self, target_id: int, achievement: str, action: str):
+        rep_boost = await self.bot.pg_pool.fetchval(
                    'SELECT rep_boost FROM achievements WHERE internal_id '
-                   'LIKE %s', achievement
-                )
-        edit_user_reputation(target_id, action, rep_boost)
+                   'LIKE $1', achievement)
+        await edit_user_reputation(self.bot.pg_pool, target_id, action, rep_boost)
 
     @logger.catch
-    def give_achievement(self, admin_id: int, target_id: int, achievement: str):
-        if not self.user_have_achievement(target_id, achievement):
-            rec = db.record(
+    async def give_achievement(self, admin_id: int, target_id: int, achievement: str):
+        if not (await self.user_have_achievement(target_id, achievement)):
+            rec = await self.bot.pg_pool.fetchval(
                 "SELECT id FROM achievements WHERE "
-                "to_tsvector(internal_id) @@ to_tsquery(''%s'')",
+                "to_tsvector(internal_id) @@ to_tsquery($1)",
                 achievement)
             if rec is None:
                 return
-            data = db.fetchone(['achievements_list'], 'users_stats', 'user_id', target_id)[0]
+            data = await self.bot.pg_pool.fetchval(
+                'SELECT achievements_list FROM users_stats WHERE user_id = $1',
+                target_id)
+            data = ast.literal_eval(data)
             transaction = {
                 achievement: {
                     'id': len(data['user_achievements_list'])+1,
@@ -111,22 +117,25 @@ class AchievementSystem(Cog, name='Система достижений'):
                     }
                 }
             data['user_achievements_list'].append(transaction)
-            db.execute("UPDATE users_stats SET achievements_list = %s WHERE user_id = %s",
-                       json.dumps(data, ensure_ascii=False), target_id)
-            db.commit()
-            self.edit_rep_for_achievement(target_id, achievement, '+')
+            await self.bot.pg_pool.execute(
+                'UPDATE users_stats SET achievements_list = $1 WHERE user_id = $2',
+                json.dumps(data, ensure_ascii=False), target_id)
+            await self.edit_rep_for_achievement(target_id, achievement, '+')
 
     @logger.catch
-    def take_achievement_away(self, target_id: int, achievement: str):
-        if self.user_have_achievement(target_id, achievement):
-            data = db.fetchone(['achievements_list'], 'users_stats', 'user_id', target_id)[0]
+    async def take_achievement_away(self, target_id: int, achievement: str):
+        if (await self.user_have_achievement(target_id, achievement)):
+            data = await self.bot.pg_pool.fetchval(
+                'SELECT achievements_list FROM users_stats WHERE user_id = $1',
+                target_id)
+            data = ast.literal_eval(data)
             temp = data['user_achievements_list']
             new_list = [a for a in temp if achievement not in list(a.keys())]
             data['user_achievements_list'] = new_list
-            db.execute("UPDATE users_stats SET achievements_list = %s WHERE user_id = %s",
-                       json.dumps(data, ensure_ascii=False), target_id)
-            db.commit()
-            self.edit_rep_for_achievement(target_id, achievement, '-')
+            await self.bot.pg_pool.execute(
+                'UPDATE users_stats SET achievements_list = $1 WHERE user_id = $2',
+                json.dumps(data, ensure_ascii=False), target_id)
+            await self.edit_rep_for_achievement(target_id, achievement, '-')
 
     @logger.catch
     def advanced_achievements_memu(self, ctx, data):
@@ -155,7 +164,7 @@ class AchievementSystem(Cog, name='Система достижений'):
         return achievements
 
     @logger.catch
-    def advanced_user_achievements_memu(self, ctx, data):
+    def advanced_user_achievements_menu(self, ctx, data):
         achievements = []
 
         for ach_chunks in list(self.chuncks(data, 1)):
@@ -191,7 +200,7 @@ class AchievementSystem(Cog, name='Система достижений'):
                 ('Выдаётся автоматически', "Да" if data[7] else "Нет", True),
                 ('Первое появление', data[5], True)
             ]
-        if ctx.author.id == self.bot.owner_ids[0]:
+        if ctx.author.id == self.bot.owner.id:
             fields.extend([
                 ('id', data[0], True),
                 ('internal_id', data[1], True),
@@ -237,9 +246,9 @@ class AchievementSystem(Cog, name='Система достижений'):
 
     @logger.catch
     async def achievement_award_notification(self, achievement: str, target: Member):
-        data = db.record(
-            "SELECT * FROM achievements WHERE "
-            "to_tsvector(internal_id) @@ to_tsquery(''%s'')",
+        data = await self.bot.pg_pool.fetchrow(
+            'SELECT * FROM achievements WHERE '
+            'to_tsvector(internal_id) @@ to_tsquery($1)',
             achievement)
         embed = Embed(
             title='Открыто новое достижение!',
@@ -295,13 +304,14 @@ class AchievementSystem(Cog, name='Система достижений'):
     @required_level(cmd["achievements"]["required_level"])
     @logger.catch
     async def achievements_list_command(self, ctx):
-        data = db.records('SELECT * FROM achievements ORDER BY id')
-        if ctx.author.id != self.bot.owner_ids[0]:
+        data = await self.bot.pg_pool.fetch(
+            'SELECT * FROM achievements ORDER BY id')
+        if ctx.author.id != self.bot.owner.id:
             data = [i for i in data if i[8] is False]
         if not data:
             await ctx.reply(
                 '😳 Этого не должно было произойти, но база данных достижений пуста.'
-                '\nПожалуйста, сообщите об этом <@375722626636578816>',
+                f'\nПожалуйста, сообщите об этом **{self.bot.owner}**',
                 mention_author=False
             )
             return
@@ -331,20 +341,19 @@ class AchievementSystem(Cog, name='Система достижений'):
     @logger.catch
     async def get_achievement_command(self, ctx, *, achievement: Optional[str]):
         if achievement:
-            internal_id = db.field(
-                "SELECT internal_id FROM achievements WHERE "
-                "to_tsvector(name) @@ to_tsquery(''%s'')",
+            internal_id = await self.bot.pg_pool.fetchval(
+                'SELECT internal_id FROM achievements WHERE '
+                'to_tsvector(name) @@ plainto_tsquery($1)',
                 achievement)
 
             if internal_id is not None:
-                data = db.records(
+                data = await self.bot.pg_pool.fetchrow(
                    'SELECT * FROM achievements WHERE internal_id '
-                   'LIKE %s', internal_id
-                )[0]
+                   'LIKE $1', internal_id)
                 if data[8] is False:
                     await paginate(ctx, self.achievement_helper(ctx, data))
                 else:
-                    if self.can_view_hidden_achievement(ctx.author.id, internal_id):
+                    if (await self.can_view_hidden_achievement(ctx.author.id, internal_id)):
                         await paginate(ctx, self.achievement_helper(ctx, data))
                     else:
                         await ctx.reply('🕵️ Достижение скрыто.', mention_author=False)
@@ -364,16 +373,18 @@ class AchievementSystem(Cog, name='Система достижений'):
     @required_level(cmd["inventory"]["required_level"])
     @logger.catch
     async def inventory_command(self, ctx):
-        rec = db.fetchone(['achievements_list'], 'users_stats', 'user_id', ctx.author.id)
-        user_data = rec[0]['user_achievements_list']
+        rec = await self.bot.pg_pool.fetchval(
+            'SELECT achievements_list FROM users_stats WHERE user_id = $1',
+            ctx.author.id)
+        rec = ast.literal_eval(rec)
+        user_data = rec['user_achievements_list']
         if user_data:
             user_achievements = tuple(
                 [key for dic in user_data for key in dic.keys()]
             )
-            achievements_data = db.records(
-                'SELECT * FROM achievements WHERE internal_id IN %s ORDER BY id',
-                user_achievements
-            )
+            achievements_data = await self.bot.pg_pool.fetch(
+                'SELECT * FROM achievements WHERE internal_id = any($1::text[]) ORDER BY id',
+                user_achievements)
             achievements_data = [list(l) for l in achievements_data]
 
             for dic in user_data:
@@ -385,7 +396,7 @@ class AchievementSystem(Cog, name='Система достижений'):
 
             method = await self.display_method(ctx)
             if method == 'detailed':
-                embed = self.advanced_user_achievements_memu(ctx, data)
+                embed = self.advanced_user_achievements_menu(ctx, data)
                 await paginate(ctx, embed)
             elif method == 'briefly':
                 menu = MenuPages(
@@ -421,13 +432,13 @@ class AchievementSystem(Cog, name='Система достижений'):
             )
             return
         if achievement:
-            data = db.record(
-                "SELECT name, internal_id FROM achievements WHERE "
-                "to_tsvector(internal_id) @@ to_tsquery(''%s'')",
+            data = await self.bot.pg_pool.fetchrow(
+                'SELECT name, internal_id FROM achievements WHERE '
+                'to_tsvector(internal_id) @@ to_tsquery($1)',
                 achievement)
             if data is not None:
-                if not self.user_have_achievement(member.id, achievement):
-                    self.give_achievement(ctx.author.id, member.id, achievement)
+                if not (await self.user_have_achievement(member.id, achievement)):
+                    await self.give_achievement(ctx.author.id, member.id, achievement)
                     await self.achievement_award_notification(achievement, member)
                     await ctx.reply(
                         f'✅ Достижение **{data[0]}** успешно выдано пользователю **{member.display_name}**.',
@@ -466,13 +477,14 @@ class AchievementSystem(Cog, name='Система достижений'):
             )
             return
         if achievement:
-            data = db.record(
-                "SELECT name, internal_id FROM achievements WHERE "
-                "to_tsvector(internal_id) @@ to_tsquery(''%s'')",
-                achievement)
+            data = await self.bot.pg_pool.fetchrow(
+                'SELECT name, internal_id FROM achievements WHERE '
+                'to_tsvector(internal_id) @@ to_tsquery($1)',
+                achievement
+            )
             if data is not None:
-                if self.user_have_achievement(member.id, achievement):
-                    self.take_achievement_away(member.id, achievement)
+                if (await self.user_have_achievement(member.id, achievement)):
+                    await self.take_achievement_away(member.id, achievement)
                     await ctx.reply(
                         f'✅ Достижение **{data[0]}** успешно отобрано у пользователя **{member.display_name}**.',
                         mention_author=False
@@ -504,54 +516,19 @@ class AchievementSystem(Cog, name='Система достижений'):
     @logger.catch
     async def reset_achievements_command(self, ctx, user_id: Optional[int]):
         if user_id is None:
-            reactions = ['🟩', '🟥']
-            embed = Embed(
-                title='⚠️ Внимание!',
-                color=Color.red(),
-                timestamp=datetime.utcnow(),
-                description='Вы не указали ID пользователя, которому необходимо '
-                            'сбросить список достижений. Этот сценарий ведёт к '
-                            'сбросу достижений **ВСЕХ** пользователей. Желаете '
-                            'продолжить?\n\n🟩 — Да.\n🟥 — Нет.'
-            )
-            message = await ctx.reply(embed=embed, mention_author=False)
-            for r in reactions:
-                await message.add_reaction(r)
-            try:
-                method, user = await self.bot.wait_for(
-                    'reaction_add', timeout=60.0,
-                    check=lambda method, user: user == ctx.author
-                    and method.message.channel == ctx.channel
-                    and method.emoji in reactions)
-            except asyncio.TimeoutError:
-                return
-            await message.delete()
+            return await ctx.message.add_reaction('🟥')
 
-            if str(method.emoji) == '🟩':
-                for member in self.bot.guild.members:
-                    if member.pending:
-                        continue
+        data = await self.bot.pg_pool.fetchval(
+            'SELECT achievements_list FROM users_stats WHERE user_id = $1',
+            user_id)
+        data = ast.literal_eval(data)
+        data = data['user_achievements_list']
+        user_achievements = [key for dic in data for key in dic.keys()]
 
-                    data = {'user_achievements_list': []}
-                    db.execute("UPDATE users_stats SET achievements_list = %s WHERE user_id = %s",
-                            json.dumps(data, ensure_ascii=False), member.id)
-                    db.commit()
-                embed = Embed(
-                        title='✅ Успешно!',
-                        color=Color.green(),
-                        timestamp=datetime.utcnow(),
-                        description=f'Достижения **ВСЕХ** пользователей сброшены.'
-                    )
-                await ctx.reply(embed=embed, mention_author=False)
-                return
-            elif str(method.emoji) == '🟥':
-                await ctx.message.add_reaction('🟥')
-                return
+        for achievement in user_achievements:
+            await self.take_achievement_away(user_id, achievement)
 
-        data = {'user_achievements_list': []}
-        db.execute("UPDATE users_stats SET achievements_list = %s WHERE user_id = %s",
-                json.dumps(data, ensure_ascii=False), user_id)
-        db.commit()
+        self.achievements_banlist.append(user_id)
         embed = Embed(
                 title='✅ Успешно!',
                 color=Color.green(),

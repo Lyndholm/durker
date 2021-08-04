@@ -4,7 +4,7 @@ CREATE TABLE public.achievements
     internal_id text DEFAULT 'AID_000_Placeholder_0',
     name text DEFAULT 'Achievement name placeholder',
     description text DEFAULT 'Achievement description placeholder',
-    image text DEFAULT 'https://cdn.discordapp.com/attachments/774698479981297664/838350972027273246/Achievement_Token_Placeholder.png',
+    image text DEFAULT 'https://cdn.durker.fun/achievements/Achievement_Token_Placeholder.png',
     introduction_version text DEFAULT '0.0.0',
     rep_boost bigint DEFAULT 0,
     granted_automatically boolean DEFAULT FALSE,
@@ -12,6 +12,17 @@ CREATE TABLE public.achievements
 );
 
 ALTER TABLE public.achievements
+    OWNER to postgres;
+
+
+CREATE TABLE public.blacklist
+(
+    user_id bigint,
+    added_at timestamp without time zone DEFAULT (now())::timestamp without time zone,
+    reason text
+);
+
+ALTER TABLE public.blacklist
     OWNER to postgres;
 
 
@@ -103,6 +114,27 @@ CREATE TABLE public.song_suggestions
 );
 
 ALTER TABLE public.song_suggestions
+    OWNER to postgres;
+
+
+CREATE TABLE public.stats_customization
+(
+    user_id bigint,
+    rank_background_color character varying(7) DEFAULT '#292b2f',
+    rank_background_image text,
+    rank_bar_color character varying(7) DEFAULT '#11ebf2',
+	rank_bar_background_color character varying(7) DEFAULT '#727175',
+    rank_level_int_color character varying(7) DEFAULT '#11ebf2',
+	rank_level_str_color character varying(7) DEFAULT '#ffffff',
+	rank_username_color character varying(7) DEFAULT '#ffffff',
+	rank_discriminator_color character varying(7) DEFAULT '#727175',
+	rank_xp_start_color character varying(7) DEFAULT '#ffffff',
+	rank_xp_end_color character varying(7) DEFAULT '#727175',
+	rank_placement_int_color character varying(7) DEFAULT '#ffffff',
+	rank_placement_str_color character varying(7) DEFAULT '#ffffff'
+);
+
+ALTER TABLE public.stats_customization
     OWNER to postgres;
 
 

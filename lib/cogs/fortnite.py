@@ -5,7 +5,7 @@ from asyncio.exceptions import TimeoutError
 from datetime import datetime
 from io import BytesIO
 from os import getenv
-from random import choice, randint
+from random import choice
 from typing import Optional
 
 import aiofiles
@@ -364,12 +364,12 @@ class Fortnite(Cog, name='Fortnite'):
     async def cosmetics_search_params_command(self, ctx):
         params_embeds = []
         params_images = (
-            'https://cdn.discordapp.com/attachments/774698479981297664/861552271589376071/cosmetics_search_params_1.png',
-            'https://cdn.discordapp.com/attachments/774698479981297664/861552297565224970/cosmetics_search_params_2.png',
-            'https://cdn.discordapp.com/attachments/774698479981297664/861552316011905044/cosmetics_search_params_3.png',
-            'https://cdn.discordapp.com/attachments/774698479981297664/861552338070405130/cosmetics_search_params_4.png',
-            'https://cdn.discordapp.com/attachments/774698479981297664/861552361251536896/cosmetics_search_params_5.png',
-            'https://cdn.discordapp.com/attachments/774698479981297664/861552398308999168/cosmetics_search_params_6.png'
+            'https://cdn.durker.fun/misc/cosmetics_search_params_1.png',
+            'https://cdn.durker.fun/misc/cosmetics_search_params_2.png',
+            'https://cdn.durker.fun/misc/cosmetics_search_params_3.png',
+            'https://cdn.durker.fun/misc/cosmetics_search_params_4.png',
+            'https://cdn.durker.fun/misc/cosmetics_search_params_5.png',
+            'https://cdn.durker.fun/misc/cosmetics_search_params_6.png'
         )
 
         for image in params_images:
@@ -698,10 +698,6 @@ class Fortnite(Cog, name='Fortnite'):
                     color=Color.random()
                 )
                 embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/774698479981297664/808066523671167006/battle_pass_quests_logo.png")
-
-                if randint(0, 100) == 1:
-                    embed.set_image(url="https://cdn.discordapp.com/attachments/708601604353556491/808062904325767248/i.png")
-                    embed.description = "**Опа, пасхал04ка**"
 
                 for count, challenge in enumerate(item['challenges']):
                     embed.add_field(
@@ -1137,93 +1133,6 @@ class Fortnite(Cog, name='Fortnite'):
             msg = await ctx.reply(embed=servers_embeds[0], mention_author=False)
             page = Paginator(self.bot, msg, only=ctx.author, embeds=servers_embeds)
             await page.start()
-
-
-    ### Peely.de
-    @command(name=cmd["upcoming"]["name"], aliases=cmd["upcoming"]["aliases"],
-            brief=cmd["upcoming"]["brief"],
-            description=cmd["upcoming"]["description"],
-            usage=cmd["upcoming"]["usage"],
-            help=cmd["upcoming"]["help"],
-            hidden=cmd["upcoming"]["hidden"], enabled=True)
-    @is_channel(CONSOLE_CHANNEL)
-    @guild_only()
-    @cooldown(cmd["upcoming"]["cooldown_rate"], cmd["upcoming"]["cooldown_per_second"], BucketType.member)
-    @logger.catch
-    async def show_fortnite_upcoming_items_command(self, ctx, mode:str="current", language:str="ru"):
-        embed = Embed(
-            title="Fortnite upcoming items",
-            color=Color.random(),
-            timestamp=ctx.message.created_at
-            )
-        embed.set_footer(text=f'{ctx.author.name}', icon_url=ctx.author.avatar_url)
-
-        async with ClientSession() as session:
-            if mode.lower() == "full":
-                async with ctx.typing():
-                    async with session.get(f'https://api.peely.de/cdn/current/leaks?lang={language}') as r:
-                        if r.status != 200:
-                            await ctx.reply(
-                                f"""```ini\nHTTP: {r.status}```""",
-                                mention_author=False
-                            )
-                            return
-
-                        f = File(BytesIO(await r.read()), filename="fn_upcoming_full.png")
-                        embed.set_image(url="attachment://fn_upcoming_full.png")
-                await ctx.reply(embed=embed, file=f, mention_author=False)
-            else:
-                async with ctx.typing():
-                    async with session.get(f'https://api.peely.de/cdn/current/leaks.png') as r:
-                        if r.status != 200:
-                            await ctx.reply(
-                                f"""```ini\nHTTP: {r.status}```""",
-                                mention_author=False
-                            )
-                            return
-
-                        f = File(BytesIO(await r.read()), filename="fn_upcoming_current.png")
-                        embed.set_image(url="attachment://fn_upcoming_current.png")
-                await ctx.reply(embed=embed, file=f, mention_author=False)
-
-
-    @command(name=cmd["fnseason"]["name"], aliases=cmd["fnseason"]["aliases"],
-            brief=cmd["fnseason"]["brief"],
-            description=cmd["fnseason"]["description"],
-            usage=cmd["fnseason"]["usage"],
-            help=cmd["fnseason"]["help"],
-            hidden=cmd["fnseason"]["hidden"], enabled=True)
-    @is_channel(CONSOLE_CHANNEL)
-    @guild_only()
-    @cooldown(cmd["fnseason"]["cooldown_rate"], cmd["fnseason"]["cooldown_per_second"], BucketType.member)
-    @logger.catch
-    async def show_battle_royal_season_data_command(self, ctx):
-        embed = Embed(
-            title="Королевская битва",
-            color=Color.random(),
-            timestamp=ctx.message.created_at
-            )
-        embed.set_footer(text=f'{ctx.author.name}', icon_url=ctx.author.avatar_url)
-
-        async with ClientSession() as session:
-            async with session.get("https://api.peely.de/v1/br/progress/data") as r:
-                if r.status != 200:
-                    await ctx.reply(
-                            f"""```ini\nHTTP: {r.status}```""",
-                            mention_author=False
-                    )
-                    return
-
-                data = await r.json()
-                embed.description = f'Продолжительность текущего сезона в днях: **{data["data"]["SeasonLength"]}**\n\n' \
-                                    f'Прошло дней с начала сезона: **{abs(data["data"]["DaysGone"])}**\n\n' \
-                                    f'Осталось до конца сезона: **{data["data"]["DaysLeft"]}**'
-
-            async with session.get("https://api.peely.de/v1/br/progress") as r:
-                f = File(BytesIO(await r.read()), filename="br_progress.png")
-                embed.set_image(url="attachment://br_progress.png")
-
-            await ctx.reply(embed=embed, file=f, mention_author=False)
 
 
     ### FortniteTracker.com

@@ -74,7 +74,7 @@ class Audit(Cog, name='Система Аудита'):
                         embed.add_field(name="Модератор:", value=entry.user.mention)
 
                 if message.type != MessageType.default:
-                    embed.description = '**Системное оповещение о закреплении сообщения.**'
+                    embed.description = '**Системное оповещение.**'
                     embed.add_field(name="Тип сообщения:", value=message.type)
 
                 embed.set_footer(text = f"ID сообщения: {message.id}")
@@ -229,7 +229,8 @@ class Audit(Cog, name='Система Аудита'):
     @Cog.listener()
     @logger.catch
     async def on_member_remove(self, member: Member):
-        server_age = (datetime.utcnow() - joined_date(member)).total_seconds()
+        joined = await joined_date(self.bot.pg_pool, member)
+        server_age = (datetime.utcnow() - joined).total_seconds()
         embed = Embed(title = "Пользователь покинул сервер", color=Color.red())
         embed.add_field(name="Пользователь:", value=f"**{member.display_name}** ({member.mention})")
         embed.add_field(name="Время, проведённое на сервере:", value=f"{timedelta(seconds=server_age)}")
@@ -254,7 +255,7 @@ class Audit(Cog, name='Система Аудита'):
 
             embed = Embed(title="Пользователь присоединился к серверу", color=Color.green(), timestamp=datetime.utcnow())
             embed.add_field(name="Пользователь:", value=f"**{after.display_name}** ({after.mention})")
-            embed.add_field(name="Дата захода", value=joined_date(after).strftime("%d.%m.%Y %H:%M:%S"))
+            embed.add_field(name="Дата захода", value=after.joined_at.strftime("%d.%m.%Y %H:%M:%S"))
             embed.add_field(name="Аккаунт создан:", value=after.created_at.strftime("%d.%m.%Y %H:%M:%S"))
             embed.add_field(name="Возраст аккаунта", value=f"**{timedelta(seconds=acc_age)}**")
             embed.set_footer(text=f"ID пользователя: {after.id}")

@@ -1,3 +1,4 @@
+import ast
 import json
 import os
 from asyncio import TimeoutError
@@ -5,9 +6,9 @@ from datetime import datetime
 from typing import Optional
 
 from discord import Color, Embed
+from discord.ext import tasks
 from discord.ext.commands import Cog, command, dm_only, guild_only, is_owner
 from discord.ext.menus import ListPageSource, MenuPages
-from discord.utils import get
 from loguru import logger
 
 from ..db import db
@@ -43,10 +44,10 @@ class VbucksPurchasesMenu(ListPageSource):
         offset = (menu.current_page*self.per_page) + 1
 
         fields = []
-        table = '⠀' + ('\n'.join(f'\n> **{entry[0]}** \n> **Цена:** {entry[1]} В-Баксов\n> **Дата:** {entry[2][:-3]}'
+        table = '⠀' + ('\n'.join(f'\n> **{entry[0]}** \n> **Цена:** {entry[1]} В-баксов\n> **Дата:** {entry[2][:-3]}'
                 for idx, entry in enumerate(entries)))
 
-        fields.append(('Список внутриигровых покупок за В-Баксы.', table))
+        fields.append(('Список внутриигровых покупок за В-баксы.', table))
 
         return await self.write_page(menu, offset, fields)
 
@@ -82,29 +83,82 @@ class RealMoneyPurchasesMenu(ListPageSource):
 class PurchasesHandler(Cog, name='Покупки и не только'):
     def __init__(self, bot):
         self.bot = bot
+        self.check_mecenat_role.start()
+        self.check_support_role_task.start()
+        if self.bot.ready:
+            bot.loop.create_task(self.init_vars())
+
+    @logger.catch
+    async def init_vars(self):
+        self.mod_cog = self.bot.get_cog('Модерация')
+        self.mecenat = self.bot.guild.get_role(MECENAT_ROLE_ID)
+        self.kapitalist = self.bot.guild.get_role(KAPITALIST_ROLE_ID)
+        self.magnat = self.bot.guild.get_role(MAGNAT_ROLE_ID)
+
+    @Cog.listener()
+    async def on_ready(self):
+        if not self.bot.ready:
+            self.mod_cog = self.bot.get_cog('Модерация')
+            self.mecenat = self.bot.guild.get_role(MECENAT_ROLE_ID)
+            self.kapitalist = self.bot.guild.get_role(KAPITALIST_ROLE_ID)
+            self.magnat = self.bot.guild.get_role(MAGNAT_ROLE_ID)
+            self.bot.cogs_ready.ready_up("purchases_handler")
+
+    @tasks.loop(hours=24.0)
+    @logger.catch
+    async def check_mecenat_role(self):
+        for member in self.bot.guild.members:
+            if self.mod_cog.is_member_muted(member) or member.pending:
+                continue
+
+            try:
+                data = await self.bot.db.fetchone(
+                    ['purchases'], 'users_stats', 'user_id', member.id)
+                purchases = ast.literal_eval(data[0])['vbucks_purchases']
+            except TypeError:
+                continue
+
+            if purchases:
+                lpd = purchases[-1]['date']
+                if self.mecenat in member.roles and self.kapitalist not in member.roles:
+                    if (datetime.now() - datetime.strptime(lpd, '%d.%m.%Y %H:%M:%S')).days > 90:
+                        await member.remove_roles(self.mecenat, reason='С момента последней покупки прошло более 3 месяцев')
+
+    @check_mecenat_role.before_loop
+    async def before_check_mecenat_role(self):
+        await self.bot.wait_until_ready()
+
+    @tasks.loop(hours=1.5)
+    @logger.catch
+    async def check_support_role_task(self):
+        for member in self.bot.guild.members:
+            await self.check_support_roles(member)
+
+    @check_support_role_task.before_loop
+    async def before_check_supporter_role(self):
+        await self.bot.wait_until_ready()
 
     @logger.catch
     async def check_support_roles(self, member):
-        mod_cog = self.bot.get_cog('Модерация')
-        if mod_cog.is_member_muted(member):
+        if self.mod_cog.is_member_muted(member) or member.pending:
             return
 
-        purchases = db.fetchone(['purchases'], 'users_stats', 'user_id', member.id)[0]
-        vbucks_count = sum(purchases['vbucks_purchases'][i]['price'] for i in range(len(purchases['vbucks_purchases'])))
+        data = await self.bot.db.fetchone(
+            ['purchases'], 'users_stats', 'user_id', member.id)
+        purchases = ast.literal_eval(data[0])['vbucks_purchases']
+        vbucks_count = sum(purchases[i]['price'] for i in range(len(purchases)))
 
-        mecenat = get(self.bot.guild.roles, id=MECENAT_ROLE_ID)
-        kapitalist = get(self.bot.guild.roles, id=KAPITALIST_ROLE_ID)
-        magnat = get(self.bot.guild.roles, id=MAGNAT_ROLE_ID)
-
-        if mecenat not in member.roles:
-            await member.add_roles(mecenat)
-            edit_user_reputation(member.id, '+', 100)
-        if kapitalist not in member.roles and vbucks_count >= 10000:
-            await member.add_roles(kapitalist)
-            edit_user_reputation(member.id, '+', 1000)
-        if magnat not in member.roles and vbucks_count >= 25000:
-            await member.add_roles(magnat)
-            edit_user_reputation(member.id, '+', 2500)
+        if self.mecenat not in member.roles and vbucks_count > 0:
+            lpd = purchases[-1]['date']
+            if (datetime.now() - datetime.strptime(lpd, '%d.%m.%Y %H:%M:%S')).days < 90:
+                await member.add_roles(self.mecenat)
+                await edit_user_reputation(self.bot.pg_pool, member.id, '+', 100)
+        if self.kapitalist not in member.roles and vbucks_count >= 10_000:
+            await member.add_roles(self.kapitalist)
+            await edit_user_reputation(self.bot.pg_pool, member.id, '+', 1000)
+        if self.magnat not in member.roles and vbucks_count >= 25_000:
+            await member.add_roles(self.magnat)
+            await edit_user_reputation(self.bot.pg_pool, member.id, '+', 2500)
 
     @command(name=cmd["addvbucks"]["name"], aliases=cmd["addvbucks"]["aliases"],
             brief=cmd["addvbucks"]["brief"],
@@ -130,10 +184,10 @@ class PurchasesHandler(Cog, name='Покупки и не только'):
         db.commit()
         await self.check_support_roles(member)
         await ctx.reply(embed=Embed(
-            title='В-Баксы добавлены',
+            title='В-баксы добавлены',
             color=member.color,
             timestamp=datetime.utcnow(),
-            description= 'Количество потраченных с тегом В-Баксов пользователя '
+            description= 'Количество потраченных с тегом В-баксов пользователя '
                         f'**{member.display_name}** ({member.mention}) было увеличено на **{amount}**.'
         ))
 
@@ -143,7 +197,7 @@ class PurchasesHandler(Cog, name='Покупки и не только'):
             description=cmd["addrubles"]["description"],
             usage=cmd["addrubles"]["usage"],
             help=cmd["addrubles"]["help"],
-            hidden=cmd["addrubles"]["hidden"], enabled=True)
+            hidden=cmd["addrubles"]["hidden"], enabled=False)
     @dm_only()
     @is_owner()
     @logger.catch
@@ -202,45 +256,71 @@ class PurchasesHandler(Cog, name='Покупки и не только'):
     @guild_only()
     @logger.catch
     async def fetch_purchases_command(self, ctx):
-        reactions = ['1️⃣', '2️⃣']
+        data = db.fetchone(
+            ['purchases'], 'users_stats', 'user_id', ctx.author.id)
+        purchases = data[0]['vbucks_purchases']
+
+        if not purchases:
+            await ctx.reply(
+                '📝 Ваш список покупок пуст.\n'
+                '🕐 Если вы недавно прислали скриншот покупки, подождите '
+                'некоторое время, пока статистика обновится.\n'
+                '✅ Ознакомиться с требованиями к скриншотам и c правилами засчитывания '
+                f'покупок можно по команде `{ctx.prefix or self.bot.PREFIX[0]}faq`.'
+                '\n\n**P.S.** После обновления бота от 1 июля 2021 г. статистика покупок '
+                'была сброшена у всех пользователей. Ознакомиться с причинами вайпа можно '
+                f'по команде `{ctx.prefix or self.bot.PREFIX[0]}wipe`.')
+            return
+
+        vbucks_count = sum(purchases[i]['price'] for i in range(len(purchases)))
+
         embed = Embed(
-            title='💱 Выбор валюты',
+            title='💰 Покупки',
             color=ctx.author.color,
             timestamp=datetime.utcnow(),
-            description='**Пожалуйста, выберите, покупки в какой валюте вы желаете просмотреть:\n\n'
-                        '1️⃣ — покупки за В-Баксы.\n2️⃣ — покупки за реальные деньги (рубли).**'
+            description='**Для просмотра списка покупок нажмите на реакцию под сообщением.**'
+        ).add_field(name="<:Vbucks:640675233342291969> Потрачено В-баксов с тегом FNFUN:",
+                    value=vbucks_count,
+                    inline=False
+        ).add_field(name="🙂 Количество покупок с тегом FNFUN:",
+					value=len(purchases),
+                    inline=False
+        ).add_field(name="📅 Дата последней покупки с тегом FNFUN:",
+					value=purchases[-1]['date'][:-3],
+                    inline=False
         )
+
+        if self.kapitalist not in ctx.author.roles:
+            if vbucks_count < 10_000:
+                embed.add_field(
+                    name=f"🤑 До роли `{self.kapitalist.name}` осталось: ",
+                    value=f"{int(10_000 - vbucks_count)} В-баксов",
+                    inline=False)
+        if self.kapitalist in ctx.author.roles and self.magnat not in ctx.author.roles:
+            if vbucks_count < 25_000:
+                embed.add_field(
+                    name=f"🤑 До роли `{self.magnat.name}` осталось: ",
+                    value=f"{int(25_000 - vbucks_count)} В-баксов",
+                    inline=False)
+
         message = await ctx.reply(embed=embed, mention_author=False)
-        for r in reactions:
-            await message.add_reaction(r)
+        await message.add_reaction('✅')
+
         try:
-            currency, user = await self.bot.wait_for(
+            confirmation = await self.bot.wait_for(
                 'reaction_add', timeout=120.0,
-                check=lambda currency, user: user == ctx.author
-                and currency.message.channel == ctx.channel
-                and currency.emoji in reactions)
+                check=lambda confirmation, user: user == ctx.author
+                and confirmation.message.channel == ctx.channel
+                and str(confirmation.emoji) == '✅')
         except TimeoutError:
             await message.clear_reactions()
             return
 
-        currency = "vbucks" if str(currency.emoji) == '1️⃣' else "rubles"
-
-        if currency == "vbucks":
-            purchases = db.fetchone(['purchases'], 'users_stats', 'user_id', ctx.author.id)[0]['vbucks_purchases']
+        if confirmation:
             data = [tuple(list(item.values())[1:]) for item in purchases]
             menu = MenuPages(source=VbucksPurchasesMenu(ctx, data), clear_reactions_after=True)
-        else:
-            purchases = db.fetchone(['purchases'], 'users_stats', 'user_id', ctx.author.id)[0]['realMoney_purchases']
-            data = [tuple(list(item.values())[1:]) for item in purchases]
-            menu = MenuPages(source=RealMoneyPurchasesMenu(ctx, data), clear_reactions_after=True)
-
-        if purchases:
             await message.delete()
             await menu.start(ctx)
-        else:
-            await message.clear_reactions()
-            await message.edit(content=f'{ctx.author.mention}, у вас нет покупок, которые соответствуют требованиям. '
-                f'Ознакомиться с правилами засчитывания покупок можно по команде `{ctx.prefix or self.bot.PREFIX[0]}faq`', embed=None)
 
 
     @command(name=cmd["faq"]["name"], aliases=cmd["faq"]["aliases"],
@@ -277,14 +357,14 @@ class PurchasesHandler(Cog, name='Покупки и не только'):
             '(новичкам недоступен просмотр истории канала, '
             ' но это не помеха для отправки скринов). '
             f'За поддержку и присланное фото вам достанется роль <@&{MECENAT_ROLE_ID}>\n'
-            'Потратив с тегом **10 000** и **25 000** В-Баксов, вы получите роли '
+            'Потратив с тегом **10 000** и **25 000** В-баксов, вы получите роли '
             f'<@&{KAPITALIST_ROLE_ID}> и <@&{MAGNAT_ROLE_ID}> соответственно.\n\n'
-            '💸 К сожалению, стартер паки и прочие платные наборы, в которых есть В-Баксы, '
+            '💸 К сожалению, стартер паки и прочие платные наборы, в которых есть В-баксы, '
             'не считаются за поддержку автора. Таковы правила Epic Games. Однако это '
             'не мешает вам прислать скрин такой покупки в <#546408250158088192>, но '
             'в этом случае роль за поддержку вы не получите. Подобная покупка будет '
             'засчитана отдельно, она не отразится на счётчике потраченных с '
-            'тегом В-Баксов.'
+            'тегом В-баксов.'
         ))
 
         embeds.append(Embed(
@@ -317,13 +397,11 @@ class PurchasesHandler(Cog, name='Покупки и не только'):
             'что не воровал скрины и не выдавал их за свои, его статистика '
             'вернётся в прежнее состояние. В противном случае за обман и '
             'воровство предусмотрен бан на сервере.\n\n'
-            '**Внимание!** После обновления бота от 1 июля 2021 г. '
-            'статистика покупок **всех** пользователей была сброшена. '
+            '**P.S.** После обновления бота от 1 июля 2021 г. '
+            'статистика покупок была сброшена у всех пользователей. '
             'Это произошло по двум причинам:\n\n'
             '**1.** Изменение структуры базы данных бота.\n'
             '**2.** Появление новых правил засчитывания покупок.\n\n'
-            'Вы можете подать заявку на восстановление своей статистики. '
-            'Для этого обратитесь к Lyndholm#7200.'
         ))
 
         embeds.append(Embed(
@@ -378,13 +456,6 @@ class PurchasesHandler(Cog, name='Покупки и не только'):
                         f'./data/purchases_photos/{message.author.id}/'
                         f'{time_now} — {str(message.id)} — {attachment.filename}'
                     )
-
-
-    @Cog.listener()
-    async def on_ready(self):
-        if not self.bot.ready:
-           self.bot.cogs_ready.ready_up("purchases_handler")
-
 
 def setup(bot):
     bot.add_cog(PurchasesHandler(bot))

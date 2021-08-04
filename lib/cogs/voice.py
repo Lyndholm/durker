@@ -1,4 +1,5 @@
 from datetime import datetime
+from typing import Tuple
 
 from discord import Member, TextChannel, VoiceChannel, VoiceState
 from discord.errors import HTTPException, NotFound
@@ -23,11 +24,12 @@ class Voice(Cog, name='VoiceChannels Management'):
            self.bot.cogs_ready.ready_up("voice")
 
     @logger.catch
-    async def create_temporary_channels(self, member: Member, before: VoiceState, after: VoiceState):
+    async def create_temporary_channels(self, member: Member, before: VoiceState, after: VoiceState) \
+        -> Tuple[VoiceChannel, TextChannel]:
         voice_category = get(self.bot.guild.categories, id=PRIVATE_CHANNELS_CATEGORY)
 
-        voice_channel = await voice_category.create_voice_channel(name=member.display_name)
-        text_channel = await voice_category.create_text_channel(name=member.display_name)
+        voice_channel: VoiceChannel = await voice_category.create_voice_channel(name=member.display_name)
+        text_channel: TextChannel = await voice_category.create_text_channel(name=member.display_name)
         self.temporary_channels[voice_channel.id] = text_channel.id
         await voice_channel.set_permissions(member, manage_channels=True)
         await text_channel.set_permissions(member, manage_channels=True)
@@ -39,20 +41,7 @@ class Voice(Cog, name='VoiceChannels Management'):
             get(member.guild.roles, id=CHASOVOY_ROLE_ID),
             view_channel=True, read_messages=True, send_messages=True, manage_messages=True
         )
-
-        try:
-            await member.move_to(voice_channel)
-        except HTTPException:
-            await self.delete_temporary_channels(voice_channel, text_channel)
-
-        await self.bot.wait_for(
-                'voice_state_update',
-                check = lambda x,y,z: len(voice_channel.members) == 0
-            )
-        try:
-            await self.delete_temporary_channels(voice_channel, text_channel)
-        except NotFound:
-            return
+        return voice_channel, text_channel
 
     @logger.catch
     async def delete_temporary_channels(self, voice_channel: VoiceChannel, text_channel: TextChannel):
@@ -88,7 +77,7 @@ class Voice(Cog, name='VoiceChannels Management'):
 
     @Cog.listener()
     async def on_voice_state_update(self, member: Member, before: VoiceState, after: VoiceState):
-        ### I know it's a bullshit code but it works
+        ### I know it's a bullshit code but it works (probably...)
         if (before.deaf != after.deaf) or (before.mute != after.mute) or (before.self_deaf != after.self_deaf) \
             or (before.self_mute != after.self_mute) or (before.self_stream != after.self_stream) \
             or (before.self_video != after.self_video): return
@@ -96,7 +85,21 @@ class Voice(Cog, name='VoiceChannels Management'):
         if after.channel is not None:
             if after.channel.id == PRIVATE_CHANNEL_GENERATOR:
                 if member.id not in self.bot.banlist:
-                    await self.create_temporary_channels(member, before, after)
+                    voice, text = await self.create_temporary_channels(member, before, after)
+                    try:
+                        await member.move_to(voice)
+                    except HTTPException:
+                        await self.delete_temporary_channels(voice, text)
+
+                    await self.bot.wait_for(
+                            'voice_state_update',
+                            check = lambda x,y,z: len(voice.members) == 0
+                        )
+
+                    try:
+                        await self.delete_temporary_channels(voice, text)
+                    except NotFound:
+                        return
                 else:
                     await member.move_to(channel=None)
 

@@ -1,31 +1,23 @@
+import asyncio
 import os
-from asyncio import sleep
 from datetime import datetime
 from os import getenv
 
+import asyncpg
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from apscheduler.triggers.cron import CronTrigger
 from better_profanity import Profanity
-from discord import Color, Embed, Intents
-from discord.channel import DMChannel
-from discord.errors import Forbidden, HTTPException
+from discord import Intents
 from discord.ext.commands import Bot as BotBase
-from discord.ext.commands import (CheckAnyFailure, CheckFailure,
-                                  CommandNotFound, CommandOnCooldown, Context,
-                                  DisabledCommand, EmojiNotFound,
-                                  ExtensionAlreadyLoaded, ExtensionNotLoaded,
-                                  MaxConcurrencyReached, MissingPermissions,
-                                  MissingRequiredArgument, NoPrivateMessage,
-                                  PrivateMessageOnly)
+from discord.ext.commands import (Context, ExtensionAlreadyLoaded,
+                                  ExtensionNotLoaded)
 from dotenv import load_dotenv
 from loguru import logger
 
-from ..db import db
-from ..utils.constants import AUDIT_LOG_CHANNEL, GUILD_ID
-from ..utils.exceptions import (InForbiddenTextChannel, InsufficientLevel,
-                                NotInAllowedTextChannel)
-from ..utils.utils import (cooldown_timer_str, get_command_required_level,
-                           get_command_text_channels, insert_new_user_in_db)
+from ..db import async_db, db
+from ..utils.constants import (HIDEOUT_GUILD_ID, HIDEOUT_LOGS_CHANNEL,
+                               MAIN_GUILD_ID, OWNER_ID)
+from ..utils.utils import insert_new_user_in_db
 
 load_dotenv()
 logger.add("logs/{time:DD-MM-YYYY---HH-mm-ss}.log",
@@ -38,7 +30,6 @@ logger.add("logs/{time:DD-MM-YYYY---HH-mm-ss}.log",
 
 TOKEN = getenv('DISCORD_BOT_TOKEN')
 PREFIX = ('+', 'var ')
-OWNER_IDS = [375722626636578816]
 COGS = [path[:-3] for path in os.listdir('./lib/cogs') if path[-3:] == '.py']
 
 
@@ -62,20 +53,24 @@ class Bot(BotBase):
         self.ready = False
         self.cogs_ready = Ready()
         self.guild = None
+        self.hideout_guild = None
+        self.logs_channel = None
+        self.pg_pool = None
+        self.db = None
         self.scheduler = AsyncIOScheduler()
         self.profanity = Profanity()
         self.channels_with_message_counting = [
-            546404724216430602, #админка
-            686499834949140506, #гвардия
-            698568751968419850, #спонсорка
-            721480135043448954, #общение
-            546408250158088192, #поддержка
-            644523860326219776, #медиа
+            546404724216430602, # админка
+            686499834949140506, # гвардия
+            698568751968419850, # спонсорка
+            721480135043448954, # общение
+            546408250158088192, # поддержка
+            644523860326219776, # медиа
         ]
         try:
-            with open('./data/txt/banlist.txt', 'r', encoding='utf-8') as f:
-                self.banlist = [int(line.strip()) for line in f.readlines()]
-        except FileNotFoundError:
+            data = db.records('SELECT user_id FROM blacklist')
+            self.banlist = [i[0] for i in data]
+        except:
             self.banlist = []
 
         self.load_music_cogs(self.scheduler)
@@ -83,10 +78,26 @@ class Bot(BotBase):
         super().__init__(command_prefix=PREFIX,
                          case_insensitive=True,
                          strip_after_prefix=True,
-                         owner_ids=OWNER_IDS,
+                         owner_id=OWNER_ID,
                          intents=Intents.all(),
                          max_messages=10000
                         )
+
+    def create_db_pool(self, loop: asyncio.BaseEventLoop) -> None:
+        db_credentials = {
+            "database": os.getenv('DB_NAME'),
+            "user": os.getenv('DB_USER'),
+            "password": os.getenv('DB_PASS'),
+            "host": os.getenv('DB_HOST')
+        }
+        try:
+            self.pg_pool = loop.run_until_complete(
+                asyncpg.create_pool(**db_credentials)
+            )
+            self.db = async_db.DatabaseWrapper(self.pg_pool)
+            print('Connected to the database')
+        except Exception as e:
+            raise e
 
     @logger.catch
     def setup(self):
@@ -95,13 +106,15 @@ class Bot(BotBase):
 
         print("Setup complete")
 
-
     @logger.catch
     def run(self, version):
         self.VERSION = version
 
         print("Running setup...")
         self.setup()
+
+        print('Attempting to connect to the database...')
+        self.create_db_pool(self.loop)
 
         print("Running bot...")
         super().run(self.TOKEN, reconnect=True)
@@ -176,12 +189,18 @@ class Bot(BotBase):
 
     @logger.catch
     def load_music_cogs(self, sched):
-        sched.add_job(self.load_mein_radio_cog_scheduler, CronTrigger(day_of_week=0, hour=3), misfire_grace_time=300)
-        sched.add_job(self.load_mein_radio_cog_scheduler, CronTrigger(day_of_week=2, hour=3), misfire_grace_time=300)
-        sched.add_job(self.load_mein_radio_cog_scheduler, CronTrigger(day_of_week=4, hour=3), misfire_grace_time=300)
-        sched.add_job(self.load_lofi_radio_cog_scheduler, CronTrigger(day_of_week=1, hour=3), misfire_grace_time=300)
-        sched.add_job(self.load_lofi_radio_cog_scheduler, CronTrigger(day_of_week=3, hour=3), misfire_grace_time=300)
-        sched.add_job(self.load_music_player_cog_scheduler, CronTrigger(day_of_week=5, hour=3), misfire_grace_time=300)
+        sched.add_job(self.load_mein_radio_cog_scheduler, CronTrigger(
+            day_of_week=0, hour=3), misfire_grace_time=300)
+        sched.add_job(self.load_mein_radio_cog_scheduler, CronTrigger(
+            day_of_week=2, hour=3), misfire_grace_time=300)
+        sched.add_job(self.load_mein_radio_cog_scheduler, CronTrigger(
+            day_of_week=4, hour=3), misfire_grace_time=300)
+        sched.add_job(self.load_lofi_radio_cog_scheduler, CronTrigger(
+            day_of_week=1, hour=3), misfire_grace_time=300)
+        sched.add_job(self.load_lofi_radio_cog_scheduler, CronTrigger(
+            day_of_week=3, hour=3), misfire_grace_time=300)
+        sched.add_job(self.load_music_player_cog_scheduler, CronTrigger(
+            day_of_week=5, hour=3), misfire_grace_time=300)
 
     @logger.catch
     async def process_commands(self, message):
@@ -201,27 +220,25 @@ class Bot(BotBase):
     @logger.catch
     async def on_ready(self):
         if not self.ready:
-            self.guild = self.get_guild(GUILD_ID)
+            self.guild = self.get_guild(MAIN_GUILD_ID)
+            self.hideout_guild = self.get_guild(HIDEOUT_GUILD_ID)
+            self.logs_channel = self.get_channel(HIDEOUT_LOGS_CHANNEL)
+            self.owner = self.get_user(self.owner_id)
             self.scheduler.start()
             self.profanity.load_censor_words_from_file("./data/txt/profanity.txt")
             print("\nLogged in as:", bot.user)
             print("ID:", bot.user.id)
-            print("\nAvailable guilds:")
-            for guild in bot.guilds:
-                print(guild.name, guild.id, "\n")
-                if guild.id == GUILD_ID:
-                    for member in guild.members:
-                        if member.pending is False:
-                            rec = db.fetchone(["user_id"], "users_info", "user_id", member.id)
-                            if rec is None:
-                                await insert_new_user_in_db(member)
-
+            for member in self.guild.members:
+                if member.pending is False:
+                    rec = await self.pg_pool.fetchval('SELECT user_id FROM users_info WHERE user_id = $1', member.id)
+                    if rec is None:
+                        await insert_new_user_in_db(self.db, self.pg_pool, member)
 
             db.execute("DELETE FROM voice_activity;")
             db.commit()
 
             while not self.cogs_ready.all_ready():
-                await sleep(0.5)
+                await asyncio.sleep(0.5)
 
             self.ready = True
 
@@ -229,9 +246,8 @@ class Bot(BotBase):
             self.get_command("jishaku").hidden = True
             print("Jishaku loaded")
 
-
             print("\nReady to use!\n")
-            await self.get_user(OWNER_IDS[0]).send(
+            await self.logs_channel.send(
                 "I am online!\nReady to use!\nStart time: "
                 f"{datetime.now().strftime('%d.%m.%Y %H.%M.%S')}"
             )
@@ -239,195 +255,11 @@ class Bot(BotBase):
         else:
             print("Bot reconnected")
 
-
     async def on_connect(self):
         print("Bot connected")
 
     async def on_disconnect(self):
         print("Bot disconnected")
-
-    async def on_command_error(self, ctx, exc):
-        if not ctx.command.has_error_handler():
-            if isinstance(exc, CommandNotFound):
-                embed = Embed(
-                    title='❗ Ошибка!',
-                    description=f'Команда `{ctx.message.clean_content}` не найдена.',
-                    color=Color.red()
-                )
-                await ctx.reply(embed=embed, mention_author=False, delete_after=10)
-
-            elif isinstance(exc, CommandOnCooldown):
-                embed = Embed(
-                    title=f"{str(exc.cooldown.type).split('.')[-1]} cooldown",
-                    description=f"Команда на откате. Ожидайте {cooldown_timer_str(exc.retry_after)}",
-                    color=Color.red()
-                )
-                await ctx.reply(embed=embed, mention_author=False, delete_after=15)
-
-            elif isinstance(exc, DisabledCommand):
-                embed = Embed(
-                    title='❗ Ошибка!',
-                    description=f"Команда `{ctx.command}` отключена.",
-                    color=Color.red()
-                )
-                await ctx.reply(embed=embed, mention_author=False)
-
-            elif isinstance(exc, NoPrivateMessage):
-                try:
-                    embed = Embed(
-                        title='❗ Ошибка!',
-                        description=f"Команда `{ctx.command}` не может быть использована в личных сообщениях.",
-                        color=Color.red()
-                    )
-                    await ctx.reply(embed=embed, mention_author=False)
-                except HTTPException:
-                    pass
-
-            elif isinstance(exc, PrivateMessageOnly):
-                embed = Embed(
-                    title='❗ Ошибка!',
-                    description=f"Команда `{ctx.command}` работает только в личных сообщениях. Она не может быть использована на сервере.",
-                    color=Color.red()
-                )
-                await ctx.reply(embed=embed, mention_author=False, delete_after=15)
-
-            elif isinstance(exc, MissingPermissions):
-                embed = Embed(
-                    title='❗ MissingPermissions',
-                    description=f"Недостаточно прав для выполнения действия.",
-                    color=Color.red()
-                )
-                await ctx.reply(embed=embed, mention_author=False, delete_after=15)
-
-            elif isinstance(exc, Forbidden):
-                embed = Embed(
-                    title='❗ Forbidden',
-                    description=f"Недостаточно прав для выполнения действия.",
-                    color=Color.red()
-                )
-                await ctx.reply(embed=embed, mention_author=False, delete_after=15)
-
-            elif isinstance(exc, HTTPException):
-                embed = Embed(
-                    title='❗ Ошибка!',
-                    description=f"Не удалось отправить сообщение. Возможно, превышен лимит символов "
-                                "или размер файла больше 8 МБ.",
-                    color=Color.red()
-                )
-                await ctx.send(embed=embed)
-
-            elif isinstance(exc, MaxConcurrencyReached):
-                embed = Embed(
-                    title='❗ Внимание!',
-                    description=f"Команда `{ctx.command}` уже запущена.",
-                    color=Color.red()
-                )
-                await ctx.reply(embed=embed, mention_author=False)
-
-            elif isinstance(exc, EmojiNotFound):
-                embed = Embed(
-                    title='❗ Ошибка!',
-                    description='Указанные эмодзи не найдены. '
-                                'Возможно, вы указали глобальный эмодзи или эмодзи, '
-                                'которого нет на этом сервере.',
-                    color=Color.red()
-                )
-                await ctx.reply(embed=embed, mention_author=False)
-
-            elif isinstance(exc, MissingRequiredArgument):
-                if str(ctx.command) == 'knb':
-                    embed = Embed(
-                        title='❗ Внимание!',
-                        description=f'Укажите, что вы выбрали: камень, ножницы или бумагу.\n' \
-                                    f'`{ctx.command.usage}`',
-                        color= Color.red()
-                    )
-                    await ctx.send(embed=embed, delete_after=15)
-                elif str(ctx.command) == '8ball':
-                    embed = Embed(
-                        title='❗ Внимание!',
-                        description=f"Пожалуйста, укажите вопрос.",
-                        color = Color.red()
-                    )
-                    await ctx.reply(embed=embed, mention_author=False, delete_after=15)
-                elif str(ctx.command) == 'randint':
-                    embed = Embed(
-                        title='❗ Внимание!',
-                        description=f"Пожалуйста, укажите корректный диапазон **целых** чисел.",
-                        color = Color.red()
-                    )
-                    await ctx.reply(embed=embed, mention_author=False, delete_after=15)
-                else:
-                    embed = Embed(
-                        title='❗ Внимание!',
-                        description=f"Пропущен один или несколько параметров. Параметры команды можно узнать в help меню.",
-                        color=Color.red()
-                    )
-                    await ctx.reply(embed=embed, mention_author=False)
-
-            elif isinstance(exc, InsufficientLevel):
-                level = await get_command_required_level(ctx.command)
-                member_level = db.fetchone(['level'], 'leveling', 'user_id', ctx.author.id)[0]
-                embed = Embed(
-                    title='🔒 Недостаточный уровень!',
-                    description=f"Команда `{ctx.command.name}` требует наличия **{level}** уровня " \
-                                f"и выше.\nВаш текущий уровень: **{member_level}**.",
-                    color=Color.red()
-                )
-                await ctx.reply(embed=embed, mention_author=False)
-
-            elif isinstance(exc, NotInAllowedTextChannel) or isinstance(exc, InForbiddenTextChannel):
-                txt = await get_command_text_channels(ctx.command)
-                embed = Embed(
-                    title='⚠️ Неправильный канал!',
-                    description=f"Команда `{ctx.command.name}` {txt.lower()}",
-                    color=Color.red()
-                )
-                await ctx.reply(embed=embed, mention_author=False)
-
-            elif isinstance(exc, CheckFailure) or isinstance(exc, CheckAnyFailure):
-                embed = Embed(
-                    title='❗ Ошибка!',
-                    description=f"{ctx.author.mention}\nНевозможно выполнить указанную команду."
-                                "\nВозможно, у вас отсутствуют права на выполнение запрошенного метода.",
-                    color=Color.red()
-                )
-                await ctx.reply(embed=embed, mention_author=False, delete_after=15)
-
-            else:
-                channel = self.get_channel(id=AUDIT_LOG_CHANNEL)
-                try:
-                    if hasattr(ctx.command, 'on_error'):
-                        embed = Embed(
-                            title="Error.",
-                            description="Something went wrong, an error occured.\nCheck logs.",
-                            timestamp=datetime.utcnow(),
-                            color=Color.red()
-                        )
-                        await self.get_user(OWNER_IDS[0]).send(embed=embed)
-                    else:
-                        embed = Embed(
-                            title=f'Ошибка при выполнении команды {ctx.command}.',
-                            description=f'`{ctx.command.signature if ctx.command.signature else None}`\n{exc}',
-                            color=Color.red(),
-                            timestamp=datetime.utcnow()
-                        )
-                        if isinstance(ctx.channel, DMChannel):
-                            embed.add_field(name="Additional info:", value="Exception occured in DMChannel.")
-                        await channel.send(embed=embed)
-                except:
-                    embed = Embed(
-                        title=f'Ошибка при выполнении команды {ctx.command}.',
-                        description=f'`{ctx.command.signature if ctx.command.signature else None}`\n{exc}',
-                        color=Color.red(),
-                        timestamp=datetime.utcnow()
-                    )
-                    if isinstance(ctx.channel, DMChannel):
-                        embed.add_field(name="Additional info:", value="Exception occured in DMChannel.")
-                    await channel.send(embed=embed)
-                finally:
-                    raise exc
-
 
     @logger.catch
     async def on_message(self, message):

@@ -10,7 +10,8 @@ from loguru import logger
 from transliterate import translit
 
 from ..utils.checks import is_any_channel
-from ..utils.constants import CONSOLE_CHANNEL, PLACEHOLDER, STATS_CHANNEL, CHASOVOY_ROLE_ID
+from ..utils.constants import (CHASOVOY_ROLE_ID, CONSOLE_CHANNEL, PLACEHOLDER,
+                               STATS_CHANNEL)
 from ..utils.lazy_paginator import paginate
 from ..utils.utils import load_commands_from_json
 
@@ -38,14 +39,14 @@ class Help(Cog, name='Help меню'):
     @Cog.listener()
     async def on_ready(self):
         if not self.bot.ready:
-           self.bot.cogs_ready.ready_up("help")
+            self.bot.cogs_ready.ready_up("help")
 
     @command(name=cmd["help"]["name"], aliases=cmd["help"]["aliases"],
-            brief=cmd["help"]["brief"],
-            description=cmd["help"]["description"],
-            usage=cmd["help"]["usage"],
-            help=cmd["help"]["help"],
-            hidden=cmd["help"]["hidden"], enabled=True)
+             brief=cmd["help"]["brief"],
+             description=cmd["help"]["description"],
+             usage=cmd["help"]["usage"],
+             help=cmd["help"]["help"],
+             hidden=cmd["help"]["hidden"], enabled=True)
     @check_any(dm_only(), is_any_channel([CONSOLE_CHANNEL, STATS_CHANNEL]))
     @logger.catch
     async def help_command(self, ctx, *, cmd: Optional[str]):
@@ -57,13 +58,13 @@ class Help(Cog, name='Help меню'):
             if isinstance(thing, Command):
                 if not thing.hidden:
                     await paginate(ctx, self.command_helper(ctx, thing))
-                elif thing.hidden and ctx.author.id == 375722626636578816:
+                elif thing.hidden and ctx.author.id == self.bot.owner.id:
                     await paginate(ctx, self.command_helper(ctx, thing))
                 else:
                     embed = Embed(
                         title='❗ Ошибка!',
-                        description =f"Указанная команда не существует, либо она скрыта или отключена.",
-                        color = Color.red()
+                        description=f"Указанная команда не существует, либо она скрыта или отключена.",
+                        color=Color.red()
                     )
                     await ctx.reply(embed=embed, delete_after=15)
 
@@ -71,9 +72,9 @@ class Help(Cog, name='Help меню'):
                 await paginate(ctx, self.cog_helper(ctx, thing))
             else:
                 await ctx.reply(
-                    'Ничего не найдено. Проверьте правильность написания команды/раздела.'
+                    'Ничего не найдено. Проверьте правильность написания команды/раздела. '
                     'Учитывайте, что названия разделов чувствительны к регистру.',
-                    delete_after=15
+                     delete_after=30, mention_author=False
                 )
 
     def chuncks(self, l, n):
@@ -98,9 +99,8 @@ class Help(Cog, name='Help меню'):
                 if cog.lower() in hidden_cogs:
                     cogs.remove(cog)
 
-
         for cog in cogs:
-            if ctx.author.id == 375722626636578816:
+            if ctx.author.id == self.bot.owner.id:
                 cmds = [i for i in ctx.bot.get_cog(cog).get_commands()]
             else:
                 cmds = [i for i in ctx.bot.get_cog(cog).get_commands() if not i.hidden and i.enabled]
@@ -128,7 +128,7 @@ class Help(Cog, name='Help меню'):
     def cog_helper(self, ctx, cog):
         name = cog.qualified_name or cog.__class__.__name__
         commands = []
-        if ctx.author.id == 375722626636578816:
+        if ctx.author.id == self.bot.owner.id:
             cmds = [i for i in cog.get_commands()]
         else:
             cmds = [i for i in cog.get_commands() if not i.hidden and i.enabled]
@@ -169,9 +169,9 @@ class Help(Cog, name='Help меню'):
             for cmd_chunks in list(self.chuncks(list(command), 5)):
                 aliases = '|'.join([*cmd.aliases])
                 embed = Embed(
-                    title=f'{ctx.prefix}{cmd.signature}',
+                    title=f'Команды группы {cmd.name}',
                     color=ctx.author.color,
-                    description=f'{cmd.help}\n**Алиасы:**\n```{aliases}```'
+                    description=f'**{cmd.brief}**\n```{ctx.prefix}{cmd.signature}```'
                 )
                 for c in cmd_chunks:
                     embed.add_field(

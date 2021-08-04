@@ -1,3 +1,4 @@
+import asyncio
 from datetime import datetime, timedelta
 from io import BytesIO
 from os import listdir
@@ -85,9 +86,12 @@ class Commands(Cog, name='Базовые команды'):
                 color = Color.green(),
                 timestamp = datetime.utcnow(),
                 description = f"**Заявка на добавление трека в плейлист.**\n\n**Номер заявки:** {rec[0]}\n"
-                            f"**Трек:** {song}\n**Заявка сформирована:** {date.strftime('%d.%m.%Y %H:%M:%S')}"
+                              f"**Трек:** {song}\n**Заявка сформирована:** {date.strftime('%d.%m.%Y %H:%M:%S')}"
             )
-            await self.bot.get_user(i).send(embed=embed)
+            try:
+                await self.bot.get_user(i).send(embed=embed)
+            except:
+                continue
 
     @command(name=cmd["support"]["name"], aliases=cmd["support"]["aliases"],
             brief=cmd["support"]["brief"],
@@ -397,7 +401,8 @@ class Commands(Cog, name='Базовые команды'):
             return
 
         for e in emoji:
-            asset = File(BytesIO(await e.url.read()), filename=e.name+'.png')
+            extension = '.gif' if e.animated else '.png'
+            asset = File(BytesIO(await e.url.read()), filename=e.name+extension)
             await ctx.send(f'**Эмодзи:** {e.name}', file=asset)
 
     @command(name=cmd["info"]["name"], aliases=cmd["info"]["aliases"],
@@ -436,6 +441,7 @@ class Commands(Cog, name='Базовые команды'):
             f"▫️ **Версия:** {self.bot.VERSION}\n" \
             "▫️ **Автор:** Lyndholm#7200\n" \
             "▫️ **Веб сайт:** [docs.durker.fun](https://docs.durker.fun)\n" \
+            "▫️ **Поддержать проект:** [DonationAlerts](https://donationalerts.com/r/lyndholm)\n" \
             "▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬\n" \
             "**Статистика сервера**\n" \
             "▫️ **OS Info:** Debian GNU/Linux 10\n" \
@@ -462,13 +468,28 @@ class Commands(Cog, name='Базовые команды'):
         await ctx.message.delete()
         await ctx.send(
             'После обновления бота от 1 июля 2021 г. '
-            'статистика покупок всех пользователей была сброшена. '
+            'статистика покупок была сброшена у всех пользователей. '
             'Это произошло по двум причинам:\n\n'
             '**1.** Изменение структуры базы данных бота.\n'
             '**2.** Появление новых правил засчитывания покупок.\n\n'
-            'Вы можете подать заявку на восстановление своей статистики. '
-            'Для этого обратитесь к Lyndholm#7200.'
     )
+
+    @command(name=cmd["fix"]["name"], aliases=cmd["fix"]["aliases"],
+            brief=cmd["fix"]["brief"],
+            description=cmd["fix"]["description"],
+            usage=cmd["fix"]["usage"],
+            help=cmd["fix"]["help"],
+            hidden=cmd["fix"]["hidden"], enabled=True)
+    @is_channel(MUSIC_COMMANDS_CHANNEL)
+    @guild_only()
+    @logger.catch
+    async def fix_music_player(self, ctx):
+        if ctx.guild.me.voice is None:
+            return
+
+        await ctx.guild.me.edit(mute=True)
+        await asyncio.sleep(1)
+        await ctx.guild.me.edit(mute=False)
 
 def setup(bot):
     bot.add_cog(Commands(bot))

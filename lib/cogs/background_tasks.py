@@ -13,10 +13,9 @@ from jishaku.functools import executor_function
 from loguru import logger
 
 from ..db import db
-from ..utils.constants import (CAPTAIN_ROLE_ID, KAPITALIST_ROLE_ID,
-                               MAGNAT_ROLE_ID, MECENAT_ROLE_ID, OLD_ROLE_ID,
-                               VETERAN_ROLE_ID, WORKER_ROLE_ID)
-from ..utils.utils import edit_user_reputation, joined_date
+from ..utils.constants import (CAPTAIN_ROLE_ID, OLD_ROLE_ID, VETERAN_ROLE_ID,
+                               WORKER_ROLE_ID)
+from ..utils.utils import edit_user_reputation
 
 ITEM_SHOP_ENDPOINT = "https://fortnite-api.com/v2/shop/br/combined"
 ACTIVITIES = cycle([
@@ -32,8 +31,6 @@ class BackgroundTasks(Cog, name='Фоновые процессы'):
         self.bot = bot
         self.change_bot_activity.start()
         self.check_activity_role.start()
-        self.check_mecenat_role.start()
-        self.check_supporter_role.start()
         self.update_user_nickname.start()
         self.update_fortnite_shop_hash.start()
         if self.bot.ready:
@@ -72,84 +69,32 @@ class BackgroundTasks(Cog, name='Фоновые процессы'):
                 continue
 
             try:
-                joined_at = joined_date(member)
-                messages_count, rep_rank = db.fetchone(['messages_count', 'rep_rank'], 'users_stats', 'user_id', member.id)
+                joined_at = await self.bot.pg_pool.fetchval(
+                    'SELECT joined_at FROM users_info WHERE user_id = $1', member.id)
+                messages_count = await self.bot.pg_pool.fetchval(
+                    'SELECT messages_count FROM users_stats WHERE user_id = $1', member.id)
                 time_delta = (datetime.utcnow() - joined_at).days
             except TypeError:
                 continue
 
             if worker not in member.roles and messages_count >= 750 and time_delta >= 7:
                 await member.add_roles(worker)
-                edit_user_reputation(member.id, '+', 250)
+                await edit_user_reputation(self.bot.pg_pool, member.id, '+', 250)
 
-            if old not in member.roles and messages_count >= 3500 and time_delta >= 31:
+            if old not in member.roles and messages_count >= 3_500 and time_delta >= 31:
                 await member.add_roles(old)
-                edit_user_reputation(member.id, '+', 750)
+                await edit_user_reputation(self.bot.pg_pool, member.id, '+', 750)
 
-            if captain not in member.roles and messages_count >= 10000 and time_delta >= 91:
+            if captain not in member.roles and messages_count >= 10_000 and time_delta >= 91:
                 await member.add_roles(captain)
-                edit_user_reputation(member.id, '+', 1500)
+                await edit_user_reputation(self.bot.pg_pool, member.id, '+', 1_500)
 
-            if veteran not in member.roles and messages_count >= 25000 and time_delta >= 181:
+            if veteran not in member.roles and messages_count >= 25_000 and time_delta >= 181:
                 await member.add_roles(veteran)
-                edit_user_reputation(member.id, '+', 3000)
+                await edit_user_reputation(self.bot.pg_pool, member.id, '+', 3_000)
 
     @check_activity_role.before_loop
     async def before_check_activity_role(self):
-        await self.bot.wait_until_ready()
-
-
-    @tasks.loop(hours=24.0)
-    @logger.catch
-    async def check_mecenat_role(self):
-        mecenat = get(self.bot.guild.roles, id=MECENAT_ROLE_ID)
-        kapitalist = get(self.bot.guild.roles, id=KAPITALIST_ROLE_ID)
-
-        for member in self.bot.guild.members:
-            if self.mod_cog.is_member_muted(member) or member.pending:
-                continue
-
-            try:
-                purchases = db.fetchone(['purchases'], 'users_stats', 'user_id', member.id)[0]['vbucks_purchases']
-            except TypeError:
-                continue
-
-            if purchases:
-                lpd = purchases[-1]['date']
-                if mecenat in member.roles and kapitalist not in member.roles:
-                    if (datetime.now() - datetime.strptime(lpd, '%d.%m.%Y %H:%M:%S')).days > 90:
-                        await member.remove_roles(mecenat, reason='С момента последней покупки прошло более 3 месяцев')
-
-    @check_mecenat_role.before_loop
-    async def before_check_mecenat_role(self):
-        await self.bot.wait_until_ready()
-
-
-    @tasks.loop(hours=1.0)
-    @logger.catch
-    async def check_supporter_role(self):
-        kapitalist = get(self.bot.guild.roles, id=KAPITALIST_ROLE_ID)
-        magnat = get(self.bot.guild.roles, id=MAGNAT_ROLE_ID)
-
-        for member in self.bot.guild.members:
-            if self.mod_cog.is_member_muted(member) or member.pending:
-                continue
-
-            try:
-                purchases = db.fetchone(['purchases'], 'users_stats', 'user_id', member.id)[0]
-                vbucks_count = sum(purchases['vbucks_purchases'][i]['price'] for i in range(len(purchases['vbucks_purchases'])))
-            except TypeError:
-                continue
-
-            if vbucks_count >= 10000 and kapitalist not in member.roles:
-                await member.add_roles(kapitalist)
-                edit_user_reputation(member.id, '+', 1000)
-            if vbucks_count >= 25000 and magnat not in member.roles:
-                await member.add_roles(magnat)
-                edit_user_reputation(member.id, '+', 2500)
-
-    @check_supporter_role.before_loop
-    async def before_check_supporter_role(self):
         await self.bot.wait_until_ready()
 
 
@@ -161,13 +106,16 @@ class BackgroundTasks(Cog, name='Фоновые процессы'):
                 continue
 
             try:
-                nickname = db.fetchone(['nickname'], 'users_info', 'user_id', member.id)[0]
+                nickname = await self.bot.pg_pool.fetchval(
+                    'SELECT nickname FROM users_info WHERE user_id = $1', member.id)
             except TypeError:
                 continue
 
             if nickname != member.display_name:
-                db.execute('UPDATE users_info SET nickname = %s WHERE user_id = %s', member.display_name, member.id)
-                db.commit()
+                await self.bot.pg_pool.execute(
+                    'UPDATE users_info SET nickname = $1 WHERE user_id = $2',
+                    member.display_name, member.id
+                )
 
     @update_user_nickname.before_loop
     async def before_update_user_nickname(self):
@@ -207,7 +155,7 @@ class BackgroundTasks(Cog, name='Фоновые процессы'):
 
             await self.create_item_shop_image(data=cache)
             date = datetime.now().strftime("%d.%m.%Y %H:%M:%S")
-            await self.bot.get_user(self.bot.owner_ids[0]).send(
+            await self.bot.logs_channel.send(
                 f"Shop updated & rendered for `{date}` | `{cache['hash']}` | `{cache['len']}`"
             )
 

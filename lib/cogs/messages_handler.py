@@ -2,7 +2,7 @@ from datetime import datetime
 from difflib import get_close_matches
 
 import aiofiles
-from discord import Message, TextChannel
+from discord import Message, TextChannel, NotFound
 from discord.ext.commands import Cog
 from discord.utils import remove_markdown
 from loguru import logger
@@ -103,11 +103,12 @@ class MessagesHandler(Cog, name='Messages handler'):
     @listen_for_guilds()
     async def on_message(self, message):
         if await self.can_message_be_counted(message):
-            self.increase_user_messages_counter(message.author.id)
+            if message.author.id not in self.bot.banlist:
+                self.increase_user_messages_counter(message.author.id)
 
         rep = get_close_matches(message.clean_content.lower(), self.rep_filter, cutoff=0.75)
         if rep:
-            await self.invoke_command(message, 'rep')
+            await self.invoke_command(message, 'repinfo')
 
         question = get_close_matches(message.clean_content.lower(), self.question_filter, cutoff=0.85)
         if question:
@@ -119,8 +120,11 @@ class MessagesHandler(Cog, name='Messages handler'):
             await self.invoke_command(message, 'support')
 
         if message.channel.id == 639925210849476608 and message.author.id != 479499525921308703:
-            await message.add_reaction('\N{THUMBS UP SIGN}')
-            await message.add_reaction('\N{THUMBS DOWN SIGN}')
+            try:
+                await message.add_reaction('\N{THUMBS UP SIGN}')
+                await message.add_reaction('\N{THUMBS DOWN SIGN}')
+            except NotFound:
+                pass
 
     @Cog.listener()
     @listen_for_guilds()

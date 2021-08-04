@@ -1,3 +1,4 @@
+import ast
 from datetime import datetime
 from typing import List
 
@@ -7,7 +8,6 @@ from discord.ext.commands import Cog
 from discord.utils import get
 from loguru import logger
 
-from ..db import db
 from ..utils.utils import joined_date
 
 
@@ -21,7 +21,7 @@ class AchievementHandler(Cog, name='AchievementHandler'):
         if not self.bot.ready:
            self.bot.cogs_ready.ready_up("achievement_handler")
 
-    @tasks.loop(hours=6.0)
+    @tasks.loop(hours=1.0)
     @logger.catch
     async def achievements_manager(self):
         AS_COG = self.bot.get_cog('Система достижений')
@@ -30,17 +30,24 @@ class AchievementHandler(Cog, name='AchievementHandler'):
         for member in self.bot.guild.members:
             if member.pending:
                 continue
+            if member.id in AS_COG.achievements_banlist:
+                continue
+            if member.id in self.bot.banlist:
+                continue
 
-            user_achievements = self.get_user_achievements(member)
+            user_achievements = await self.get_user_achievements(member)
             await self.handle_achievements(member, user_achievements, AS_COG)
 
     @achievements_manager.before_loop
-    async def before_handle(self):
+    async def wait_before_handle_achievements(self):
         await self.bot.wait_until_ready()
 
-    def get_user_achievements(self, user: Member) -> List[str]:
-        rec = db.fetchone(['achievements_list'], 'users_stats', 'user_id', user.id)
-        data = rec[0]['user_achievements_list']
+    async def get_user_achievements(self, user: Member) -> List[str]:
+        data = await self.bot.pg_pool.fetchval(
+            'SELECT achievements_list FROM users_stats WHERE user_id = $1',
+            user.id)
+        data = ast.literal_eval(data)
+        data = data['user_achievements_list']
         user_achievements = [key for dic in data for key in dic.keys()]
         return user_achievements
 
@@ -59,7 +66,9 @@ class AchievementHandler(Cog, name='AchievementHandler'):
 
     @logger.catch
     async def writer_handler(self, member, achievements, cog):
-        data = db.fetchone(['messages_count'], 'users_stats', 'user_id', member.id)[0]
+        data = await self.bot.pg_pool.fetchval(
+            'SELECT messages_count FROM users_stats WHERE user_id = $1',
+            member.id)
         WRITER_1 = 'AID_Writer_1'
         WRITER_2 = 'AID_Writer_2'
         WRITER_3 = 'AID_Writer_3'
@@ -69,32 +78,32 @@ class AchievementHandler(Cog, name='AchievementHandler'):
 
         if data >= 1_000:
             if WRITER_1 not in achievements:
-                cog.give_achievement(self.bot.guild.me.id, member.id, WRITER_1)
+                await cog.give_achievement(self.bot.guild.me.id, member.id, WRITER_1)
                 #await cog.achievement_award_notification(WRITER_1, member)
         if data >= 5_000:
             if WRITER_2 not in achievements:
-                cog.give_achievement(self.bot.guild.me.id, member.id, WRITER_2)
+                await cog.give_achievement(self.bot.guild.me.id, member.id, WRITER_2)
                 #await cog.achievement_award_notification(WRITER_2, member)
         if data >= 10_000:
             if WRITER_3 not in achievements:
-                cog.give_achievement(self.bot.guild.me.id, member.id, WRITER_3)
+                await cog.give_achievement(self.bot.guild.me.id, member.id, WRITER_3)
                 #await cog.achievement_award_notification(WRITER_3, member)
         if data >= 25_000:
             if WRITER_4 not in achievements:
-                cog.give_achievement(self.bot.guild.me.id, member.id, WRITER_4)
+                await cog.give_achievement(self.bot.guild.me.id, member.id, WRITER_4)
                 #await cog.achievement_award_notification(WRITER_4, member)
         if data >= 50_000:
             if WRITER_5 not in achievements:
-                cog.give_achievement(self.bot.guild.me.id, member.id, WRITER_5)
+                await cog.give_achievement(self.bot.guild.me.id, member.id, WRITER_5)
                 #await cog.achievement_award_notification(WRITER_5, member)
         if data >= 100_000:
             if WRITER_6 not in achievements:
-                cog.give_achievement(self.bot.guild.me.id, member.id, WRITER_6)
+                await cog.give_achievement(self.bot.guild.me.id, member.id, WRITER_6)
                 #await cog.achievement_award_notification(WRITER_6, member)
 
     @logger.catch
     async def old_handler(self, member, achievements, cog):
-        diff = datetime.utcnow() - joined_date(member)
+        diff = datetime.utcnow() - (await joined_date(self.bot.pg_pool, member))
         OLD_1 = 'AID_Old_1'
         OLD_2 = 'AID_Old_2'
         OLD_3 = 'AID_Old_3'
@@ -105,31 +114,31 @@ class AchievementHandler(Cog, name='AchievementHandler'):
 
         if diff.days >= 7:
             if OLD_1 not in achievements:
-                cog.give_achievement(self.bot.guild.me.id, member.id, OLD_1)
+                await cog.give_achievement(self.bot.guild.me.id, member.id, OLD_1)
                 #await cog.achievement_award_notification(OLD_1, member)
         if diff.days >= 30:
             if OLD_2 not in achievements:
-                cog.give_achievement(self.bot.guild.me.id, member.id, OLD_2)
+                await cog.give_achievement(self.bot.guild.me.id, member.id, OLD_2)
                 #await cog.achievement_award_notification(OLD_2, member)
         if diff.days >= 30 * 3:
             if OLD_3 not in achievements:
-                cog.give_achievement(self.bot.guild.me.id, member.id, OLD_3)
+                await cog.give_achievement(self.bot.guild.me.id, member.id, OLD_3)
                 #await cog.achievement_award_notification(OLD_3, member)
         if diff.days >= 30 * 6:
             if OLD_4 not in achievements:
-                cog.give_achievement(self.bot.guild.me.id, member.id, OLD_4)
+                await cog.give_achievement(self.bot.guild.me.id, member.id, OLD_4)
                 #await cog.achievement_award_notification(OLD_4, member)
         if diff.days >= 365:
             if OLD_5 not in achievements:
-                cog.give_achievement(self.bot.guild.me.id, member.id, OLD_5)
+                await cog.give_achievement(self.bot.guild.me.id, member.id, OLD_5)
                 #await cog.achievement_award_notification(OLD_5, member)
         if diff.days >= 365 * 2:
             if OLD_6 not in achievements:
-                cog.give_achievement(self.bot.guild.me.id, member.id, OLD_6)
+                await cog.give_achievement(self.bot.guild.me.id, member.id, OLD_6)
                 #await cog.achievement_award_notification(OLD_6, member)
         if diff.days >= 365 * 3:
             if OLD_7 not in achievements:
-                cog.give_achievement(self.bot.guild.me.id, member.id, OLD_7)
+                await cog.give_achievement(self.bot.guild.me.id, member.id, OLD_7)
                 #await cog.achievement_award_notification(OLD_7, member)
 
     @logger.catch
@@ -143,28 +152,31 @@ class AchievementHandler(Cog, name='AchievementHandler'):
 
         if roles >= 3:
             if ROLE_MASTER_1 not in achievements:
-                cog.give_achievement(self.bot.guild.me.id, member.id, ROLE_MASTER_1)
+                await cog.give_achievement(self.bot.guild.me.id, member.id, ROLE_MASTER_1)
                 #await cog.achievement_award_notification(ROLE_MASTER_1, member)
         if roles >= 5:
             if ROLE_MASTER_2 not in achievements:
-                cog.give_achievement(self.bot.guild.me.id, member.id, ROLE_MASTER_2)
+                await cog.give_achievement(self.bot.guild.me.id, member.id, ROLE_MASTER_2)
                 #await cog.achievement_award_notification(ROLE_MASTER_2, member)
         if roles >= 10:
             if ROLE_MASTER_3 not in achievements:
-                cog.give_achievement(self.bot.guild.me.id, member.id, ROLE_MASTER_3)
+                await cog.give_achievement(self.bot.guild.me.id, member.id, ROLE_MASTER_3)
                 #await cog.achievement_award_notification(ROLE_MASTER_3, member)
         if roles >= 15:
             if ROLE_MASTER_4 not in achievements:
-                cog.give_achievement(self.bot.guild.me.id, member.id, ROLE_MASTER_4)
+                await cog.give_achievement(self.bot.guild.me.id, member.id, ROLE_MASTER_4)
                 #await cog.achievement_award_notification(ROLE_MASTER_4, member)
         if roles >= 20:
             if ROLE_MASTER_5 not in achievements:
-                cog.give_achievement(self.bot.guild.me.id, member.id, ROLE_MASTER_5)
+                await cog.give_achievement(self.bot.guild.me.id, member.id, ROLE_MASTER_5)
                 #await cog.achievement_award_notification(ROLE_MASTER_5, member)
 
     @logger.catch
     async def patron_handler(self, member, achievements, cog):
-        data = db.fetchone(['purchases'], 'users_stats', 'user_id', member.id)[0]
+        data = await self.bot.pg_pool.fetchval(
+            'SELECT purchases FROM users_stats WHERE user_id = $1',
+            member.id)
+        data = ast.literal_eval(data)
         vbucks = sum(data['vbucks_purchases'][i]['price']
                     for i in range(len(data['vbucks_purchases'])))
         PATRON_1 = 'AID_Patron_1'
@@ -176,32 +188,34 @@ class AchievementHandler(Cog, name='AchievementHandler'):
 
         if vbucks > 0:
             if PATRON_1 not in achievements:
-                cog.give_achievement(self.bot.guild.me.id, member.id, PATRON_1)
+                await cog.give_achievement(self.bot.guild.me.id, member.id, PATRON_1)
                 #await cog.achievement_award_notification(PATRON_1, member)
         if vbucks >= 5_000:
             if PATRON_2 not in achievements:
-                cog.give_achievement(self.bot.guild.me.id, member.id, PATRON_2)
+                await cog.give_achievement(self.bot.guild.me.id, member.id, PATRON_2)
                 #await cog.achievement_award_notification(PATRON_2, member)
         if vbucks >= 10_000:
             if PATRON_3 not in achievements:
-                cog.give_achievement(self.bot.guild.me.id, member.id, PATRON_3)
+                await cog.give_achievement(self.bot.guild.me.id, member.id, PATRON_3)
                 #await cog.achievement_award_notification(PATRON_3, member)
         if vbucks >= 25_000:
             if PATRON_4 not in achievements:
-                cog.give_achievement(self.bot.guild.me.id, member.id, PATRON_4)
+                await cog.give_achievement(self.bot.guild.me.id, member.id, PATRON_4)
                 #await cog.achievement_award_notification(PATRON_4, member)
         if vbucks >= 50_000:
             if PATRON_5 not in achievements:
-                cog.give_achievement(self.bot.guild.me.id, member.id, PATRON_5)
+                await cog.give_achievement(self.bot.guild.me.id, member.id, PATRON_5)
                 #await cog.achievement_award_notification(PATRON_5, member)
         if vbucks >= 100_000:
             if PATRON_6 not in achievements:
-                cog.give_achievement(self.bot.guild.me.id, member.id, PATRON_6)
+                await cog.give_achievement(self.bot.guild.me.id, member.id, PATRON_6)
                 #await cog.achievement_award_notification(PATRON_6, member)
 
     @logger.catch
     async def reputation_master_handler(self, member, achievements, cog):
-        rep_rank = db.fetchone(['rep_rank'], 'users_stats', 'user_id', member.id)[0]
+        rep_rank = await self.bot.pg_pool.fetchval(
+            'SELECT rep_rank FROM users_stats WHERE user_id = $1',
+            member.id)
         REP_MASTER_1 = 'AID_ReputationMaster_1'
         REP_MASTER_2 = 'AID_ReputationMaster_2'
         REP_MASTER_3 = 'AID_ReputationMaster_3'
@@ -210,23 +224,23 @@ class AchievementHandler(Cog, name='AchievementHandler'):
 
         if rep_rank >= 1_000:
             if REP_MASTER_1 not in achievements:
-                cog.give_achievement(self.bot.guild.me.id, member.id, REP_MASTER_1)
+                await cog.give_achievement(self.bot.guild.me.id, member.id, REP_MASTER_1)
                 #await cog.achievement_award_notification(REP_MASTER_1, member)
         if rep_rank >= 5_000:
             if REP_MASTER_2 not in achievements:
-                cog.give_achievement(self.bot.guild.me.id, member.id, REP_MASTER_2)
+                await cog.give_achievement(self.bot.guild.me.id, member.id, REP_MASTER_2)
                 #await cog.achievement_award_notification(REP_MASTER_2, member)
         if rep_rank >= 10_000:
             if REP_MASTER_3 not in achievements:
-                cog.give_achievement(self.bot.guild.me.id, member.id, REP_MASTER_3)
+                await cog.give_achievement(self.bot.guild.me.id, member.id, REP_MASTER_3)
                 #await cog.achievement_award_notification(REP_MASTER_3, member)
         if rep_rank >= 25_000:
             if REP_MASTER_4 not in achievements:
-                cog.give_achievement(self.bot.guild.me.id, member.id, REP_MASTER_4)
+                await cog.give_achievement(self.bot.guild.me.id, member.id, REP_MASTER_4)
                 #await cog.achievement_award_notification(REP_MASTER_4, member)
         if rep_rank >= 50_000:
             if REP_MASTER_5 not in achievements:
-                cog.give_achievement(self.bot.guild.me.id, member.id, REP_MASTER_5)
+                await cog.give_achievement(self.bot.guild.me.id, member.id, REP_MASTER_5)
                 #await cog.achievement_award_notification(REP_MASTER_5, member)
 
     @logger.catch
@@ -236,7 +250,7 @@ class AchievementHandler(Cog, name='AchievementHandler'):
 
         if esport_role in member.roles:
             if KOTLETA_1 not in achievements:
-                cog.give_achievement(self.bot.guild.me.id, member.id, KOTLETA_1)
+                await cog.give_achievement(self.bot.guild.me.id, member.id, KOTLETA_1)
                 #await cog.achievement_award_notification(KOTLETA_1, member)
 
     @logger.catch
@@ -246,12 +260,14 @@ class AchievementHandler(Cog, name='AchievementHandler'):
 
         if stark_role in member.roles:
             if PHILANTHROPIST_1 not in achievements:
-                cog.give_achievement(self.bot.guild.me.id, member.id, PHILANTHROPIST_1)
+                await cog.give_achievement(self.bot.guild.me.id, member.id, PHILANTHROPIST_1)
                 #await cog.achievement_award_notification(PHILANTHROPIST_1, member)
 
     @logger.catch
     async def voice_master_handler(self, member, achievements, cog):
-        seconds = db.fetchone(['invoice_time'], 'users_stats', 'user_id', member.id)[0]
+        seconds = await self.bot.pg_pool.fetchval(
+            'SELECT invoice_time FROM users_stats WHERE user_id = $1',
+            member.id)
         hours = seconds//3600
         VOICE_MASTER_1 = 'AID_VoiceMaster_1'
         VOICE_MASTER_2 = 'AID_VoiceMaster_2'
@@ -261,28 +277,30 @@ class AchievementHandler(Cog, name='AchievementHandler'):
 
         if hours >= 10:
             if VOICE_MASTER_1 not in achievements:
-                cog.give_achievement(self.bot.guild.me.id, member.id, VOICE_MASTER_1)
+                await cog.give_achievement(self.bot.guild.me.id, member.id, VOICE_MASTER_1)
                 #await cog.achievement_award_notification(VOICE_MASTER_1, member)
         if hours >= 25:
             if VOICE_MASTER_2 not in achievements:
-                cog.give_achievement(self.bot.guild.me.id, member.id, VOICE_MASTER_2)
+                await cog.give_achievement(self.bot.guild.me.id, member.id, VOICE_MASTER_2)
                 #await cog.achievement_award_notification(VOICE_MASTER_2, member)
         if hours >= 50:
             if VOICE_MASTER_3 not in achievements:
-                cog.give_achievement(self.bot.guild.me.id, member.id, VOICE_MASTER_3)
+                await cog.give_achievement(self.bot.guild.me.id, member.id, VOICE_MASTER_3)
                 #await cog.achievement_award_notification(VOICE_MASTER_3, member)
         if hours >= 100:
             if VOICE_MASTER_4 not in achievements:
-                cog.give_achievement(self.bot.guild.me.id, member.id, VOICE_MASTER_4)
+                await cog.give_achievement(self.bot.guild.me.id, member.id, VOICE_MASTER_4)
                 #await cog.achievement_award_notification(VOICE_MASTER_4, member)
         if hours >= 250:
             if VOICE_MASTER_5 not in achievements:
-                cog.give_achievement(self.bot.guild.me.id, member.id, VOICE_MASTER_5)
+                await cog.give_achievement(self.bot.guild.me.id, member.id, VOICE_MASTER_5)
                 #await cog.achievement_award_notification(VOICE_MASTER_5, member)
 
     @logger.catch
     async def leveling_handler(self, member, achievements, cog):
-        level = db.fetchone(['level'], 'leveling', 'user_id', member.id)[0]
+        level = await self.bot.pg_pool.fetchval(
+            'SELECT level FROM leveling WHERE user_id = $1',
+            member.id)
         LEVELING_1 = 'AID_Leveling_1'
         LEVELING_2 = 'AID_Leveling_2'
         LEVELING_3 = 'AID_Leveling_3'
@@ -292,35 +310,35 @@ class AchievementHandler(Cog, name='AchievementHandler'):
 
         if level >= 3:
             if LEVELING_1 not in achievements:
-                cog.give_achievement(self.bot.guild.me.id, member.id, LEVELING_1)
+                await cog.give_achievement(self.bot.guild.me.id, member.id, LEVELING_1)
                 #await cog.achievement_award_notification(LEVELING_1, member)
         if level >= 10:
             if LEVELING_2 not in achievements:
-                cog.give_achievement(self.bot.guild.me.id, member.id, LEVELING_2)
+                await cog.give_achievement(self.bot.guild.me.id, member.id, LEVELING_2)
                 #await cog.achievement_award_notification(LEVELING_2, member)
         if level >= 25:
             if LEVELING_3 not in achievements:
-                cog.give_achievement(self.bot.guild.me.id, member.id, LEVELING_3)
+                await cog.give_achievement(self.bot.guild.me.id, member.id, LEVELING_3)
                 #await cog.achievement_award_notification(LEVELING_3, member)
         if level >= 50:
             if LEVELING_4 not in achievements:
-                cog.give_achievement(self.bot.guild.me.id, member.id, LEVELING_4)
+                await cog.give_achievement(self.bot.guild.me.id, member.id, LEVELING_4)
                 #await cog.achievement_award_notification(LEVELING_4, member)
         if level >= 75:
             if LEVELING_5 not in achievements:
-                cog.give_achievement(self.bot.guild.me.id, member.id, LEVELING_5)
+                await cog.give_achievement(self.bot.guild.me.id, member.id, LEVELING_5)
                 #await cog.achievement_award_notification(LEVELING_5, member)
         if level >= 100:
             if LEVELING_6 not in achievements:
-                cog.give_achievement(self.bot.guild.me.id, member.id, LEVELING_6)
+                await cog.give_achievement(self.bot.guild.me.id, member.id, LEVELING_6)
                 #await cog.achievement_award_notification(LEVELING_6, member)
 
     @logger.catch
     async def musicDJ_handler(self, member, achievements, cog):
-        suggestions = db.records(
+        suggestions = await self.bot.pg_pool.fetch(
             "SELECT suggestion_id FROM song_suggestions "
             "WHERE suggestion_type = 'add' AND curator_decision = 'true' "
-            "AND suggestion_author_id = %s", member.id
+            "AND suggestion_author_id = $1", member.id
         )
         MUSIC_DJ_1 = 'AID_MusicDJ_1'
         MUSIC_DJ_2 = 'AID_MusicDJ_2'
@@ -328,15 +346,15 @@ class AchievementHandler(Cog, name='AchievementHandler'):
 
         if len(suggestions) >= 5:
             if MUSIC_DJ_1 not in achievements:
-                cog.give_achievement(self.bot.guild.me.id, member.id, MUSIC_DJ_1)
+                await cog.give_achievement(self.bot.guild.me.id, member.id, MUSIC_DJ_1)
                 #await cog.achievement_award_notification(MUSIC_DJ_1, member)
         if len(suggestions) >= 15:
             if MUSIC_DJ_2 not in achievements:
-                cog.give_achievement(self.bot.guild.me.id, member.id, MUSIC_DJ_2)
+                await cog.give_achievement(self.bot.guild.me.id, member.id, MUSIC_DJ_2)
                 #await cog.achievement_award_notification(MUSIC_DJ_2, member)
         if len(suggestions) >= 25:
             if MUSIC_DJ_3 not in achievements:
-                cog.give_achievement(self.bot.guild.me.id, member.id, MUSIC_DJ_3)
+                await cog.give_achievement(self.bot.guild.me.id, member.id, MUSIC_DJ_3)
                 #await cog.achievement_award_notification(MUSIC_DJ_3, member)
 
 

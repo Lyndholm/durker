@@ -120,7 +120,7 @@ class Player(wavelink.Player):
 
         embed = discord.Embed(title=f'Радио FNFUN | {channel.name}', colour=0x00ff00)
         embed.description = f'**Сейчас играет:**\n```ini\n{track.author} — {track.title}\n```'
-        embed.set_thumbnail(url=track.thumb if track.thumb else "https://cdn.discordapp.com/attachments/774698479981297664/813684421370314772/radio_placeholder.jpg")
+        embed.set_thumbnail(url=track.thumb if track.thumb else "https://cdn.durker.fun/misc/radio_placeholder.jpg")
 
         try:
             embed.add_field(name='Продолжительность', value=str(datetime.timedelta(milliseconds=int(track.length))))
@@ -259,7 +259,7 @@ class LofiRadio(commands.Cog, wavelink.WavelinkMixin, name='Lofi Radio'):
         for uri in playlists:
             tracks = await self.bot.wavelink.get_tracks(uri)
             if not tracks:
-                return await self.bot.get_user(self.bot.owner_ids[0]).send(
+                return await self.bot.logs_channel.send(
                     f'{datetime.datetime.now()} | Не удалось загрузить один из плейлистов `Lofi Radio`.\n'
                     f'`{uri}`')
 

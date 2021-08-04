@@ -6,10 +6,9 @@ from math import floor
 from random import choice, randint
 from typing import Optional
 
-import aiofiles
-from discord import (Color, DMChannel, Embed, Invite, Member, Message,
-                     PartialInviteGuild, TextChannel)
+from discord import Color, Embed, Invite, Member, Message, PartialInviteGuild
 from discord.errors import NotFound
+from discord.ext import tasks
 from discord.ext.commands import (BadArgument, Cog, Converter, Greedy,
                                   bot_has_permissions, check_any, command,
                                   guild_only, has_any_role, has_permissions)
@@ -45,11 +44,11 @@ class Moderation(Cog, name='Модерация'):
     def __init__(self, bot):
         self.bot = bot
         self.reading_members = {}
-        self.pominki_url = "https://cdn.discordapp.com/attachments/774698479981297664/809142415310979082/RoflanPominki.png"
         self.URL_REGEX = r'(https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|www\.[a-zA-Z0-9][a-zA-Z0-9-]+[a-zA-Z0-9]\.[^\s]{2,}|https?:\/\/(?:www\.|(?!www))[a-zA-Z0-9]+\.[^\s]{2,}|www\.[a-zA-Z0-9]+\.[^\s]{2,})'
         self.DISCORD_INVITE_REGEX = r'discord(?:\.com|app\.com|\.gg)[\/invite\/]?(?:[a-zA-Z0-9\-]{2,32})'
         self.EMOJI_REGEX = r'<(?P<animated>a?):(?P<name>[a-zA-Z0-9_]{2,32}):(?P<id>[0-9]{18,22})>'
         self.UNICODE_EMOJI_REGEX = r'[\U00010000-\U0010ffff]'
+        self.ban_members_with_negative_reputaion.start()
         if self.bot.ready:
             bot.loop.create_task(self.init_vars())
 
@@ -57,6 +56,7 @@ class Moderation(Cog, name='Модерация'):
     async def init_vars(self):
         self.moderation_channel = self.bot.get_channel(MODERATION_PUBLIC_CHANNEL)
         self.audit_channel = self.bot.get_channel(AUDIT_LOG_CHANNEL)
+        self.chasovie_channel = self.bot.get_channel(CHASOVIE_CHANNEL)
         self.mute_role = self.bot.guild.get_role(MUTE_ROLE_ID)
         self.read_role = self.bot.guild.get_role(READ_ROLE_ID)
         self.helper_role = self.bot.guild.get_role(CHASOVOY_ROLE_ID)
@@ -86,7 +86,6 @@ class Moderation(Cog, name='Модерация'):
                 color=Color.dark_red(),
                 timestamp=datetime.utcnow()
             )
-            embed.set_thumbnail(url=self.pominki_url)
 
             fields = [
                 ("Пользователь", f"{target.display_name} ({target.mention})", False),
@@ -137,7 +136,6 @@ class Moderation(Cog, name='Модерация'):
                 color=Color.dark_red(),
                 timestamp=datetime.utcnow()
             )
-            embed.set_thumbnail(url=self.pominki_url)
 
             fields = [
                 ("Пользователь", f"{target.display_name} ({target.mention})", False),
@@ -222,7 +220,7 @@ class Moderation(Cog, name='Модерация'):
                 color=Color.blue(),
                 timestamp=datetime.utcnow()
             )
-            embed.set_thumbnail(url=self.pominki_url)
+
             fields = [
                 ("Причина", reason.capitalize(), True),
                 time_field,
@@ -270,7 +268,7 @@ class Moderation(Cog, name='Модерация'):
                         ("Срок мута", "30 минут", True)
                     )
                     _extend_mute_story(message, target, 1800, reason)
-                    edit_user_reputation(target.id, '-', 100)
+                    await edit_user_reputation(self.bot.pg_pool, target.id, '-', 100)
                     await self.moderation_channel.send(embed=embed)
 
                 elif mute_type == "isolator":
@@ -279,9 +277,9 @@ class Moderation(Cog, name='Модерация'):
                         target,
                         f"**Шизоид <:durka:684794973358522426> `{target.display_name}` ({target.mention}) <:durka:684794973358522426> в изоляторе. Кукуха чата в безопасности.**",
                         ("Срок мута", "3 часа", True)
-                    ).set_thumbnail(url='https://media1.giphy.com/media/pKPbddZ0OSoik/giphy.gif')
+                    )
                     _extend_mute_story(message, target, 10800, reason)
-                    edit_user_reputation(target.id, '-', 250)
+                    await edit_user_reputation(self.bot.pg_pool, target.id, '-', 250)
                     await self.moderation_channel.send(embed=embed)
 
                 elif mute_type == "dungeon":
@@ -292,7 +290,7 @@ class Moderation(Cog, name='Модерация'):
                         ("Срок мута", "12 часов", True)
                     )
                     _extend_mute_story(message, target, 43200, reason)
-                    edit_user_reputation(target.id, '-', 500)
+                    await edit_user_reputation(self.bot.pg_pool, target.id, '-', 500)
                     await self.moderation_channel.send(embed=embed)
 
                 elif mute_type == "gulag":
@@ -303,7 +301,7 @@ class Moderation(Cog, name='Модерация'):
                         ("Срок мута", "24 часа", True)
                     )
                     _extend_mute_story(message, target, 86400, reason)
-                    edit_user_reputation(target.id, '-', 1000)
+                    await edit_user_reputation(self.bot.pg_pool, target.id, '-', 1000)
                     await self.moderation_channel.send(embed=embed)
 
                 else:
@@ -312,7 +310,7 @@ class Moderation(Cog, name='Модерация'):
                             ("Срок мута", f"{time} {russian_plural(int(time),['час','часа','часов'])}" if time and time.isdigit() else "Бессрочно", True)
                     )
                     _extend_mute_story(message, target, int(time) * 3600 if time and time.isdigit() else 0, reason)
-                    edit_user_reputation(target.id, '-', floor(5 * (int(time) ^ 2) + 50 * int(time) + 100) if time and time.isdigit() else 0)
+                    await edit_user_reputation(self.bot.pg_pool, target.id, '-', floor(5 * (int(time) ^ 2) + 50 * int(time) + 100) if time and time.isdigit() else 0)
                     await self.moderation_channel.send(embed=embed)
 
                 db.insert("mutes", {"user_id": target.id,
@@ -353,7 +351,6 @@ class Moderation(Cog, name='Модерация'):
                     color=Color.green(),
                     timestamp=datetime.utcnow()
                 )
-                embed.set_thumbnail(url="https://media1.tenor.com/images/c44aff453bd34aa2f3a21ddd106ed641/tenor.gif")
 
                 fields = [("Пользователь", f"{target.display_name} ({target.mention})", False),
                           ("Причина", reason.capitalize(), False)]
@@ -510,7 +507,7 @@ class Moderation(Cog, name='Модерация'):
                 color=Color.red(),
                 timestamp=datetime.utcnow()
             )
-            embed.set_thumbnail(url="https://media1.tenor.com/images/ef7a7efecb259c77e77720ce991b5c4a/tenor.gif")
+
             fields = [
                 ("Причина", reason.capitalize(), True),
                 time_field,
@@ -529,18 +526,17 @@ class Moderation(Cog, name='Модерация'):
                 return
 
             if len(warns) == 1:
-                edit_user_reputation(target.id, '-', 1000)
+                await edit_user_reputation(self.bot.pg_pool, target.id, '-', 1000)
 
             if len(warns) == 2:
-                edit_user_reputation(target.id, '-', 2500)
+                await edit_user_reputation(self.bot.pg_pool, target.id, '-', 2500)
 
             if len(warns) == 3:
-                edit_user_reputation(target.id, '-', 5000)
+                await edit_user_reputation(self.bot.pg_pool, target.id, '-', 5000)
 
-                self.bot.banlist.append(target.id)
-
-                async with aiofiles.open('./data/txt/banlist.txt', 'a', encoding='utf-8') as f:
-                   await f.write(f"{target.id}\n")
+                if target.id not in self.bot.banlist:
+                    self.bot.banlist.append(target.id)
+                    db.insert('blacklist', {'user_id':target.id,'reason':'Получил 3 варна'})
 
             if len(warns) > 3:
                     await self.ban_members(message, [target], 1, "Максимум варнов | " + reason)
@@ -667,14 +663,14 @@ class Moderation(Cog, name='Модерация'):
                 color=Color.orange(),
                 timestamp=datetime.utcnow(),
                 description=f'**Пользователь `{target.display_name}` ({target.mention}) отправлен изучать правила сервера и описание ролей.**'
-            ).set_thumbnail(url='https://avatanplus.ru/files/resources/original/574d7c1e7098b15506acd6fd.png')
+            )
 
             fields = [('Администратор', ctx.author.mention, True),
                       ('Срок', '5 минут', True)]
             for name, value, inline in fields:
                 embed.add_field(name=name, value=value, inline=inline)
 
-            edit_user_reputation(target.id, '-', 100)
+            await edit_user_reputation(self.bot.pg_pool, target.id, '-', 100)
             await self.moderation_channel.send(embed=embed)
 
     @command(name=cmd["readrole"]["name"], aliases=cmd["readrole"]["aliases"],
@@ -717,7 +713,7 @@ class Moderation(Cog, name='Модерация'):
                 color=Color.green(),
                 timestamp=datetime.utcnow(),
                 description=f'**Пользователь `{target.display_name}` ({target.mention}) завершил изучение правил и описания ролей сервера.**'
-            ).set_thumbnail(url='https://cdn.discordapp.com/emojis/703210723337306132.png')
+            )
             await self.moderation_channel.send(embed=embed)
 
     @command(name=cmd["removereadrole"]["name"], aliases=cmd["removereadrole"]["aliases"],
@@ -765,8 +761,6 @@ class Moderation(Cog, name='Модерация'):
 
         users = {}
 
-        await ctx.message.delete()
-
         if not targets:
             async for message in ctx.channel.history(limit=limit):
                 if message.author not in users:
@@ -775,23 +769,20 @@ class Moderation(Cog, name='Модерация'):
             async for message in ctx.channel.history(limit=limit):
                 users[message.author.id] += 1
 
-            deleted = await ctx.channel.purge(limit=limit)
+            deleted = await ctx.channel.purge(limit=limit+1)
             if ctx.channel.id in self.bot.channels_with_message_counting:
                 decrease_message_counter(users)
 
             embed = Embed(
-                title="Выполнено!",
+                title='purge command invoked',
                 color=Color.random(),
-                description=f"Удалено сообщений: {len(deleted)}\nУдаление выполнено пользователем {ctx.author.mention}"
-            )
-            await ctx.send(embed=embed, delete_after=10)
-
-            embed.title = "purge command invoked"
-            embed.description = f"Удалено сообщений: {len(deleted)}\nУдаление выполнено пользователем: {ctx.author.mention}\nКанал: {ctx.channel.mention}"
-            await self.bot.get_user(375722626636578816).send(embed=embed)
+                description=f'Удалено сообщений: {len(deleted)}\n' \
+                            f'Удаление выполнено пользователем: {ctx.author.mention}\n' \
+                            f'Канал: {ctx.channel.mention}')
+            await self.bot.logs_channel.send(embed=embed)
 
         else:
-            deleted = await ctx.channel.purge(limit=limit, check=_check)
+            deleted = await ctx.channel.purge(limit=limit+1, check=_check)
             msg_author_ids = [message.author.id for message in deleted]
             for entry in msg_author_ids:
                 users[entry] = msg_author_ids.count(entry)
@@ -800,15 +791,12 @@ class Moderation(Cog, name='Модерация'):
                 decrease_message_counter(users)
 
             embed = Embed(
-                title="Выполнено!",
+                title='purge (with targets) command invoked',
                 color=Color.random(),
-                description=f"Удалено сообщений: {len(deleted)}\nУдаление выполнено пользователем {ctx.message.author.mention}"
-            )
-            await ctx.send(embed=embed, delete_after=10)
-
-            embed.title = "purge (with targets) command invoked "
-            embed.description = f"Удалено сообщений: {len(deleted)}\nУдаление выполнено пользователем: {ctx.author.mention}\nКанал: {ctx.channel.mention}"
-            await self.bot.get_user(375722626636578816).send(embed=embed)
+                description=f'Удалено сообщений: {len(deleted)}\n' \
+                            f'Удаление выполнено пользователем: {ctx.author.mention}\n' \
+                            f'Канал: {ctx.channel.mention}')
+            await self.bot.logs_channel.send(embed=embed)
 
 
     async def hat_replies(self, ctx, target, lost_rep):
@@ -842,7 +830,7 @@ class Moderation(Cog, name='Модерация'):
 
         for target in targets:
             lost_rep = randint(50, 150)
-            edit_user_reputation(target.id, '-', lost_rep)
+            await edit_user_reputation(self.bot.pg_pool, target.id, '-', lost_rep)
             await self.hat_replies(ctx, target, lost_rep)
 
 
@@ -852,9 +840,9 @@ class Moderation(Cog, name='Модерация'):
 
         return True if invites else False
 
-    @Cog.listener()
+    @Cog.listener('on_message')
     @listen_for_guilds()
-    async def on_message(self, message):
+    async def moderation_on_message_event(self, message):
         ### Find discord invites in message content
         if self.find_discord_invites(message):
             regex = re.compile(self.DISCORD_INVITE_REGEX)
@@ -887,44 +875,73 @@ class Moderation(Cog, name='Модерация'):
                     await message.delete()
                     await message.channel.send(f'{message.author.mention}, побереги свои эмоции!', delete_after=15)
 
-    ### Anti-Scam Steam trade
-    @Cog.listener()
-    async def on_message(self, message):
-        url = re.compile(self.URL_REGEX).search(message.clean_content)
-        if url:
-            if 'steamcommunity.com' not in message.clean_content:
-                if 'partner=' in message.clean_content and 'token=' in message.clean_content:
-                    if isinstance(message.channel, DMChannel):
-                        await self.bot.get_user(self.bot.owner_ids[0]).send(
-                            'Обнаружена фишинговая ссылка на фейковый трейд ⤴️'
-                        )
-                    elif isinstance(message.channel, TextChannel):
-                        if message.author.guild_permissions.administrator or self.helper_role in message.author.roles:
-                            return
-                        await message.delete()
-                        embed = Embed(
-                            title='❗ Внимание, скам!',
-                            color=Color.red(),
-                            timestamp=datetime.utcnow(),
-                            description=f"Обнаружена фишинговая ссылка на фейковый трейд, сообщение удалено автоматически."
-                        ).set_thumbnail(url=message.author.avatar_url)
-                        fields = [
-                                ('Автор сообщения', message.author.name+'#'+message.author.discriminator, True),
-                                ('ID автора', message.author.id, True),
-                                ('Канал', message.channel.mention, True),
-                                ('Сообщение', message.clean_content, False),
-                                ('Ссылка', url.group(0), False)
-                        ]
-                        for name, value, inline in fields:
-                            embed.add_field(name=name, value=value, inline=inline)
-                        await self.bot.guild.get_channel(CHASOVIE_CHANNEL).send(embed=embed)
+    ### Anti-Scam logic
+    def scam_notifier(self, message: Message) -> Embed:
+        embed = Embed(
+            title='❗ Подозрительное сообщение.',
+            color=Color.red(),
+            timestamp=datetime.utcnow(),
+            description=f"Обнаружена фишинговая ссылка, сообщение удалено автоматически."
+        ).set_thumbnail(url=message.author.avatar_url)
+        fields = [
+                ('Автор сообщения', message.author, True),
+                ('ID автора', message.author.id, True),
+                ('Канал', message.channel.mention, True),
+                ('Сообщение', message.clean_content, False)
+        ]
+        for name, value, inline in fields:
+            embed.add_field(name=name, value=value, inline=inline)
+        return embed
 
+    async def delete_scam_message(self, message: Message) -> None:
+        await message.delete()
+        await message.author.add_roles(self.mute_role)
+        embed = self.scam_notifier(message)
+        await self.chasovie_channel.send(embed=embed)
+
+    @Cog.listener('on_message')
+    @listen_for_guilds()
+    async def anti_scam_on_message_event(self, message):
+        if message.author.guild_permissions.administrator or self.helper_role in message.author.roles:
+            return
+
+        if not (re.compile(self.URL_REGEX).search(message.clean_content)):
+            return
+
+        if 'steamcommunity.com' not in message.clean_content:
+            if 'partner=' and 'token=' in message.clean_content:
+                await self.delete_scam_message(message)
+                return
+
+        if 'discord.com' and 'steamcommunity.com' not in message.clean_content:
+            words = ('gift', 'nitro', 'steam')
+            if any(word in message.clean_content for word in words):
+                await self.delete_scam_message(message)
+                return
+
+    ### Tasks
+    @tasks.loop(hours=6)
+    async def ban_members_with_negative_reputaion(self):
+        msg = await self.bot.guild.get_channel(604621910386671616).fetch_message(861627953736843294)
+        for member in self.bot.guild.members:
+            try:
+                rep = await self.bot.pg_pool.fetchval(
+                    'SELECT rep_rank FROM users_stats WHERE user_id = $1', member.id)
+                if rep <= -1000:
+                    await self.ban_members(msg, [member], 0, 'Критический уровень репутации (<= -1000).')
+            except:
+                continue
+
+    @ban_members_with_negative_reputaion.before_loop
+    async def before_ban_negative_members(self):
+        await self.bot.wait_until_ready()
 
     @Cog.listener()
     async def on_ready(self):
         if not self.bot.ready:
             self.moderation_channel = self.bot.get_channel(MODERATION_PUBLIC_CHANNEL)
             self.audit_channel = self.bot.get_channel(AUDIT_LOG_CHANNEL)
+            self.chasovie_channel = self.bot.get_channel(CHASOVIE_CHANNEL)
             self.mute_role = self.bot.guild.get_role(MUTE_ROLE_ID)
             self.read_role = self.bot.guild.get_role(READ_ROLE_ID)
             self.helper_role = self.bot.guild.get_role(CHASOVOY_ROLE_ID)

@@ -120,7 +120,7 @@ class Player(wavelink.Player):
 
         embed = discord.Embed(title=f'FNFUN Gym | {channel.name}', colour=0xc68642)
         embed.description = f'♂️ **Slave:**\n```ini\n{track.author} — {track.title}\n```'
-        embed.set_thumbnail(url=track.thumb if track.thumb else "https://cdn.discordapp.com/attachments/774698479981297664/813684421370314772/radio_placeholder.jpg")
+        embed.set_thumbnail(url=track.thumb if track.thumb else "https://cdn.durker.fun/misc/radio_placeholder.jpg")
 
         try:
             embed.add_field(name='♂️ Длительность fisting ♂️', value=str(datetime.timedelta(milliseconds=int(track.length))), inline=False)
@@ -255,7 +255,7 @@ class GachiRadio(commands.Cog, wavelink.WavelinkMixin, name='Gachi Radio'):
 
         tracks = await self.bot.wavelink.get_tracks("https://www.youtube.com/playlist?list=PLfMqck7-0P5Ib3jUKKAkqBch1xh8oFGGH")
         if not tracks:
-            return await self.bot.get_user(self.bot.owner_ids[0]).send(f"{datetime.datetime.now()} | Не удалось загрузить плейлист `Gachi`.")
+            return await self.bot.logs_channel.send(f"{datetime.datetime.now()} | Не удалось загрузить плейлист `Gachi`.")
 
         if isinstance(tracks, wavelink.TrackPlaylist):
             for track in tracks.tracks:
