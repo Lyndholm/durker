@@ -5,7 +5,7 @@ from asyncio.exceptions import TimeoutError
 from datetime import datetime
 from io import BytesIO
 from os import getenv
-from random import choice, randint
+from random import choice
 from typing import Optional
 
 import aiofiles
@@ -364,12 +364,12 @@ class Fortnite(Cog, name='Fortnite'):
     async def cosmetics_search_params_command(self, ctx):
         params_embeds = []
         params_images = (
-            'https://cdn.discordapp.com/attachments/774698479981297664/861552271589376071/cosmetics_search_params_1.png',
-            'https://cdn.discordapp.com/attachments/774698479981297664/861552297565224970/cosmetics_search_params_2.png',
-            'https://cdn.discordapp.com/attachments/774698479981297664/861552316011905044/cosmetics_search_params_3.png',
-            'https://cdn.discordapp.com/attachments/774698479981297664/861552338070405130/cosmetics_search_params_4.png',
-            'https://cdn.discordapp.com/attachments/774698479981297664/861552361251536896/cosmetics_search_params_5.png',
-            'https://cdn.discordapp.com/attachments/774698479981297664/861552398308999168/cosmetics_search_params_6.png'
+            'https://cdn.durker.fun/misc/cosmetics_search_params_1.png',
+            'https://cdn.durker.fun/misc/cosmetics_search_params_2.png',
+            'https://cdn.durker.fun/misc/cosmetics_search_params_3.png',
+            'https://cdn.durker.fun/misc/cosmetics_search_params_4.png',
+            'https://cdn.durker.fun/misc/cosmetics_search_params_5.png',
+            'https://cdn.durker.fun/misc/cosmetics_search_params_6.png'
         )
 
         for image in params_images:
@@ -698,10 +698,6 @@ class Fortnite(Cog, name='Fortnite'):
                     color=Color.random()
                 )
                 embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/774698479981297664/808066523671167006/battle_pass_quests_logo.png")
-
-                if randint(0, 100) == 1:
-                    embed.set_image(url="https://cdn.discordapp.com/attachments/708601604353556491/808062904325767248/i.png")
-                    embed.description = "**Опа, пасхал04ка**"
 
                 for count, challenge in enumerate(item['challenges']):
                     embed.add_field(

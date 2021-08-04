@@ -345,7 +345,7 @@ class UserStats(Cog, name='Статистика'):
 
         embed = Embed(color=target.color)
         embed.set_author(name=target.display_name, icon_url=target.avatar_url)
-        embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/774698479981297664/814988530219614249/message.png")
+        embed.set_thumbnail(url="https://cdn.durker.fun/misc/message_icon.png")
 
         if activity_role_1 not in target.roles:
             desc += f"\n\nДо роли {activity_role_1.mention} осталось **{750-msg_counter}** {russian_plural(750-msg_counter,['сообщение','сообщения','сообщений'])}"
@@ -394,31 +394,31 @@ class UserStats(Cog, name='Статистика'):
         embed.set_author(name=target.display_name, icon_url=target.avatar_url)
         if rep_rank <= 0:
             desc += f"\n\nРанг: **Отсутствует**"
-            embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/774698479981297664/815298656462700634/no_rank.png")
+            embed.set_thumbnail(url="https://cdn.durker.fun/misc/no_rank.png")
         elif 1 <= rep_rank <= 1_499:
             desc += f"\n\nРанг: **Бронза**"
-            embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/774698479981297664/815298685498949662/rank_bronze.png")
+            embed.set_thumbnail(url="https://cdn.durker.fun/misc/rank_bronze.png")
         elif 1_500 <= rep_rank <= 2_999:
             desc += f"\n\nРанг: **Серебро**"
-            embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/774698479981297664/815298847705792522/rank_silver.png")
+            embed.set_thumbnail(url="https://cdn.durker.fun/misc/rank_silver.png")
         elif 3_000 <= rep_rank <= 4_499:
             desc += f"\n\nРанг: **Золото**"
-            embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/774698479981297664/815298881285652550/rank_gold.png")
+            embed.set_thumbnail(url="https://cdn.durker.fun/misc/rank_gold.png")
         elif 4_500 <= rep_rank <= 6_999:
             desc += f"\n\nРанг: **Платина**"
-            embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/774698479981297664/815298909161259028/rank_platinum.png")
+            embed.set_thumbnail(url="https://cdn.durker.fun/misc/rank_platinum.png")
         elif 7_000 <= rep_rank <= 9_999:
             desc += f"\n\nРанг: **Алмаз**"
-            embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/774698479981297664/815298936734220349/rank_diamond.png")
+            embed.set_thumbnail(url="https://cdn.durker.fun/misc/rank_diamond.png")
         elif 10_000 <= rep_rank <= 14_999:
             desc += f"\n\nРанг: **Мастер**"
-            embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/774698479981297664/815298973065543680/rank_master.png")
+            embed.set_thumbnail(url="https://cdn.durker.fun/misc/rank_master.png")
         elif 15_000 <= rep_rank <= 19_999:
             desc += f"\n\nРанг: **Элита**"
-            embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/774698479981297664/815298996959445042/rank_grandmaster.png")
+            embed.set_thumbnail(url="https://cdn.durker.fun/misc/rank_grandmaster.png")
         elif rep_rank > 20_000:
             desc += f"\n\nРанг: **Совершенство**"
-            embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/774698479981297664/815299017948004402/rank_perfection.png")
+            embed.set_thumbnail(url="https://cdn.durker.fun/misc/rank_perfection.png")
 
         embed.description = desc
         await ctx.reply(embed=embed, mention_author=False)
@@ -454,7 +454,7 @@ class UserStats(Cog, name='Статистика'):
             "\n— **Совершенство** (20000 и больше)"
             f"\n\nУзнать свой уровень репутации можно по команде `{ctx.prefix or self.bot.PREFIX[0]}rep`"
         )
-        embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/774698479981297664/815282991668133888/reputation.png")
+        embed.set_thumbnail(url="https://cdn.durker.fun/misc/reputation_icon.png")
         await ctx.reply(embed=embed, mention_author=False)
 
 
