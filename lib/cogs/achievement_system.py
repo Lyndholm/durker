@@ -69,6 +69,7 @@ class AchievementMenu(ListPageSource):
 class AchievementSystem(Cog, name='Система достижений'):
     def __init__(self, bot):
         self.bot = bot
+        self.achievements_banlist = []
 
     def chuncks(self, l, n):
         """Yield successive n-sized chunks from l."""
@@ -515,54 +516,13 @@ class AchievementSystem(Cog, name='Система достижений'):
     @logger.catch
     async def reset_achievements_command(self, ctx, user_id: Optional[int]):
         if user_id is None:
-            reactions = ['🟩', '🟥']
-            embed = Embed(
-                title='⚠️ Внимание!',
-                color=Color.red(),
-                timestamp=datetime.utcnow(),
-                description='Вы не указали ID пользователя, которому необходимо '
-                            'сбросить список достижений. Этот сценарий ведёт к '
-                            'сбросу достижений **ВСЕХ** пользователей. Желаете '
-                            'продолжить?\n\n🟩 — Да.\n🟥 — Нет.'
-            )
-            message = await ctx.reply(embed=embed, mention_author=False)
-            for r in reactions:
-                await message.add_reaction(r)
-            try:
-                method, user = await self.bot.wait_for(
-                    'reaction_add', timeout=60.0,
-                    check=lambda method, user: user == ctx.author
-                    and method.message.channel == ctx.channel
-                    and method.emoji in reactions)
-            except asyncio.TimeoutError:
-                return
-            await message.delete()
-
-            if str(method.emoji) == '🟩':
-                for member in self.bot.guild.members:
-                    if member.pending:
-                        continue
-
-                    data = {'user_achievements_list': []}
-                    await self.bot.pg_pool.execute(
-                        'UPDATE users_stats SET achievements_list = $1 WHERE user_id = $2',
-                        json.dumps(data, ensure_ascii=False), member.id)
-                embed = Embed(
-                        title='✅ Успешно!',
-                        color=Color.green(),
-                        timestamp=datetime.utcnow(),
-                        description=f'Достижения **ВСЕХ** пользователей сброшены.'
-                    )
-                await ctx.reply(embed=embed, mention_author=False)
-                return
-            elif str(method.emoji) == '🟥':
-                await ctx.message.add_reaction('🟥')
-                return
+            return await ctx.message.add_reaction('🟥')
 
         data = {'user_achievements_list': []}
         await self.bot.pg_pool.execute(
             'UPDATE users_stats SET achievements_list = $1 WHERE user_id = $2',
             json.dumps(data, ensure_ascii=False), user_id)
+        self.achievements_banlist.append(user_id)
         embed = Embed(
                 title='✅ Успешно!',
                 color=Color.green(),

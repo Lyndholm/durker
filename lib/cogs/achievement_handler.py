@@ -28,7 +28,11 @@ class AchievementHandler(Cog, name='AchievementHandler'):
         if not AS_COG:
             return
         for member in self.bot.guild.members:
-            if member.pending or member.id in self.bot.banlist:
+            if member.pending:
+                continue
+            if member.id in AS_COG.achievements_banlist:
+                continue
+            if member.id in self.bot.banlist:
                 continue
 
             user_achievements = await self.get_user_achievements(member)
