@@ -164,7 +164,7 @@ class AchievementSystem(Cog, name='Система достижений'):
         return achievements
 
     @logger.catch
-    def advanced_user_achievements_memu(self, ctx, data):
+    def advanced_user_achievements_menu(self, ctx, data):
         achievements = []
 
         for ach_chunks in list(self.chuncks(data, 1)):
@@ -396,7 +396,7 @@ class AchievementSystem(Cog, name='Система достижений'):
 
             method = await self.display_method(ctx)
             if method == 'detailed':
-                embed = self.advanced_user_achievements_memu(ctx, data)
+                embed = self.advanced_user_achievements_menu(ctx, data)
                 await paginate(ctx, embed)
             elif method == 'briefly':
                 menu = MenuPages(
