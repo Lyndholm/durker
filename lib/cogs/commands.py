@@ -398,7 +398,8 @@ class Commands(Cog, name='Базовые команды'):
             return
 
         for e in emoji:
-            asset = File(BytesIO(await e.url.read()), filename=e.name+'.png')
+            extension = '.gif' if e.animated else '.png'
+            asset = File(BytesIO(await e.url.read()), filename=e.name+extension)
             await ctx.send(f'**Эмодзи:** {e.name}', file=asset)
 
     @command(name=cmd["info"]["name"], aliases=cmd["info"]["aliases"],
@@ -437,6 +438,7 @@ class Commands(Cog, name='Базовые команды'):
             f"▫️ **Версия:** {self.bot.VERSION}\n" \
             "▫️ **Автор:** Lyndholm#7200\n" \
             "▫️ **Веб сайт:** [docs.durker.fun](https://docs.durker.fun)\n" \
+            "▫️ **Поддержать проект:** [DonationAlerts](https://donationalerts.com/r/lyndholm)\n" \
             "▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬\n" \
             "**Статистика сервера**\n" \
             "▫️ **OS Info:** Debian GNU/Linux 10\n" \
