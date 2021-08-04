@@ -15,7 +15,7 @@ from dotenv import load_dotenv
 from loguru import logger
 
 from ..db import async_db, db
-from ..utils.constants import GUILD_ID, OWNER_ID
+from ..utils.constants import MAIN_GUILD_ID, OWNER_ID
 from ..utils.utils import insert_new_user_in_db
 
 load_dotenv()
@@ -217,7 +217,7 @@ class Bot(BotBase):
     @logger.catch
     async def on_ready(self):
         if not self.ready:
-            self.guild = self.get_guild(GUILD_ID)
+            self.guild = self.get_guild(MAIN_GUILD_ID)
             self.owner = self.get_user(self.owner_id)
             self.scheduler.start()
             self.profanity.load_censor_words_from_file("./data/txt/profanity.txt")
