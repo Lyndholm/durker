@@ -256,7 +256,7 @@ class MeinRadio(commands.Cog, wavelink.WavelinkMixin, name='Mein Radio'):
 
         tracks = await self.bot.wavelink.get_tracks("https://www.youtube.com/playlist?list=PLfMqck7-0P5LXjz7wcNgX2yMus0sfoFET")
         if not tracks:
-            return await self.bot.owner.send(f"{datetime.datetime.now()} | Не удалось загрузить плейлист `Mein Radio`.")
+            return await self.bot.logs_channel.send(f"{datetime.datetime.now()} | Не удалось загрузить плейлист `Mein Radio`.")
 
         if isinstance(tracks, wavelink.TrackPlaylist):
             for track in tracks.tracks:
@@ -677,7 +677,10 @@ class MeinRadio(commands.Cog, wavelink.WavelinkMixin, name='Mein Radio'):
                 description = f"**Заявка на удаление трека из плейлиста.**\n\n**Номер заявки:** {rec[0]}\n"
                             f"**Трек:** {song}\n**Причина удаления:** {reason}\n**Заявка сформирована:** {date.strftime('%d.%m.%Y %H:%M:%S')}")
         for i in [375722626636578816, 195637386221191170]:
-            await self.bot.get_user(i).send(embed=embed)
+            try:
+                await self.bot.get_user(i).send(embed=embed)
+            except:
+                continue
 
 
 def setup(bot: commands.Bot):

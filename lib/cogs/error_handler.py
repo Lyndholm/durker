@@ -5,7 +5,6 @@ import discord
 from discord.ext import commands
 
 from ..db import db
-from ..utils.constants import AUDIT_LOG_CHANNEL
 from ..utils.exceptions import (InForbiddenTextChannel, InsufficientLevel,
                                 NotInAllowedTextChannel)
 from ..utils.utils import (cooldown_timer_str, get_command_required_level,
@@ -168,7 +167,6 @@ class CommandErrorHandler(commands.Cog, name='Command error handler'):
             await ctx.reply(embed=embed, mention_author=False, delete_after=15)
 
         else:
-            channel = self.bot.get_channel(id=AUDIT_LOG_CHANNEL)
             try:
                 if hasattr(ctx.command, 'on_error'):
                     embed = discord.Embed(
@@ -177,7 +175,7 @@ class CommandErrorHandler(commands.Cog, name='Command error handler'):
                         timestamp=datetime.utcnow(),
                         color=discord.Color.red()
                     )
-                    await self.bot.owner.send(embed=embed)
+                    await self.bot.logs_channel.send(embed=embed)
                 else:
                     embed = discord.Embed(
                         title=f'Ошибка при выполнении команды {ctx.command}.',
@@ -187,7 +185,7 @@ class CommandErrorHandler(commands.Cog, name='Command error handler'):
                     )
                     if isinstance(ctx.channel, discord.DMChannel):
                         embed.add_field(name="Additional info:", value="Exception occured in DMChannel.")
-                    await channel.send(embed=embed)
+                    await self.bot.logs_channel.send(embed=embed)
             except:
                 embed = discord.Embed(
                     title=f'Ошибка при выполнении команды {ctx.command}.',
@@ -197,7 +195,7 @@ class CommandErrorHandler(commands.Cog, name='Command error handler'):
                 )
                 if isinstance(ctx.channel, discord.DMChannel):
                     embed.add_field(name="Additional info:", value="Exception occured in DMChannel.")
-                await channel.send(embed=embed)
+                await self.bot.logs_channel.send(embed=embed)
             finally:
                 raise exc
 

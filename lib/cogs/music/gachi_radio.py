@@ -255,7 +255,7 @@ class GachiRadio(commands.Cog, wavelink.WavelinkMixin, name='Gachi Radio'):
 
         tracks = await self.bot.wavelink.get_tracks("https://www.youtube.com/playlist?list=PLfMqck7-0P5Ib3jUKKAkqBch1xh8oFGGH")
         if not tracks:
-            return await self.bot.owner.send(f"{datetime.datetime.now()} | Не удалось загрузить плейлист `Gachi`.")
+            return await self.bot.logs_channel.send(f"{datetime.datetime.now()} | Не удалось загрузить плейлист `Gachi`.")
 
         if isinstance(tracks, wavelink.TrackPlaylist):
             for track in tracks.tracks:

@@ -86,9 +86,12 @@ class Commands(Cog, name='Базовые команды'):
                 color = Color.green(),
                 timestamp = datetime.utcnow(),
                 description = f"**Заявка на добавление трека в плейлист.**\n\n**Номер заявки:** {rec[0]}\n"
-                            f"**Трек:** {song}\n**Заявка сформирована:** {date.strftime('%d.%m.%Y %H:%M:%S')}"
+                              f"**Трек:** {song}\n**Заявка сформирована:** {date.strftime('%d.%m.%Y %H:%M:%S')}"
             )
-            await self.bot.get_user(i).send(embed=embed)
+            try:
+                await self.bot.get_user(i).send(embed=embed)
+            except:
+                continue
 
     @command(name=cmd["support"]["name"], aliases=cmd["support"]["aliases"],
             brief=cmd["support"]["brief"],

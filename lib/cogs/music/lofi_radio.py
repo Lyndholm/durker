@@ -259,7 +259,7 @@ class LofiRadio(commands.Cog, wavelink.WavelinkMixin, name='Lofi Radio'):
         for uri in playlists:
             tracks = await self.bot.wavelink.get_tracks(uri)
             if not tracks:
-                return await self.bot.owner.send(
+                return await self.bot.logs_channel.send(
                     f'{datetime.datetime.now()} | Не удалось загрузить один из плейлистов `Lofi Radio`.\n'
                     f'`{uri}`')
 

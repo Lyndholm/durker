@@ -1,6 +1,7 @@
 from discord import Embed
 from discord.ext.commands import Cog
 
+from ..utils.constants import HIDEOUT_MODMAIL_CHANNEL
 from ..utils.decorators import listen_for_dms
 
 
@@ -38,12 +39,13 @@ class ModMail(Cog, name='ModMail'):
                     value="\n".join([attachment.url for attachment in message.attachments]),
                     inline=False
                 )
-            await self.bot.owner.send(embed=embed)
+            await self.modmail_channel.send(embed=embed)
 
     @Cog.listener()
     async def on_ready(self):
         if not self.bot.ready:
            self.bot.cogs_ready.ready_up("modmail")
+           self.modmail_channel = self.bot.get_channel(HIDEOUT_MODMAIL_CHANNEL)
 
 def setup(bot):
     bot.add_cog(ModMail(bot))

@@ -74,7 +74,7 @@ class Audit(Cog, name='Система Аудита'):
                         embed.add_field(name="Модератор:", value=entry.user.mention)
 
                 if message.type != MessageType.default:
-                    embed.description = '**Системное оповещение о закреплении сообщения.**'
+                    embed.description = '**Системное оповещение.**'
                     embed.add_field(name="Тип сообщения:", value=message.type)
 
                 embed.set_footer(text = f"ID сообщения: {message.id}")

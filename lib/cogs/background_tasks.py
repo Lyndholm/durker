@@ -155,7 +155,7 @@ class BackgroundTasks(Cog, name='Фоновые процессы'):
 
             await self.create_item_shop_image(data=cache)
             date = datetime.now().strftime("%d.%m.%Y %H:%M:%S")
-            await self.bot.owner.send(
+            await self.bot.logs_channel.send(
                 f"Shop updated & rendered for `{date}` | `{cache['hash']}` | `{cache['len']}`"
             )
 

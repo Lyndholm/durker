@@ -15,7 +15,8 @@ from dotenv import load_dotenv
 from loguru import logger
 
 from ..db import async_db, db
-from ..utils.constants import MAIN_GUILD_ID, OWNER_ID
+from ..utils.constants import (HIDEOUT_GUILD_ID, HIDEOUT_LOGS_CHANNEL,
+                               MAIN_GUILD_ID, OWNER_ID)
 from ..utils.utils import insert_new_user_in_db
 
 load_dotenv()
@@ -52,6 +53,8 @@ class Bot(BotBase):
         self.ready = False
         self.cogs_ready = Ready()
         self.guild = None
+        self.hideout_guild = None
+        self.logs_channel = None
         self.pg_pool = None
         self.db = None
         self.scheduler = AsyncIOScheduler()
@@ -218,6 +221,8 @@ class Bot(BotBase):
     async def on_ready(self):
         if not self.ready:
             self.guild = self.get_guild(MAIN_GUILD_ID)
+            self.hideout_guild = self.get_guild(HIDEOUT_GUILD_ID)
+            self.logs_channel = self.get_channel(HIDEOUT_LOGS_CHANNEL)
             self.owner = self.get_user(self.owner_id)
             self.scheduler.start()
             self.profanity.load_censor_words_from_file("./data/txt/profanity.txt")
@@ -242,7 +247,7 @@ class Bot(BotBase):
             print("Jishaku loaded")
 
             print("\nReady to use!\n")
-            await self.owner.send(
+            await self.logs_channel.send(
                 "I am online!\nReady to use!\nStart time: "
                 f"{datetime.now().strftime('%d.%m.%Y %H.%M.%S')}"
             )

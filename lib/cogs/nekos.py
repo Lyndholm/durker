@@ -57,10 +57,12 @@ class Nekos(Cog, name='Аниме'):
 
         if (19 < datetime.now().hour < 21) or len(data['images']) >= 30:
             for i in [375722626636578816, 195637386221191170]:
-                await self.bot.get_user(i).send(
-                    'Новые картинки на добавление в команду `anipic`.',
-                    file=File(path, filename=f'anisuggestions_{time}.json')
-                )
+                try:
+                    await self.bot.get_user(i).send(
+                        'Новые картинки на добавление в команду `anipic`.',
+                        file=File(path, filename=f'anisuggestions_{time}.json'))
+                except:
+                    continue
             async with aiofiles.open(path, 'w', encoding='utf-8') as f:
                 await f.write(json.dumps({'images': []}, indent=2, sort_keys=True, ensure_ascii=False))
 

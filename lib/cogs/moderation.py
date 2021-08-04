@@ -779,7 +779,7 @@ class Moderation(Cog, name='Модерация'):
                 description=f'Удалено сообщений: {len(deleted)}\n' \
                             f'Удаление выполнено пользователем: {ctx.author.mention}\n' \
                             f'Канал: {ctx.channel.mention}')
-            await self.bot.owner.send(embed=embed)
+            await self.bot.logs_channel.send(embed=embed)
 
         else:
             deleted = await ctx.channel.purge(limit=limit+1, check=_check)
@@ -796,7 +796,7 @@ class Moderation(Cog, name='Модерация'):
                 description=f'Удалено сообщений: {len(deleted)}\n' \
                             f'Удаление выполнено пользователем: {ctx.author.mention}\n' \
                             f'Канал: {ctx.channel.mention}')
-            await self.bot.owner.send(embed=embed)
+            await self.bot.logs_channel.send(embed=embed)
 
 
     async def hat_replies(self, ctx, target, lost_rep):
