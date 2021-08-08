@@ -1,4 +1,4 @@
-from discord import Embed
+from discord import Embed, MessageType
 from discord.ext.commands import Cog
 
 from ..utils.constants import HIDEOUT_MODMAIL_CHANNEL
@@ -8,11 +8,19 @@ from ..utils.decorators import listen_for_dms
 class ModMail(Cog, name='ModMail'):
     def __init__(self, bot):
         self.bot = bot
+        if self.bot.ready:
+            bot.loop.create_task(self.init_vars())
+
+    async def init_vars(self):
+        self.modmail_channel = self.bot.get_channel(HIDEOUT_MODMAIL_CHANNEL)
 
     @Cog.listener()
     @listen_for_dms()
     async def on_message(self, message):
         if message.author.id in self.bot.banlist:
+            return
+
+        if message.type != MessageType.default:
             return
 
         ctx = await self.bot.get_context(message)
@@ -22,7 +30,7 @@ class ModMail(Cog, name='ModMail'):
                 title="ModMail",
                 color=member.color,
                 timestamp=message.created_at,
-                description=message.clean_content
+                description=message.content
             ).set_thumbnail(url=member.avatar_url
             ).set_author(name=member, icon_url=member.avatar_url)
 
@@ -44,8 +52,8 @@ class ModMail(Cog, name='ModMail'):
     @Cog.listener()
     async def on_ready(self):
         if not self.bot.ready:
-           self.bot.cogs_ready.ready_up("modmail")
            self.modmail_channel = self.bot.get_channel(HIDEOUT_MODMAIL_CHANNEL)
+           self.bot.cogs_ready.ready_up("modmail")
 
 def setup(bot):
     bot.add_cog(ModMail(bot))

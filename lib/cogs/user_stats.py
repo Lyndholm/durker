@@ -40,10 +40,8 @@ class UserStats(Cog, name='Статистика'):
         if not target:
             return
 
-        biography = await self.bot.db.fetchone(
-            ['brief_biography'],
-            'users_info', 'user_id',
-            target.id)
+        biography = await self.bot.pg_pool.fetchval(
+            'SELECT brief_biography FROM users_info WHERE user_id = $1', target.id)
 
         user_stats = await self.bot.db.fetchone(
             ['achievements_list', 'invoice_time'],
@@ -61,14 +59,16 @@ class UserStats(Cog, name='Статистика'):
             target.id)
 
         mutes = ast.literal_eval(moderation_stats[0])
+        mutes = mutes['user_mute_story']
         mute_time = sum(
-            moderation_stats[0]['user_mute_story'][i]['mute_time']
-            for i in range(len(mutes['user_mute_story']))
+            mutes[i]['mute_time']
+            for i in range(len(mutes))
         )
         warns = ast.literal_eval(moderation_stats[1])
+        warns = warns['user_warn_story']
         warn_time = sum(
-            moderation_stats[1]['user_warn_story'][i]['mute_time']
-            for i in range(len(warns['user_warn_story']))
+            warns[i]['mute_time']
+            for i in range(len(warns))
         )
         total_mute_time = mute_time + warn_time
         joined = await joined_date(self.bot.pg_pool, target)
@@ -77,15 +77,15 @@ class UserStats(Cog, name='Статистика'):
         embed.set_thumbnail(url=target.avatar_url)
 
         if member:
-            if biography[0]:
-                value = biography[0],
+            if biography:
+                value = biography
             else:
                 value = 'Пользователь не указал свою биографию.'
             embed.add_field(name='📝 О пользователе:',
                             value=value, inline=False)
         else:
-            if biography[0]:
-                value = biography[0],
+            if biography:
+                value = biography
             else:
                 value = f'Вы ничего не написали о себе. Сделать это можно по команде ' \
                         f'`{ctx.prefix or self.bot.PREFIX[0]}setbio <ваша биография>`'
