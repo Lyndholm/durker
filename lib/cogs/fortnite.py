@@ -918,9 +918,7 @@ class Fortnite(Cog, name='Fortnite'):
             usage=cmd["extractasset"]["usage"],
             help=cmd["extractasset"]["help"],
             hidden=cmd["extractasset"]["hidden"], enabled=True)
-    @required_level(cmd["extractasset"]["required_level"])
-    @is_channel(CONSOLE_CHANNEL)
-    @guild_only()
+    @is_owner()
     @logger.catch
     async def extract_fn_asset_command(self, ctx, path: str, *, args: str = None):
         if args is not None:
