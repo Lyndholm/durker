@@ -918,9 +918,7 @@ class Fortnite(Cog, name='Fortnite'):
             usage=cmd["extractasset"]["usage"],
             help=cmd["extractasset"]["help"],
             hidden=cmd["extractasset"]["hidden"], enabled=True)
-    @required_level(cmd["extractasset"]["required_level"])
-    @is_channel(CONSOLE_CHANNEL)
-    @guild_only()
+    @is_owner()
     @logger.catch
     async def extract_fn_asset_command(self, ctx, path: str, *, args: str = None):
         if args is not None:
@@ -1053,12 +1051,10 @@ class Fortnite(Cog, name='Fortnite'):
             usage=cmd["fndev"]["usage"],
             help=cmd["fndev"]["help"],
             hidden=cmd["fndev"]["hidden"], enabled=True)
-    @required_level(cmd["fndev"]["required_level"])
-    @is_channel(CONSOLE_CHANNEL)
-    @guild_only()
-    @cooldown(cmd["fndev"]["cooldown_rate"], cmd["fndev"]["cooldown_per_second"], BucketType.member)
+    @dm_only()
+    @is_owner()
     @logger.catch
-    async def fortnite_dev_servers_state_command(self, ctx, server:str="None"):
+    async def fortnite_dev_servers_state_command(self, ctx, server: str = 'None'):
         servers_embeds = []
         if server.lower() == "stage":
             async with ClientSession() as session:

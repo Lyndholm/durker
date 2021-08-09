@@ -1,5 +1,6 @@
 import json
 import re
+import time
 from asyncio import sleep
 from datetime import datetime, timedelta
 from math import floor
@@ -497,7 +498,6 @@ class Moderation(Cog, name='Модерация'):
     async def warn_member(self, message, target, warns, reason):
         @executor_function
         def _warn_sleep(sleep_time: int):
-            import time
             time.sleep(sleep_time)
 
         def _warn_notification(target: Member, warns: list, time_field: tuple) -> Embed:
@@ -539,8 +539,8 @@ class Moderation(Cog, name='Модерация'):
                     db.insert('blacklist', {'user_id':target.id,'reason':'Получил 3 варна'})
 
             if len(warns) > 3:
-                    await self.ban_members(message, [target], 1, "Максимум варнов | " + reason)
-                    return
+                await self.ban_members(message, [target], 1, "Максимум варнов | " + reason)
+                return
 
             params = self._warn_mute_params(len(warns))
             role_ids = ",".join([str(r.id) for r in target.roles])
@@ -590,39 +590,35 @@ class Moderation(Cog, name='Модерация'):
     )
     @guild_only()
     @logger.catch
-    async def warn_mute_command(self, ctx, targets: Greedy[Member], *, reason: Optional[str] = "Не указана"):
-
+    async def warn_mute_command(self, ctx, target: Optional[Member], *, reason: Optional[str] = "Не указана"):
         await ctx.message.delete()
 
-        if not len(targets):
-            await ctx.send(f"{ctx.author.mention}, укажите пользователей, которым необходимо выдать варн.", delete_after=10)
+        if not target:
+            await ctx.send(f"{ctx.author.mention}, укажите пользователя, которому необходимо выдать варн.", delete_after=10)
             return
 
-        for target in targets:
-            if self.mute_role not in target.roles:
-                rec = db.fetchone(["warns_story"], "users_stats", "user_id", target.id)[0]
-                rec['user_warn_story'].append(
-                    {
-                        "id": len(rec['user_warn_story']) + 1,
-                        "date": datetime.now().strftime("%d.%m.%Y %H:%M:%S"),
-                        "mute_time": self._warn_mute_params(len(rec['user_warn_story'])+1)[0],
-                        "reason": reason,
-                        "moderator": f"{ctx.author.name} | {ctx.author.id}"
-                    }
-                )
-
-                db.execute("UPDATE users_stats SET warns_story = %s WHERE user_id = %s",
-                            json.dumps(rec, ensure_ascii=False), target.id)
-                db.commit()
-                rec = db.fetchone(["warns_story"], "users_stats", "user_id", target.id)[0]
-                await self.warn_member(ctx.message, target, rec['user_warn_story'], reason)
-            else:
-                embed = Embed(
-                    title="Внимание!",
-                    color=Color.red(),
-                    description=f"Участник `{target.display_name}` ({target.mention}) уже замьючен!"
-                )
-                await ctx.send(embed=embed, delete_after=10)
+        if self.mute_role not in target.roles:
+            rec = db.fetchone(["warns_story"], "users_stats", "user_id", target.id)[0]
+            rec['user_warn_story'].append(
+                {
+                    "id": len(rec['user_warn_story']) + 1,
+                    "date": datetime.now().strftime("%d.%m.%Y %H:%M:%S"),
+                    "mute_time": self._warn_mute_params(len(rec['user_warn_story'])+1)[0],
+                    "reason": reason,
+                    "moderator": f"{ctx.author.name} | {ctx.author.id}"
+                }
+            )
+            db.execute("UPDATE users_stats SET warns_story = %s WHERE user_id = %s",
+                        json.dumps(rec, ensure_ascii=False), target.id)
+            db.commit()
+            await self.warn_member(ctx.message, target, rec['user_warn_story'], reason)
+        else:
+            embed = Embed(
+                title="Внимание!",
+                color=Color.red(),
+                description=f"Участник `{target.display_name}` ({target.mention}) уже замьючен!"
+            )
+            await ctx.send(embed=embed, delete_after=10)
 
 
     @command(name=cmd["unmute"]["name"], aliases=cmd["unmute"]["aliases"],
