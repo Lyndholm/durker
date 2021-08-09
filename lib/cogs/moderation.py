@@ -865,8 +865,11 @@ class Moderation(Cog, name='Модерация'):
             emoji = re.findall(self.EMOJI_REGEX, message.content)
             unicode_emoji = re.findall(self.UNICODE_EMOJI_REGEX, message.content)
             if (len(emoji) + len(unicode_emoji)) > 7:
-                if message.author.guild_permissions.administrator or self.helper_role in message.author.roles:
-                    pass
+                try:
+                    if message.author.guild_permissions.administrator or self.helper_role in message.author.roles:
+                        return
+                except AttributeError:
+                    return
                 else:
                     await message.delete()
                     await message.channel.send(f'{message.author.mention}, побереги свои эмоции!', delete_after=15)
@@ -898,7 +901,10 @@ class Moderation(Cog, name='Модерация'):
     @Cog.listener('on_message')
     @listen_for_guilds()
     async def anti_scam_on_message_event(self, message):
-        if message.author.guild_permissions.administrator or self.helper_role in message.author.roles:
+        try:
+            if message.author.guild_permissions.administrator or self.helper_role in message.author.roles:
+                return
+        except AttributeError:
             return
 
         if not (re.compile(self.URL_REGEX).search(message.clean_content)):
