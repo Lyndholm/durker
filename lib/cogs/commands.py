@@ -484,6 +484,7 @@ class Commands(Cog, name='Базовые команды'):
     @guild_only()
     @logger.catch
     async def fix_music_player(self, ctx):
+        await ctx.message.delete()
         if ctx.guild.me.voice is None:
             return
 

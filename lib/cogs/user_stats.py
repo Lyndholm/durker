@@ -107,12 +107,12 @@ class UserStats(Cog, name='Статистика'):
             embed.add_field(name=f'😀 Роли ({len(target.roles) - 1})',
                             value=" ".join(
                                 [role.mention for role in target.roles[1:]]),
-                            inline=True)
+                            inline=False)
         else:
             embed.add_field(name=f'😀 Роли ({len(target.roles)})',
                             value=' '.join(
                                 [role.mention for role in target.roles]),
-                            inline=True)
+                            inline=False)
 
         embed.add_field(name='😎 Наивысшая роль:',
                         value=target.top_role.mention,
@@ -121,6 +121,10 @@ class UserStats(Cog, name='Статистика'):
         embed.add_field(name='🎖️ Количество достижений:',
                         value=len(
                             ast.literal_eval(user_stats[0])["user_achievements_list"]),
+                        inline=True)
+
+        embed.add_field(name="⚡ Бустер сервера:",
+                        value='Да' if bool(target.premium_since) else 'Нет',
                         inline=True)
 
         embed.add_field(name="<:durka:684794973358522426>  Получено путёвок в дурку:",
@@ -145,10 +149,6 @@ class UserStats(Cog, name='Статистика'):
 
         embed.add_field(name="⏲️ Время, проведённое в муте:",
                         value=timedelta(seconds=total_mute_time),
-                        inline=True)
-
-        embed.add_field(name="⚡ Бустер сервера:",
-                        value='Да' if bool(target.premium_since) else 'Нет',
                         inline=True)
 
         if member:
