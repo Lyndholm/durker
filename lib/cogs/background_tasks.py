@@ -24,7 +24,7 @@ ACTIVITIES = cycle([
     '+help | fortnitefun.ru',
     '+help | youtube.com/c/fnfun',
     '+help | vk.com/fnfun',
-    '+help | USE CODE FNFUN'])
+    ])
 
 class BackgroundTasks(Cog, name='Фоновые процессы'):
     def __init__(self, bot):

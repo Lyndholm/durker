@@ -16,7 +16,6 @@ class MessagesHandler(Cog, name='Messages handler'):
         self.bot = bot
         self.rep_filter = []
         self.question_filter = []
-        self.sac_filter = []
         self.profanity_whitelisted_users = (
             384728793895665675, #tvoya_pechal
             342783617983840257, #lexenus
@@ -49,10 +48,6 @@ class MessagesHandler(Cog, name='Messages handler'):
         async with aiofiles.open(f'data/txt/rep_filter.txt', mode='r', encoding='utf-8') as f:
             lines = await f.readlines()
             self.rep_filter = [line.strip() for line in lines if line != '']
-
-        async with aiofiles.open(f'data/txt/sac_filter.txt', mode='r', encoding='utf-8') as f:
-            lines = await f.readlines()
-            self.sac_filter = [line.strip() for line in lines if line != '']
 
     @logger.catch
     async def invoke_command(self, message: Message, cmd: str):
@@ -114,10 +109,6 @@ class MessagesHandler(Cog, name='Messages handler'):
         if question:
             if message.channel.id != 546700132390010882:
                 await self.invoke_command(message, 'question')
-
-        sac = get_close_matches(message.clean_content.lower(), self.sac_filter, cutoff=0.8)
-        if sac:
-            await self.invoke_command(message, 'support')
 
         if message.channel.id == 639925210849476608 and message.author.id != 479499525921308703:
             try:

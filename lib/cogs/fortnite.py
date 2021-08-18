@@ -442,12 +442,12 @@ class Fortnite(Cog, name='Fortnite'):
             usage=cmd["creatorcode"]["usage"],
             help=cmd["creatorcode"]["help"],
             hidden=cmd["creatorcode"]["hidden"], enabled=True)
-    @required_level(cmd["creatorcode"]["required_level"])
-    @is_channel(CONSOLE_CHANNEL)
-    @guild_only()
-    @cooldown(cmd["creatorcode"]["cooldown_rate"], cmd["creatorcode"]["cooldown_per_second"], BucketType.member)
+    @is_owner()
     @logger.catch
-    async def show_creator_code_data_command(self, ctx, code: str = "fnfun"):
+    async def show_creator_code_data_command(self, ctx, code: Optional[str]):
+        if code is None:
+            return await ctx.reply('Укажите код автора.', mention_author=False)
+
         async with ClientSession() as session:
             async with session.get(f"https://fortnite-api.com/v2/creatorcode/search/all", params={"name": code}) as r:
                 if r.status == 404:
@@ -501,7 +501,7 @@ class Fortnite(Cog, name='Fortnite'):
             title="Магазин Королевской Битвы",
             color=Color.magenta(),
             timestamp=datetime.utcnow(),
-            description=f"⌛ Дата: {datetime.now().strftime('%d.%m.%Y')}\n🎲 Тег автора: FNFUN"
+            description=f"⌛ Дата: {datetime.now().strftime('%d.%m.%Y')}"
         )
         embed.set_image(url="attachment://itemshop.png")
         try:

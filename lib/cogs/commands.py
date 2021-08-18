@@ -93,47 +93,6 @@ class Commands(Cog, name='Базовые команды'):
             except:
                 continue
 
-    @command(name=cmd["support"]["name"], aliases=cmd["support"]["aliases"],
-            brief=cmd["support"]["brief"],
-            description=cmd["support"]["description"],
-            usage=cmd["support"]["usage"],
-            help=cmd["support"]["help"],
-            hidden=cmd["support"]["hidden"], enabled=True)
-    @guild_only()
-    @logger.catch
-    async def redirect_to_support_channel_command(self, ctx, targets: Greedy[Member]):
-        content = " ".join([member.mention for member in targets]) or ctx.author.mention
-        embed = Embed(
-            title="Поддержка автора",
-            color=ctx.author.color
-        )
-        embed.add_field(
-            name="Сделали покупку с нашим тегом автора?",
-            value=f"Присылайте скриншот в канал <#546408250158088192>. За это вы получите роль <@&{MECENAT_ROLE_ID}>",
-            inline=False
-        )
-        embed.add_field(
-            name="Больше ролей",
-            value=f"Потратив с тегом 10 000 и 25 000 В-Баксов, вы получите роли <@&{KAPITALIST_ROLE_ID}> и <@&{MAGNAT_ROLE_ID}> соответственно.",
-            inline=False
-        )
-        embed.add_field(
-            name="История покупок",
-            value="Узнать количество потраченных с тегом В-Баксов можно в канале <#604621910386671616> по команде " \
-                f"`{ctx.prefix or self.bot.PREFIX[0]}stats`\nПросмотреть историю покупок: " \
-                f"`{ctx.prefix or self.bot.PREFIX[0]}purchases`",
-            inline=False
-        )
-        embed.add_field(
-            name="P.S.",
-            value="Новичкам недоступен просмотр истории канала <#546408250158088192>, но это не мешает отправлять скрины поддержки.",
-            inline=False
-        )
-
-        await ctx.reply(content=content, embed=embed, mention_author=False)
-        if ctx.author.top_role.position >= self.chasovoy.position:
-            ctx.command.reset_cooldown(ctx)
-
     @command(name=cmd["question"]["name"], aliases=cmd["question"]["aliases"],
             brief=cmd["question"]["brief"],
             description=cmd["question"]["description"],
@@ -262,20 +221,6 @@ class Commands(Cog, name='Базовые команды'):
         await ctx.message.delete()
         await ctx.send('СП=справедливо=<:Spravedlivo:681858765158351124>')
 
-    @command(name=cmd["code"]["name"], aliases=cmd["code"]["aliases"],
-            brief=cmd["code"]["brief"],
-            description=cmd["code"]["description"],
-            usage=cmd["code"]["usage"],
-            help=cmd["code"]["help"],
-            hidden=cmd["code"]["hidden"], enabled=True)
-    @required_level(cmd["code"]["required_level"])
-    @guild_only()
-    @cooldown(cmd["code"]["cooldown_rate"], cmd["code"]["cooldown_per_second"], BucketType.guild)
-    @logger.catch
-    async def sac_command(self, ctx):
-        await ctx.message.delete()
-        await ctx.send('<:UseCodeFNFUN:681878310107480068> Лучший тег автора: **FNFUN** <:UseCodeFNFUN:681878310107480068>',
-                        file=File('./data/images/fnfun.png'))
 
     @command(name=cmd["avatar"]["name"], aliases=cmd["avatar"]["aliases"],
             brief=cmd["avatar"]["brief"],
@@ -455,24 +400,6 @@ class Commands(Cog, name='Базовые команды'):
 
         await ctx.send(embed=embed)
 
-    @command(name=cmd["wipe"]["name"], aliases=cmd["wipe"]["aliases"],
-            brief=cmd["wipe"]["brief"],
-            description=cmd["wipe"]["description"],
-            usage=cmd["wipe"]["usage"],
-            help=cmd["wipe"]["help"],
-            hidden=cmd["wipe"]["hidden"], enabled=True)
-    @guild_only()
-    @cooldown(cmd["wipe"]["cooldown_rate"], cmd["wipe"]["cooldown_per_second"], BucketType.member)
-    @logger.catch
-    async def wipe_command(self, ctx):
-        await ctx.message.delete()
-        await ctx.send(
-            'После обновления бота от 1 июля 2021 г. '
-            'статистика покупок была сброшена у всех пользователей. '
-            'Это произошло по двум причинам:\n\n'
-            '**1.** Изменение структуры базы данных бота.\n'
-            '**2.** Появление новых правил засчитывания покупок.\n\n'
-    )
 
     @command(name=cmd["fix"]["name"], aliases=cmd["fix"]["aliases"],
             brief=cmd["fix"]["brief"],

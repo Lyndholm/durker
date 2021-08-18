@@ -56,7 +56,6 @@ class AchievementHandler(Cog, name='AchievementHandler'):
         await self.writer_handler(member, achievements, cog)
         await self.old_handler(member, achievements, cog)
         await self.role_master_handler(member, achievements, cog)
-        await self.patron_handler(member, achievements, cog)
         await self.reputation_master_handler(member, achievements, cog)
         await self.kotleta_handler(member, achievements, cog)
         await self.philanthropist_handler(member, achievements, cog)

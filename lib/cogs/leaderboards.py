@@ -229,27 +229,6 @@ class Leaderboards(Cog, name='Списки лидеров'):
         await menu.start(ctx)
 
 
-    @command(name=cmd["vbucksboard"]["name"], aliases=cmd["vbucksboard"]["aliases"],
-            brief=cmd["vbucksboard"]["brief"],
-            description=cmd["vbucksboard"]["description"],
-            usage=cmd["vbucksboard"]["usage"],
-            help=cmd["vbucksboard"]["help"],
-            hidden=cmd["vbucksboard"]["hidden"], enabled=True)
-    @is_channel(STATS_CHANNEL)
-    @guild_only()
-    @logger.catch
-    async def vbucks_leaderboard_command(self, ctx):
-        data = db.records("SELECT user_id, purchases FROM users_stats")
-        records = [
-            (user_id, sum(purchases['vbucks_purchases'][i]['price']
-            for i in range(len(purchases['vbucks_purchases']))))
-            for user_id, purchases in data
-        ]
-        records = sorted(records, key=itemgetter(1), reverse=True)
-        menu = MenuPages(source=VbucksLeaderboardMenu(ctx, records), clear_reactions_after=True)
-        await menu.start(ctx)
-
-
     @Cog.listener()
     async def on_ready(self):
         if not self.bot.ready:

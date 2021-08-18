@@ -142,23 +142,6 @@
       "cooldown_type": "None",
       "hidden": false
     },
-    "support": {
-      "name": "support",
-      "aliases": [
-        "поддержка",
-        "саппорт"
-      ],
-      "brief": "Перенаправление в канал со скриншотами покупок.",
-      "description": "Перенаправляет пользователей в <#546408250158088192>.",
-      "usage": "support [members]",
-      "help": "Перенаправляет пользователей в <#546408250158088192> — канал со скриншотами покупок.\nРаботает только на сервере.\n\n**Кулдаун:** отсутствует.\n**Необходимый уровень:** 0",
-      "required_level": 0,
-      "has_cooldown": false,
-      "cooldown_rate": 0,
-      "cooldown_per_second": 0,
-      "cooldown_type": "None",
-      "hidden": false
-    },
     "question": {
       "name": "question",
       "aliases": [
@@ -256,25 +239,6 @@
       "cooldown_type": "guild",
       "hidden": false
     },
-    "code": {
-      "name": "code",
-      "aliases": [
-        "тег",
-        "код",
-        "тегавтора",
-        "sac"
-      ],
-      "brief": "Наш тег автора",
-      "description": "Наш тег: FNFUN.",
-      "usage": "code",
-      "help": "Используйте наш тег автора **FNFUN** в магазине предметов Fortnite.\nРаботает только на сервере.\n\n**Кулдаун:** 1 минута, действует на весь сервер.\n**Необходимый уровень:** 0",
-      "required_level": 0,
-      "has_cooldown": true,
-      "cooldown_rate": 1,
-      "cooldown_per_second": 60,
-      "cooldown_type": "guild",
-      "hidden": false
-    },
     "avatar": {
       "name": "avatar",
       "aliases": [
@@ -336,22 +300,6 @@
       "description": "Информация о проекте Durker.",
       "usage": "info",
       "help": "Отображает основную информацию о проекте Durker, предоставляет описание бота.\nРаботает только на сервере в канале <#859921140805926932>.\n\n**Кулдаун:** 10 минут, действует на определённого пользователя.\n**Необходимый уровень:** 0",
-      "required_level": 0,
-      "has_cooldown": true,
-      "cooldown_rate": 1,
-      "cooldown_per_second": 600,
-      "cooldown_type": "member",
-      "hidden": false
-    },
-    "wipe": {
-      "name": "wipe",
-      "aliases": [
-        "вайп"
-      ],
-      "brief": "Информация о вайпе.",
-      "description": "Подробности о вайпе статистики.",
-      "usage": "wipe",
-      "help": "Подробности о вайпе статистики покупок после обновления бота от 1 июля 2021.\nРаботает только на сервере.\n\n**Кулдаун:** 10 минут, действует на определённого пользователя.\n**Необходимый уровень:** 0",
       "required_level": 0,
       "has_cooldown": true,
       "cooldown_rate": 1,
@@ -491,13 +439,13 @@
       "brief": "Отображает информацию о коде автора Epic Games.",
       "description": "Информация о введённом теге автора.",
       "usage": "creatorcode <code>",
-      "help": "Просмотр информации о коде автора Epic Games. Если найдено свыше одной позиции, информация будет отображена в нескольких страницах.\nРаботает только на сервере в канале <#859921140805926932>.\n\n**Кулдаун:** 15 секунд, действует на определённого пользователя.\n**Необходимый уровень:** 3",
-      "required_level": 3,
-      "has_cooldown": true,
-      "cooldown_rate": 1,
-      "cooldown_per_second": 15,
-      "cooldown_type": "member",
-      "hidden": false
+      "help": "Просмотр информации о коде автора Epic Games. Если найдено свыше одной позиции, информация будет отображена в нескольких страницах.\nДоступно только разработчику.\n\n**Кулдаун:** отсутствует.\n**Необходимый уровень:** 0",
+      "required_level": 0,
+      "has_cooldown": false,
+      "cooldown_rate": 0,
+      "cooldown_per_second": 0,
+      "cooldown_type": "None",
+      "hidden": true
     },
     "shop": {
       "name": "shop",
@@ -945,23 +893,6 @@
       "description": "Рейтинг по количеству репутации.",
       "usage": "repboard",
       "help": "Отображает список лидеров по количеству репутации.\nРаботает только на сервере в канале <#604621910386671616>.\n\n**Кулдаун:** отсутствует.\n**Необходимый уровень:** 0",
-      "required_level": 0,
-      "has_cooldown": false,
-      "cooldown_rate": 0,
-      "cooldown_per_second": 0,
-      "cooldown_type": "None",
-      "hidden": false
-    },
-    "vbucksboard": {
-      "name": "vbucksboard",
-      "aliases": [
-        "vb",
-        "$board"
-      ],
-      "brief": "Рейтинг по В-Баксам.",
-      "description": "Рейтинг по количеству потраченных В-Баксов.",
-      "usage": "vbucksboard",
-      "help": "Отображает список лидеров по количеству В-Баксов, которые участники потратили с нашим тегом FNFUN.\nРаботает только на сервере в канале <#604621910386671616>.\n\n**Кулдаун:** отсутствует.\n**Необходимый уровень:** 0",
       "required_level": 0,
       "has_cooldown": false,
       "cooldown_rate": 0,
@@ -1745,39 +1676,6 @@
       "cooldown_per_second": 0,
       "cooldown_type": "None",
       "hidden": true
-    },
-    "purchases": {
-      "name": "purchases",
-      "aliases": [
-        "покупки"
-      ],
-      "brief": "Просмотр покупок с тегом.",
-      "description": "Отображает список ваших покупок с тегом.",
-      "usage": "purchases",
-      "help": "Команда для просмотра покупок, которые вы совершили с нашим тегом **FNFUN**. Список пополняется по мере того, как вы присылаете скриншоты покупок в канал <#546408250158088192>\nРаботает только на сервере в канале <#604621910386671616>.\n\n**Кулдаун:** отсутствует.\n**Необходимый уровень:** 0",
-      "required_level": 0,
-      "has_cooldown": false,
-      "cooldown_rate": 0,
-      "cooldown_per_second": 0,
-      "cooldown_type": "None",
-      "hidden": false
-    },
-    "faq": {
-      "name": "faq",
-      "aliases": [
-        "why",
-        "почему"
-      ],
-      "brief": "Правила засчитывания покупок.",
-      "description": "Правила засчитывания покупок с тегом.",
-      "usage": "faq",
-      "help": "Правила засчитывания покупок с тегом. Ответы на часто задаваемые вопросы о покупках.\nРаботает только на сервере в каналах <#604621910386671616>, <#859921140805926932>.\n\n**Кулдаун:** отсутствует.\n**Необходимый уровень:** 0",
-      "required_level": 0,
-      "has_cooldown": false,
-      "cooldown_rate": 0,
-      "cooldown_per_second": 0,
-      "cooldown_type": "None",
-      "hidden": false
     }
   },
   "reactions": {
