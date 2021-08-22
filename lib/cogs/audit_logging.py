@@ -73,6 +73,13 @@ class Audit(Cog, name='Система Аудита'):
                     if int((datetime.utcnow() - entry.created_at).total_seconds()) <= 5:
                         embed.add_field(name="Модератор:", value=entry.user.mention)
 
+                if message.reference is not None:
+                    ref = message.reference
+                    embed.add_field(
+                        name='Reference:',
+                        value=f'[Click](https://discordapp.com/channels/{ref.guild_id}/{ref.channel_id}/{ref.message_id})',
+                        inline=True)
+
                 if message.type != MessageType.default:
                     embed.description = '**Системное оповещение.**'
                     embed.add_field(name="Тип сообщения:", value=message.type)
@@ -87,7 +94,6 @@ class Audit(Cog, name='Система Аудита'):
     async def on_raw_message_delete(self, payload: RawMessageDeleteEvent):
         if not payload.cached_message:
             try:
-                guild = self.bot.get_guild(payload.guild_id)
                 channel = self.bot.get_channel(payload.channel_id)
 
                 if channel.id == ADMINS_CHANNEL or channel.id == GVARDIYA_CHANNEL:
@@ -172,6 +178,14 @@ class Audit(Cog, name='Система Аудита'):
                         embed.add_field(name="Канал:", value=before.channel.mention)
                         embed.add_field(name=f"Jump URL:", value=f"[Click]({before.jump_url})")
                         embed.set_footer(text=f"ID сообщения: {after.id}")
+
+                        if after.reference is not None:
+                            ref = after.reference
+                            embed.add_field(
+                                name='Reference:',
+                                value=f'[Click](https://discordapp.com/channels/{ref.guild_id}/{ref.channel_id}/{ref.message_id})',
+                                inline=True)
+
                         await self.log_channel.send(embed=embed)
 
 
