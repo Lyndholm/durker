@@ -17,6 +17,10 @@ from ..utils.utils import load_commands_from_json
 
 cmd = load_commands_from_json("nekos")
 
+IMAGE_CATEGORIES = (
+            'NewAnimaru', 'NewGifs', 'NewMaid', 'NewMilitary', 'NewMonster',
+            'NewMusic', 'NewPixel', 'NewRegular', 'NewSchool', 'NewWitch',
+        )
 
 class Nekos(Cog, name='Аниме'):
     def __init__(self, bot):
@@ -29,12 +33,8 @@ class Nekos(Cog, name='Аниме'):
     @tasks.loop(hours=3.0)
     @logger.catch
     async def parse_anime_images(self):
-        categories = (
-            'NewAnimaru', 'NewGifs', 'NewMaid', 'NewMilitary', 'NewMonster',
-            'NewMusic', 'NewPixel', 'NewRegular', 'NewSchool', 'NewWitch',
-        )
         async with ClientSession() as session:
-            for category in categories:
+            for category in IMAGE_CATEGORIES:
                 async with session.get(f'{self.ANIME_ENDPOINT}{category}.json') as r:
                     if r.status == 200:
                         data = json.loads(await r.read())
@@ -110,17 +110,21 @@ class Nekos(Cog, name='Аниме'):
     @logger.catch
     async def random_anime_picture_command(self, ctx,
                                            repeat: Optional[int] = 1,
-                                           category: Optional[str] = 'NewRegular'):
+                                           category: Optional[str] = None):
         if abs(repeat) > 10:
             repeat = 10
-        category = self.parse_anipic_category(category.lower())
 
         for _ in range(abs(repeat)):
+            if category:
+                key = self.parse_anipic_category(category.lower())
+            else:
+                key = choice(IMAGE_CATEGORIES)
+
             embed = Embed(color=Color.random(),
                           timestamp=ctx.message.created_at)
             embed.set_footer(text=ctx.author.name,
                              icon_url=ctx.author.avatar_url)
-            embed.set_image(url=choice(self.anime_images[category]))
+            embed.set_image(url=choice(self.anime_images[key]))
             await ctx.send(embed=embed)
             await asyncio.sleep(1)
 
