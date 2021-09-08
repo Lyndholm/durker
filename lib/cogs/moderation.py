@@ -911,7 +911,8 @@ class Moderation(Cog, name='Модерация'):
             return
 
         if 'steamcommunity.com' not in message.clean_content:
-            if 'partner=' and 'token=' in message.clean_content:
+            words = ('partner=', 'token=', 'tradeoffer=')
+            if any(word in message.clean_content for word in words):
                 await self.delete_scam_message(message)
                 return
 
