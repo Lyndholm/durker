@@ -32,6 +32,7 @@ class Fortnite(Cog, name='Fortnite'):
     def __init__(self, bot):
         self.bot = bot
         self.trn_headers = {"TRN-Api-Key": getenv("TRN_API_KEY")}
+        self.fnapicom_headers = {"x-api-key", getenv("FORTNITEAPICOM_TOKEN")}
         self.fnapiio_headers = {"Authorization": getenv("FORTNITEAPIIO_TOKEN")}
 
     @Cog.listener()
@@ -1231,7 +1232,7 @@ class Fortnite(Cog, name='Fortnite'):
                 mode = 'all'
 
             params = {"name": profile, "image": mode}
-            async with ClientSession() as session:
+            async with ClientSession(headers=self.fnapicom_headers) as session:
                 async with session.get('https://fortnite-api.com/v2/stats/br/v2', params=params) as r:
                     if r.status != 200:
                         await main_message.delete()
