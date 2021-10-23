@@ -365,12 +365,12 @@ class Fortnite(Cog, name='Fortnite'):
     async def cosmetics_search_params_command(self, ctx):
         params_embeds = []
         params_images = (
-            'https://cdn.durker.fun/misc/cosmetics_search_params_1.png',
-            'https://cdn.durker.fun/misc/cosmetics_search_params_2.png',
-            'https://cdn.durker.fun/misc/cosmetics_search_params_3.png',
-            'https://cdn.durker.fun/misc/cosmetics_search_params_4.png',
-            'https://cdn.durker.fun/misc/cosmetics_search_params_5.png',
-            'https://cdn.durker.fun/misc/cosmetics_search_params_6.png'
+            'https://cdn.discordapp.com/attachments/774698479981297664/861552271589376071/cosmetics_search_params_1.png',
+            'https://cdn.discordapp.com/attachments/774698479981297664/861552297565224970/cosmetics_search_params_2.png',
+            'https://cdn.discordapp.com/attachments/774698479981297664/861552316011905044/cosmetics_search_params_3.png',
+            'https://cdn.discordapp.com/attachments/774698479981297664/861552338070405130/cosmetics_search_params_4.png',
+            'https://cdn.discordapp.com/attachments/774698479981297664/861552361251536896/cosmetics_search_params_5.png',
+            'https://cdn.discordapp.com/attachments/774698479981297664/861552398308999168/cosmetics_search_params_6.png'
         )
 
         for image in params_images:
