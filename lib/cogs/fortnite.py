@@ -601,7 +601,7 @@ class Fortnite(Cog, name='Fortnite'):
     @guild_only()
     @logger.catch
     async def show_fortnite_fish_list_command(self, ctx, number: int = 0):
-        async with aiofiles.open('./data/json/fish_s17.json', mode='r', encoding='utf-8') as f:
+        async with aiofiles.open('./data/json/fish_s19.json', mode='r', encoding='utf-8') as f:
             data = json.loads(await f.read())
 
         if number == 0:
