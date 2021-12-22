@@ -49,7 +49,6 @@ class Moderation(Cog, name='Модерация'):
         self.DISCORD_INVITE_REGEX = r'discord(?:\.com|app\.com|\.gg)[\/invite\/]?(?:[a-zA-Z0-9\-]{2,32})'
         self.EMOJI_REGEX = r'<(?P<animated>a?):(?P<name>[a-zA-Z0-9_]{2,32}):(?P<id>[0-9]{18,22})>'
         self.UNICODE_EMOJI_REGEX = r'[\U00010000-\U0010ffff]'
-        self.ban_members_with_negative_reputaion.start()
         if self.bot.ready:
             bot.loop.create_task(self.init_vars())
 
@@ -923,8 +922,8 @@ class Moderation(Cog, name='Модерация'):
             try:
                 rep = await self.bot.pg_pool.fetchval(
                     'SELECT rep_rank FROM users_stats WHERE user_id = $1', member.id)
-                if rep <= -1000:
-                    await self.ban_members(msg, [member], 0, 'Критический уровень репутации (<= -1000).')
+                if rep <= -1500:
+                    await self.ban_members(msg, [member], 0, 'Критический уровень репутации (<= -1500).')
             except:
                 continue
 
