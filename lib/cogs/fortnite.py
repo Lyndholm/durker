@@ -678,7 +678,7 @@ class Fortnite(Cog, name='Fortnite'):
     @cooldown(cmd["challenges"]["cooldown_rate"], cmd["challenges"]["cooldown_per_second"], BucketType.member)
     @logger.catch
     async def show_fortnite_rare_challenges_command(self, ctx, language: str = "ru"):
-        QUEST_ID = "Quest_S17_Milestone"
+        QUEST_ID = "Quest_S19_Milestone"
         quest_embeds = []
         xp_total = 0
         async with ClientSession(headers=self.fnapiio_headers) as session:
