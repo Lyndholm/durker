@@ -1,0 +1,222 @@
+[
+  {
+    "name": "Пришелец",
+    "description": {
+      "index": "Первым в списке стал персонаж Пришелец. Его можно найти на одном из восточных островков карты. Он болтается по мостику и ждет вашего появления.",
+      "secondary": "\n\nИ он продает оружие, разлом и предлагает себя нанять."
+    },
+    "images": {
+      "icon": "https://fortnite-api.com/images/cosmetics/br/cid_140_athena_commando_m_visitor/icon.png"
+    },
+    "map": "https://fortnitefun.ru/wp-content/uploads/2021/12/%D0%BF%D0%B5%D1%80%D1%81%D0%BE%D0%BD%D0%B0%D0%B6-%D0%9F%D1%80%D0%B8%D1%88%D0%B5%D0%BB%D0%B5%D1%86-1.jpg"
+  },
+  {
+    "name": "Экспериментатор",
+    "description": {
+      "index": "Вторым в книге оказывается Экспериментатор. Он стоит на территории Убежища.",
+      "secondary": "\n\nУ него можно раскрыть следующий круг бури, купить экзотику «Двойные гравипистолеты»."
+    },
+    "images": {
+      "icon": "https://fortnite-api.com/images/cosmetics/br/cid_540_athena_commando_m_meteormanremix/icon.png"
+    },
+    "map": "https://fortnitefun.ru/wp-content/uploads/2021/12/%D0%9F%D0%B5%D1%80%D1%81%D0%BE%D0%BD%D0%B0%D0%B6-%D0%AD%D0%BA%D1%81%D0%BF%D0%B5%D1%80%D0%B8%D0%BC%D0%B5%D0%BD%D1%82%D0%B0%D1%82%D0%BE%D1%80-2.jpg"
+  },
+  {
+    "name": "Агент Джоунс",
+    "description": {
+      "index": "Третий персонаж — Агент Джоунс. Он спавнится рандомно в одном из форпостов Семерых.",
+      "secondary": "\n\nОн продает оружие, разлом и предлагает себя нанять."
+    },
+    "images": {
+      "icon": "https://static.wikia.nocookie.net/fortnite/images/3/38/Agent_Jones_%28Jump_42%29_-_Outfit_-_Fortnite.png"
+    },
+    "map": "https://fortnitefun.ru/wp-content/uploads/2021/12/%D0%A1%D0%BE%D0%B1%D0%B5%D1%80%D0%B8%D1%82%D0%B5-%D1%84%D1%80%D0%B0%D0%B3%D0%BC%D0%B5%D0%BD%D1%82%D1%8B-%D1%81%D0%B0%D0%BC%D0%BE%D1%86%D0%B2%D0%B5%D1%82%D0%B0-%D0%B7%D0%B0-%D0%BF%D1%80%D0%B5%D0%B4%D0%B5%D0%BB%D0%B0%D0%BC%D0%B8-%D1%85%D1%80%D0%B0%D0%BD%D0%B8%D0%BB%D0%B8%D1%89-%D0%A1%D0%B5%D0%BC%D0%B5%D1%80%D1%8B%D1%85.jpg"
+  },
+  {
+    "name": "Основатель",
+    "description": {
+      "index": "Основатель следующий по списку. Он мирный, но поговорить с ним для книги коллекций нельзя. Единственный способ записать Основателя в коллекцию — треснуть его чем-нибудь.",
+      "secondary": "\n\nЕсли его убить, с него выпадет мифический автомат Основателя."
+    },
+    "images": {
+      "icon": "https://fortnite-api.com/images/cosmetics/br/cid_a_286_athena_commando_m_turtleneck/icon.png"
+    },
+    "map": "https://fortnitefun.ru/wp-content/uploads/2021/12/%D0%9F%D0%B5%D1%80%D1%81%D0%BE%D0%BD%D0%B0%D0%B6-%D0%9E%D1%81%D0%BD%D0%BE%D0%B2%D0%B0%D1%82%D0%B5%D0%BB%D1%8C-4.jpg"
+  },
+  {
+    "name": "Затворник Джоунси",
+    "description": {
+      "index": "Затворник Джоунси — еще один Джоунси на карте. Он стоит на юго-западе Деревушки Джоунсов.",
+      "secondary": "\n\nОн продает удочку, хотя она на причале рядом есть, экзотическую пушку «Аргумент» и хилки."
+    },
+    "images": {
+      "icon": "https://fortnite-api.com/images/cosmetics/br/cid_409_athena_commando_m_bunkerman/icon.png"
+    },
+    "map": "https://fortnitefun.ru/wp-content/uploads/2021/12/%D0%9F%D0%B5%D1%80%D1%81%D0%BE%D0%BD%D0%B0%D0%B6-%D0%97%D0%B0%D1%82%D0%B2%D0%BE%D1%80%D0%BD%D0%B8%D0%BA-%D0%94%D0%B6%D0%BE%D1%83%D0%BD%D1%81%D0%B8-5.jpg"
+  },
+  {
+    "name": "Хмелевар",
+    "description": {
+      "index": "И из деревушки можно не уходить, ведь там еще один персонаж — Хмелевар.",
+      "secondary": "\n\nОн продает мясо, хилки и оружие."
+    },
+    "images": {
+      "icon": "https://fortnite-api.com/images/cosmetics/br/cid_225_athena_commando_m_octoberfest/icon.png"
+    },
+    "map": "https://fortnitefun.ru/wp-content/uploads/2021/12/%D0%9F%D0%B5%D1%80%D1%81%D0%BE%D0%BD%D0%B0%D0%B6-%D0%A5%D0%BC%D0%B5%D0%BB%D0%B5%D0%B2%D0%B0%D1%80-6.jpg"
+  },
+  {
+    "name": "Зомби",
+    "description": {
+      "index": "Все в той же Деревушке есть еще один Джоунси — зомби Джоунси. Он стоит в клетке, и поделом ему.",
+      "secondary": "\n\nОн продает мясо, оружие и предлагает себя нанять."
+    },
+    "images": {
+      "icon": "https://fortnite-api.com/images/cosmetics/br/cid_254_athena_commando_m_zombie/icon.png"
+    },
+    "map": "https://fortnitefun.ru/wp-content/uploads/2021/12/%D0%9F%D0%B5%D1%80%D1%81%D0%BE%D0%BD%D0%B0%D0%B6-%D0%97%D0%BE%D0%BC%D0%B1%D0%B8-7.jpg"
+  },
+  {
+    "name": "Физкультурник",
+    "description": {
+      "index": "Физкультурник обитает в Деревушке Джоунсов, однако спавно его редок, поэтому придется потратить несколько попыток.",
+      "secondary": "\n\nОн продает оружие, хилку и чаевые водителю."
+    },
+    "images": {
+      "icon": "https://fortnite-api.com/images/cosmetics/br/cid_186_athena_commando_m_exercise/icon.png"
+    },
+    "map": "https://fortnitefun.ru/wp-content/uploads/2021/12/%D0%9F%D0%B5%D1%80%D1%81%D0%BE%D0%BD%D0%B0%D0%B6-%D0%A4%D0%B8%D0%B7%D0%BA%D1%83%D0%BB%D1%8C%D1%82%D1%83%D1%80%D0%BD%D0%B8%D0%BA-8.jpg"
+  },
+  {
+    "name": "Джоунси Первый",
+    "description": {
+      "index": "И последний персонаж, которого можно найти в Деревушке, это Джоунси.",
+      "secondary": "\n\nОн продает ресурсы, оружие и предлагает себя нанять."
+    },
+    "images": {
+      "icon": "https://fortnite-api.com/images/cosmetics/br/cid_883_athena_commando_m_chonejonesy/icon.png"
+    },
+    "map": "https://fortnitefun.ru/wp-content/uploads/2021/12/%D0%9F%D0%B5%D1%80%D1%81%D0%BE%D0%BD%D0%B0%D0%B6-%D0%94%D0%B6%D0%BE%D1%83%D0%BD%D1%81%D0%B8-%D0%9F%D0%B5%D1%80%D0%B2%D1%8B%D0%B9-9.jpg"
+  },
+  {
+    "name": "Капитан Команды по обнимашкам",
+    "description": {
+      "index": "Этот персонаж стоит в Летнем Лагере, который далеко не летний. Даже летом.",
+      "secondary": "\n\nИ он продает оружие, экзотическую пушку «Шестизарядник меткого стрелка» и хилки."
+    },
+    "images": {
+      "icon": "https://fortnite-api.com/images/cosmetics/br/cid_069_athena_commando_f_pinkbear/icon.png"
+    },
+    "map": "https://fortnitefun.ru/wp-content/uploads/2021/12/%D0%9F%D0%B5%D1%80%D1%81%D0%BE%D0%BD%D0%B0%D0%B6-%D0%9A%D0%B0%D0%BF%D0%B8%D1%82%D0%B0%D0%BD-%D0%9A%D0%BE%D0%BC%D0%B0%D0%BD%D0%B4%D1%8B-%D0%BF%D0%BE-%D0%BE%D0%B1%D0%BD%D0%B8%D0%BC%D0%B0%D1%88%D0%BA%D0%B0%D0%BC-13.jpg"
+  },
+  {
+    "name": "Стальной капитан команды",
+    "description": {
+      "index": "Ну и командиров развелось. Этот стоит в лагере. Да, недалеко от утки.",
+      "secondary": "\n\nОн продает оружие, хилки и ресурсы."
+    },
+    "images": {
+      "icon": "https://fortnite-api.com/images/cosmetics/br/cid_781_athena_commando_f_fuzzybearteddy/icon.png"
+    },
+    "map": "https://fortnitefun.ru/wp-content/uploads/2021/12/%D0%9F%D0%B5%D1%80%D1%81%D0%BE%D0%BD%D0%B0%D0%B6-%D0%A1%D1%82%D0%B0%D0%BB%D1%8C%D0%BD%D0%BE%D0%B9-%D0%BA%D0%B0%D0%BF%D0%B8%D1%82%D0%B0%D0%BD-%D0%BA%D0%BE%D0%BC%D0%B0%D0%BD%D0%B4%D1%8B-11.jpg"
+  },
+  {
+    "name": "Обнимашка-Дэдпул",
+    "description": {
+      "index": "Обнимашка стоит тоже в лагере, и у нее есть вероятность спавна.",
+      "secondary": "\n\nОна продает оружие, ресурсы и предлагает себя нанять."
+    },
+    "images": {
+      "icon": "https://fortnite-api.com/images/cosmetics/br/cid_746_athena_commando_f_fuzzybear/icon.png"
+    },
+    "map": "https://fortnitefun.ru/wp-content/uploads/2021/12/%D0%9F%D0%B5%D1%80%D1%81%D0%BE%D0%BD%D0%B0%D0%B6-%D0%9E%D0%B1%D0%BD%D0%B8%D0%BC%D0%B0%D1%88%D0%BA%D0%B0-%D0%94%D1%8D%D0%B4%D0%BF%D1%83%D0%BB-12.jpg"
+  },
+  {
+    "name": "Капитан Утиной команды",
+    "description": {
+      "index": "В Летнем Лагере можно встретить официального представителя Уток в фортнайт.",
+      "secondary": "\n\nИ этот персонаж продает оружие, хилки и ресурсы."
+    },
+    "images": {
+      "icon": "https://fortnite-api.com/images/cosmetics/br/cid_744_athena_commando_f_duckhero/icon.png"
+    },
+    "map": "https://fortnitefun.ru/wp-content/uploads/2021/12/%D0%9F%D0%B5%D1%80%D1%81%D0%BE%D0%BD%D0%B0%D0%B6-%D0%9A%D0%B0%D0%BF%D0%B8%D1%82%D0%B0%D0%BD-%D0%A3%D1%82%D0%B8%D0%BD%D0%BE%D0%B9-%D0%BA%D0%BE%D0%BC%D0%B0%D0%BD%D0%B4%D1%8B-10.jpg"
+  },
+  {
+    "name": "Тако",
+    "description": {
+      "index": "Тако стоит в закусочной. И в закусочной в смысле заведении, и в закусочной в смысле локации.",
+      "secondary": "\n\nОн продает оружие и хилки."
+    },
+    "images": {
+      "icon": "https://fortnite-api.com/images/cosmetics/br/cid_538_athena_commando_m_taco/icon.png"
+    },
+    "map": "https://fortnitefun.ru/wp-content/uploads/2021/12/%D0%9F%D0%B5%D1%80%D1%81%D0%BE%D0%BD%D0%B0%D0%B6-%D0%A2%D0%B0%D0%BA%D0%BE-14.jpg"
+  },
+  {
+    "name": "Рожок",
+    "description": {
+      "index": "Пломбирный перекресток может похвастаться Рожком.",
+      "secondary": "\n\nРожок продает оружие, маскировку и предлагает дать чаевые водителю."
+    },
+    "images": {
+      "icon": "https://fortnite-api.com/images/cosmetics/br/cid_344_athena_commando_m_icecream/icon.png"
+    },
+    "map": "https://fortnitefun.ru/wp-content/uploads/2021/12/%D0%BF%D0%B5%D1%80%D1%81%D0%BE%D0%BD%D0%B0%D0%B6-%D0%A0%D0%BE%D0%B6%D0%BE%D0%BA-15.jpg"
+  },
+  {
+    "name": "Братья Бао",
+    "description": {
+      "index": "В Засаленной закусочной обитает пельмень. У него тоже есть вероятность спавна.",
+      "secondary": "\n\nОн продает рыбки, оружие и маскировку."
+    },
+    "images": {
+      "icon": "https://fortnite-api.com/images/cosmetics/br/cid_338_athena_commando_m_dumplingman/icon.png"
+    },
+    "map": "https://fortnitefun.ru/wp-content/uploads/2021/12/%D0%9F%D0%B5%D1%80%D1%81%D0%BE%D0%BD%D0%B0%D0%B6-%D0%91%D1%80%D0%B0%D1%82%D1%8C%D1%8F-%D0%91%D0%B0%D0%BE-16.jpg"
+  },
+  {
+    "name": "Синьор Помидор",
+    "description": {
+      "index": "Там же в Закусочной стоит персонаж Синьор Помидор.",
+      "secondary": "\n\nОн продает оружие, разлом и маскировку."
+    },
+    "images": {
+      "icon": "https://fortnite-api.com/images/cosmetics/br/cid_109_athena_commando_m_pizza/icon.png"
+    },
+    "map": "https://fortnitefun.ru/wp-content/uploads/2021/12/%D0%9F%D0%B5%D1%80%D1%81%D0%BE%D0%BD%D0%B0%D0%B6-%D0%A1%D0%B8%D0%BD%D1%8C%D0%BE%D1%80-%D0%9F%D0%BE%D0%BC%D0%B8%D0%B4%D0%BE%D1%80-17.jpg"
+  },
+  {
+    "name": "Блинчик",
+    "description": {
+      "index": "На карту вернулся Блинчик. И он стоит в своем Бистро.",
+      "secondary": "\n\nОн продает экзотику «Шестизарядник меткого стрелка», обычное оружие и предлагает дуэль. "
+    },
+    "images": {
+      "icon": "https://fortnite-api.com/images/cosmetics/br/cid_962_athena_commando_m_flapjackwrangler/icon.png"
+    },
+    "map": "https://fortnitefun.ru/wp-content/uploads/2021/12/%D0%9F%D0%B5%D1%80%D1%81%D0%BE%D0%BD%D0%B0%D0%B6-%D0%91%D0%BB%D0%B8%D0%BD%D1%87%D0%B8%D0%BA-18.jpg"
+  },
+  {
+    "name": "Шанта",
+    "description": {
+      "index": "Персонаж Шанта стоит в пустыне.",
+      "secondary": "\n\nОна продает оружие, разлом и предлагает нанять себя."
+    },
+    "images": {
+      "icon": "https://fortnite-api.com/images/cosmetics/br/cid_a_292_athena_commando_f_exosuit/icon.png"
+    },
+    "map": "https://fortnitefun.ru/wp-content/uploads/2021/12/%D0%9F%D0%B5%D1%80%D1%81%D0%BE%D0%BD%D0%B0%D0%B6-%D1%88%D0%B0%D0%BD%D1%82%D0%B0-19.jpg"
+  },
+  {
+    "name": "Лейтенант Лама",
+    "description": {
+      "index": "Суровая лама обитает возле горочки. Он шифруется.",
+      "secondary": "\n\nОн продает экзотику «Винтовка Грохот», предлагает себя нанять."
+    },
+    "images": {
+      "icon": "https://fortnite-api.com/images/cosmetics/br/cid_a_288_athena_commando_m_buffllama/icon.png"
+    },
+    "map": "https://fortnitefun.ru/wp-content/uploads/2021/12/%D0%BF%D0%B5%D1%81%D1%80%D0%BE%D0%BD%D0%B0%D0%B6-%D0%9B%D0%B5%D0%B9%D1%82%D0%B5%D0%BD%D0%B0%D0%BD%D1%82-%D0%9B%D0%B0%D0%BC%D0%B0-20.jpg"
+  }
+]
