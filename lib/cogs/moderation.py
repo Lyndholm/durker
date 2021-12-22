@@ -1,12 +1,13 @@
+import enum
 import json
 import re
-import time
 from asyncio import sleep
 from datetime import datetime, timedelta
-from math import floor
+from os import getenv
 from random import choice, randint
 from typing import Optional
 
+import aiohttp
 from discord import Color, Embed, Invite, Member, Message, PartialInviteGuild
 from discord.errors import NotFound
 from discord.ext import tasks
@@ -14,7 +15,6 @@ from discord.ext.commands import (BadArgument, Cog, Converter, Greedy,
                                   bot_has_permissions, check_any, command,
                                   guild_only, has_any_role, has_permissions)
 from discord.utils import find
-from jishaku.functools import executor_function
 from loguru import logger
 
 from ..db import db
@@ -39,6 +39,14 @@ class BannedUser(Converter):
         if entity is None:
             raise BadArgument
         return entity
+
+
+class MuteTypes(enum.Enum):
+    timeout   = 0
+    ugol      = 1
+    isolator  = 2
+    dungeon   = 3
+    gulag     = 4
 
 
 class Moderation(Cog, name='Модерация'):
@@ -90,7 +98,7 @@ class Moderation(Cog, name='Модерация'):
             fields = [
                 ("Пользователь", f"{target.display_name} ({target.mention})", False),
                 ("Администратор", message.author.mention, False),
-                ("Причина", reason.capitalize(), False)
+                ("Причина", reason, False)
             ]
 
             for name, value, inline in fields:
@@ -108,7 +116,7 @@ class Moderation(Cog, name='Модерация'):
     @has_permissions(kick_members=True)
     @guild_only()
     @logger.catch
-    async def kick_members_command(self, ctx, targets: Greedy[Member], *, reason: Optional[str] = "Не указана"):
+    async def kick_members_command(self, ctx, targets: Greedy[Member], *, reason: Optional[str] = 'Не указана'):
         await ctx.message.delete()
 
         if not len(targets):
@@ -140,7 +148,7 @@ class Moderation(Cog, name='Модерация'):
             fields = [
                 ("Пользователь", f"{target.display_name} ({target.mention})", False),
                 ("Администратор", message.author.mention, False),
-                ("Причина", reason.capitalize(), False)
+                ("Причина", reason, False)
             ]
 
             for name, value, inline in fields:
@@ -160,7 +168,7 @@ class Moderation(Cog, name='Модерация'):
     @logger.catch
     async def ban_members_command(self, ctx, targets: Greedy[Member],
                                         delete_days: Optional[int] = 1, *,
-                                        reason: Optional[str] = "Не указана"):
+                                        reason: Optional[str] = 'Не указана'):
         await ctx.message.delete()
 
         if not len(targets):
@@ -183,7 +191,7 @@ class Moderation(Cog, name='Модерация'):
             fields = [
                 ("Пользователь", f"{target.name} ({target.mention})", False),
                 ("Администратор", message.author.mention, False),
-                ("Причина", reason.capitalize(), False)
+                ("Причина", reason, False)
             ]
 
             for name, value, inline in fields:
@@ -202,7 +210,7 @@ class Moderation(Cog, name='Модерация'):
     @guild_only()
     @logger.catch
     async def unban_members_command(self, ctx, targets: Greedy[BannedUser], *,
-                                    reason: Optional[str] = "Не указана"):
+                                    reason: Optional[str] = 'Не указана'):
         await ctx.message.delete()
 
         if not len(targets):
@@ -211,36 +219,74 @@ class Moderation(Cog, name='Модерация'):
             await self.unban_members(ctx.message, targets, reason)
 
 
+    async def put_in_timeout(
+        self,
+        ctx,
+        member: Member = None,
+        seconds: Optional[int] = 0
+    ) -> None:
+        if not member:
+            await ctx.reply('Укажите пользователя.', delete_after=15)
+            return
+
+        if seconds > 2_592_000:
+            await ctx.reply('Время не может превышать 30 дней.', delete_after=15)
+            return
+
+        url = f"https://discord.com/api/v9/guilds/{ctx.guild.id}/members/{member.id}"
+        headers = {
+            "User-Agent": "Durker",
+            "Authorization": f"Bot {getenv('DISCORD_BOT_TOKEN')}",
+            "Content-Type": "application/json",
+        }
+        data = {
+            "communication_disabled_until": (datetime.utcnow() + timedelta(seconds=seconds)).isoformat() if seconds else None
+        }
+
+        async with aiohttp.ClientSession() as session:
+            async with session.patch(url, headers=headers, json=data) as r:
+                if not 200 <= r.status <= 299:
+                    await ctx.send('Что-то пошло не так, действие отменено.', delete_after=60)
+
+
     @logger.catch
-    async def mute_members(self, message, targets, time, reason, mute_type):
+    async def mute_members(
+        self,
+        ctx,
+        targets: Greedy[Member],
+        seconds: Optional[int] = 60,
+        reason: Optional[str] = 'Не указана',
+        mute_type: MuteTypes = MuteTypes.timeout
+    ):
         def _notification_embed(target: Member, description: str, time_field: tuple) -> Embed:
             embed = Embed(
                 title="Участник получил мут",
-                description=description,
                 color=Color.blue(),
                 timestamp=datetime.utcnow()
             )
+            if description: embed.description = description
 
             fields = [
-                ("Причина", reason.capitalize(), True),
+                ("Причина", reason, True),
                 time_field,
-                ("Администратор", message.author.mention, True)
+                ("Администратор", ctx.author.mention, True)
             ]
 
-            if mute_type == "mute":
+            if mute_type is MuteTypes.timeout:
                 fields.insert(0, ("Пользователь", f"{target.display_name} ({target.mention})", False))
             for name, value, inline in fields:
                 embed.add_field(name=name, value=value, inline=inline)
 
             return embed
 
-        def _extend_mute_story(message: Message, target: Member, time: int, reason: str):
+        def _extend_mute_story(message: Message, target: Member, seconds: int, reason: str):
             rec = db.fetchone(["mutes_story"], "users_stats", "user_id", target.id)[0]
             rec['user_mute_story'].append(
                 {
                     "id": len(rec['user_mute_story']) + 1,
                     "date": datetime.now().strftime("%d.%m.%Y %H:%M:%S"),
-                    "mute_time": time,
+                    "mute_type": str(mute_type),
+                    "mute_time": seconds,
                     "reason": reason,
                     "moderator": f"{message.author.name} | {message.author.id}"
                 }
@@ -249,116 +295,52 @@ class Moderation(Cog, name='Модерация'):
                         json.dumps(rec, ensure_ascii=False), target.id)
             db.commit()
 
-        unmutes = []
-
         for target in targets:
-            if self.mute_role not in target.roles:
-                if message.guild.me.top_role.position < target.top_role.position or target.id == message.author.id:
-                    continue
+            if ctx.guild.me.top_role.position < target.top_role.position or target.id == ctx.author.id:
+                continue
 
-                role_ids = ",".join([str(r.id) for r in target.roles])
-                managed_roles = [r for r in target.roles if r.managed]
-                await target.edit(roles=[self.mute_role] + managed_roles)
+            if mute_type is MuteTypes.ugol:
+                MINUS_REP = 100
+                embed = _notification_embed(
+                    target,
+                    f"**Нарушитель `{target.display_name}` ({target.mention}) теперь в углу.**",
+                    ("Срок мута", "30 минут", True)
+                )
 
-                if mute_type == "ugol":
-                    end_time = datetime.now() + timedelta(minutes=30)
-                    embed = _notification_embed(
-                        target,
-                        f"**Нарушитель `{target.display_name}` ({target.mention}) теперь в углу.**",
-                        ("Срок мута", "30 минут", True)
-                    )
-                    _extend_mute_story(message, target, 1800, reason)
-                    await edit_user_reputation(self.bot.pg_pool, target.id, '-', 100)
-                    await self.moderation_channel.send(embed=embed)
+            elif mute_type is MuteTypes.isolator:
+                MINUS_REP = 250
+                embed = _notification_embed(
+                    target,
+                    f"**Шизоид <:durka:684794973358522426> `{target.display_name}` ({target.mention}) <:durka:684794973358522426> в изоляторе. Кукуха чата в безопасности.**",
+                    ("Срок мута", "3 часа", True)
+                )
 
-                elif mute_type == "isolator":
-                    end_time = datetime.now() + timedelta(hours=3)
-                    embed = _notification_embed(
-                        target,
-                        f"**Шизоид <:durka:684794973358522426> `{target.display_name}` ({target.mention}) <:durka:684794973358522426> в изоляторе. Кукуха чата в безопасности.**",
-                        ("Срок мута", "3 часа", True)
-                    )
-                    _extend_mute_story(message, target, 10800, reason)
-                    await edit_user_reputation(self.bot.pg_pool, target.id, '-', 250)
-                    await self.moderation_channel.send(embed=embed)
+            elif mute_type is MuteTypes.dungeon:
+                MINUS_REP = 500
+                embed = _notification_embed(
+                    target,
+                    f"**Slave `{target.display_name}` ({target.mention}) отправлен в ♂️ Dungeon ♂️**",
+                    ("Срок мута", "12 часов", True)
+                )
 
-                elif mute_type == "dungeon":
-                    end_time = datetime.now() + timedelta(hours=12)
-                    embed = _notification_embed(
-                        target,
-                        f"**Slave `{target.display_name}` ({target.mention}) отправлен в ♂️ Dungeon ♂️**",
-                        ("Срок мута", "12 часов", True)
-                    )
-                    _extend_mute_story(message, target, 43200, reason)
-                    await edit_user_reputation(self.bot.pg_pool, target.id, '-', 500)
-                    await self.moderation_channel.send(embed=embed)
-
-                elif mute_type == "gulag":
-                    end_time = datetime.now() + timedelta(hours=24)
-                    embed = _notification_embed(
-                        target,
-                        f"**Нарушитель `{target.display_name}` ({target.mention}) отправлен в ГУЛАГ.**",
-                        ("Срок мута", "24 часа", True)
-                    )
-                    _extend_mute_story(message, target, 86400, reason)
-                    await edit_user_reputation(self.bot.pg_pool, target.id, '-', 1000)
-                    await self.moderation_channel.send(embed=embed)
-
-                else:
-                    end_time = datetime.now() + timedelta(hours=float(time)) if time and time.isdigit() else None
-                    embed = _notification_embed(target, None,
-                            ("Срок мута", f"{time} {russian_plural(int(time),['час','часа','часов'])}" if time and time.isdigit() else "Бессрочно", True)
-                    )
-                    _extend_mute_story(message, target, int(time) * 3600 if time and time.isdigit() else 0, reason)
-                    await edit_user_reputation(self.bot.pg_pool, target.id, '-', floor(5 * (int(time) ^ 2) + 50 * int(time) + 100) if time and time.isdigit() else 0)
-                    await self.moderation_channel.send(embed=embed)
-
-                db.insert("mutes", {"user_id": target.id,
-                       "role_ids": role_ids,
-                       "mute_end_time": end_time})
-
-                if time:
-                    unmutes.append(target)
+            elif mute_type is MuteTypes.gulag:
+                MINUS_REP = 1000
+                embed = _notification_embed(
+                    target,
+                    f"**Нарушитель `{target.display_name}` ({target.mention}) отправлен в ГУЛАГ.**",
+                    ("Срок мута", "24 часа", True)
+                )
 
             else:
-                embed = Embed(
-                    title="Внимание!",
-                    color=Color.red(),
-                    description=f"Участник `{target.display_name}` ({target.mention}) уже замьючен!"
-                )
-                await message.channel.send(embed=embed, delete_after=10)
-                return
-
-        return unmutes
-
-    @logger.catch
-    async def unmute_members(self, ctx, targets, reason: Optional[str] = "Не указана"):
-        for target in targets:
-            if self.mute_role in target.roles:
-                role_ids = db.fetchone(["role_ids"], "mutes", "user_id", target.id)[0]
-                roles = [ctx.guild.get_role(int(id_)) for id_ in role_ids.split(",") if len (id_)]
-
-                db.execute("DELETE FROM mutes WHERE user_id = %s", target.id)
-                db.commit()
-
-                try:
-                    await target.edit(roles=roles)
-                except NotFound:
-                    continue
-
-                embed = Embed(
-                    title="Участник размьючен",
-                    color=Color.green(),
-                    timestamp=datetime.utcnow()
+                MINUS_REP = 0
+                embed = _notification_embed(target, None,
+                        ("Срок мута", f"{seconds} {russian_plural(int(seconds),['секунда','секунды','секунд'])}", True)
                 )
 
-                fields = [("Пользователь", f"{target.display_name} ({target.mention})", False),
-                          ("Причина", reason.capitalize(), False)]
-
-                for name, value, inline in fields:
-                    embed.add_field(name=name, value=value, inline=inline)
-
-                await self.moderation_channel.send(embed=embed)
+            await self.put_in_timeout(ctx, target, seconds)
+            _extend_mute_story(ctx.message, target, seconds, reason)
+            await edit_user_reputation(self.bot.pg_pool, target.id, '-', MINUS_REP)
+            await self.moderation_channel.send(embed=embed)
 
 
     @command(name=cmd["mute"]["name"], aliases=cmd["mute"]["aliases"],
@@ -374,19 +356,21 @@ class Moderation(Cog, name='Модерация'):
     )
     @guild_only()
     @logger.catch
-    async def mute_members_command(self, ctx, targets: Greedy[Member], hours: Optional[str],
-                                   *, reason: Optional[str] = "Не указана"):
+    async def mute_members_command(
+        self,
+        ctx,
+        targets: Greedy[Member],
+        seconds: Optional[int] = 60,
+        *,
+        reason: Optional[str] = 'Не указана'
+    ):
         await ctx.message.delete()
 
         if not len(targets):
             await ctx.send(f"{ctx.author.mention}, укажите пользователей, которых необходимо замутить.", delete_after=10)
             return
 
-        unmutes = await self.mute_members(ctx.message, targets, hours, reason, "mute")
-        if len(unmutes):
-            if hours.isdigit():
-                await sleep(int(hours)*3600)
-                await self.unmute_members(ctx, targets, "Время мута истекло.")
+        await self.mute_members(ctx, targets, seconds, reason, MuteTypes.timeout)
 
 
     @command(name=cmd["ugol"]["name"], aliases=cmd["ugol"]["aliases"],
@@ -402,17 +386,20 @@ class Moderation(Cog, name='Модерация'):
     )
     @guild_only()
     @logger.catch
-    async def ugol_mute_command(self, ctx, targets: Greedy[Member], *, reason: Optional[str] = "Не указана"):
+    async def ugol_mute_command(
+        self,
+        ctx,
+        targets: Greedy[Member],
+        *,
+        reason: Optional[str] = 'Не указана'
+    ):
         await ctx.message.delete()
 
         if not len(targets):
             await ctx.send(f"{ctx.author.mention}, укажите пользователей, которых необходимо отправить в угол.", delete_after=10)
             return
 
-        unmutes = await self.mute_members(ctx.message, targets, 0.5, reason, "ugol")
-        if len(unmutes):
-            await sleep(1800)
-            await self.unmute_members(ctx, targets, "Время пребывания в углу истекло.")
+        await self.mute_members(ctx, targets, 1800, reason, MuteTypes.ugol)
 
 
     @command(name=cmd["isolator"]["name"], aliases=cmd["isolator"]["aliases"],
@@ -428,17 +415,20 @@ class Moderation(Cog, name='Модерация'):
     )
     @guild_only()
     @logger.catch
-    async def isolator_mute_command(self, ctx, targets: Greedy[Member], *, reason: Optional[str] = "Не указана"):
+    async def isolator_mute_command(
+        self,
+        ctx,
+        targets: Greedy[Member],
+        *,
+        reason: Optional[str] = 'Не указана'
+    ):
         await ctx.message.delete()
 
         if not len(targets):
             await ctx.send(f"{ctx.author.mention}, укажите пользователей, которых необходимо отправить в изолятор.", delete_after=10)
             return
 
-        unmutes = await self.mute_members(ctx.message, targets, 3, reason, "isolator")
-        if len(unmutes):
-            await sleep(10800)
-            await self.unmute_members(ctx, targets, "Время пребывания в изоляторе истекло.")
+        await self.mute_members(ctx, targets, 10800, reason, MuteTypes.isolator)
 
 
     @command(name=cmd["dungeon"]["name"], aliases=cmd["dungeon"]["aliases"],
@@ -454,17 +444,20 @@ class Moderation(Cog, name='Модерация'):
     )
     @guild_only()
     @logger.catch
-    async def dungeon_mute_command(self, ctx, targets: Greedy[Member], *, reason: Optional[str] = "Не указана"):
+    async def dungeon_mute_command(
+        self,
+        ctx,
+        targets: Greedy[Member],
+        *,
+        reason: Optional[str] = 'Не указана'
+    ):
         await ctx.message.delete()
 
         if not len(targets):
             await ctx.send(f"{ctx.author.mention}, укажите пользователей, которых необходимо отправить в ♂️ Dungeon ♂️", delete_after=10)
             return
 
-        unmutes = await self.mute_members(ctx.message, targets, 12, reason, "dungeon")
-        if len(unmutes):
-            await sleep(43200)
-            await self.unmute_members(ctx, targets, "Время пребывания в ♂️ Dungeon ♂️ истекло.")
+        await self.mute_members(ctx, targets, 43200, reason, MuteTypes.dungeon)
 
 
     @command(name=cmd["gulag"]["name"], aliases=cmd["gulag"]["aliases"],
@@ -480,25 +473,24 @@ class Moderation(Cog, name='Модерация'):
     )
     @guild_only()
     @logger.catch
-    async def gulag_mute_command(self, ctx, targets: Greedy[Member], *, reason: Optional[str] = "Не указана"):
+    async def gulag_mute_command(
+        self,
+        ctx,
+        targets: Greedy[Member],
+        *,
+        reason: Optional[str] = 'Не указана'
+    ):
         await ctx.message.delete()
 
         if not len(targets):
             await ctx.send(f"{ctx.author.mention}, укажите пользователей, которых необходимо отправить в ГУЛАГ.", delete_after=10)
             return
 
-        unmutes = await self.mute_members(ctx.message, targets, 24, reason, "gulag")
-        if len(unmutes):
-            await sleep(86400)
-            await self.unmute_members(ctx, targets, "Время пребывания в ГУЛАГе истекло.")
+        await self.mute_members(ctx, targets, 86400, reason, MuteTypes.gulag)
 
 
     @logger.catch
-    async def warn_member(self, message, target, warns, reason):
-        @executor_function
-        def _warn_sleep(sleep_time: int):
-            time.sleep(sleep_time)
-
+    async def warn_member(self, ctx, target, warns, reason):
         def _warn_notification(target: Member, warns: list, time_field: tuple) -> Embed:
             embed = Embed(
                 title="Участник получил warn",
@@ -508,10 +500,10 @@ class Moderation(Cog, name='Модерация'):
             )
 
             fields = [
-                ("Причина", reason.capitalize(), True),
+                ("Причина", reason, True),
                 time_field,
                 ("Общее количество предупреждений", len(warns), True),
-                ("Администратор", message.author.mention, True)
+                ("Администратор", ctx.author.mention, True)
             ]
 
             for name, value, inline in fields:
@@ -519,62 +511,42 @@ class Moderation(Cog, name='Модерация'):
 
             return embed
 
-
-        if self.mute_role not in target.roles:
-            if message.guild.me.top_role.position < target.top_role.position or target.id == message.author.id:
-                return
-
-            if len(warns) == 1:
-                await edit_user_reputation(self.bot.pg_pool, target.id, '-', 1000)
-
-            if len(warns) == 2:
-                await edit_user_reputation(self.bot.pg_pool, target.id, '-', 2500)
-
-            if len(warns) == 3:
-                await edit_user_reputation(self.bot.pg_pool, target.id, '-', 5000)
-
-                if target.id not in self.bot.banlist:
-                    self.bot.banlist.append(target.id)
-                    db.insert('blacklist', {'user_id':target.id,'reason':'Получил 3 варна'})
-
-            if len(warns) > 3:
-                await self.ban_members(message, [target], 1, "Максимум варнов | " + reason)
-                return
-
-            params = self._warn_mute_params(len(warns))
-            role_ids = ",".join([str(r.id) for r in target.roles])
-            managed_roles = [r for r in target.roles if r.managed]
-            await target.edit(roles=[self.mute_role] + managed_roles)
-
-            end_time = datetime.now() + timedelta(seconds=params[0])
-            embed = _warn_notification(target, warns, ("Срок мута", params[1], True))
-            await self.moderation_channel.send(embed=embed)
-
-            db.insert("mutes", {"user_id": target.id,
-                "role_ids": role_ids,
-                "mute_end_time": end_time})
-
-            await _warn_sleep(sleep_time=params[0])
-            ctx = await self.bot.get_context(message)
-            await self.unmute_members(ctx, [target], "Срок мута за варн истёк.")
-        else:
-            embed = Embed(
-                title="Внимание!",
-                color=Color.red(),
-                description=f"Участник `{target.display_name}` ({target.mention}) уже замьючен!"
-            )
-            await message.channel.send(embed=embed, delete_after=10)
+        if ctx.guild.me.top_role.position < target.top_role.position or target.id == ctx.author.id:
             return
 
-    def _warn_mute_params(self, warns_len: int) -> tuple:
-        if warns_len == 1:
+        if len(warns) == 1:
+            await edit_user_reputation(self.bot.pg_pool, target.id, '-', 1000)
+
+        if len(warns) == 2:
+            await edit_user_reputation(self.bot.pg_pool, target.id, '-', 2500)
+
+        if len(warns) == 3:
+            await edit_user_reputation(self.bot.pg_pool, target.id, '-', 5000)
+
+            if target.id not in self.bot.banlist:
+                self.bot.banlist.append(target.id)
+                db.insert('blacklist', {'user_id':target.id,'reason':'Получил 3 варна'})
+
+        if len(warns) > 3:
+            await self.ban_members(ctx.message, [target], 1, "Максимум варнов | " + reason)
+            return
+
+        params = self._warn_mute_params(len(warns))
+        embed = _warn_notification(target, warns, ("Срок мута", params[1], True))
+        await self.put_in_timeout(ctx, target, params[0])
+        await self.moderation_channel.send(embed=embed)
+
+
+    def _warn_mute_params(self, warns_amount: int) -> tuple:
+        if warns_amount == 1:
             return (21600, "6 часов")
-        elif warns_len == 2:
+        elif warns_amount == 2:
             return (43200, "12 часов")
-        elif warns_len == 3:
+        elif warns_amount == 3:
             return (86400, "24 часа")
-        elif warns_len > 3:
+        elif warns_amount > 3:
             return (0, "ban")
+
 
     @command(name=cmd["warn"]["name"], aliases=cmd["warn"]["aliases"],
         brief=cmd["warn"]["brief"],
@@ -589,35 +561,50 @@ class Moderation(Cog, name='Модерация'):
     )
     @guild_only()
     @logger.catch
-    async def warn_mute_command(self, ctx, target: Optional[Member], *, reason: Optional[str] = "Не указана"):
+    async def warn_mute_command(
+        self,
+        ctx,
+        target: Optional[Member],
+        *,
+        reason: Optional[str] = 'Не указана'
+    ):
         await ctx.message.delete()
 
         if not target:
             await ctx.send(f"{ctx.author.mention}, укажите пользователя, которому необходимо выдать варн.", delete_after=10)
             return
 
-        if self.mute_role not in target.roles:
-            rec = db.fetchone(["warns_story"], "users_stats", "user_id", target.id)[0]
-            rec['user_warn_story'].append(
-                {
-                    "id": len(rec['user_warn_story']) + 1,
-                    "date": datetime.now().strftime("%d.%m.%Y %H:%M:%S"),
-                    "mute_time": self._warn_mute_params(len(rec['user_warn_story'])+1)[0],
-                    "reason": reason,
-                    "moderator": f"{ctx.author.name} | {ctx.author.id}"
-                }
-            )
-            db.execute("UPDATE users_stats SET warns_story = %s WHERE user_id = %s",
-                        json.dumps(rec, ensure_ascii=False), target.id)
-            db.commit()
-            await self.warn_member(ctx.message, target, rec['user_warn_story'], reason)
-        else:
-            embed = Embed(
-                title="Внимание!",
-                color=Color.red(),
-                description=f"Участник `{target.display_name}` ({target.mention}) уже замьючен!"
-            )
-            await ctx.send(embed=embed, delete_after=10)
+        rec = db.fetchone(["warns_story"], "users_stats", "user_id", target.id)[0]
+        rec['user_warn_story'].append(
+            {
+                "id": len(rec['user_warn_story']) + 1,
+                "date": datetime.now().strftime("%d.%m.%Y %H:%M:%S"),
+                "mute_time": self._warn_mute_params(len(rec['user_warn_story'])+1)[0],
+                "reason": reason,
+                "moderator": f"{ctx.author.name} | {ctx.author.id}"
+            }
+        )
+        db.execute("UPDATE users_stats SET warns_story = %s WHERE user_id = %s",
+                    json.dumps(rec, ensure_ascii=False), target.id)
+        db.commit()
+        await self.warn_member(ctx, target, rec['user_warn_story'], reason)
+
+
+    @logger.catch
+    async def unmute_embed_builder(self, member: Member, reason: Optional[str] = 'Не указана'):
+        embed = Embed(
+            title='Участник размьючен',
+            color=Color.green(),
+            timestamp=datetime.utcnow()
+        )
+
+        fields = [("Пользователь", f"{member.display_name} ({member.mention})", False),
+                    ("Причина", reason, False)]
+
+        for name, value, inline in fields:
+            embed.add_field(name=name, value=value, inline=inline)
+
+        await self.moderation_channel.send(embed=embed)
 
 
     @command(name=cmd["unmute"]["name"], aliases=cmd["unmute"]["aliases"],
@@ -633,14 +620,22 @@ class Moderation(Cog, name='Модерация'):
     )
     @guild_only()
     @logger.catch
-    async def unmute_members_command(self, ctx, targets: Greedy[Member], *, reason: Optional[str] = "Мут снят вручную администратором."):
+    async def unmute_members_command(
+        self,
+        ctx,
+        targets: Greedy[Member],
+        *,
+        reason: Optional[str] = 'Мут снят вручную администратором.'
+    ):
         await ctx.message.delete()
 
         if not len(targets):
             await ctx.send(f"{ctx.author.mention}, укажите пользователей, которых необходимо размутить.", delete_after=10)
             return
 
-        await self.unmute_members(ctx, targets, reason)
+        for target in targets:
+            await self.put_in_timeout(ctx, target, seconds = 0)
+            await self.unmute_embed_builder(target, reason)
 
 
     @logger.catch
