@@ -29,8 +29,7 @@ class Athena:
             itemShop = Utility.GET(
                 self,
                 "https://fortnite-api.com/v2/shop/br/combined",
-                {"x-api-key": self.apiKey},
-                {"language": self.language},
+                parameters={"language": self.language},
             )
 
             if itemShop is not None:

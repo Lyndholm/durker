@@ -602,7 +602,7 @@ class Fortnite(Cog, name='Fortnite'):
     @guild_only()
     @logger.catch
     async def show_fortnite_fish_list_command(self, ctx, number: int = 0):
-        async with aiofiles.open('./data/json/fish_s17.json', mode='r', encoding='utf-8') as f:
+        async with aiofiles.open('./data/json/fish_s19.json', mode='r', encoding='utf-8') as f:
             data = json.loads(await f.read())
 
         if number == 0:
@@ -729,21 +729,23 @@ class Fortnite(Cog, name='Fortnite'):
     @guild_only()
     @logger.catch
     async def show_fortnite_characters_command(self, ctx, number: int = 0):
-        async with aiofiles.open('./data/json/characters_s17.json', mode='r', encoding='utf-8') as f:
+        async with aiofiles.open('./data/json/characters_s19.json', mode='r', encoding='utf-8') as f:
             data = json.loads(await f.read())
 
         if number == 0:
             npc_embeds = []
             embed = Embed(
-                title="Все персонажи и боссы в 17 сезоне фортнайт",
+                title="Все персонажи и боссы в 1 сезоне 3 главы",
                 color=Color.random(),
-                description=\
-                    "17 сезон фортнайт оказался весьма хилым на разнообразие персонажей, а потому мы имеем только 17 NPC. "
-                    "Да, тут явно сыграл символизм — 17 сезон, значит и персонажей 17.\n\n"
-                    "Сейчас вы видите карту всех персонажей фортнайт. Как обычно, есть отличившиеся, которые спавнятся не в одном месте. "
-                    "Красным кругляшом отмечены персонажи — боссы, так что подходите к ним аккуратнее, а то съедят."
+                description=(
+                    "Каждый сезон мы страдаем от сбора персонажей и, видимо, все никак не настрадаемся. "
+                    "И в книге коллекций 1 сезона 3 главы, на самом старте, 20 персонажей. "
+                    "Все они мирные ребята, за исключением багнутого Основателя. Он вроде мирный, но пока "
+                    "его не сагришь, он не засчитается в книгу коллекций. Также есть персонажи, спавн которых "
+                    "очень редок, но о них непосредственно во время перечисления."
+                )
             )
-            embed.set_image(url="https://fortnitefun.ru/wp-content/uploads/2021/06/%D0%B2%D1%81%D0%B5-%D0%BF%D0%B5%D1%80%D1%81%D0%BE%D0%BD%D0%B0%D0%B6%D0%B8-%D1%84%D0%BE%D1%80%D1%82%D0%BD%D0%B0%D0%B9%D1%82.jpg")
+            embed.set_image(url="https://fortnitefun.ru/wp-content/uploads/2021/12/%D0%92%D1%81%D0%B5-%D0%BF%D0%B5%D1%80%D1%81%D0%BE%D0%BD%D0%B0%D0%B6%D0%B8-%D0%B8-%D0%B1%D0%BE%D1%81%D1%81%D1%8B-%D0%B2-1-%D1%81%D0%B5%D0%B7%D0%BE%D0%BD%D0%B5-3-%D0%B3%D0%BB%D0%B0%D0%B2%D1%8B.jpg")
             npc_embeds.append(embed)
 
             for count, entry in enumerate(data):
