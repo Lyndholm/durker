@@ -227,14 +227,6 @@ class Leveling(Cog, name='Система уровней'):
             708601604353556491,  # консоль на dev сервере
             777979537795055636,  # testing на dev сервере
         )
-        self.beta_testers = (
-            697505850343948318, # Jeffrey Fleck
-            375722626636578816, # Lyndholm
-            479499525921308703, # Cactus
-            195637386221191170, # NEDNAR
-            455302362131595274, # Mefewe
-            356512549287624724, # PandarenbI4
-        )
         self.HEX_COLOR_REGEX = r"#(?:[0-9a-fA-F]{3}){1,2}"
 
     @logger.catch
@@ -373,12 +365,6 @@ class Leveling(Cog, name='Система уровней'):
     @is_any_channel([STATS_CHANNEL, CONSOLE_CHANNEL])
     @guild_only()
     async def rank_background_image_color(self, ctx, mode: Optional[str]):
-        if ctx.author.id not in self.beta_testers:
-            await ctx.reply('Изменять фоновое изображение `rank` могут '
-                            'только бета-тестеры бота. Вы им не являетесь.',
-                             mention_author=False)
-            return
-
         if mode is not None:
             if mode.lower() in ('reset', 'remove', 'delete'):
                 db.execute('UPDATE stats_customization SET rank_background_image = %s WHERE user_id = %s',
@@ -396,6 +382,8 @@ class Leveling(Cog, name='Система уровней'):
         if f.content_type in ('image/png', 'image/jpeg'):
             self.update_rank_customization('rank_background_image', f.proxy_url, ctx.author.id)
             await ctx.reply(f'Фоновое изображение `rank` изменено.', mention_author=False)
+        else:
+            await ctx.reply(f'Допустимые расширения файлов: `.png`, `.jpg`')
 
     @rank.command(
         name=cmd["bar"]["name"], aliases=cmd["bar"]["aliases"],
