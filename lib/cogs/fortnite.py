@@ -15,6 +15,7 @@ from discord.ext.commands import (BucketType, Cog, command, cooldown, dm_only,
                                   guild_only, is_owner)
 from loguru import logger
 
+from ..utils.cataba_icon import BaseIcon
 from ..utils.checks import is_channel, required_level
 from ..utils.constants import CONSOLE_CHANNEL, PLACEHOLDER, STATS_CHANNEL
 from ..utils.paginator import Paginator
@@ -39,6 +40,29 @@ class Fortnite(Cog, name='Fortnite'):
     async def on_ready(self):
         if not self.bot.ready:
            self.bot.cogs_ready.ready_up("fortnite")
+
+    def item_rarity_to_color(self, rarity: str) -> hex:
+        colors = {
+            "common": 0x959595,
+            "uncommon": 0x4da328,
+            "rare": 0x1f75c5,
+            "epic": 0xa44dc7,
+            "legendary": 0xffa540,
+            "dark": 0x8b018f,
+            "dc": 0x3262ae,
+            "exotic": 0x45d5b3,
+            "frozen": 0xa0c0e6,
+            "gaminglegends": 0x500e56,
+            "icon": 0x45eced,
+            "lava": 0x9c352d,
+            "marvel": 0xde2b27,
+            "mythic": 0xeac244,
+            "shadow": 0x5f5db2,
+            "slurp": 0x5cd8ff,
+            "starwars": 0x1d1c1d,
+            "transcendent": 0xc44563
+        }
+        return colors.get(rarity, Color.random())
 
     ### Fortnite-api.com
     @command(name=cmd["searchcosmetic"]["name"], aliases=cmd["searchcosmetic"]["aliases"],
@@ -262,7 +286,7 @@ class Fortnite(Cog, name='Fortnite'):
                         return await ctx.reply(embed=embed, mention_author=False)
 
             i = data["data"]
-            embed = Embed(color=Color.random())
+            embed = Embed(color=self.item_rarity_to_color(i['rarity']['value']))
             embed.set_author(name=i["name"])
 
             if i["images"]["icon"]:
@@ -276,9 +300,14 @@ class Fortnite(Cog, name='Fortnite'):
             else:
                 embed.set_thumbnail(url=PLACEHOLDER)
 
+            byte_io = BytesIO()
+            cataba_image = await BaseIcon().generate_icon(i)
+            cataba_image.save(byte_io, format='PNG')
+            f = File(BytesIO(byte_io.getvalue()), filename=f"{i['id']}.png")
+            embed.set_image(url=f"attachment://{i['id']}.png")
+
             try:
-                embed.add_field(name="ID:", value=i["id"] + " (**" + str(len(i["id"])) + "**)",
-                                inline=False)
+                embed.add_field(name="ID:", value=i["id"], inline=False)
             except:
                 pass
             try:
@@ -295,12 +324,12 @@ class Fortnite(Cog, name='Fortnite'):
                 pass
             try:
                 hist = "```\n"
-                for i2 in i["shopHistory"][::-1]:
+                for i2 in i["shopHistory"][::-1][:10]:
                     i2 = i2.split("T")
                     i2 = i2[0].split("-")
                     hist += f"{i2[2]}.{i2[1]}.{i2[0]}\n"
                 hist += "```"
-                embed.add_field(name="Появления в магазине:", value=hist[:1024], inline=False)
+                embed.add_field(name="Появления в магазине (последние 10):", value=hist, inline=False)
             except:
                 pass
             variants = False
@@ -313,7 +342,7 @@ class Fortnite(Cog, name='Fortnite'):
             if variants is True:
                 embed.set_footer(text="Нажмите на реакцию, чтобы увидеть дополнительные стили.")
 
-            msg = await ctx.reply(embed=embed, mention_author=False)
+            msg = await ctx.reply(embed=embed, file=f, mention_author=False)
             if variants is True:
                 await msg.add_reaction("✅")
                 try:
