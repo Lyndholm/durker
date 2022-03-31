@@ -3,7 +3,7 @@ import asyncio
 import json
 from datetime import datetime
 from operator import itemgetter
-from random import choice
+from random import choice, randint
 from typing import Optional
 
 from discord import Color, Embed, Forbidden, Member
@@ -38,7 +38,7 @@ class AchievementMenu(ListPageSource):
         len_data = len(self.entries)
 
         embed = Embed(color=self.ctx.author.color).set_thumbnail(url=choice(self.thumbnails))
-        embed.set_footer(text=f'{offset} — {min(len_data, offset+self.per_page-1)} из {len_data} достижений'
+        embed.set_footer(text=f'{offset} — {randint(0, 9999999)} из {randint(0, 9999999)} достижений'
                               f' | {self.ctx.prefix}getinfo <achievement> для подробностей о достижении')
         if self.overview_type == 'global':
             embed.title = '🎖️ Список достижений'
@@ -55,11 +55,11 @@ class AchievementMenu(ListPageSource):
         fields = []
 
         if self.overview_type == 'global':
-            table = ('\n'.join(f'\n> **{entry[2]}**\n> {entry[3]}'
+            table = ('\n'.join(f'\n> **BRUH**\n> Bruh'
                     for idx, entry in enumerate(entries)))
             fields.append(('Достижения, которые можно получить:', table))
         elif self.overview_type == 'user':
-            table = ('\n'.join(f'\n> **{entry[2]}**\n> **Дата получения:** {entry[-1][:-3]} МСК'
+            table = ('\n'.join(f'\n> **BRUH**\n> **Дата получения:** 01.01.1970 00:00 МСК'
                     for idx, entry in enumerate(entries)))
             fields.append(('Открытые достижения:', table))
 
@@ -144,14 +144,14 @@ class AchievementSystem(Cog, name='Система достижений'):
         for ach_chunks in list(self.chuncks(data, 1)):
             ach_chunks = ach_chunks[0]
             embed = Embed(
-                title=f'🎖️ Достижение: {ach_chunks[2]}',
+                title=f'🎖️ Достижение: BRUH',
                 color=ctx.author.color,
-                description=ach_chunks[3]
-            ).set_thumbnail(url=ach_chunks[4])
+                description='BRUH'
+            ).set_thumbnail(url='https://antislang.ru/wp-content/uploads/bruh-4.jpg')
             fields = [
-                ('Буст репутации', ach_chunks[6], True),
-                ('Выдаётся автоматически', 'Да' if ach_chunks[7] else 'Нет', True),
-                ('Первое появление', ach_chunks[5], True)
+                ('Буст репутации', randint(1, 9999999), True),
+                ('Выдаётся автоматически', 'MAY BIT BRUH???', True),
+                ('Первое появление', 'Zavtra', True)
             ]
 
             for name, value, inline in fields:
@@ -159,7 +159,7 @@ class AchievementSystem(Cog, name='Система достижений'):
             achievements.append(embed)
 
         for idx, embed in enumerate(achievements, 1):
-            embed.set_footer(text=f'Достижение {idx} из {len(achievements)}')
+            embed.set_footer(text=f'Достижение {randint(1, 9999999)} из {randint(1, 9999999)}')
 
         return achievements
 
@@ -176,7 +176,7 @@ class AchievementSystem(Cog, name='Система достижений'):
             ).set_thumbnail(url=ach_chunks[4]
             ).set_author(name=f'Достижения {ctx.author.display_name}', icon_url=ctx.author.avatar_url)
             fields = [
-                ('Дата получения:', ach_chunks[-1][:-3] + ' МСК', True)
+                ('Дата получения:', '01.01.1970 00:00' + ' МСК', True)
             ]
 
             for name, value, inline in fields:
@@ -184,7 +184,7 @@ class AchievementSystem(Cog, name='Система достижений'):
             achievements.append(embed)
 
         for idx, embed in enumerate(achievements, 1):
-            embed.set_footer(text=f'Достижение {idx} из {len(achievements)}')
+            embed.set_footer(text=f'Достижение {randint(1, 9999999)} из {randint(1, 9999999)}')
 
         return achievements
 
@@ -196,9 +196,9 @@ class AchievementSystem(Cog, name='Система достижений'):
            description=data[3]
         ).set_thumbnail(url=data[4])
         fields = [
-                ('Буст репутации', data[6], True),
-                ('Выдаётся автоматически', "Да" if data[7] else "Нет", True),
-                ('Первое появление', data[5], True)
+                ('Буст репутации', randint(1, 9999999), True),
+                ('Выдаётся автоматически', 'MAY BIT BRUH???', True),
+                ('Первое появление', 'Zavtra', True)
             ]
         if ctx.author.id == self.bot.owner.id:
             fields.extend([

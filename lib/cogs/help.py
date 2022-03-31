@@ -3,7 +3,7 @@ from random import choice
 from typing import Optional
 
 import aiofiles
-from discord import Color, Embed
+from discord import Color, Embed, File
 from discord.ext.commands import Cog, Command, check_any, command, dm_only
 from discord.utils import get
 from loguru import logger
@@ -50,32 +50,7 @@ class Help(Cog, name='Help меню'):
     @check_any(dm_only(), is_any_channel([CONSOLE_CHANNEL, STATS_CHANNEL]))
     @logger.catch
     async def help_command(self, ctx, *, cmd: Optional[str]):
-        if cmd is None:
-            embed = self.help_memu(ctx)
-            await paginate(ctx, embed)
-        else:
-            thing = ctx.bot.get_cog(cmd) or ctx.bot.get_command(cmd)
-            if isinstance(thing, Command):
-                if not thing.hidden:
-                    await paginate(ctx, self.command_helper(ctx, thing))
-                elif thing.hidden and ctx.author.id == self.bot.owner.id:
-                    await paginate(ctx, self.command_helper(ctx, thing))
-                else:
-                    embed = Embed(
-                        title='❗ Ошибка!',
-                        description=f"Указанная команда не существует, либо она скрыта или отключена.",
-                        color=Color.red()
-                    )
-                    await ctx.reply(embed=embed, delete_after=15)
-
-            elif isinstance(thing, Cog):
-                await paginate(ctx, self.cog_helper(ctx, thing))
-            else:
-                await ctx.reply(
-                    'Ничего не найдено. Проверьте правильность написания команды/раздела. '
-                    'Учитывайте, что названия разделов чувствительны к регистру.',
-                     delete_after=30, mention_author=False
-                )
+        await ctx.reply('Bruh', file=File('./data/images/bruh.jpg'))
 
     def chuncks(self, l, n):
         """Yield successive n-sized chunks from l."""

@@ -19,11 +19,11 @@ from ..utils.utils import edit_user_reputation
 
 ITEM_SHOP_ENDPOINT = "https://fortnite-api.com/v2/shop/br/combined"
 ACTIVITIES = cycle([
-    '+help | durker.fun',
-    '+help | docs.durker.fun',
-    '+help | fortnitefun.ru',
-    '+help | youtube.com/c/fnfun',
-    '+help | vk.com/fnfun',
+    'var bruh | BRUH MOMENT',
+    'var bruh | BRUH MOMENT',
+    'var bruh | BRUH MOMENT',
+    'var bruh | BRUH MOMENT',
+    'var bruh | BRUH MOMENT',
     ])
 
 class BackgroundTasks(Cog, name='Фоновые процессы'):

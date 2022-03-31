@@ -14,7 +14,7 @@ from ..utils.utils import joined_date
 class AchievementHandler(Cog, name='AchievementHandler'):
     def __init__(self, bot):
         self.bot = bot
-        self.achievements_manager.start()
+        #self.achievements_manager.start()
 
     @Cog.listener()
     async def on_ready(self):

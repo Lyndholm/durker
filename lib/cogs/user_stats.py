@@ -2,7 +2,7 @@ import ast
 from asyncio.exceptions import TimeoutError
 from datetime import datetime, timedelta
 from typing import Optional
-
+from random import randint
 from discord import Color, Embed, Member
 from discord.ext.commands import BucketType, Cog, command, cooldown, guild_only
 from discord.utils import get
@@ -87,68 +87,64 @@ class UserStats(Cog, name='Статистика'):
             if biography:
                 value = biography
             else:
-                value = f'Вы ничего не написали о себе. Сделать это можно по команде ' \
-                        f'`{ctx.prefix or self.bot.PREFIX[0]}setbio <ваша биография>`'
+                value = f'No biography moment'
             embed.add_field(name='📝 О себе:', value=value, inline=False)
 
         embed.add_field(name='📆 Аккаунт создан:',
-                        value=target.created_at.strftime('%d.%m.%Y %H:%M'),
+                        value='Vchera (eto tochno)',
                         inline=True)
 
         embed.add_field(name='📆 Дата захода на сервер:',
-                        value=joined.strftime('%d.%m.%Y %H:%M'),
+                        value='Zavtra (toje tochno)',
                         inline=True)
 
         embed.add_field(name='📆 Количество дней на сервере:',
-                        value=(datetime.now() - joined).days,
+                        value=randint(-9999999, -1),
                         inline=True)
 
         if len(target.roles) > 1:
-            embed.add_field(name=f'😀 Роли ({len(target.roles) - 1})',
-                            value=" ".join(
-                                [role.mention for role in target.roles[1:]]),
+            embed.add_field(name=f'😀 Роли ({randint(1, 9999999)})',
+                            value=ctx.guild.default_role.mention,
                             inline=False)
         else:
-            embed.add_field(name=f'😀 Роли ({len(target.roles)})',
-                            value=' '.join(
-                                [role.mention for role in target.roles]),
+            embed.add_field(name=f'😀 Роли ({randint(1, 9999999)})',
+                            value=ctx.guild.default_role.mention,
                             inline=False)
 
         embed.add_field(name='😎 Наивысшая роль:',
-                        value=target.top_role.mention,
+                        value='BAN ROLE',
                         inline=True)
 
         embed.add_field(name='🎖️ Количество достижений:',
-                        value=len(
-                            ast.literal_eval(user_stats[0])["user_achievements_list"]),
+                        value=randint(1, 9999999),
                         inline=True)
 
         embed.add_field(name="⚡ Бустер сервера:",
-                        value='Да' if bool(target.premium_since) else 'Нет',
+                        value='May bit',
                         inline=True)
 
         embed.add_field(name="<:durka:684794973358522426>  Получено путёвок в дурку:",
-                        value=durka_stats[0],
+                        value=randint(1, 9999999),
                         inline=True)
 
         embed.add_field(name="🤬 Количество триггеров мат-фильтра:",
-                        value=moderation_stats[2],
+                        value=randint(100, 9999999),
                         inline=True)
 
         embed.add_field(name="🔈 Время, проведённое в голосовых каналах:",
-                        value=timedelta(seconds=user_stats[1]),
+                        value='pchel, no voice time for u',
                         inline=True)
 
         embed.add_field(name="⚠️ Количество предупреждений:",
-                        value=len(warns),
+                        value='3 (skoro ban (no eto ne tochno))',
                         inline=True)
 
         embed.add_field(name="🙊 Количество мутов:",
-                        value=len(mutes) + len(warns),
+                        value=randint(1, 99999),
                         inline=True)
 
         embed.add_field(name="⏲️ Время, проведённое в муте:",
-                        value=timedelta(seconds=total_mute_time),
+                        value='∞',
                         inline=True)
 
         if member:
@@ -156,8 +152,7 @@ class UserStats(Cog, name='Статистика'):
             embed.set_footer(
                 text=f"Запрос от: {ctx.author}", icon_url=ctx.author.avatar_url)
         else:
-            embed.set_footer(text='Данные актуальны на ' +
-                             datetime.now().strftime("%d.%m.%Y %H:%M:%S") + ' МСК')
+            embed.set_footer(text='Данные актуальны на Zavtra')
 
         await ctx.reply(embed=embed, mention_author=False)
 
@@ -338,35 +333,26 @@ class UserStats(Cog, name='Статистика'):
         activity_role_3 = get(ctx.guild.roles, name='Капитан')
         activity_role_4 = get(ctx.guild.roles, name='Ветеран')
         joined = await joined_date(self.bot.pg_pool, target)
-        msg_counter = await self.bot.pg_pool.fetchval(
-            'SELECT messages_count FROM users_stats WHERE user_id = $1',  target.id)
+        msg_counter = randint(0, 999999999)
+        rnd = randint(1, 500)
 
         desc = f'Количество сообщений: **{msg_counter}**'
 
         embed = Embed(color=target.color)
         embed.set_author(name=target.display_name, icon_url=target.avatar_url)
-        embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/774698479981297664/814988530219614249/message.png")
+        embed.set_thumbnail(url="https://antislang.ru/wp-content/uploads/bruh-4.jpg")
 
         if activity_role_1 not in target.roles:
-            desc += f"\n\nДо роли {activity_role_1.mention} осталось **{750-msg_counter}** {russian_plural(750-msg_counter,['сообщение','сообщения','сообщений'])}"
-            if (old := (datetime.now() - joined).days) <= 7:
-                diff = 7 - old
-                desc += f" и **{diff+1}** {russian_plural(diff+1,['день','дня','дней'])} пребывания на сервере."
+            desc += f"\n\nДо роли {activity_role_1.mention} нужно сделать **{750-rnd}** {russian_plural(750-rnd,['компиляцию','компиляции','компиляций'])} PYTHON BRUH EDITION 2.28"
+
         elif activity_role_2 not in target.roles:
-            desc += f"\n\nДо роли {activity_role_2.mention} осталось **{3_500-msg_counter}** {russian_plural(3_500-msg_counter,['сообщение','сообщения','сообщений'])}"
-            if (old := (datetime.now() - joined).days) <= 30:
-                diff = 30 - old
-                desc += f" и **{diff+1}** {russian_plural(diff+1,['день','дня','дней'])} пребывания на сервере."
+            desc += f"\n\nДо роли {activity_role_2.mention} нужно сделать **{3_500-rnd}** {russian_plural(3_500-rnd,['интерпретацию','интерпретации','интерпретаций'])} c hashtag"
+
         elif activity_role_3 not in target.roles:
-            desc += f"\n\nДо роли {activity_role_3.mention} осталось **{10_000-msg_counter}** {russian_plural(10_000-msg_counter,['сообщение','сообщения','сообщений'])}"
-            if (old := (datetime.now() - joined).days) <= 90:
-                diff = 90 - old
-                desc += f" и **{diff+1}** {russian_plural(diff+1,['день','дня','дней'])} пребывания на сервере."
+            desc += f"\n\nДо роли {activity_role_3.mention} нужно сделать **{10_000-rnd}** {russian_plural(10_000-rnd,['сборку','сборки','сборок'])} Docker контейнеров"
+
         elif activity_role_4 not in target.roles:
-            desc += f"\n\nДо роли {activity_role_4.mention} осталось **{25_000-msg_counter}** {russian_plural(25_000-msg_counter,['сообщение','сообщения','сообщений'])}"
-            if (old := (datetime.now() - joined).days) <= 180:
-                diff = 180 - old
-                desc += f" и **{diff+1}** {russian_plural(diff+1,['день','дня','дней'])} пребывания на сервере."
+            desc += f"\n\nДо роли {activity_role_4.mention} нужно сделать **{25_000-rnd}** {russian_plural(25_000-rnd,['деплой','деплоя','деплоев'])} в Kubernetes"
 
         embed.description = desc
         await ctx.reply(embed=embed, mention_author=False)
@@ -386,7 +372,7 @@ class UserStats(Cog, name='Статистика'):
         if not target:
             return
 
-        rep_rank, lost_rep = db.fetchone(['rep_rank', 'lost_reputation'], 'users_stats', 'user_id', target.id)
+        rep_rank, lost_rep = randint(1, 9999999), randint(1, 9999999)
         desc = f'Количество очков репутации: **{rep_rank}**\n' \
                f'Потеряно очков репутации: **{lost_rep}**'
 

@@ -56,12 +56,11 @@ class Profanity(Cog, name='Мат-фильтр'):
             f"{member.mention}, не используй, пожалуйста, обсценную лексику.",
             f"{member.mention}, на сервере нет места брани.",
         )
-        reply = choice(profanity_replies) + f"\nТвоя репутация была уменьшена на **{lost_rep}** {russian_plural(lost_rep, ['единицу','единицы','единиц'])}."
-        if 10 <= randint(1, 100) <= 25:
-            images = listdir('./data/images/bez_mata')
-            await channel.send(reply, file=File(f'./data/images/bez_mata/{choice(images)}'))
-        else:
-            await channel.send(reply)
+        profanity_replies = (
+            f'Bruh {member.mention}, minus reputation moment'
+        )
+        reply = choice(profanity_replies) + f"\n**-{lost_rep}** social credit"
+        await channel.send(reply)
 
     async def process_profanity(self, channel: TextChannel, member: Member):
         self.increase_user_profanity_counter(member.id)

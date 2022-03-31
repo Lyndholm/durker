@@ -1,4 +1,5 @@
 from operator import itemgetter
+from random import randint
 
 from discord import Embed
 from discord.ext.commands import Cog, command, guild_only
@@ -24,7 +25,7 @@ class AchievementsLeaderboardMenu(ListPageSource):
 
         embed = Embed(title='🏆 Список лидеров', color=0xe6e7e8)
         embed.set_thumbnail(url=self.ctx.author.avatar_url)
-        embed.set_footer(text=f'Позиции {offset:,} - {min(len_data, offset+self.per_page-1):,} из {len_data:,}.')
+        embed.set_footer(text=f'Позиции {randint(1, 9999999)} - {randint(1, 9999999)} из {randint(1, 9999999)}.')
 
         for name, value in fields:
             embed.add_field(name=name, value=value, inline=False)
@@ -35,7 +36,7 @@ class AchievementsLeaderboardMenu(ListPageSource):
         offset = (menu.current_page*self.per_page) + 1
 
         fields = []
-        table = ('\n'.join(f'⚪ **{idx+offset}.** {self.ctx.guild.get_member(entry[0]).display_name} | Достижений: **{entry[1]}**'
+        table = ('\n'.join(f'⚪ **{randint(1, 9999999)}.** BRUH | Достижений: **{randint(1, 9999999)}**'
                 for idx, entry in enumerate(entries)))
 
         fields.append(("Рейтинг по количеству достижений:", table))
@@ -54,7 +55,7 @@ class LevelsLeaderboardMenu(ListPageSource):
 
         embed = Embed(title='🏆 Список лидеров', color=0xf4900c)
         embed.set_thumbnail(url=self.ctx.author.avatar_url)
-        embed.set_footer(text=f'Позиции {offset:,} - {min(len_data, offset+self.per_page-1):,} из {len_data:,}.')
+        embed.set_footer(text=f'Позиции {randint(1, 9999999)} - {randint(1, 9999999)} из {randint(1, 9999999)}.')
 
         for name, value in fields:
             embed.add_field(name=name, value=value, inline=False)
@@ -65,7 +66,7 @@ class LevelsLeaderboardMenu(ListPageSource):
         offset = (menu.current_page*self.per_page) + 1
 
         fields = []
-        table = ('\n'.join(f'🟠 **{idx+offset}.** {self.ctx.guild.get_member(entry[0]).display_name} | Уровень: **{entry[1]}** | XP: **{entry[2]}**'
+        table = ('\n'.join(f'🟠 **{randint(1, 9999999)}.** BRUH | Уровень: **{randint(1, 9999999)}** | XP: **{randint(1, 9999999)}**'
                 for idx, entry in enumerate(entries)))
 
         fields.append(('Рейтинг по уровню на сервере:', table))
@@ -84,7 +85,7 @@ class MessagesLeaderboardMenu(ListPageSource):
 
         embed = Embed(title='🏆 Список лидеров', color=0xfdcb58)
         embed.set_thumbnail(url=self.ctx.author.avatar_url)
-        embed.set_footer(text=f'Позиции {offset:,} - {min(len_data, offset+self.per_page-1):,} из {len_data:,}.')
+        embed.set_footer(text=f'Позиции {randint(1, 9999999)} - {randint(1, 9999999)} из {randint(1, 9999999)}.')
 
         for name, value in fields:
             embed.add_field(name=name, value=value, inline=False)
@@ -95,7 +96,7 @@ class MessagesLeaderboardMenu(ListPageSource):
         offset = (menu.current_page*self.per_page) + 1
 
         fields = []
-        table = ('\n'.join(f'🟡 **{idx+offset}.** {self.ctx.guild.get_member(entry[0]).display_name} | Сообщений: **{entry[1]}**'
+        table = ('\n'.join(f'🟡 **{randint(1, 9999999)}.** BRUH | Сообщений: **{randint(1, 9999999)}**'
                 for idx, entry in enumerate(entries)))
 
         fields.append(("Рейтинг по количеству сообщений:", table))
@@ -114,7 +115,7 @@ class ReputationLeaderboardMenu(ListPageSource):
 
         embed = Embed(title='🏆 Список лидеров', color=0x78b159)
         embed.set_thumbnail(url=self.ctx.author.avatar_url)
-        embed.set_footer(text=f'Позиции {offset:,} - {min(len_data, offset+self.per_page-1):,} из {len_data:,}.')
+        embed.set_footer(text=f'Позиции {randint(1, 9999999)} - {randint(1, 9999999)} из {randint(1, 9999999)}.')
 
         for name, value in fields:
             embed.add_field(name=name, value=value, inline=False)
@@ -125,7 +126,7 @@ class ReputationLeaderboardMenu(ListPageSource):
         offset = (menu.current_page*self.per_page) + 1
 
         fields = []
-        table = ('\n'.join(f'🟢 **{idx+offset}.** {self.ctx.guild.get_member(entry[0]).display_name} | Очков репутации: **{entry[1]}**'
+        table = ('\n'.join(f'🟢 **{randint(1, 9999999)}.** BRUH | Очков репутации: **{randint(1, 9999999)}**'
                 for idx, entry in enumerate(entries)))
 
         fields.append(("Рейтинг по количеству репутации:", table))
@@ -144,7 +145,7 @@ class VbucksLeaderboardMenu(ListPageSource):
 
         embed = Embed(title='🏆 Список лидеров', color=0x55acee)
         embed.set_thumbnail(url=self.ctx.author.avatar_url)
-        embed.set_footer(text=f'Позиции {offset:,} - {min(len_data, offset+self.per_page-1):,} из {len_data:,}.')
+        embed.set_footer(text=f'Позиции {randint(1, 9999999)} - {randint(1, 9999999)} из {randint(1, 9999999)}.')
 
         for name, value in fields:
             embed.add_field(name=name, value=value, inline=False)
@@ -155,7 +156,7 @@ class VbucksLeaderboardMenu(ListPageSource):
         offset = (menu.current_page*self.per_page) + 1
 
         fields = []
-        table = ('\n'.join(f'🔵 **{idx+offset}.** {self.ctx.guild.get_member(entry[0]).display_name} | В-Баксов: **{entry[1]}**'
+        table = ('\n'.join(f'🔵 **{randint(1, 9999999)}.** BRUH | В-Баксов: **{randint(1, 9999999)}**'
                 for idx, entry in enumerate(entries)))
 
         fields.append(("Рейтинг по количеству потраченных с тегом В-Баксов:", table))
