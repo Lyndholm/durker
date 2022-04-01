@@ -1049,7 +1049,7 @@ class Fortnite(Cog, name='Fortnite'):
                 data = await r.json()
 
         time = ""
-        j = data['data']['timestamp'].split("T")
+        j = data['data']['date'].split("T")
         i = j[0].split("-")
         time += f"{i[2]}.{i[1]}.{i[0]} {j[1][:-1]}"
 
