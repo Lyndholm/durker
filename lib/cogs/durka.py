@@ -2,7 +2,7 @@ from asyncio import sleep
 from random import randint
 
 from apscheduler.triggers.cron import CronTrigger
-from discord import Member, File
+from discord import Member
 from discord.ext.commands import (Cog, CommandError, CommandOnCooldown, Greedy,
                                   NoPrivateMessage, check, command, cooldown,
                                   guild_only)
@@ -180,13 +180,51 @@ class Durka(Cog, name='Родина-Дурка'):
             usage=cmd["durka"]["usage"],
             help=cmd["durka"]["help"],
             hidden=cmd["durka"]["hidden"], enabled=True)
-    #@have_available_durka_calls()
-    #@have_enough_perms_for_calling()
+    @have_available_durka_calls()
+    @have_enough_perms_for_calling()
     @guild_only()
-    #@cooldown(cmd["durka"]["cooldown_rate"], cmd["durka"]["cooldown_per_second"], BucketType.member)
+    @cooldown(cmd["durka"]["cooldown_rate"], cmd["durka"]["cooldown_per_second"], BucketType.member)
     @logger.catch
     async def durka_command(self, ctx, targets: Greedy[Member]):
-        await ctx.reply('Bruh', file=File('./data/images/bruh.jpg'))
+        durka_ban_list = (self.bot.owner, ctx.guild.me)
+
+        if not targets:
+            await ctx.send(f"Здравствуйте, **{ctx.author.display_name}**! Благодарим за звонок в психиатрическую больницу.\n"
+                "Судя по всему, в чате творится дурка. К счастью, наш оператор готов принять заказ на шизоидов. "
+                "Пожалуйста, укажите пользователей, которых необходимо забрать на лечение: `+дурка @users`\n"
+                "Учтите, места в дурко-мобиле ограничены, санитары не могут перевозить более 5 пациентов за раз. "
+                "Также за сутки вы можете вызвать дурку не более 3-х раз.")
+            ctx.command.reset_cooldown(ctx)
+            if ctx.author.top_role.position < self.chasovoy.position:
+                db.execute("UPDATE durka_stats SET available_durka_calls = available_durka_calls + 1 WHERE user_id = %s", ctx.author.id)
+                db.commit()
+            return
+
+        if len(targets) > 5:
+            await ctx.send("Места в дурко-мобиле ограничены. Санитары не могут перевозить более 5 пациентов за раз.")
+            return
+
+        targets = [t for t in targets if t not in durka_ban_list]
+
+        if not targets:
+            await ctx.send(f"Шизоид {self.durka_emoji}{ctx.message.author.mention}{self.durka_emoji}, ты кому дурку вызываешь? Вернись в палату.\nЯ уже вызвал тебе санитаров, они в пути.")
+            return
+
+        for target in targets:
+            db.execute("UPDATE durka_stats SET received_durka_calls = received_durka_calls + 1 WHERE user_id = %s", target.id)
+            db.commit()
+            if ctx.author.top_role.position >= self.chasovoy.position:
+                ctx.command.reset_cooldown(ctx)
+                db.execute("UPDATE users_stats SET rep_rank = rep_rank - 50 WHERE user_id = %s", target.id)
+                db.commit()
+
+        if 50 <= randint(1, 100) <= 55:
+            if ctx.author != self.bot.owner:
+                await ctx.channel.send(f'Шизоид {self.durka_emoji}{ctx.message.author.mention}{self.durka_emoji}, ты как из палаты выбрался?. Вернись обратно немедленно.\nСанитары уже в пути.')
+            else:
+                await self.durka_replies(ctx, targets)
+        else:
+            await self.durka_replies(ctx, targets)
 
     @durka_command.error
     async def durka_command_error(self, ctx, exc):
@@ -225,13 +263,18 @@ class Durka(Cog, name='Родина-Дурка'):
             usage=cmd["durkachat"]["usage"],
             help=cmd["durkachat"]["help"],
             hidden=cmd["durkachat"]["hidden"], enabled=True)
-    #@have_available_durka_calls()
-    #@have_enough_perms_for_calling()
+    @have_available_durka_calls()
+    @have_enough_perms_for_calling()
     @guild_only()
-    #@cooldown(cmd["durkachat"]["cooldown_rate"], cmd["durkachat"]["cooldown_per_second"], BucketType.guild)
+    @cooldown(cmd["durkachat"]["cooldown_rate"], cmd["durkachat"]["cooldown_per_second"], BucketType.guild)
     @logger.catch
     async def durka_chat_command(self, ctx):
-        await ctx.reply('Bruh', file=File('./data/images/bruh.jpg'))
+        content = f"Внимание! Наши специалисты заметили чрезвычайно высокое содержание бреда в чате.\nСанитары уже выдвинулись для разрешения проблемы " \
+                  f"{self.durka_emoji}{self.shizoid_emoji}{self.durka_emoji}{self.shizoid_emoji}{self.durka_emoji}"
+        message = await ctx.send(content)
+        await sleep(5)
+        content += f"\n\nУгроза шизы ликвидирована, санитары возвращаются в офис. Просим в дальнейшем избегать превышения нормы дурки в чате.\nСпасибо, {ctx.author.mention}, что пользуетесь нашими услугами!"
+        await message.edit(content=content)
 
     @durka_chat_command.error
     async def durka_chat_command_error(self, ctx, exc):

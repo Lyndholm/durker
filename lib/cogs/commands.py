@@ -375,26 +375,27 @@ class Commands(Cog, name='Базовые команды'):
             ram_usage = ram_total * (ram_of_total / 100)
 
         embed.description = \
-            "**BRUH MOMENT** — многофункциональный Discord бот, имеющий большое количество полезных утилит и команд. " \
+            "**Durker** — многофункциональный Discord бот, имеющий большое количество полезных утилит и команд. " \
             "Бот создан специально для [сервера](https://discord.gg/XpM58CK) [FortniteFun](https://fortnitefun.ru/). "\
             "Он призван занять должность менеджера сервера, облегчить взаимодействие с пользователями, автоматизировать рутинную работу.\n" \
             "Модерация (автоматическая и ручная); аудит; cистема уровней, достижений, репутации; выдача ролей; кастомные команды; музыкальный плеер; " \
             "радио; взаимодействие с различными API — всё это и не только присутствует в данном боте.\n" \
             "▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬\n" \
             "**Информация о проекте**\n" \
-            "▫️ **Название:** BRUH MOMENT NAZVANIE\n" \
+            "▫️ **Название:** Durker\n" \
             f"▫️ **Версия:** {self.bot.VERSION}\n" \
-            "▫️ **Автор:** BRUH MAN#1337\n" \
-            "▫️ **Веб сайт:** [bruh.moment](https://youtu.be/dQw4w9WgXcQ)\n" \
+            "▫️ **Автор:** Lyndholm#7200\n" \
+            "▫️ **Веб сайт:** [docs.durker.fun](https://docs.durker.fun)\n" \
+            "▫️ **Поддержать проект:** [DonationAlerts](https://donationalerts.com/r/lyndholm)\n" \
             "▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬\n" \
             "**Статистика сервера**\n" \
-            "▫️ **OS Info:** BRUH OS 99\n" \
-            f"▫️ **Python Version:** PYTHON BRUH EDITION 2.28" \
-            f"▫️ **Discord.py Version:** D.PY BY BRUH v1.3.3.7\n" \
-            f"▫️ **Uptime:** ∞\n" \
-            f"▫️ **CPU Usage:** {randint(999, 9999999)}%\n" \
-            f"▫️ **RAM Usage:** VERY MNOGO MB\n" \
-            f"▫️ **Ping:** {randint(1, 9999999)} BRUH MINUTES\n" \
+            "▫️ **OS Info:** Debian GNU/Linux 10\n" \
+            f"▫️ **Python Version:** {python_version()}\n" \
+            f"▫️ **Discord.py Version:** {discord_version}\n" \
+            f"▫️ **Uptime:** {uptime}\n" \
+            f"▫️ **CPU Usage:** {cpu_usage}%\n" \
+            f"▫️ **RAM Usage:** {round(ram_of_total)}% | {round(ram_usage)}/{round(ram_total)} MB\n" \
+            f"▫️ **Ping:** {self.bot.latency*1000:,.0f} ms\n" \
             "▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬▬"
 
         await ctx.send(embed=embed)

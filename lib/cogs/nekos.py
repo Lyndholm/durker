@@ -114,7 +114,19 @@ class Nekos(Cog, name='Аниме'):
         if abs(repeat) > 10:
             repeat = 10
 
-        await ctx.reply('Bruh', file=File('./data/images/bruh.jpg'))
+        for _ in range(abs(repeat)):
+            if category:
+                key = self.parse_anipic_category(category.lower())
+            else:
+                key = choice(IMAGE_CATEGORIES)
+
+            embed = Embed(color=Color.random(),
+                          timestamp=ctx.message.created_at)
+            embed.set_footer(text=ctx.author.name,
+                             icon_url=ctx.author.avatar_url)
+            embed.set_image(url=choice(self.anime_images[key]))
+            await ctx.send(embed=embed)
+            await asyncio.sleep(1)
 
     @command(name=cmd["anisuggest"]["name"], aliases=cmd["anisuggest"]["aliases"],
              brief=cmd["anisuggest"]["brief"],

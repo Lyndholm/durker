@@ -128,8 +128,8 @@ class RankCardImage():
 
     @executor_function
     def draw_username(self, name_color: str, discriminator_color: str) -> None:
-        username = 'BRUUUH'
-        discriminator = f'#0000'
+        username = self.member.name
+        discriminator = f'#{self.member.discriminator}'
 
         text_size = self.draw.textsize(username, font=self.medium_font)
         offset_x = self.bar_offset_x
@@ -150,31 +150,31 @@ class RankCardImage():
                        font=self.medium_font, fill=level_str_color)
 
         offset_x += text_size[0] + 5
-        text_size = self.draw.textsize(str(randint(1, 999999)), font=self.big_font)
+        text_size = self.draw.textsize(str(level), font=self.big_font)
         offset_y = self.bar_offset_y - text_size[1] - 10
-        self.draw.text((offset_x, offset_y), str(randint(1, 999999)),
+        self.draw.text((offset_x, offset_y), str(level),
                        font=self.big_font, fill=level_int_color)
 
     @executor_function
     def draw_xp(self, xp_start: int, xp_end: int, xp_start_color: str, xp_end_color: str) -> None:
         text_size = self.draw.textsize(
-            f"/ {randint(1, 999999)} XP", font=self.small_font)
+            f"/ {xp_end} XP", font=self.small_font)
         offset_x = self.bar_offset_x_1 - text_size[0]
         offset_y = self.bar_offset_y - text_size[1] - 9
         self.draw.text(
-            (offset_x, offset_y), f"/ {randint(1, 999999)} XP", font=self.small_font, fill=xp_end_color)
-        text_size = self.draw.textsize(f"{randint(1, 999999)}", font=self.small_font)
+            (offset_x, offset_y), f"/ {xp_end:,} XP", font=self.small_font, fill=xp_end_color)
+        text_size = self.draw.textsize(f"{xp_start:,}", font=self.small_font)
         offset_x -= text_size[0] + 8
         self.draw.text((offset_x, offset_y),
-                       f"{randint(1, 999999)}", font=self.small_font, fill=xp_start_color)
+                       f"{xp_start:,}", font=self.small_font, fill=xp_start_color)
 
     @executor_function
     def draw_rank(self, rank: int, placement_int_color: str, placement_str_color: str) -> None:
-        text_size = self.draw.textsize(f"#{randint(1, 9999)}", font=self.medium_font)
+        text_size = self.draw.textsize(f"#{rank}", font=self.medium_font)
         offset_x = self.bar_offset_x_1 - text_size[0] + 15
         offset_y = 10
         self.draw.text((offset_x, offset_y),
-                       f"#{randint(1, 9999)}", font=self.medium_font, fill=placement_int_color)
+                       f"#{rank}", font=self.medium_font, fill=placement_int_color)
         text_size = self.draw.textsize("Ранг", font=self.small_font)
         offset_x -= text_size[0] + 5
         self.draw.text((offset_x, offset_y + 15), "Ранг",
@@ -289,7 +289,7 @@ class Leveling(Cog, name='Система уровней'):
             description=f'Участник {message.author.mention} достиг нового уровня: **{level + 1}** 🥳'
                         f'\nРепутация пользователя увеличена на **{rep_reward}** очков.'
         )
-        #await message.channel.send(embed=embed, delete_after=30)
+        await message.channel.send(embed=embed, delete_after=30)
 
     @Cog.listener()
     async def on_ready(self):
