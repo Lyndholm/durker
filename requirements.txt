@@ -1,5 +1,4 @@
-discord.py
-discord.py[voice]
+discord.py==2.1.0
 apscheduler
 aiofiles
 asyncio
