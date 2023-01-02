@@ -636,5 +636,5 @@ class LofiRadio(commands.Cog, wavelink.WavelinkMixin, name='Lofi Radio'):
             pass
 
 
-def setup(bot: commands.Bot):
-    bot.add_cog(LofiRadio(bot))
+async def setup(bot: commands.Bot):
+    await bot.add_cog(LofiRadio(bot))

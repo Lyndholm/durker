@@ -544,5 +544,5 @@ class AchievementSystem(Cog, name='Система достижений'):
            self.bot.cogs_ready.ready_up("achievement_system")
 
 
-def setup(bot):
-    bot.add_cog(AchievementSystem(bot))
+async def setup(bot):
+    await bot.add_cog(AchievementSystem(bot))

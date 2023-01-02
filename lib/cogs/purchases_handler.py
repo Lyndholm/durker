@@ -244,5 +244,5 @@ class PurchasesHandler(Cog, name='Покупки и не только'):
         await ctx.message.add_reaction('✅')
 
 
-def setup(bot):
-    bot.add_cog(PurchasesHandler(bot))
+async def setup(bot):
+    await bot.add_cog(PurchasesHandler(bot))

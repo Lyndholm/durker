@@ -994,5 +994,5 @@ class MusicPlayer(commands.Cog, wavelink.WavelinkMixin, name='Музыка'):
                 return await ctx.send(f'{member.mention} стал диджеем.')
 
 
-def setup(bot: commands.Bot):
-    bot.add_cog(MusicPlayer(bot))
+async def setup(bot: commands.Bot):
+    await bot.add_cog(MusicPlayer(bot))

@@ -79,5 +79,5 @@ class Contests(Cog, name='Контесты'):
            self.bot.cogs_ready.ready_up("contests")
 
 
-def setup(bot):
-    bot.add_cog(Contests(bot))
+async def setup(bot):
+    await bot.add_cog(Contests(bot))

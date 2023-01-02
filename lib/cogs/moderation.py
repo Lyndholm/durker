@@ -945,5 +945,5 @@ class Moderation(Cog, name='Модерация'):
             self.bot.cogs_ready.ready_up("moderation")
 
 
-def setup(bot):
-    bot.add_cog(Moderation(bot))
+async def setup(bot):
+    await bot.add_cog(Moderation(bot))

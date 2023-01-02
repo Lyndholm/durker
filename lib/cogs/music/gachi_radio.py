@@ -630,5 +630,5 @@ class GachiRadio(commands.Cog, wavelink.WavelinkMixin, name='Gachi Radio'):
             pass
 
 
-def setup(bot: commands.Bot):
-    bot.add_cog(GachiRadio(bot))
+async def setup(bot: commands.Bot):
+    await bot.add_cog(GachiRadio(bot))

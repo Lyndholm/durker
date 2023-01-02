@@ -102,5 +102,5 @@ class Welcome(Cog, name='Greetings'):
             await self.bot.get_channel(GOODBYE_CHANNEL).send(embed=embed)
 
 
-def setup(bot):
-    bot.add_cog(Welcome(bot))
+async def setup(bot):
+    await bot.add_cog(Welcome(bot))

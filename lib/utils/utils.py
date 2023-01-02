@@ -10,17 +10,17 @@ import aiofiles
 import asyncpg
 import discord
 from discord.ext import commands
-from discord.ext.buttons import Paginator
+# from discord.ext.buttons import Paginator
 
 from ..db import async_db, db
 
 
-class Pag(Paginator):
-    async def teardown(self):
-        try:
-            await self.page.clear_reactions()
-        except discord.HTTPException:
-            pass
+# class Pag(Paginator):
+#     async def teardown(self):
+#         try:
+#             await self.page.clear_reactions()
+#         except discord.HTTPException:
+#             pass
 
 
 def russian_plural(value: int, quantitative: list) -> str:

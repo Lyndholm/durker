@@ -314,5 +314,5 @@ class Durka(Cog, name='Родина-Дурка'):
             self.bot.cogs_ready.ready_up("durka")
 
 
-def setup(bot):
-    bot.add_cog(Durka(bot))
+async def setup(bot):
+    await bot.add_cog(Durka(bot))

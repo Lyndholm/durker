@@ -458,5 +458,5 @@ class UserStats(Cog, name='Статистика'):
         await ctx.reply(embed=embed, mention_author=False)
 
 
-def setup(bot):
-    bot.add_cog(UserStats(bot))
+async def setup(bot):
+    await bot.add_cog(UserStats(bot))

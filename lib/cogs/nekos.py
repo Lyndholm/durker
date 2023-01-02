@@ -159,5 +159,5 @@ class Nekos(Cog, name='Аниме'):
             await self.check_anime_suggestions()
 
 
-def setup(bot):
-    bot.add_cog(Nekos(bot))
+async def setup(bot):
+    await bot.add_cog(Nekos(bot))

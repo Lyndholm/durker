@@ -374,5 +374,5 @@ class Audit(Cog, name='Система Аудита'):
                 await self.log_channel.send(embed=embed)
 
 
-def setup(bot):
-    bot.add_cog(Audit(bot))
+async def setup(bot):
+    await bot.add_cog(Audit(bot))

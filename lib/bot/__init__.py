@@ -30,6 +30,7 @@ logger.add("logs/{time:DD-MM-YYYY---HH-mm-ss}.log",
 
 TOKEN = getenv('DISCORD_BOT_TOKEN')
 PREFIX = ('+', 'var ')
+VERSION = getenv('DISCORD_BOT_VERSION')
 COGS = [path[:-3] for path in os.listdir('./lib/cogs') if path[-3:] == '.py']
 
 
@@ -50,6 +51,7 @@ class Bot(BotBase):
     def __init__(self):
         self.TOKEN = TOKEN
         self.PREFIX = PREFIX
+        self.VERSION = VERSION
         self.ready = False
         self.cogs_ready = Ready()
         self.guild = None
@@ -83,7 +85,7 @@ class Bot(BotBase):
                          max_messages=10000
                         )
 
-    def create_db_pool(self, loop: asyncio.BaseEventLoop) -> None:
+    async def create_db_pool(self) -> None:
         db_credentials = {
             "database": os.getenv('DB_NAME'),
             "user": os.getenv('DB_USER'),
@@ -91,33 +93,28 @@ class Bot(BotBase):
             "host": os.getenv('DB_HOST')
         }
         try:
-            self.pg_pool = loop.run_until_complete(
-                asyncpg.create_pool(**db_credentials)
-            )
+            self.pg_pool = await asyncpg.create_pool(**db_credentials)
             self.db = async_db.DatabaseWrapper(self.pg_pool)
+
             print('Connected to the database')
         except Exception as e:
             raise e
 
     @logger.catch
-    def setup(self):
+    async def setup(self):
         for cog in COGS:
-            self.load_extension(f"lib.cogs.{cog}")
+            await self.load_extension(f"lib.cogs.{cog}")
 
         print("Setup complete")
 
-    @logger.catch
-    def run(self, version):
-        self.VERSION = version
-
+    async def setup_hook(self):
         print("Running setup...")
-        self.setup()
+        await self.setup()
 
         print('Attempting to connect to the database...')
-        self.create_db_pool(self.loop)
+        await self.create_db_pool()
 
         print("Running bot...")
-        super().run(self.TOKEN, reconnect=True)
 
     @logger.catch
     async def load_mein_radio_cog_scheduler(self):
@@ -132,7 +129,7 @@ class Bot(BotBase):
                     self.unload_extension(c)
                 except ExtensionNotLoaded:
                     continue
-            self.load_extension("lib.cogs.music.mein_radio")
+            await self.load_extension("lib.cogs.music.mein_radio")
         except ExtensionAlreadyLoaded:
             pass
 
@@ -149,7 +146,7 @@ class Bot(BotBase):
                     self.unload_extension(c)
                 except ExtensionNotLoaded:
                     continue
-            self.load_extension("lib.cogs.music.gachi_radio")
+            await self.load_extension("lib.cogs.music.gachi_radio")
         except ExtensionAlreadyLoaded:
             pass
 
@@ -166,7 +163,7 @@ class Bot(BotBase):
                     self.unload_extension(c)
                 except ExtensionNotLoaded:
                     continue
-            self.load_extension("lib.cogs.music.lofi_radio")
+            await self.load_extension("lib.cogs.music.lofi_radio")
         except ExtensionAlreadyLoaded:
             pass
 
@@ -183,7 +180,7 @@ class Bot(BotBase):
                     self.unload_extension(c)
                 except ExtensionNotLoaded:
                     continue
-            self.load_extension("lib.cogs.music.music_player")
+            await self.load_extension("lib.cogs.music.music_player")
         except ExtensionAlreadyLoaded:
             pass
 
@@ -242,7 +239,7 @@ class Bot(BotBase):
 
             self.ready = True
 
-            self.load_extension("jishaku")
+            await self.load_extension("jishaku")
             self.get_command("jishaku").hidden = True
             print("Jishaku loaded")
 

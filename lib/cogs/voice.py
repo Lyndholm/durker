@@ -154,5 +154,5 @@ class Voice(Cog, name='VoiceChannels Management'):
                 if rec is not None:
                     self.update_member_invoce_time(member.id)
 
-def setup(bot):
-    bot.add_cog(Voice(bot))
+async def setup(bot):
+    await bot.add_cog(Voice(bot))

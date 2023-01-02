@@ -418,5 +418,5 @@ class Leveling(Cog, name='Система уровней'):
         await ctx.send(f'Цвет цифры уровня `rank` изменён: `{hex_value}`', mention_author=False)
 
 
-def setup(bot):
-    bot.add_cog(Leveling(bot))
+async def setup(bot):
+    await bot.add_cog(Leveling(bot))

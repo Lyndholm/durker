@@ -1,5 +1,5 @@
-from lib.bot import bot
+from lib.bot import bot, TOKEN
 
-VERSION = "3.4.1"
 
-bot.run(VERSION)
+if __name__ == '__main__':
+    bot.run(TOKEN)

@@ -160,5 +160,5 @@ class Profanity(Cog, name='Мат-фильтр'):
         if not self.bot.ready:
            self.bot.cogs_ready.ready_up("profanity")
 
-def setup(bot):
-    bot.add_cog(Profanity(bot))
+async def setup(bot):
+    await bot.add_cog(Profanity(bot))

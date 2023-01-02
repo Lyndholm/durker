@@ -357,5 +357,5 @@ class AchievementHandler(Cog, name='AchievementHandler'):
                 #await cog.achievement_award_notification(MUSIC_DJ_3, member)
 
 
-def setup(bot):
-    bot.add_cog(AchievementHandler(bot))
+async def setup(bot):
+    await bot.add_cog(AchievementHandler(bot))

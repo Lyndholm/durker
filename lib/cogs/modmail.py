@@ -55,5 +55,5 @@ class ModMail(Cog, name='ModMail'):
            self.modmail_channel = self.bot.get_channel(HIDEOUT_MODMAIL_CHANNEL)
            self.bot.cogs_ready.ready_up("modmail")
 
-def setup(bot):
-    bot.add_cog(ModMail(bot))
+async def setup(bot):
+    await bot.add_cog(ModMail(bot))

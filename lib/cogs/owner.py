@@ -583,5 +583,5 @@ class Owner(Cog, name='Команды разработчика'):
         self.bot.scheduler.shutdown()
         await self.bot.close()
 
-def setup(bot):
-    bot.add_cog(Owner(bot))
+async def setup(bot):
+    await bot.add_cog(Owner(bot))

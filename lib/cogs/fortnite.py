@@ -1314,5 +1314,5 @@ class Fortnite(Cog, name='Fortnite'):
             await main_message.edit(embed=embed)
 
 
-def setup(bot):
-    bot.add_cog(Fortnite(bot))
+async def setup(bot):
+    await bot.add_cog(Fortnite(bot))

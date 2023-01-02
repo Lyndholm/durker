@@ -124,5 +124,5 @@ class MessagesHandler(Cog, name='Messages handler'):
             self.decrease_user_messages_counter(message.author.id)
 
 
-def setup(bot):
-    bot.add_cog(MessagesHandler(bot))
+async def setup(bot):
+    await bot.add_cog(MessagesHandler(bot))
