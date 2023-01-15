@@ -31,8 +31,8 @@ class ModMail(Cog, name='ModMail'):
                 color=member.color,
                 timestamp=message.created_at,
                 description=message.content
-            ).set_thumbnail(url=member.avatar_url
-            ).set_author(name=member, icon_url=member.avatar_url)
+            ).set_thumbnail(url=member.display_avatar.url
+            ).set_author(name=member, icon_url=member.display_avatar.url)
 
             fields = [("Message ID:", message.id, True),
                     ("DM Channel ID:", message.channel.id, True),

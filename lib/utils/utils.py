@@ -255,7 +255,7 @@ async def get_context_target(pool: asyncpg.Pool,
                 title='❗ Внимание!', color=discord.Color.red(), timestamp=datetime.utcnow(),
                 description=f'Статистика участника **{target.display_name}** ({target.mention}) скрыта. '
                              'Просматривать её может только владелец.')
-            embed.set_footer(text=ctx.author, icon_url=ctx.author.avatar_url)
+            embed.set_footer(text=ctx.author, icon_url=ctx.author.display_avatar.url)
             await ctx.send(embed=embed, mention_author=False)
             return False
         else:

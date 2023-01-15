@@ -233,7 +233,7 @@ class Commands(Cog, name='Базовые команды'):
             title=f'Аватар {member.display_name}',
             color=member.color,
             timestamp=datetime.utcnow()
-        ).set_image(url=member.avatar_url).set_footer(text=f'Запрос от {ctx.author}', icon_url=ctx.author.avatar_url)
+        ).set_image(url=member.display_avatar.url).set_footer(text=f'Запрос от {ctx.author}', icon_url=ctx.author.display_avatar.url)
         await ctx.send(embed=embed)
 
     @command(name=cmd["covid"]["name"], aliases=cmd["covid"]["aliases"],
@@ -351,7 +351,7 @@ class Commands(Cog, name='Базовые команды'):
         embed = Embed(
             title="Информация о боте",
             color=ctx.author.color,
-            timestamp=datetime.utcnow()).set_thumbnail(url=ctx.guild.me.avatar_url)
+            timestamp=datetime.utcnow()).set_thumbnail(url=ctx.guild.me.display_avatar.url)
 
         proc = Process()
         with proc.oneshot():

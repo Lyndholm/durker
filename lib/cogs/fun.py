@@ -81,7 +81,7 @@ class Fun(Cog, name='Развлечения'):
         await sleep(3)
 
         embed_new = embed = Embed(title=":coin: Орел или решка", description = f"Выпало: {'**Орёл**' if robot_choice == 'орёл' else '**Решка**'}", color=Color.green(), timestamp=ctx.message.created_at)
-        embed_new.set_footer(text=f'{ctx.author.name}', icon_url=ctx.author.avatar_url)
+        embed_new.set_footer(text=f'{ctx.author.name}', icon_url=ctx.author.display_avatar.url)
         await message.edit(embed=embed_new)
 
 
@@ -356,7 +356,7 @@ class Fun(Cog, name='Развлечения'):
         embed.add_field(name="Выбор бота:", value=robot_choice, inline=True)
         embed.add_field(name=f"Выбор {ctx.author.display_name}:", value=item.title(), inline=True)
         embed.set_thumbnail(url=out["img"])
-        embed.set_footer(icon_url=ctx.author.avatar_url)
+        embed.set_footer(icon_url=ctx.author.display_avatar.url)
         await ctx.send(embed=embed)
 
 

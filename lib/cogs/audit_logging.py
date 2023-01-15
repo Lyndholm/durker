@@ -262,7 +262,7 @@ class Audit(Cog, name='Система Аудита'):
             embed.add_field(name="Аккаунт создан:", value=after.created_at.strftime("%d.%m.%Y %H:%M:%S"))
             embed.add_field(name="Возраст аккаунта", value=f"**{timedelta(seconds=acc_age)}**")
             embed.set_footer(text=f"ID пользователя: {after.id}")
-            embed.set_thumbnail(url=after.avatar_url)
+            embed.set_thumbnail(url=after.display_avatar.url)
 
             await self.log_channel.send(embed=embed)
 

@@ -169,7 +169,7 @@ class AchievementSystem(Cog, name='Система достижений'):
                 color=ctx.author.color,
                 description=ach_chunks[3]
             ).set_thumbnail(url=ach_chunks[4]
-            ).set_author(name=f'Достижения {ctx.author.display_name}', icon_url=ctx.author.avatar_url)
+            ).set_author(name=f'Достижения {ctx.author.display_name}', icon_url=ctx.author.display_avatar.url)
             fields = [
                 ('Дата получения:', ach_chunks[-1][:-3] + ' МСК', True)
             ]
@@ -269,7 +269,7 @@ class AchievementSystem(Cog, name='Система достижений'):
             color=ctx.author.color,
             timestamp=datetime.utcnow()
         ).set_thumbnail(url='https://i.pinimg.com/originals/88/40/b8/8840b8d2c07bf805cdab22c0e4b54f59.gif')
-        embed.set_footer(text=ctx.author, icon_url=ctx.author.avatar_url)
+        embed.set_footer(text=ctx.author, icon_url=ctx.author.display_avatar.url)
         embed.description = \
         'На сервере работает система достижений.\nДостижения ' \
         '— один из основных способов заработка репутации. У каждой ачивки ' \

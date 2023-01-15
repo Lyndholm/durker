@@ -119,7 +119,7 @@ class Nekos(Cog, name='Аниме'):
             embed = Embed(color=Color.random(),
                           timestamp=ctx.message.created_at)
             embed.set_footer(text=ctx.author.name,
-                             icon_url=ctx.author.avatar_url)
+                             icon_url=ctx.author.display_avatar.url)
             embed.set_image(url=choice(self.anime_images[key]))
             await ctx.send(embed=embed)
             await asyncio.sleep(1)

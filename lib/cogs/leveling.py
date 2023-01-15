@@ -75,7 +75,7 @@ class RankCardImage():
 
     async def paste_member_avatar(self) -> None:
         async with ClientSession() as session:
-            async with session.get(str(self.member.avatar_url)) as response:
+            async with session.get(str(self.member.display_avatar.url)) as response:
                 avatar = await response.read()
         icon = Image.open(BytesIO(avatar)).convert("RGBA").resize((200, 200))
         big_size = (icon.size[0] * 3, icon.size[1] * 3)

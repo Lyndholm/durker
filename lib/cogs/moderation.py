@@ -179,7 +179,7 @@ class Moderation(Cog, name='Модерация'):
                 color=Color.green(),
                 timestamp=datetime.utcnow()
             )
-            embed.set_thumbnail(url=target.avatar_url)
+            embed.set_thumbnail(url=target.display_avatar.url)
 
             fields = [
                 ("Пользователь", f"{target.name} ({target.mention})", False),
@@ -851,7 +851,7 @@ class Moderation(Cog, name='Модерация'):
             color=Color.red(),
             timestamp=datetime.utcnow(),
             description=f"Обнаружена фишинговая ссылка, сообщение удалено автоматически."
-        ).set_thumbnail(url=message.author.avatar_url)
+        ).set_thumbnail(url=message.author.display_avatar.url)
         fields = [
                 ('Автор сообщения', message.author, True),
                 ('ID автора', message.author.id, True),

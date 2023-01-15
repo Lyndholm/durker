@@ -71,8 +71,8 @@ class UserStats(Cog, name='Статистика'):
         total_mute_time = mute_time + warn_time
         joined = await joined_date(self.bot.pg_pool, target)
         embed = Embed(color=target.color)
-        embed.set_author(name=target.display_name, icon_url=target.avatar_url)
-        embed.set_thumbnail(url=target.avatar_url)
+        embed.set_author(name=target.display_name, icon_url=target.display_avatar.url)
+        embed.set_thumbnail(url=target.display_avatar.url)
 
         if member:
             if biography:
@@ -152,7 +152,7 @@ class UserStats(Cog, name='Статистика'):
         if member:
             embed.timestamp = datetime.utcnow()
             embed.set_footer(
-                text=f"Запрос от: {ctx.author}", icon_url=ctx.author.avatar_url)
+                text=f"Запрос от: {ctx.author}", icon_url=ctx.author.display_avatar.url)
         else:
             embed.set_footer(text='Данные актуальны на ' +
                              datetime.now().strftime("%d.%m.%Y %H:%M:%S") + ' МСК')
@@ -339,7 +339,7 @@ class UserStats(Cog, name='Статистика'):
         desc = f'Количество сообщений: **{msg_counter}**'
 
         embed = Embed(color=target.color)
-        embed.set_author(name=target.display_name, icon_url=target.avatar_url)
+        embed.set_author(name=target.display_name, icon_url=target.display_avatar.url)
         embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/774698479981297664/814988530219614249/message.png")
 
         if activity_role_1 not in target.roles:
@@ -385,7 +385,7 @@ class UserStats(Cog, name='Статистика'):
                f'Потеряно очков репутации: **{lost_rep}**'
 
         embed = Embed(color=target.color)
-        embed.set_author(name=target.display_name, icon_url=target.avatar_url)
+        embed.set_author(name=target.display_name, icon_url=target.display_avatar.url)
         if rep_rank <= 0:
             desc += f"\n\nРанг: **Отсутствует**"
             embed.set_thumbnail(url="https://cdn.discordapp.com/attachments/774698479981297664/815298656462700634/no_rank.png")

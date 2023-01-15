@@ -22,7 +22,7 @@ class AchievementsLeaderboardMenu(ListPageSource):
         len_data = len(self.entries)
 
         embed = Embed(title='🏆 Список лидеров', color=0xe6e7e8)
-        embed.set_thumbnail(url=self.ctx.author.avatar_url)
+        embed.set_thumbnail(url=self.ctx.author.display_avatar.url)
         embed.set_footer(text=f'Позиции {offset:,} - {min(len_data, offset+self.per_page-1):,} из {len_data:,}.')
 
         for name, value in fields:
@@ -52,7 +52,7 @@ class LevelsLeaderboardMenu(ListPageSource):
         len_data = len(self.entries)
 
         embed = Embed(title='🏆 Список лидеров', color=0xf4900c)
-        embed.set_thumbnail(url=self.ctx.author.avatar_url)
+        embed.set_thumbnail(url=self.ctx.author.display_avatar.url)
         embed.set_footer(text=f'Позиции {offset:,} - {min(len_data, offset+self.per_page-1):,} из {len_data:,}.')
 
         for name, value in fields:
@@ -82,7 +82,7 @@ class MessagesLeaderboardMenu(ListPageSource):
         len_data = len(self.entries)
 
         embed = Embed(title='🏆 Список лидеров', color=0xfdcb58)
-        embed.set_thumbnail(url=self.ctx.author.avatar_url)
+        embed.set_thumbnail(url=self.ctx.author.display_avatar.url)
         embed.set_footer(text=f'Позиции {offset:,} - {min(len_data, offset+self.per_page-1):,} из {len_data:,}.')
 
         for name, value in fields:
@@ -112,7 +112,7 @@ class ReputationLeaderboardMenu(ListPageSource):
         len_data = len(self.entries)
 
         embed = Embed(title='🏆 Список лидеров', color=0x78b159)
-        embed.set_thumbnail(url=self.ctx.author.avatar_url)
+        embed.set_thumbnail(url=self.ctx.author.display_avatar.url)
         embed.set_footer(text=f'Позиции {offset:,} - {min(len_data, offset+self.per_page-1):,} из {len_data:,}.')
 
         for name, value in fields:
@@ -142,7 +142,7 @@ class VbucksLeaderboardMenu(ListPageSource):
         len_data = len(self.entries)
 
         embed = Embed(title='🏆 Список лидеров', color=0x55acee)
-        embed.set_thumbnail(url=self.ctx.author.avatar_url)
+        embed.set_thumbnail(url=self.ctx.author.display_avatar.url)
         embed.set_footer(text=f'Позиции {offset:,} - {min(len_data, offset+self.per_page-1):,} из {len_data:,}.')
 
         for name, value in fields:
