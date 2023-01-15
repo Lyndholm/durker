@@ -8,7 +8,6 @@ from discord.ext.commands import (Cog, CommandError, CommandOnCooldown, Greedy,
                                   guild_only)
 from discord.ext.commands.cooldowns import BucketType
 from discord.utils import get
-from loguru import logger
 
 from ..db import db
 from ..utils.constants import (CACTUS_ROLE_ID, CAPTAIN_ROLE_ID,
@@ -75,7 +74,6 @@ class Durka(Cog, name='Родина-Дурка'):
         if self.bot.ready:
             bot.loop.create_task(self.init_vars())
 
-    @logger.catch
     async def init_vars(self):
         self.chasovoy = self.bot.guild.get_role(CHASOVOY_ROLE_ID)
 
@@ -184,7 +182,6 @@ class Durka(Cog, name='Родина-Дурка'):
     @have_enough_perms_for_calling()
     @guild_only()
     @cooldown(cmd["durka"]["cooldown_rate"], cmd["durka"]["cooldown_per_second"], BucketType.member)
-    @logger.catch
     async def durka_command(self, ctx, targets: Greedy[Member]):
         durka_ban_list = (self.bot.owner, ctx.guild.me)
 
@@ -267,7 +264,6 @@ class Durka(Cog, name='Родина-Дурка'):
     @have_enough_perms_for_calling()
     @guild_only()
     @cooldown(cmd["durkachat"]["cooldown_rate"], cmd["durkachat"]["cooldown_per_second"], BucketType.guild)
-    @logger.catch
     async def durka_chat_command(self, ctx):
         content = f"Внимание! Наши специалисты заметили чрезвычайно высокое содержание бреда в чате.\nСанитары уже выдвинулись для разрешения проблемы " \
                   f"{self.durka_emoji}{self.shizoid_emoji}{self.durka_emoji}{self.shizoid_emoji}{self.durka_emoji}"

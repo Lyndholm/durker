@@ -13,7 +13,6 @@ from discord import __version__ as discord_version
 from discord.ext.commands import (BucketType, Cog, EmojiConverter, Greedy,
                                   check_any, command, cooldown, guild_only,
                                   has_any_role, has_permissions)
-from loguru import logger
 from psutil import Process, cpu_percent, virtual_memory
 
 from ..db import db
@@ -32,7 +31,6 @@ class Commands(Cog, name='Базовые команды'):
         if self.bot.ready:
             bot.loop.create_task(self.init_vars())
 
-    @logger.catch
     async def init_vars(self):
         self.chasovoy = self.bot.guild.get_role(CHASOVOY_ROLE_ID)
 
@@ -51,7 +49,6 @@ class Commands(Cog, name='Базовые команды'):
     @required_level(cmd["suggest"]["required_level"])
     @is_channel(MUSIC_COMMANDS_CHANNEL)
     @guild_only()
-    @logger.catch
     async def suggest_song_command(self, ctx, *, song: str = None):
         if song is None:
             return await ctx.reply(
@@ -100,7 +97,6 @@ class Commands(Cog, name='Базовые команды'):
             help=cmd["question"]["help"],
             hidden=cmd["question"]["hidden"], enabled=True)
     @guild_only()
-    @logger.catch
     async def redirect_to_question_channel_command(self, ctx, targets: Greedy[Member]):
         users = " ".join([member.mention for member in targets]) or ctx.author.mention
         await ctx.reply(
@@ -123,7 +119,6 @@ class Commands(Cog, name='Базовые команды'):
         has_permissions(administrator=True))
     @guild_only()
     @cooldown(cmd["media"]["cooldown_rate"], cmd["media"]["cooldown_per_second"], BucketType.guild)
-    @logger.catch
     async def redirect_to_media_channel_command(self, ctx, targets: Greedy[Member]):
         await ctx.message.delete()
 
@@ -147,7 +142,6 @@ class Commands(Cog, name='Базовые команды'):
         has_permissions(administrator=True))
     @guild_only()
     @cooldown(cmd["general"]["cooldown_rate"], cmd["general"]["cooldown_per_second"], BucketType.guild)
-    @logger.catch
     async def redirect_to_general_channel_command(self, ctx, targets: Greedy[Member]):
         await ctx.message.delete()
         await ctx.send(' '.join(member.mention for member in targets) +  f' Пожалуйста, соблюдайте '
@@ -180,7 +174,6 @@ class Commands(Cog, name='Базовые команды'):
         has_permissions(administrator=True))
     @guild_only()
     @cooldown(cmd["poisk"]["cooldown_rate"], cmd["poisk"]["cooldown_per_second"], BucketType.guild)
-    @logger.catch
     async def redirect_to_poisk_channel_command(self, ctx, targets: Greedy[Member]):
         await ctx.message.delete()
         chance = randint(1, 100)
@@ -202,7 +195,6 @@ class Commands(Cog, name='Базовые команды'):
     @required_level(cmd["ppo"]["required_level"])
     @guild_only()
     @cooldown(cmd["ppo"]["cooldown_rate"], cmd["ppo"]["cooldown_per_second"], BucketType.guild)
-    @logger.catch
     async def ppo_command(self, ctx):
         await ctx.message.delete()
         await ctx.send('Понял Принял Обработал')
@@ -216,7 +208,6 @@ class Commands(Cog, name='Базовые команды'):
     @required_level(cmd["sp"]["required_level"])
     @guild_only()
     @cooldown(cmd["sp"]["cooldown_rate"], cmd["sp"]["cooldown_per_second"], BucketType.guild)
-    @logger.catch
     async def sp_command(self, ctx):
         await ctx.message.delete()
         await ctx.send('СП=справедливо=<:Spravedlivo:681858765158351124>')
@@ -232,7 +223,6 @@ class Commands(Cog, name='Базовые команды'):
     @is_channel(CONSOLE_CHANNEL)
     @guild_only()
     @cooldown(cmd["avatar"]["cooldown_rate"], cmd["avatar"]["cooldown_per_second"], BucketType.member)
-    @logger.catch
     async def display_member_avatar(self, ctx, member: Optional[Member]):
         await ctx.message.delete()
         if not member:
@@ -256,7 +246,6 @@ class Commands(Cog, name='Базовые команды'):
     @is_channel(CONSOLE_CHANNEL)
     @guild_only()
     @cooldown(cmd["covid"]["cooldown_rate"], cmd["covid"]["cooldown_per_second"], BucketType.member)
-    @logger.catch
     async def covid_stats_command(self, ctx, country: str = None):
         if not country:
             embed = Embed(
@@ -330,7 +319,6 @@ class Commands(Cog, name='Базовые команды'):
     @required_level(cmd["emoji"]["required_level"])
     @is_channel(CONSOLE_CHANNEL)
     @guild_only()
-    @logger.catch
     async def display_emoji_png(self, ctx, emoji: Greedy[EmojiConverter] = None):
         if emoji is None:
             await ctx.reply(
@@ -359,7 +347,6 @@ class Commands(Cog, name='Базовые команды'):
     @is_channel(CONSOLE_CHANNEL)
     @guild_only()
     @cooldown(cmd["info"]["cooldown_rate"], cmd["info"]["cooldown_per_second"], BucketType.member)
-    @logger.catch
     async def show_bot_info_command(self, ctx):
         embed = Embed(
             title="Информация о боте",
@@ -409,7 +396,6 @@ class Commands(Cog, name='Базовые команды'):
             hidden=cmd["fix"]["hidden"], enabled=True)
     @is_channel(MUSIC_COMMANDS_CHANNEL)
     @guild_only()
-    @logger.catch
     async def fix_music_player(self, ctx):
         await ctx.message.delete()
         if ctx.guild.me.voice is None:

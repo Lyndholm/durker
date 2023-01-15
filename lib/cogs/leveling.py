@@ -10,7 +10,6 @@ from discord import Embed, File, Member, Message, Status, TextChannel
 from discord.ext.commands import Cog, group, guild_only
 from discord.utils import remove_markdown
 from jishaku.functools import executor_function
-from loguru import logger
 from PIL import Image, ImageDraw, ImageFont
 
 from ..db import db
@@ -229,7 +228,6 @@ class Leveling(Cog, name='Система уровней'):
         )
         self.HEX_COLOR_REGEX = r"#(?:[0-9a-fA-F]{3}){1,2}"
 
-    @logger.catch
     async def can_message_be_counted(self, message: Message) -> bool:
         message_content = remove_markdown(message.clean_content)
         ctx = await self.bot.get_context(message)
@@ -248,7 +246,6 @@ class Leveling(Cog, name='Система уровней'):
                     else:
                         return False
 
-    @logger.catch
     async def process_xp(self, message: Message):
         level, xp, xp_total, xp_lock = db.fetchone(
             ['level', 'xp', 'xp_total', 'xp_lock'], 'leveling', 'user_id', message.author.id)
@@ -256,7 +253,6 @@ class Leveling(Cog, name='Система уровней'):
         if datetime.now() > xp_lock:
             await self.add_xp(message, xp, xp_total, level)
 
-    @logger.catch
     async def add_xp(self, message: Message, xp: int, xp_total: int, level: int):
         xp_to_add = randint(5, 15)
         xp_end = floor(5 * (level ^ 2) + 50 * level + 100)
@@ -272,7 +268,6 @@ class Leveling(Cog, name='Система уровней'):
                    datetime.now() + timedelta(seconds=60), message.author.id)
         db.commit()
 
-    @logger.catch
     async def increase_user_level(self,  message: Message, xp: int, xp_total: int, xp_to_add: int, xp_end: int, level: int):
         db.execute(
             "UPDATE leveling SET level = %s, xp = %s, xp_total = xp_total - %s WHERE user_id = %s",
@@ -314,7 +309,6 @@ class Leveling(Cog, name='Система уровней'):
            invoke_without_command=True)
     @is_any_channel([STATS_CHANNEL, CONSOLE_CHANNEL])
     @guild_only()
-    @logger.catch
     async def rank(self, ctx, *, member: Optional[Member]):
         target = await get_context_target(self.bot.pg_pool, ctx, member)
         if not target:

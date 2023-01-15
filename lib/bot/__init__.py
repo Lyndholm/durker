@@ -12,7 +12,6 @@ from discord.ext.commands import Bot as BotBase
 from discord.ext.commands import (Context, ExtensionAlreadyLoaded,
                                   ExtensionNotLoaded)
 from dotenv import load_dotenv
-from loguru import logger
 
 from ..db import async_db, db
 from ..utils.constants import (HIDEOUT_GUILD_ID, HIDEOUT_LOGS_CHANNEL,
@@ -20,12 +19,6 @@ from ..utils.constants import (HIDEOUT_GUILD_ID, HIDEOUT_LOGS_CHANNEL,
 from ..utils.utils import insert_new_user_in_db
 
 load_dotenv()
-logger.add("logs/{time:DD-MM-YYYY---HH-mm-ss}.log",
-           format="{time:DD-MM-YYYY HH:mm:ss} | {level} | {message}",
-           level="DEBUG",
-           enqueue=True,
-           rotation="00:00",
-           compression="zip")
 
 
 TOKEN = getenv('DISCORD_BOT_TOKEN')
@@ -100,7 +93,6 @@ class Bot(BotBase):
         except Exception as e:
             raise e
 
-    @logger.catch
     async def setup(self):
         for cog in COGS:
             await self.load_extension(f"lib.cogs.{cog}")
@@ -116,7 +108,6 @@ class Bot(BotBase):
 
         print("Running bot...")
 
-    @logger.catch
     async def load_mein_radio_cog_scheduler(self):
         try:
             cogs = (
@@ -133,7 +124,6 @@ class Bot(BotBase):
         except ExtensionAlreadyLoaded:
             pass
 
-    @logger.catch
     async def load_gachi_radio_cog_scheduler(self):
         try:
             cogs = (
@@ -150,7 +140,6 @@ class Bot(BotBase):
         except ExtensionAlreadyLoaded:
             pass
 
-    @logger.catch
     async def load_lofi_radio_cog_scheduler(self):
         try:
             cogs = (
@@ -167,7 +156,6 @@ class Bot(BotBase):
         except ExtensionAlreadyLoaded:
             pass
 
-    @logger.catch
     async def load_music_player_cog_scheduler(self):
         try:
             cogs = (
@@ -184,7 +172,6 @@ class Bot(BotBase):
         except ExtensionAlreadyLoaded:
             pass
 
-    @logger.catch
     def load_music_cogs(self, sched):
         sched.add_job(self.load_mein_radio_cog_scheduler, CronTrigger(
             day_of_week=0, hour=3), misfire_grace_time=300)
@@ -199,7 +186,6 @@ class Bot(BotBase):
         sched.add_job(self.load_music_player_cog_scheduler, CronTrigger(
             day_of_week=5, hour=3), misfire_grace_time=300)
 
-    @logger.catch
     async def process_commands(self, message):
         ctx = await self.get_context(message, cls=Context)
 
@@ -214,7 +200,6 @@ class Bot(BotBase):
             else:
                 await self.invoke(ctx)
 
-    @logger.catch
     async def on_ready(self):
         if not self.ready:
             self.guild = self.get_guild(MAIN_GUILD_ID)
@@ -258,7 +243,6 @@ class Bot(BotBase):
     async def on_disconnect(self):
         print("Bot disconnected")
 
-    @logger.catch
     async def on_message(self, message):
         await self.process_commands(message)
 

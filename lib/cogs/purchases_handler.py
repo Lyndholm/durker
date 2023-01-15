@@ -9,7 +9,6 @@ from discord import Color, Embed
 from discord.ext import tasks
 from discord.ext.commands import Cog, command, dm_only, guild_only, is_owner
 from discord.ext.menus import ListPageSource, MenuPages
-from loguru import logger
 
 from ..db import db
 from ..utils.checks import is_any_channel, is_channel
@@ -86,7 +85,6 @@ class PurchasesHandler(Cog, name='Покупки и не только'):
         if self.bot.ready:
             bot.loop.create_task(self.init_vars())
 
-    @logger.catch
     async def init_vars(self):
         self.mod_cog = self.bot.get_cog('Модерация')
         self.mecenat = self.bot.guild.get_role(MECENAT_ROLE_ID)
@@ -103,7 +101,6 @@ class PurchasesHandler(Cog, name='Покупки и не только'):
             self.bot.cogs_ready.ready_up("purchases_handler")
 
     @tasks.loop(hours=24.0)
-    @logger.catch
     async def check_mecenat_role(self):
         for member in self.bot.guild.members:
             if self.mod_cog.is_member_muted(member) or member.pending:
@@ -127,7 +124,6 @@ class PurchasesHandler(Cog, name='Покупки и не только'):
         await self.bot.wait_until_ready()
 
     @tasks.loop(hours=1.5)
-    @logger.catch
     async def check_support_role_task(self):
         for member in self.bot.guild.members:
             await self.check_support_roles(member)
@@ -136,7 +132,6 @@ class PurchasesHandler(Cog, name='Покупки и не только'):
     async def before_check_supporter_role(self):
         await self.bot.wait_until_ready()
 
-    @logger.catch
     async def check_support_roles(self, member):
         if self.mod_cog.is_member_muted(member) or member.pending:
             return
@@ -166,7 +161,6 @@ class PurchasesHandler(Cog, name='Покупки и не только'):
             hidden=cmd["addvbucks"]["hidden"], enabled=True)
     @dm_only()
     @is_owner()
-    @logger.catch
     async def addvbucks_command(self, ctx, user_id: int, amount: int, *, item: Optional[str] = 'Не указано'):
         member = self.bot.guild.get_member(user_id)
         purchases = db.fetchone(['purchases'], 'users_stats', 'user_id', user_id)[0]
@@ -198,7 +192,6 @@ class PurchasesHandler(Cog, name='Покупки и не только'):
             hidden=cmd["addrubles"]["hidden"], enabled=False)
     @dm_only()
     @is_owner()
-    @logger.catch
     async def addrubles_command(self, ctx, user_id: int, amount: int, *, item: Optional[str] = 'Не указано'):
         member = self.bot.guild.get_member(user_id)
         purchases = db.fetchone(['purchases'], 'users_stats', 'user_id', user_id)[0]
@@ -229,7 +222,6 @@ class PurchasesHandler(Cog, name='Покупки и не только'):
             hidden=cmd["resetpurchases"]["hidden"], enabled=True)
     @dm_only()
     @is_owner()
-    @logger.catch
     async def reset_user_purchases_command(self, ctx, user_id: int, *, reason: Optional[str] = 'Не указана'):
         data = db.fetchone(['purchases'], 'users_stats', 'user_id', user_id)[0]
         data['reason'] = reason

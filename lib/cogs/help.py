@@ -6,7 +6,6 @@ import aiofiles
 from discord import Color, Embed
 from discord.ext.commands import Cog, Command, check_any, command, dm_only
 from discord.utils import get
-from loguru import logger
 from transliterate import translit
 
 from ..utils.checks import is_any_channel
@@ -48,7 +47,6 @@ class Help(Cog, name='Help меню'):
              help=cmd["help"]["help"],
              hidden=cmd["help"]["hidden"], enabled=True)
     @check_any(dm_only(), is_any_channel([CONSOLE_CHANNEL, STATS_CHANNEL]))
-    @logger.catch
     async def help_command(self, ctx, *, cmd: Optional[str]):
         if cmd is None:
             embed = self.help_memu(ctx)
@@ -82,7 +80,6 @@ class Help(Cog, name='Help меню'):
         for i in range(0, len(l), n):
             yield l[i:i + n]
 
-    @logger.catch
     def help_memu(self, ctx):
         hidden_cogs = ['модерация']
         commands = []
@@ -124,7 +121,6 @@ class Help(Cog, name='Help меню'):
                 )
         return commands
 
-    @logger.catch
     def cog_helper(self, ctx, cog):
         name = cog.qualified_name or cog.__class__.__name__
         commands = []
@@ -160,7 +156,6 @@ class Help(Cog, name='Help меню'):
             )
         return commands
 
-    @logger.catch
     def command_helper(self, ctx, cmd):
         try:
             commands = []

@@ -3,7 +3,6 @@ import re
 from discord import Role, TextChannel
 from discord.ext.commands import Cog, command, guild_only, has_permissions
 from discord.utils import get
-from loguru import logger
 
 from ..db import db
 from ..utils.utils import load_commands_from_json
@@ -17,7 +16,6 @@ class ReactionRole(Cog, name='Роли за реакции'):
         if self.bot.ready:
             bot.loop.create_task(self.init_vars())
 
-    @logger.catch
     async def init_vars(self):
         self.mod_cog = self.bot.get_cog('Модерация')
 
@@ -27,7 +25,6 @@ class ReactionRole(Cog, name='Роли за реакции'):
             self.mod_cog = self.bot.get_cog('Модерация')
             self.bot.cogs_ready.ready_up("reactions")
 
-    @logger.catch
     async def edit_member_roles(self, guild_id: int, role_id: int, user_id: int, action: str):
         guild = self.bot.get_guild(guild_id)
         role = get(guild.roles, id=role_id)
@@ -78,7 +75,6 @@ class ReactionRole(Cog, name='Роли за реакции'):
             hidden=cmd["addreactionrole"]["hidden"], enabled=True)
     @has_permissions(administrator=True)
     @guild_only()
-    @logger.catch
     async def add_reaction_role_command(self, ctx, channel: TextChannel, message_id: int, emoji: str, role: Role):
         cursor = db.get_cursor()
         cursor.execute(f"SELECT emoji, role, message_id, channel_id FROM reactions WHERE guild_id = '{ctx.guild.id}' and message_id = '{message_id}'")
@@ -111,7 +107,6 @@ class ReactionRole(Cog, name='Роли за реакции'):
             hidden=cmd["removereactionrole"]["hidden"], enabled=True)
     @has_permissions(administrator=True)
     @guild_only()
-    @logger.catch
     async def remove_reaction_role_command(self, ctx, message_id: int, emoji: str):
         cursor = db.get_cursor()
         cursor.execute(f"SELECT emoji, role, message_id, channel_id FROM reactions WHERE guild_id = '{ctx.guild.id}' and message_id = '{message_id}'")

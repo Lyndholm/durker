@@ -6,7 +6,6 @@ from discord import Member
 from discord.ext import tasks
 from discord.ext.commands import Cog
 from discord.utils import get
-from loguru import logger
 
 from ..utils.utils import joined_date
 
@@ -22,7 +21,6 @@ class AchievementHandler(Cog, name='AchievementHandler'):
            self.bot.cogs_ready.ready_up("achievement_handler")
 
     @tasks.loop(hours=1.0)
-    @logger.catch
     async def achievements_manager(self):
         AS_COG = self.bot.get_cog('Система достижений')
         if not AS_COG:
@@ -51,7 +49,6 @@ class AchievementHandler(Cog, name='AchievementHandler'):
         user_achievements = [key for dic in data for key in dic.keys()]
         return user_achievements
 
-    @logger.catch
     async def handle_achievements(self, member: Member, achievements: List[str], cog: Cog):
         await self.writer_handler(member, achievements, cog)
         await self.old_handler(member, achievements, cog)
@@ -63,7 +60,6 @@ class AchievementHandler(Cog, name='AchievementHandler'):
         await self.leveling_handler(member, achievements, cog)
         await self.musicDJ_handler(member, achievements, cog)
 
-    @logger.catch
     async def writer_handler(self, member, achievements, cog):
         data = await self.bot.pg_pool.fetchval(
             'SELECT messages_count FROM users_stats WHERE user_id = $1',
@@ -100,7 +96,6 @@ class AchievementHandler(Cog, name='AchievementHandler'):
                 await cog.give_achievement(self.bot.guild.me.id, member.id, WRITER_6)
                 #await cog.achievement_award_notification(WRITER_6, member)
 
-    @logger.catch
     async def old_handler(self, member, achievements, cog):
         diff = datetime.utcnow() - (await joined_date(self.bot.pg_pool, member))
         OLD_1 = 'AID_Old_1'
@@ -140,7 +135,6 @@ class AchievementHandler(Cog, name='AchievementHandler'):
                 await cog.give_achievement(self.bot.guild.me.id, member.id, OLD_7)
                 #await cog.achievement_award_notification(OLD_7, member)
 
-    @logger.catch
     async def role_master_handler(self, member, achievements, cog):
         roles = len(member.roles) - 1
         ROLE_MASTER_1 = 'AID_RoleMaster_1'
@@ -170,7 +164,6 @@ class AchievementHandler(Cog, name='AchievementHandler'):
                 await cog.give_achievement(self.bot.guild.me.id, member.id, ROLE_MASTER_5)
                 #await cog.achievement_award_notification(ROLE_MASTER_5, member)
 
-    @logger.catch
     async def patron_handler(self, member, achievements, cog):
         data = await self.bot.pg_pool.fetchval(
             'SELECT purchases FROM users_stats WHERE user_id = $1',
@@ -210,7 +203,6 @@ class AchievementHandler(Cog, name='AchievementHandler'):
                 await cog.give_achievement(self.bot.guild.me.id, member.id, PATRON_6)
                 #await cog.achievement_award_notification(PATRON_6, member)
 
-    @logger.catch
     async def reputation_master_handler(self, member, achievements, cog):
         rep_rank = await self.bot.pg_pool.fetchval(
             'SELECT rep_rank FROM users_stats WHERE user_id = $1',
@@ -242,7 +234,6 @@ class AchievementHandler(Cog, name='AchievementHandler'):
                 await cog.give_achievement(self.bot.guild.me.id, member.id, REP_MASTER_5)
                 #await cog.achievement_award_notification(REP_MASTER_5, member)
 
-    @logger.catch
     async def kotleta_handler(self, member, achievements, cog):
         esport_role = get(member.guild.roles, name='Киберспортсмен')
         KOTLETA_1 = 'AID_Kotleta_1'
@@ -252,7 +243,6 @@ class AchievementHandler(Cog, name='AchievementHandler'):
                 await cog.give_achievement(self.bot.guild.me.id, member.id, KOTLETA_1)
                 #await cog.achievement_award_notification(KOTLETA_1, member)
 
-    @logger.catch
     async def philanthropist_handler(self, member, achievements, cog):
         stark_role = get(member.guild.roles, name='Филантроп')
         PHILANTHROPIST_1 = 'AID_Philanthropist_1'
@@ -262,7 +252,6 @@ class AchievementHandler(Cog, name='AchievementHandler'):
                 await cog.give_achievement(self.bot.guild.me.id, member.id, PHILANTHROPIST_1)
                 #await cog.achievement_award_notification(PHILANTHROPIST_1, member)
 
-    @logger.catch
     async def voice_master_handler(self, member, achievements, cog):
         seconds = await self.bot.pg_pool.fetchval(
             'SELECT invoice_time FROM users_stats WHERE user_id = $1',
@@ -295,7 +284,6 @@ class AchievementHandler(Cog, name='AchievementHandler'):
                 await cog.give_achievement(self.bot.guild.me.id, member.id, VOICE_MASTER_5)
                 #await cog.achievement_award_notification(VOICE_MASTER_5, member)
 
-    @logger.catch
     async def leveling_handler(self, member, achievements, cog):
         level = await self.bot.pg_pool.fetchval(
             'SELECT level FROM leveling WHERE user_id = $1',
@@ -332,7 +320,6 @@ class AchievementHandler(Cog, name='AchievementHandler'):
                 await cog.give_achievement(self.bot.guild.me.id, member.id, LEVELING_6)
                 #await cog.achievement_award_notification(LEVELING_6, member)
 
-    @logger.catch
     async def musicDJ_handler(self, member, achievements, cog):
         suggestions = await self.bot.pg_pool.fetch(
             "SELECT suggestion_id FROM song_suggestions "

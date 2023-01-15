@@ -6,7 +6,6 @@ from traceback import format_exception
 import discord
 from discord.ext import commands
 from discord.ext.commands import Cog, command, is_owner
-from loguru import logger
 
 from ..utils.utils import clean_code, load_commands_from_json
 
@@ -29,7 +28,6 @@ class Eval(Cog, name='EvalCog'):
     #         help=cmd["eval"]["help"],
     #         hidden=cmd["eval"]["hidden"], enabled=True)
     # @is_owner()
-    # @logger.catch
     # async def eval_command(self, ctx, *, code: str):
     #     code = clean_code(code)
 

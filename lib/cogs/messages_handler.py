@@ -5,7 +5,6 @@ import aiofiles
 from discord import Message, TextChannel, NotFound
 from discord.ext.commands import Cog
 from discord.utils import remove_markdown
-from loguru import logger
 
 from ..db import db
 from ..utils.decorators import listen_for_guilds
@@ -39,7 +38,6 @@ class MessagesHandler(Cog, name='Messages handler'):
 
         bot.loop.create_task(self.parse_questions_from_txt())
 
-    @logger.catch
     async def parse_questions_from_txt(self):
         async with aiofiles.open(f'data/txt/question_filter.txt', mode='r', encoding='utf-8') as f:
             lines = await f.readlines()
@@ -49,14 +47,12 @@ class MessagesHandler(Cog, name='Messages handler'):
             lines = await f.readlines()
             self.rep_filter = [line.strip() for line in lines if line != '']
 
-    @logger.catch
     async def invoke_command(self, message: Message, cmd: str):
         ctx = await self.bot.get_context(message)
         command = self.bot.get_command(cmd)
         ctx.command = command
         await self.bot.invoke(ctx)
 
-    @logger.catch
     async def can_message_be_counted(self, message: Message) -> bool:
         message_content = remove_markdown(message.clean_content)
         ctx = await self.bot.get_context(message)
@@ -75,7 +71,6 @@ class MessagesHandler(Cog, name='Messages handler'):
                     else:
                         return False
 
-    @logger.catch
     def increase_user_messages_counter(self, user_id: int):
         db.execute("UPDATE users_stats SET messages_count = messages_count + 1 WHERE user_id = %s",
                     user_id)
@@ -83,7 +78,6 @@ class MessagesHandler(Cog, name='Messages handler'):
                     datetime.now(), user_id)
         db.commit()
 
-    @logger.catch
     def decrease_user_messages_counter(self, user_id: int):
         db.execute("UPDATE users_stats SET messages_count = messages_count - 1 WHERE user_id = %s",
                     user_id)

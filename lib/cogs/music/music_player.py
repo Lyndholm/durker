@@ -13,7 +13,6 @@ import discord
 import wavelink
 from discord.ext import commands, menus
 from discord.ext.commands.errors import CheckFailure
-from loguru import logger
 
 from ...utils.checks import is_channel
 from ...utils.constants import MUSIC_COMMANDS_CHANNEL
@@ -525,7 +524,6 @@ class MusicPlayer(commands.Cog, wavelink.WavelinkMixin, name='Музыка'):
         hidden=cmd["connect"]["hidden"], enabled=True)
     @commands.guild_only()
     @is_channel(MUSIC_COMMANDS_CHANNEL)
-    @logger.catch
     async def connect(self, ctx: commands.Context, *, channel: discord.VoiceChannel = None):
         """Connect to a voice channel."""
         player: Player = self.bot.wavelink.get_player(guild_id=ctx.guild.id, cls=Player, context=ctx)
@@ -549,7 +547,6 @@ class MusicPlayer(commands.Cog, wavelink.WavelinkMixin, name='Музыка'):
         hidden=cmd["play"]["hidden"], enabled=True)
     @commands.guild_only()
     @is_channel(MUSIC_COMMANDS_CHANNEL)
-    @logger.catch
     async def play(self, ctx: commands.Context, *, query: str):
         """Play or queue a song with the given query."""
         player: Player = self.bot.wavelink.get_player(guild_id=ctx.guild.id, cls=Player, context=ctx)
@@ -594,7 +591,6 @@ class MusicPlayer(commands.Cog, wavelink.WavelinkMixin, name='Музыка'):
         hidden=cmd["pause"]["hidden"], enabled=True)
     @commands.guild_only()
     @is_channel(MUSIC_COMMANDS_CHANNEL)
-    @logger.catch
     async def pause(self, ctx: commands.Context):
         """Pause the currently playing song."""
         player: Player = self.bot.wavelink.get_player(guild_id=ctx.guild.id, cls=Player, context=ctx)
@@ -628,7 +624,6 @@ class MusicPlayer(commands.Cog, wavelink.WavelinkMixin, name='Музыка'):
         hidden=cmd["resume"]["hidden"], enabled=True)
     @commands.guild_only()
     @is_channel(MUSIC_COMMANDS_CHANNEL)
-    @logger.catch
     async def resume(self, ctx: commands.Context):
         """Resume a currently paused player."""
         player: Player = self.bot.wavelink.get_player(guild_id=ctx.guild.id, cls=Player, context=ctx)
@@ -668,7 +663,6 @@ class MusicPlayer(commands.Cog, wavelink.WavelinkMixin, name='Музыка'):
         hidden=cmd["skip"]["hidden"], enabled=True)
     @commands.guild_only()
     @is_channel(MUSIC_COMMANDS_CHANNEL)
-    @logger.catch
     async def skip(self, ctx: commands.Context):
         """Skip the currently playing song."""
         player: Player = self.bot.wavelink.get_player(guild_id=ctx.guild.id, cls=Player, context=ctx)
@@ -703,7 +697,6 @@ class MusicPlayer(commands.Cog, wavelink.WavelinkMixin, name='Музыка'):
         hidden=cmd["stop"]["hidden"], enabled=True)
     @commands.guild_only()
     @is_channel(MUSIC_COMMANDS_CHANNEL)
-    @logger.catch
     async def stop(self, ctx: commands.Context):
         """Stop the player and clear all internal states."""
         player: Player = self.bot.wavelink.get_player(guild_id=ctx.guild.id, cls=Player, context=ctx)
@@ -734,7 +727,6 @@ class MusicPlayer(commands.Cog, wavelink.WavelinkMixin, name='Музыка'):
         hidden=cmd["volume"]["hidden"], enabled=True)
     @commands.guild_only()
     @is_channel(MUSIC_COMMANDS_CHANNEL)
-    @logger.catch
     async def volume(self, ctx: commands.Context, *, vol: int):
         """Change the players volume, between 1 and 100."""
         player: Player = self.bot.wavelink.get_player(guild_id=ctx.guild.id, cls=Player, context=ctx)
@@ -761,7 +753,6 @@ class MusicPlayer(commands.Cog, wavelink.WavelinkMixin, name='Музыка'):
         hidden=cmd["shuffle"]["hidden"], enabled=True)
     @commands.guild_only()
     @is_channel(MUSIC_COMMANDS_CHANNEL)
-    @logger.catch
     async def shuffle(self, ctx: commands.Context):
         """Shuffle the players queue."""
         player: Player = self.bot.wavelink.get_player(guild_id=ctx.guild.id, cls=Player, context=ctx)
@@ -790,7 +781,6 @@ class MusicPlayer(commands.Cog, wavelink.WavelinkMixin, name='Музыка'):
     @commands.command(hidden=True)
     @commands.guild_only()
     @is_channel(MUSIC_COMMANDS_CHANNEL)
-    @logger.catch
     async def vol_up(self, ctx: commands.Context):
         """Command used for volume up button."""
         player: Player = self.bot.wavelink.get_player(guild_id=ctx.guild.id, cls=Player, context=ctx)
@@ -809,7 +799,6 @@ class MusicPlayer(commands.Cog, wavelink.WavelinkMixin, name='Музыка'):
     @commands.command(hidden=True)
     @commands.guild_only()
     @is_channel(MUSIC_COMMANDS_CHANNEL)
-    @logger.catch
     async def vol_down(self, ctx: commands.Context):
         """Command used for volume down button."""
         player: Player = self.bot.wavelink.get_player(guild_id=ctx.guild.id, cls=Player, context=ctx)
@@ -835,7 +824,6 @@ class MusicPlayer(commands.Cog, wavelink.WavelinkMixin, name='Музыка'):
         hidden=cmd["equalizer"]["hidden"], enabled=True)
     @commands.guild_only()
     @is_channel(MUSIC_COMMANDS_CHANNEL)
-    @logger.catch
     async def equalizer(self, ctx: commands.Context, *, equalizer: str):
         """Change the players equalizer."""
         player: Player = self.bot.wavelink.get_player(guild_id=ctx.guild.id, cls=Player, context=ctx)
@@ -870,7 +858,6 @@ class MusicPlayer(commands.Cog, wavelink.WavelinkMixin, name='Музыка'):
         hidden=cmd["queue"]["hidden"], enabled=True)
     @commands.guild_only()
     @is_channel(MUSIC_COMMANDS_CHANNEL)
-    @logger.catch
     async def queue(self, ctx: commands.Context):
         """Display the players queued songs."""
         player: Player = self.bot.wavelink.get_player(guild_id=ctx.guild.id, cls=Player, context=ctx)
@@ -897,7 +884,6 @@ class MusicPlayer(commands.Cog, wavelink.WavelinkMixin, name='Музыка'):
         hidden=cmd["nowplaying"]["hidden"], enabled=True)
     @commands.guild_only()
     @is_channel(MUSIC_COMMANDS_CHANNEL)
-    @logger.catch
     async def nowplaying(self, ctx: commands.Context):
         """Update the player controller."""
         player: Player = self.bot.wavelink.get_player(guild_id=ctx.guild.id, cls=Player, context=ctx)
@@ -917,7 +903,6 @@ class MusicPlayer(commands.Cog, wavelink.WavelinkMixin, name='Музыка'):
         hidden=cmd["loop"]["hidden"], enabled=True)
     @commands.guild_only()
     @is_channel(MUSIC_COMMANDS_CHANNEL)
-    @logger.catch
     async def loop(self, ctx: commands.Context, mode: typing.Optional[typing.Union[int, str]]):
         """Loop the player."""
         player: Player = self.bot.wavelink.get_player(guild_id=ctx.guild.id, cls=Player, context=ctx)
@@ -960,7 +945,6 @@ class MusicPlayer(commands.Cog, wavelink.WavelinkMixin, name='Музыка'):
         hidden=cmd["swap_dj"]["hidden"], enabled=True)
     @commands.guild_only()
     @is_channel(MUSIC_COMMANDS_CHANNEL)
-    @logger.catch
     async def swap_dj(self, ctx: commands.Context, *, member: discord.Member = None):
         """Swap the current DJ to another member in the voice channel."""
         player: Player = self.bot.wavelink.get_player(guild_id=ctx.guild.id, cls=Player, context=ctx)

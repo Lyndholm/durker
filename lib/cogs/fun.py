@@ -8,7 +8,6 @@ from aiohttp import ClientSession
 from discord import Color, Embed, Member
 from discord.ext.commands import (BucketType, Cog, Greedy, command, cooldown,
                                   guild_only, max_concurrency)
-from loguru import logger
 
 from ..utils.checks import is_channel, required_level
 from ..utils.constants import CONSOLE_CHANNEL
@@ -43,7 +42,6 @@ class Fun(Cog, name='Развлечения'):
     @is_channel(CONSOLE_CHANNEL)
     @guild_only()
     @cooldown(cmd["hug"]["cooldown_rate"], cmd["hug"]["cooldown_per_second"], BucketType.member)
-    @logger.catch
     async def hug_command(self, ctx, targets: Greedy[Member]):
         await ctx.message.delete()
         if not len(targets):
@@ -74,7 +72,6 @@ class Fun(Cog, name='Развлечения'):
             help=cmd["coin"]["help"],
             hidden=cmd["coin"]["hidden"], enabled=True)
     @required_level(cmd["coin"]["required_level"])
-    @logger.catch
     async def drop_coin_command(self, ctx):
         robot_choice = choice(["орёл", "решка"])
 
@@ -98,7 +95,6 @@ class Fun(Cog, name='Развлечения'):
     @is_channel(CONSOLE_CHANNEL)
     @guild_only()
     @cooldown(cmd["saper"]["cooldown_rate"], cmd["saper"]["cooldown_per_second"], BucketType.member)
-    @logger.catch
     async def saper_command(self, ctx):
         await ctx.message.delete()
 
@@ -224,7 +220,6 @@ class Fun(Cog, name='Развлечения'):
     @is_channel(CONSOLE_CHANNEL)
     @guild_only()
     @cooldown(cmd["flags"]["cooldown_rate"], cmd["flags"]["cooldown_per_second"], BucketType.guild)
-    @logger.catch
     async def guess_flags_command(self, ctx):
         event_members = {}
         async with aiofiles.open('./data/json/country_flags.json', mode='r', encoding = 'utf8') as f:
@@ -297,7 +292,6 @@ class Fun(Cog, name='Развлечения'):
     @required_level(cmd["knb"]["required_level"])
     @is_channel(CONSOLE_CHANNEL)
     @guild_only()
-    @logger.catch
     async def stone_scissors_paper_command(self, ctx, item: str):
         await ctx.message.delete()
         robot = ['Камень', 'Ножницы', 'Бумага']
@@ -375,7 +369,6 @@ class Fun(Cog, name='Развлечения'):
     @required_level(cmd["8ball"]["required_level"])
     @is_channel(CONSOLE_CHANNEL)
     @guild_only()
-    @logger.catch
     async def magic_ball_command(self, ctx, *, question: str):
         posible_answers = {
             "affirmative": {
@@ -417,7 +410,6 @@ class Fun(Cog, name='Развлечения'):
             usage=cmd["randint"]["usage"],
             help=cmd["randint"]["help"],
             hidden=cmd["randint"]["hidden"], enabled=True)
-    @logger.catch
     async def randint_command(self, ctx, a: int, b: int):
         embed = Embed(title="Генератор случайных чисел", description=f"Случайное целое число: **{randint(a,b)}**", color=Color.random())
         await ctx.reply(embed=embed, mention_author=False)

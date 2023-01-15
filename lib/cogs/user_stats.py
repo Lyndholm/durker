@@ -6,7 +6,6 @@ from typing import Optional
 from discord import Color, Embed, Member
 from discord.ext.commands import BucketType, Cog, command, cooldown, guild_only
 from discord.utils import get
-from loguru import logger
 
 from ..db import db
 from ..utils.checks import is_channel
@@ -34,7 +33,6 @@ class UserStats(Cog, name='Статистика'):
              hidden=cmd["profile"]["hidden"], enabled=True)
     @is_channel(STATS_CHANNEL)
     @guild_only()
-    @logger.catch
     async def fetch_member_profile_command(self, ctx, *, member: Optional[Member]):
         target = await get_context_target(self.bot.pg_pool, ctx, member)
         if not target:
@@ -170,7 +168,6 @@ class UserStats(Cog, name='Статистика'):
     @is_channel(STATS_CHANNEL)
     @guild_only()
     @cooldown(cmd["setbio"]["cooldown_rate"], cmd["setbio"]["cooldown_per_second"], BucketType.member)
-    @logger.catch
     async def setbio_command(self, ctx, *, bio: str = None):
         if bio is None:
             db_bio = db.fetchone(["brief_biography"], "users_info", "user_id", ctx.author.id)[0]
@@ -251,7 +248,6 @@ class UserStats(Cog, name='Статистика'):
         hidden=cmd["setprivacy"]["hidden"], enabled=True)
     @is_channel(STATS_CHANNEL)
     @guild_only()
-    @logger.catch
     async def set_user_profile_privacy_command(self, ctx):
         r_list = ['🟩', '🟥', '❌']
         embed = Embed(
@@ -327,7 +323,6 @@ class UserStats(Cog, name='Статистика'):
         hidden=cmd["amount"]["hidden"], enabled=True)
     @is_channel(STATS_CHANNEL)
     @guild_only()
-    @logger.catch
     async def amount_command(self, ctx, *, member: Optional[Member]):
         target = await get_context_target(self.bot.pg_pool, ctx, member)
         if not target:
@@ -380,7 +375,6 @@ class UserStats(Cog, name='Статистика'):
         hidden=cmd["rep"]["hidden"], enabled=True)
     @is_channel(STATS_CHANNEL)
     @guild_only()
-    @logger.catch
     async def reputation_command(self, ctx, *, member: Optional[Member]):
         target = await get_context_target(self.bot.pg_pool, ctx, member)
         if not target:
@@ -431,7 +425,6 @@ class UserStats(Cog, name='Статистика'):
         help=cmd["repinfo"]["help"],
         hidden=cmd["repinfo"]["hidden"], enabled=True)
     @guild_only()
-    @logger.catch
     async def how_rep_sys_works_command(self, ctx):
         embed = Embed(
             title="Репутация: что это, для чего нужна, как зарабатывать.",

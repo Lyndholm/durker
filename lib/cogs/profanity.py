@@ -6,7 +6,6 @@ from discord import File, Member, NotFound, RawMessageUpdateEvent, TextChannel
 from discord.ext.commands import (Cog, check_any, command, dm_only, guild_only,
                                   has_any_role, has_permissions, is_owner)
 from discord.utils import remove_markdown
-from loguru import logger
 
 from ..db import db
 from ..utils.constants import CHASOVOY_ROLE_ID
@@ -72,7 +71,6 @@ class Profanity(Cog, name='Мат-фильтр'):
 
     @Cog.listener()
     @listen_for_guilds()
-    @logger.catch
     async def on_message(self, message):
         content = remove_markdown(message.clean_content)
         if isinstance(message.channel, TextChannel) and not message.author.bot:
@@ -82,7 +80,6 @@ class Profanity(Cog, name='Мат-фильтр'):
                         await self.process_profanity(message.channel, message.author)
 
     @Cog.listener()
-    @logger.catch
     async def on_raw_message_edit(self, payload: RawMessageUpdateEvent):
         data = payload.data
         channel = self.bot.get_channel(payload.channel_id)
@@ -109,7 +106,6 @@ class Profanity(Cog, name='Мат-фильтр'):
         has_permissions(administrator=True)
     )
     @guild_only()
-    @logger.catch
     async def swear_command(self, ctx, target: Member = None):
         await ctx.message.delete()
         if target:
@@ -125,7 +121,6 @@ class Profanity(Cog, name='Мат-фильтр'):
             hidden=cmd["addprofanity"]["hidden"], enabled=True)
     @dm_only()
     @is_owner()
-    @logger.catch
     async def addprofanity_command(self, ctx, *words):
         async with aiofiles.open(f'./data/txt/profanity.txt', mode='a', encoding='utf-8') as f:
             await f.write("".join([f"{w}\n" for w in words]))
@@ -142,7 +137,6 @@ class Profanity(Cog, name='Мат-фильтр'):
             hidden=cmd["delprofanity"]["hidden"], enabled=True)
     @dm_only()
     @is_owner()
-    @logger.catch
     async def delprofanity_command(self, ctx, *words):
         async with aiofiles.open(f'./data/txt/profanity.txt', mode='r', encoding='utf-8') as f:
             lines = await f.readlines()

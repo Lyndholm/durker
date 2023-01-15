@@ -10,7 +10,6 @@ from discord import Color, Embed, Forbidden, Member
 from discord.ext.commands import (Cog, check_any, command, dm_only, guild_only,
                                   has_permissions, is_owner)
 from discord.ext.menus import ListPageSource, MenuPages
-from loguru import logger
 
 from ..utils.checks import is_channel, required_level
 from ..utils.constants import STATS_CHANNEL
@@ -96,7 +95,6 @@ class AchievementSystem(Cog, name='Система достижений'):
                    'LIKE $1', achievement)
         await edit_user_reputation(self.bot.pg_pool, target_id, action, rep_boost)
 
-    @logger.catch
     async def give_achievement(self, admin_id: int, target_id: int, achievement: str):
         if not (await self.user_have_achievement(target_id, achievement)):
             rec = await self.bot.pg_pool.fetchval(
@@ -122,7 +120,6 @@ class AchievementSystem(Cog, name='Система достижений'):
                 json.dumps(data, ensure_ascii=False), target_id)
             await self.edit_rep_for_achievement(target_id, achievement, '+')
 
-    @logger.catch
     async def take_achievement_away(self, target_id: int, achievement: str):
         if (await self.user_have_achievement(target_id, achievement)):
             data = await self.bot.pg_pool.fetchval(
@@ -137,7 +134,6 @@ class AchievementSystem(Cog, name='Система достижений'):
                 json.dumps(data, ensure_ascii=False), target_id)
             await self.edit_rep_for_achievement(target_id, achievement, '-')
 
-    @logger.catch
     def advanced_achievements_memu(self, ctx, data):
         achievements = []
 
@@ -163,7 +159,6 @@ class AchievementSystem(Cog, name='Система достижений'):
 
         return achievements
 
-    @logger.catch
     def advanced_user_achievements_menu(self, ctx, data):
         achievements = []
 
@@ -188,7 +183,6 @@ class AchievementSystem(Cog, name='Система достижений'):
 
         return achievements
 
-    @logger.catch
     def achievement_helper(self, ctx, data):
         embed = Embed(
            title=f'🎖️ Достижение: {data[2]}',
@@ -211,7 +205,6 @@ class AchievementSystem(Cog, name='Система достижений'):
 
         return [embed]
 
-    @logger.catch
     async def display_method(self, ctx) -> str:
         reactions = ['1️⃣', '2️⃣']
         embed = Embed(
@@ -244,7 +237,6 @@ class AchievementSystem(Cog, name='Система достижений'):
             method = None
         return method
 
-    @logger.catch
     async def achievement_award_notification(self, achievement: str, target: Member):
         data = await self.bot.pg_pool.fetchrow(
             'SELECT * FROM achievements WHERE '
@@ -271,7 +263,6 @@ class AchievementSystem(Cog, name='Система достижений'):
             hidden=cmd["achieve"]["hidden"], enabled=True)
     @check_any(dm_only(), is_channel(STATS_CHANNEL))
     @required_level(cmd["achieve"]["required_level"])
-    @logger.catch
     async def how_achievement_sys_works_command(self, ctx):
         embed = Embed(
             title='🏆 Достижения: что это, для чего нужны, как зарабатывать.',
@@ -302,7 +293,6 @@ class AchievementSystem(Cog, name='Система достижений'):
             hidden=cmd["achievements"]["hidden"], enabled=True)
     @check_any(dm_only(), is_channel(STATS_CHANNEL))
     @required_level(cmd["achievements"]["required_level"])
-    @logger.catch
     async def achievements_list_command(self, ctx):
         data = await self.bot.pg_pool.fetch(
             'SELECT * FROM achievements ORDER BY id')
@@ -338,7 +328,6 @@ class AchievementSystem(Cog, name='Система достижений'):
             hidden=cmd["getinfo"]["hidden"], enabled=True)
     @check_any(dm_only(), is_channel(STATS_CHANNEL))
     @required_level(cmd["getinfo"]["required_level"])
-    @logger.catch
     async def get_achievement_command(self, ctx, *, achievement: Optional[str]):
         if achievement:
             internal_id = await self.bot.pg_pool.fetchval(
@@ -371,7 +360,6 @@ class AchievementSystem(Cog, name='Система достижений'):
             hidden=cmd["inventory"]["hidden"], enabled=True)
     @check_any(dm_only(), is_channel(STATS_CHANNEL))
     @required_level(cmd["inventory"]["required_level"])
-    @logger.catch
     async def inventory_command(self, ctx):
         rec = await self.bot.pg_pool.fetchval(
             'SELECT achievements_list FROM users_stats WHERE user_id = $1',
@@ -423,7 +411,6 @@ class AchievementSystem(Cog, name='Система достижений'):
             hidden=cmd["addachievement"]["hidden"], enabled=True)
     @has_permissions(administrator=True)
     @guild_only()
-    @logger.catch
     async def add_achievement_to_user_command(self, ctx, member: Optional[Member], *, achievement: Optional[str]):
         if member is None:
             await ctx.reply(
@@ -468,7 +455,6 @@ class AchievementSystem(Cog, name='Система достижений'):
             hidden=cmd["removeachievement"]["hidden"], enabled=True)
     @has_permissions(administrator=True)
     @guild_only()
-    @logger.catch
     async def remove_achievement_from_user_command(self, ctx, member: Optional[Member], *, achievement: Optional[str]):
         if member is None:
             await ctx.reply(
@@ -513,7 +499,6 @@ class AchievementSystem(Cog, name='Система достижений'):
             hidden=cmd["resetachievements"]["hidden"], enabled=True)
     @is_owner()
     @dm_only()
-    @logger.catch
     async def reset_achievements_command(self, ctx, user_id: Optional[int]):
         if user_id is None:
             return await ctx.message.add_reaction('🟥')

@@ -10,7 +10,6 @@ from discord import (AuditLogAction, Color, Embed, File, Guild, Member,
                      VoiceState)
 from discord.channel import DMChannel
 from discord.ext.commands import Cog
-from loguru import logger
 
 from ..utils.constants import (ADMINS_CHANNEL, AUDIT_LOG_CHANNEL,
                                GVARDIYA_CHANNEL)
@@ -23,7 +22,6 @@ class Audit(Cog, name='Система Аудита'):
         if self.bot.ready:
             bot.loop.create_task(self.init_vars())
 
-    @logger.catch
     async def init_vars(self):
         self.log_channel = self.bot.get_channel(AUDIT_LOG_CHANNEL)
 
@@ -39,7 +37,6 @@ class Audit(Cog, name='Система Аудита'):
         return (list(set(l1) - set(l2)), list(set(l2) - set(l1)), list(set(l1) & set(l2)))
 
     @Cog.listener()
-    @logger.catch
     async def on_message_delete(self, message: Message):
         if not isinstance(message.channel, DMChannel):
             await asleep(1)
@@ -90,7 +87,6 @@ class Audit(Cog, name='Система Аудита'):
 
 
     @Cog.listener()
-    @logger.catch
     async def on_raw_message_delete(self, payload: RawMessageDeleteEvent):
         if not payload.cached_message:
             try:
@@ -111,7 +107,6 @@ class Audit(Cog, name='Система Аудита'):
 
 
     @Cog.listener()
-    @logger.catch
     async def on_bulk_message_delete(self, messages: List[Message]):
         if not isinstance (messages[0].channel, DMChannel):
             if messages[0].channel.id == ADMINS_CHANNEL or messages[0].channel.id == GVARDIYA_CHANNEL:
@@ -138,7 +133,6 @@ class Audit(Cog, name='Система Аудита'):
 
 
     @Cog.listener()
-    @logger.catch
     async def on_raw_bulk_message_delete(self, payload: RawBulkMessageDeleteEvent):
         if not payload.cached_messages:
             try:
@@ -160,7 +154,6 @@ class Audit(Cog, name='Система Аудита'):
 
 
     @Cog.listener()
-    @logger.catch
     async def on_message_edit(self, before: Message, after: Message):
         if not isinstance (after.channel, DMChannel):
             if not before.author.bot:
@@ -190,7 +183,6 @@ class Audit(Cog, name='Система Аудита'):
 
 
     @Cog.listener()
-    @logger.catch
     async def on_raw_message_edit(self, payload: RawMessageUpdateEvent):
         if not payload.cached_message:
             try:
@@ -228,7 +220,6 @@ class Audit(Cog, name='Система Аудита'):
 
 
     @Cog.listener()
-    @logger.catch
     async def on_member_join(self, member):
         embed = Embed(
             title=f"Новый участник на сервере.",
@@ -241,7 +232,6 @@ class Audit(Cog, name='Система Аудита'):
 
 
     @Cog.listener()
-    @logger.catch
     async def on_member_remove(self, member: Member):
         joined = await joined_date(self.bot.pg_pool, member)
         server_age = (datetime.utcnow() - joined).total_seconds()
@@ -262,7 +252,6 @@ class Audit(Cog, name='Система Аудита'):
 
 
     @Cog.listener()
-    @logger.catch
     async def on_member_update(self, before: Member, after: Member):
         if before.pending is True and after.pending is False:
             acc_age = (datetime.utcnow() - after.created_at).total_seconds()
@@ -307,7 +296,6 @@ class Audit(Cog, name='Система Аудита'):
 
 
     @Cog.listener()
-    @logger.catch
     async def on_member_ban(self, guild: Guild, user: Union[User, Member]):
         await asleep(2)
 
@@ -325,7 +313,6 @@ class Audit(Cog, name='Система Аудита'):
 
 
     @Cog.listener()
-    @logger.catch
     async def on_member_unban(self, guild: Guild, user: User):
         embed = Embed(title="Разбан пользователя", description=f"Пользователь **{user.display_name}** ({user.mention}) был разбанен.",
                 color=Color.dark_green(), timestamp=datetime.utcnow())
@@ -339,7 +326,6 @@ class Audit(Cog, name='Система Аудита'):
 
 
     @Cog.listener()
-    @logger.catch
     async def on_voice_state_update(self, member: Member, before: VoiceState, after: VoiceState):
         if before.channel is None and after.channel is not None:
             embed = Embed(

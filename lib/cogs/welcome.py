@@ -3,7 +3,6 @@ from datetime import datetime
 from discord import Color, Embed, Forbidden, Member
 from discord.ext.commands import Cog
 from discord.utils import get
-from loguru import logger
 
 from ..db import db
 from ..utils.constants import (AUDIT_LOG_CHANNEL, GOODBYE_CHANNEL,
@@ -18,7 +17,6 @@ class Welcome(Cog, name='Greetings'):
         if self.bot.ready:
             bot.loop.create_task(self.init_vars())
 
-    @logger.catch
     async def init_vars(self):
         self.mute_role = self.bot.guild.get_role(MUTE_ROLE_ID)
 
@@ -30,7 +28,6 @@ class Welcome(Cog, name='Greetings'):
 
 
     @Cog.listener()
-    @logger.catch
     async def on_member_update(self, before: Member, after: Member):
         if before.pending is True and after.pending is False:
             rec = db.fetchone(["user_id"], "mutes", "user_id", after.id)
@@ -73,12 +70,10 @@ class Welcome(Cog, name='Greetings'):
                 await after.edit(roles=[self.mute_role] + managed_roles)
 
     @Cog.listener()
-    @logger.catch
     async def on_member_join(self, member):
         await insert_new_user_in_db(self.bot.db, self.bot.pg_pool, member)
 
     @Cog.listener()
-    @logger.catch
     async def on_member_remove(self, member):
         if member.pending is True:
             await delete_user_from_db(self.bot.pg_pool, member.id)

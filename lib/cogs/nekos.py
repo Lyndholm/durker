@@ -9,7 +9,6 @@ from aiohttp import ClientSession
 from discord import Color, Embed, File
 from discord.ext import tasks
 from discord.ext.commands import BucketType, Cog, command, cooldown, guild_only
-from loguru import logger
 
 from ..utils.checks import is_channel, required_level
 from ..utils.constants import CONSOLE_CHANNEL
@@ -31,7 +30,6 @@ class Nekos(Cog, name='Аниме'):
         self.check_anime_suggestions.start()
 
     @tasks.loop(hours=3.0)
-    @logger.catch
     async def parse_anime_images(self):
         async with ClientSession() as session:
             for category in IMAGE_CATEGORIES:
@@ -45,7 +43,6 @@ class Nekos(Cog, name='Аниме'):
         await self.bot.wait_until_ready()
 
     @tasks.loop(minutes=30.0)
-    @logger.catch
     async def check_anime_suggestions(self):
         path = './data/json/anisuggestions.json'
         time = int(datetime.now().timestamp())
@@ -107,7 +104,6 @@ class Nekos(Cog, name='Аниме'):
     @is_channel(CONSOLE_CHANNEL)
     @guild_only()
     @cooldown(cmd["anipic"]["cooldown_rate"], cmd["anipic"]["cooldown_per_second"], BucketType.member)
-    @logger.catch
     async def random_anime_picture_command(self, ctx,
                                            repeat: Optional[int] = 1,
                                            category: Optional[str] = None):
@@ -137,7 +133,6 @@ class Nekos(Cog, name='Аниме'):
     @required_level(cmd["anisuggest"]["required_level"])
     @is_channel(CONSOLE_CHANNEL)
     @guild_only()
-    @logger.catch
     async def suggest_anime_picture_command(self, ctx, *images: Optional[str]):
         if not images and not ctx.message.attachments:
             await ctx.reply('Прикрепите к сообщению изображения, либо укажите ссылку на них.')

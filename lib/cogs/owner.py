@@ -9,7 +9,6 @@ from discord import Color, Embed, File
 from discord.ext.commands import Cog, command, dm_only, is_owner
 from discord.ext.menus import ListPageSource, MenuPages
 from discord.utils import get
-from loguru import logger
 
 from ..db import db
 from ..utils.checks import can_manage_radio_suggestions
@@ -68,7 +67,6 @@ class Owner(Cog, name='Команды разработчика'):
             hidden=cmd["loadcog"]["hidden"], enabled=True)
     @dm_only()
     @is_owner()
-    @logger.catch
     async def load_cog_command(self, ctx, *, cog: str):
         try:
             self.bot.load_extension(cog)
@@ -88,7 +86,6 @@ class Owner(Cog, name='Команды разработчика'):
             hidden=cmd["unloadcog"]["hidden"], enabled=True)
     @dm_only()
     @is_owner()
-    @logger.catch
     async def unload_cog_command(self, ctx, *, cog: str):
         try:
             self.bot.unload_extension(cog)
@@ -108,7 +105,6 @@ class Owner(Cog, name='Команды разработчика'):
             hidden=cmd["reloadcog"]["hidden"], enabled=True)
     @dm_only()
     @is_owner()
-    @logger.catch
     async def reload_cog_command(self, ctx, *, cog: str):
         try:
             self.bot.unload_extension(cog)
@@ -129,7 +125,6 @@ class Owner(Cog, name='Команды разработчика'):
             hidden=cmd["disablecmd"]["hidden"], enabled=True)
     @dm_only()
     @is_owner()
-    @logger.catch
     async def disable_cmd_command(self, ctx, *, cmd: str):
         try:
             command = self.bot.get_command(name=cmd)
@@ -154,7 +149,6 @@ class Owner(Cog, name='Команды разработчика'):
             hidden=cmd["enablecmd"]["hidden"], enabled=True)
     @dm_only()
     @is_owner()
-    @logger.catch
     async def enable_cmd_command(self, ctx, *, cmd: str):
         try:
             command = self.bot.get_command(name=cmd)
@@ -181,7 +175,6 @@ class Owner(Cog, name='Команды разработчика'):
             hidden=cmd["disabledcmds"]["hidden"], enabled=True)
     @dm_only()
     @is_owner()
-    @logger.catch
     async def show_disabled_cmds_command(self, ctx):
         disabled_cmds = [str(c) for c in self.bot.commands if not c.enabled]
         embed = Embed(
@@ -200,7 +193,6 @@ class Owner(Cog, name='Команды разработчика'):
             hidden=cmd["ping"]["hidden"], enabled=True)
     @dm_only()
     @is_owner()
-    @logger.catch
     async def ping_bot_command(self, ctx):
         start = time.monotonic()
         message = await ctx.reply(
@@ -218,7 +210,6 @@ class Owner(Cog, name='Команды разработчика'):
             hidden=cmd["fnping"]["hidden"], enabled=True)
     @dm_only()
     @is_owner()
-    @logger.catch
     async def ping_fortnite_apis_command(self, ctx):
         """Get the response time for APIs."""
         message = await ctx.reply("Response time for APIs:", mention_author=False)
@@ -285,7 +276,6 @@ class Owner(Cog, name='Команды разработчика'):
             hidden=cmd["bearer"]["hidden"], enabled=True)
     @dm_only()
     @is_owner()
-    @logger.catch
     async def fetch_bearer_token_command(self, ctx):
         async with ClientSession() as session:
             async with session.get('https://api.nitestats.com/v1/epic/bearer') as r:
@@ -314,7 +304,6 @@ class Owner(Cog, name='Команды разработчика'):
             hidden=cmd["suggestions"]["hidden"], enabled=True)
     @dm_only()
     @can_manage_radio_suggestions()
-    @logger.catch
     async def radio_suggestions_command(self, ctx):
         records = db.records("SELECT suggestion_id, suggestion_type, suggested_song, suggestion_comment "
                             "FROM song_suggestions WHERE curator_id IS NULL")
@@ -325,7 +314,6 @@ class Owner(Cog, name='Команды разработчика'):
             await ctx.reply('Открытых заявок нет.', mention_author=False)
 
 
-    @logger.catch
     async def pass_suggesion_decision(self, ctx, suggestion_id: int = None, decision: bool = None, comment: str = 'Отсутствует'):
         answer_text = f"Ваша заявка **№{suggestion_id}** {'одобрена' if decision else 'отклонена'}.\n" + f"Комментарий администратора: {comment}"
         attachments = ''
@@ -373,7 +361,6 @@ class Owner(Cog, name='Команды разработчика'):
             hidden=cmd["approve"]["hidden"], enabled=True)
     @dm_only()
     @can_manage_radio_suggestions()
-    @logger.catch
     async def approve_suggestion_command(self, ctx, suggestion_id: int = None, *, comment: str = 'Отсутствует.'):
         if suggestion_id is None:
             return await ctx.reply('Укажите номер заявки.', mention_author=False)
@@ -388,7 +375,6 @@ class Owner(Cog, name='Команды разработчика'):
             hidden=cmd["reject"]["hidden"], enabled=True)
     @dm_only()
     @can_manage_radio_suggestions()
-    @logger.catch
     async def reject_suggestion_command(self, ctx, suggestion_id: int = None, *, comment: str = 'Отсутствует.'):
         if suggestion_id is None:
             return await ctx.reply('Укажите номер заявки.', mention_author=False)
@@ -404,7 +390,6 @@ class Owner(Cog, name='Команды разработчика'):
             hidden=cmd["blacklist"]["hidden"], enabled=True)
     @dm_only()
     @is_owner()
-    @logger.catch
     async def blacklist_user_command(self, ctx, target_id: int = None, *, reason: Optional[str] = 'Не указана'):
         if target_id is None:
             return await ctx.message.add_reaction('❌')
@@ -423,7 +408,6 @@ class Owner(Cog, name='Команды разработчика'):
             hidden=cmd["whitelist"]["hidden"], enabled=True)
     @dm_only()
     @is_owner()
-    @logger.catch
     async def whitelist_user_command(self, ctx, target_id: int = None):
         if target_id is None:
             return await ctx.message.add_reaction('❌')
@@ -446,7 +430,6 @@ class Owner(Cog, name='Команды разработчика'):
             hidden=cmd["echo"]["hidden"], enabled=True)
     @dm_only()
     @is_owner()
-    @logger.catch
     async def echo_command(self, ctx, channel_id: int = None, *, content: str = '_ _'):
         try:
             channel = self.bot.get_channel(channel_id)
@@ -469,7 +452,6 @@ class Owner(Cog, name='Команды разработчика'):
             hidden=cmd["reply"]["hidden"], enabled=True)
     @dm_only()
     @is_owner()
-    @logger.catch
     async def message_reply_command(self, ctx, channel_id: int = None, message_id: int = None, *, content: str = '_ _'):
         try:
             channel = self.bot.get_channel(channel_id)
@@ -494,7 +476,6 @@ class Owner(Cog, name='Команды разработчика'):
             hidden=cmd["setrep"]["hidden"], enabled=True)
     @dm_only()
     @is_owner()
-    @logger.catch
     async def set_reputation_command(self, ctx, user_id: int, action: str, value: int):
         await edit_user_reputation(self.bot.pg_pool, user_id, action, value)
         await ctx.reply(embed=Embed(
@@ -514,7 +495,6 @@ class Owner(Cog, name='Команды разработчика'):
             hidden=cmd["setamount"]["hidden"], enabled=True)
     @dm_only()
     @is_owner()
-    @logger.catch
     async def set_amount_command(self, ctx, user_id: int, action: str, value: int):
         edit_user_messages_count(user_id, action, value)
         await ctx.reply(embed=Embed(
@@ -534,7 +514,6 @@ class Owner(Cog, name='Команды разработчика'):
             hidden=cmd["rolelist"]["hidden"], enabled=True)
     @dm_only()
     @is_owner()
-    @logger.catch
     async def rolelist_command(self, ctx, role_id: Optional[int]):
         if not role_id:
             await ctx.reply(
@@ -577,7 +556,6 @@ class Owner(Cog, name='Команды разработчика'):
             hidden=cmd["shutdown"]["hidden"], enabled=True)
     @dm_only()
     @is_owner()
-    @logger.catch
     async def shutdown_command(self, ctx):
         db.commit()
         self.bot.scheduler.shutdown()

@@ -3,7 +3,6 @@ from operator import itemgetter
 from discord import Embed
 from discord.ext.commands import Cog, command, guild_only
 from discord.ext.menus import ListPageSource, MenuPages
-from loguru import logger
 
 from ..db import db
 from ..utils.checks import is_channel
@@ -175,7 +174,6 @@ class Leaderboards(Cog, name='Списки лидеров'):
             hidden=cmd["achievementboard"]["hidden"], enabled=True)
     @is_channel(STATS_CHANNEL)
     @guild_only()
-    @logger.catch
     async def achievements_leaderboard_command(self, ctx):
         data = db.records("SELECT user_id, achievements_list FROM users_stats ORDER BY json_array_length(achievements_list->'user_achievements_list')")
         records = [(user_id, len(achievements['user_achievements_list'])) for user_id, achievements in data]
@@ -192,7 +190,6 @@ class Leaderboards(Cog, name='Списки лидеров'):
             hidden=cmd["levelboard"]["hidden"], enabled=True)
     @is_channel(STATS_CHANNEL)
     @guild_only()
-    @logger.catch
     async def leveling_leaderboard_command(self, ctx):
         records = db.records("SELECT user_id, level, xp FROM leveling ORDER BY xp_total DESC")
         menu = MenuPages(source=LevelsLeaderboardMenu(ctx, records), clear_reactions_after=True)
@@ -207,7 +204,6 @@ class Leaderboards(Cog, name='Списки лидеров'):
             hidden=cmd["messageboard"]["hidden"], enabled=True)
     @is_channel(STATS_CHANNEL)
     @guild_only()
-    @logger.catch
     async def messages_leaderboard_command(self, ctx):
         records = db.records("SELECT user_id, messages_count FROM users_stats ORDER BY messages_count DESC")
         menu = MenuPages(source=MessagesLeaderboardMenu(ctx, records), clear_reactions_after=True)
@@ -222,7 +218,6 @@ class Leaderboards(Cog, name='Списки лидеров'):
             hidden=cmd["reputationboard"]["hidden"], enabled=True)
     @is_channel(STATS_CHANNEL)
     @guild_only()
-    @logger.catch
     async def reputation_leaderboard_command(self, ctx):
         records = db.records("SELECT user_id, rep_rank FROM users_stats ORDER BY rep_rank DESC")
         menu = MenuPages(source=ReputationLeaderboardMenu(ctx, records), clear_reactions_after=True)

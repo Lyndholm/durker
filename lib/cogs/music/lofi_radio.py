@@ -11,7 +11,6 @@ import discord
 import wavelink
 from discord.ext import commands, menus
 from discord.ext.commands.errors import CheckFailure
-from loguru import logger
 
 from ...utils.checks import (can_manage_radio, is_channel,
                              radio_whitelisted_users)
@@ -388,7 +387,6 @@ class LofiRadio(commands.Cog, wavelink.WavelinkMixin, name='Lofi Radio'):
         hidden=True, enabled=True)
     @can_manage_radio()
     @is_channel(MUSIC_COMMANDS_CHANNEL)
-    @logger.catch
     async def connect(self, ctx: commands.Context, *, channel: discord.VoiceChannel = None):
         """Connect to a voice channel."""
         player: Player = self.bot.wavelink.get_player(guild_id=ctx.guild.id, cls=Player, context=ctx)
@@ -413,7 +411,6 @@ class LofiRadio(commands.Cog, wavelink.WavelinkMixin, name='Lofi Radio'):
         hidden=True, enabled=True)
     @can_manage_radio()
     @is_channel(MUSIC_COMMANDS_CHANNEL)
-    @logger.catch
     async def play(self, ctx: commands.Context, *, query: str):
         """Play or queue a song with the given query."""
         player: Player = self.bot.wavelink.get_player(guild_id=ctx.guild.id, cls=Player, context=ctx)
@@ -454,7 +451,6 @@ class LofiRadio(commands.Cog, wavelink.WavelinkMixin, name='Lofi Radio'):
         hidden=True, enabled=True)
     @can_manage_radio()
     @is_channel(MUSIC_COMMANDS_CHANNEL)
-    @logger.catch
     async def pause(self, ctx: commands.Context):
         """Pause the currently playing song."""
         player: Player = self.bot.wavelink.get_player(guild_id=ctx.guild.id, cls=Player, context=ctx)
@@ -476,7 +472,6 @@ class LofiRadio(commands.Cog, wavelink.WavelinkMixin, name='Lofi Radio'):
         hidden=True, enabled=True)
     @can_manage_radio()
     @is_channel(MUSIC_COMMANDS_CHANNEL)
-    @logger.catch
     async def resume(self, ctx: commands.Context):
         """Resume a currently paused player."""
         player: Player = self.bot.wavelink.get_player(guild_id=ctx.guild.id, cls=Player, context=ctx)
@@ -498,7 +493,6 @@ class LofiRadio(commands.Cog, wavelink.WavelinkMixin, name='Lofi Radio'):
         hidden=True, enabled=True)
     @can_manage_radio()
     @is_channel(MUSIC_COMMANDS_CHANNEL)
-    @logger.catch
     async def skip(self, ctx: commands.Context):
         """Skip the currently playing song."""
         player: Player = self.bot.wavelink.get_player(guild_id=ctx.guild.id, cls=Player, context=ctx)
@@ -524,7 +518,6 @@ class LofiRadio(commands.Cog, wavelink.WavelinkMixin, name='Lofi Radio'):
         hidden=True, enabled=True)
     @can_manage_radio()
     @is_channel(MUSIC_COMMANDS_CHANNEL)
-    @logger.catch
     async def stop(self, ctx: commands.Context):
         """Stop the player and clear all internal states."""
         player: Player = self.bot.wavelink.get_player(guild_id=ctx.guild.id, cls=Player, context=ctx)
@@ -546,7 +539,6 @@ class LofiRadio(commands.Cog, wavelink.WavelinkMixin, name='Lofi Radio'):
         hidden=True, enabled=True)
     @can_manage_radio()
     @is_channel(MUSIC_COMMANDS_CHANNEL)
-    @logger.catch
     async def volume(self, ctx: commands.Context, *, vol: int):
         """Change the players volume, between 1 and 100."""
         player: Player = self.bot.wavelink.get_player(guild_id=ctx.guild.id, cls=Player, context=ctx)
@@ -573,7 +565,6 @@ class LofiRadio(commands.Cog, wavelink.WavelinkMixin, name='Lofi Radio'):
         hidden=True, enabled=True)
     @can_manage_radio()
     @is_channel(MUSIC_COMMANDS_CHANNEL)
-    @logger.catch
     async def shuffle(self, ctx: commands.Context):
         """Shuffle the players queue."""
         player: Player = self.bot.wavelink.get_player(guild_id=ctx.guild.id, cls=Player, context=ctx)
@@ -597,7 +588,6 @@ class LofiRadio(commands.Cog, wavelink.WavelinkMixin, name='Lofi Radio'):
         help=cmd["queue"]["help"],
         hidden=False, enabled=True)
     @is_channel(MUSIC_COMMANDS_CHANNEL)
-    @logger.catch
     async def queue(self, ctx: commands.Context):
         """Display the players queued songs."""
         player: Player = self.bot.wavelink.get_player(guild_id=ctx.guild.id, cls=Player, context=ctx)
@@ -623,7 +613,6 @@ class LofiRadio(commands.Cog, wavelink.WavelinkMixin, name='Lofi Radio'):
         help=cmd["nowplaying"]["help"],
         hidden=False, enabled=True)
     @is_channel(MUSIC_COMMANDS_CHANNEL)
-    @logger.catch
     async def nowplaying(self, ctx: commands.Context):
         """Update the player controller."""
         player: Player = self.bot.wavelink.get_player(guild_id=ctx.guild.id, cls=Player, context=ctx)
