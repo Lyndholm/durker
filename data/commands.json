@@ -447,24 +447,6 @@
       "cooldown_type": "None",
       "hidden": true
     },
-    "shop": {
-      "name": "shop",
-      "aliases": [
-        "fnshop",
-        "brshop",
-        "магазин"
-      ],
-      "brief": "Отображает магазин предметов королевской битвы.",
-      "description": "Магазин предметов королевской битвы.",
-      "usage": "shop",
-      "help": "Просмотр магазина предметов королевской битвы.\nРаботает только на сервере в канале <#859921140805926932>.\n\n**Кулдаун:** отсутствует.\n**Необходимый уровень:** 0",
-      "required_level": 0,
-      "has_cooldown": false,
-      "cooldown_rate": 0,
-      "cooldown_per_second": 0,
-      "cooldown_type": "None",
-      "hidden": false
-    },
     "searchparams": {
       "name": "searchparams",
       "aliases": [
