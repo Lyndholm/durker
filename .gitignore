@@ -766,6 +766,3 @@ dev/
 .vscode/
 data/users_backup
 data/purchases_backup
-itemshop.jpg
-itemshop.png
-athena_cache.json
