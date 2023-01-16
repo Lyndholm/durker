@@ -1361,50 +1361,6 @@
       "hidden": true
     }
   },
-  "purchases_handler": {
-    "addvbucks": {
-      "name": "addvbucks",
-      "aliases": [],
-      "brief": "Добавление В-Баксов.",
-      "description": "Увеличивает счётчик потраченных В-Баксов.",
-      "usage": "addvbucks <user_id> <amount> [item]",
-      "help": "Увеличивает у пользователя счётчик потраченных с тегом В-Баксов.\nРаботает только в личных сообщениях.\nДоступно только разработчику бота.\n\n**Кулдаун:** отсутствует.\n**Необходимый уровень:** 0",
-      "required_level": 0,
-      "has_cooldown": false,
-      "cooldown_rate": 0,
-      "cooldown_per_second": 0,
-      "cooldown_type": "None",
-      "hidden": true
-    },
-    "addrubles": {
-      "name": "addrubles",
-      "aliases": [],
-      "brief": "Добавление рублей.",
-      "description": "Увеличивает счётчик потраченных рублей.",
-      "usage": "addrubles <user_id> <amount> [item]",
-      "help": "Увеличивает у пользователя счётчик потраченных рублей на покупки с тегом/донаты автору.\nРаботает только в личных сообщениях.\nДоступно только разработчику бота.\n\n**Кулдаун:** отсутствует.\n**Необходимый уровень:** 0",
-      "required_level": 0,
-      "has_cooldown": false,
-      "cooldown_rate": 0,
-      "cooldown_per_second": 0,
-      "cooldown_type": "None",
-      "hidden": true
-    },
-    "resetpurchases": {
-      "name": "resetpurchases",
-      "aliases": [],
-      "brief": "Сброс покупок.",
-      "description": "Сбрасывает статистику покупок.",
-      "usage": "resetpurchases <user_id> [reason]",
-      "help": "Сбрасывает статистику покупок пользователя, предварительно сделав дамп данных.\nРаботает только в личных сообщениях.\nДоступно только разработчику бота.\n\n**Кулдаун:** отсутствует.\n**Необходимый уровень:** 0",
-      "required_level": 0,
-      "has_cooldown": false,
-      "cooldown_rate": 0,
-      "cooldown_per_second": 0,
-      "cooldown_type": "None",
-      "hidden": true
-    }
-  },
   "reactions": {
     "addreactionrole": {
       "name": "addreactionrole",
