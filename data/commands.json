@@ -376,24 +376,6 @@
       "hidden": false
     }
   },
-  "eval": {
-    "eval": {
-      "name": "eval",
-      "aliases": [
-        "exec"
-      ],
-      "brief": "Выполнение скриптов удалённо.",
-      "description": "Выполняет на сервере бота написанный скрипт, возвращает результат.",
-      "usage": "eval <code>",
-      "help": "Debug команда. Выполняет на сервере бота написанный скрипт, возвращает результат.\nДоступно только разработчику бота.\n\n**Кулдаун:** отсутствует.\n**Необходимый уровень:** 0",
-      "required_level": 0,
-      "has_cooldown": false,
-      "cooldown_rate": 0,
-      "cooldown_per_second": 0,
-      "cooldown_type": "None",
-      "hidden": true
-    }
-  },
   "fortnite": {
     "searchcosmetic": {
       "name": "searchcosmetic",
