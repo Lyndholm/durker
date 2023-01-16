@@ -5,12 +5,10 @@ from os import getenv
 
 import asyncpg
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
-from apscheduler.triggers.cron import CronTrigger
 from better_profanity import Profanity
 from discord import Intents
 from discord.ext.commands import Bot as BotBase
-from discord.ext.commands import (Context, ExtensionAlreadyLoaded,
-                                  ExtensionNotLoaded)
+from discord.ext.commands import Context
 from dotenv import load_dotenv
 
 from ..db import async_db, db
@@ -68,8 +66,6 @@ class Bot(BotBase):
         except:
             self.banlist = []
 
-        self.load_music_cogs(self.scheduler)
-
         super().__init__(command_prefix=PREFIX,
                          case_insensitive=True,
                          strip_after_prefix=True,
@@ -107,84 +103,6 @@ class Bot(BotBase):
         await self.create_db_pool()
 
         print("Running bot...")
-
-    async def load_mein_radio_cog_scheduler(self):
-        try:
-            cogs = (
-                "lib.cogs.music.lofi_radio",
-                "lib.cogs.music.music_player",
-                "lib.cogs.music.gachi_radio"
-            )
-            for c in cogs:
-                try:
-                    self.unload_extension(c)
-                except ExtensionNotLoaded:
-                    continue
-            await self.load_extension("lib.cogs.music.mein_radio")
-        except ExtensionAlreadyLoaded:
-            pass
-
-    async def load_gachi_radio_cog_scheduler(self):
-        try:
-            cogs = (
-                "lib.cogs.music.lofi_radio",
-                "lib.cogs.music.music_player",
-                "lib.cogs.music.mein_radio"
-            )
-            for c in cogs:
-                try:
-                    self.unload_extension(c)
-                except ExtensionNotLoaded:
-                    continue
-            await self.load_extension("lib.cogs.music.gachi_radio")
-        except ExtensionAlreadyLoaded:
-            pass
-
-    async def load_lofi_radio_cog_scheduler(self):
-        try:
-            cogs = (
-                "lib.cogs.music.music_player",
-                "lib.cogs.music.mein_radio",
-                "lib.cogs.music.gachi_radio"
-            )
-            for c in cogs:
-                try:
-                    self.unload_extension(c)
-                except ExtensionNotLoaded:
-                    continue
-            await self.load_extension("lib.cogs.music.lofi_radio")
-        except ExtensionAlreadyLoaded:
-            pass
-
-    async def load_music_player_cog_scheduler(self):
-        try:
-            cogs = (
-                "lib.cogs.music.lofi_radio",
-                "lib.cogs.music.mein_radio",
-                "lib.cogs.music.gachi_radio"
-            )
-            for c in cogs:
-                try:
-                    self.unload_extension(c)
-                except ExtensionNotLoaded:
-                    continue
-            await self.load_extension("lib.cogs.music.music_player")
-        except ExtensionAlreadyLoaded:
-            pass
-
-    def load_music_cogs(self, sched):
-        sched.add_job(self.load_mein_radio_cog_scheduler, CronTrigger(
-            day_of_week=0, hour=3), misfire_grace_time=300)
-        sched.add_job(self.load_mein_radio_cog_scheduler, CronTrigger(
-            day_of_week=2, hour=3), misfire_grace_time=300)
-        sched.add_job(self.load_mein_radio_cog_scheduler, CronTrigger(
-            day_of_week=4, hour=3), misfire_grace_time=300)
-        sched.add_job(self.load_lofi_radio_cog_scheduler, CronTrigger(
-            day_of_week=1, hour=3), misfire_grace_time=300)
-        sched.add_job(self.load_lofi_radio_cog_scheduler, CronTrigger(
-            day_of_week=3, hour=3), misfire_grace_time=300)
-        sched.add_job(self.load_music_player_cog_scheduler, CronTrigger(
-            day_of_week=5, hour=3), misfire_grace_time=300)
 
     async def process_commands(self, message):
         ctx = await self.get_context(message, cls=Context)
