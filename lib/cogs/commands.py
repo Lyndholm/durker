@@ -186,32 +186,6 @@ class Commands(Cog, name='Базовые команды'):
                 'Пожалуйста, используйте соответствующий канал <#546416181871902730>. Любые сообщения с поиском игроков '
                 'в данном канале будут удалены.', file=File(f'./data/images/search_for_players/common/{choice(images)}'))
 
-    @command(name=cmd["ppo"]["name"], aliases=cmd["ppo"]["aliases"],
-            brief=cmd["ppo"]["brief"],
-            description=cmd["ppo"]["description"],
-            usage=cmd["ppo"]["usage"],
-            help=cmd["ppo"]["help"],
-            hidden=cmd["ppo"]["hidden"], enabled=True)
-    @required_level(cmd["ppo"]["required_level"])
-    @guild_only()
-    @cooldown(cmd["ppo"]["cooldown_rate"], cmd["ppo"]["cooldown_per_second"], BucketType.guild)
-    async def ppo_command(self, ctx):
-        await ctx.message.delete()
-        await ctx.send('Понял Принял Обработал')
-
-    @command(name=cmd["sp"]["name"], aliases=cmd["sp"]["aliases"],
-            brief=cmd["sp"]["brief"],
-            description=cmd["sp"]["description"],
-            usage=cmd["sp"]["usage"],
-            help=cmd["sp"]["help"],
-            hidden=cmd["sp"]["hidden"], enabled=True)
-    @required_level(cmd["sp"]["required_level"])
-    @guild_only()
-    @cooldown(cmd["sp"]["cooldown_rate"], cmd["sp"]["cooldown_per_second"], BucketType.guild)
-    async def sp_command(self, ctx):
-        await ctx.message.delete()
-        await ctx.send('СП=справедливо=<:Spravedlivo:681858765158351124>')
-
 
     @command(name=cmd["avatar"]["name"], aliases=cmd["avatar"]["aliases"],
             brief=cmd["avatar"]["brief"],

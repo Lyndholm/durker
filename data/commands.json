@@ -207,38 +207,6 @@
       "cooldown_type": "guild",
       "hidden": false
     },
-    "ppo": {
-      "name": "ppo",
-      "aliases": [
-        "ппо"
-      ],
-      "brief": "ППО это who?",
-      "description": "Расшифровка ППО.",
-      "usage": "ppo",
-      "help": "Расшифровка аббревиатуры ППО.\nРаботает только на сервере.\n\n**Кулдаун:** 10 минут, действует на весь сервер.\n**Необходимый уровень:** 3",
-      "required_level": 0,
-      "has_cooldown": true,
-      "cooldown_rate": 1,
-      "cooldown_per_second": 600,
-      "cooldown_type": "guild",
-      "hidden": false
-    },
-    "sp": {
-      "name": "sp",
-      "aliases": [
-        "сп"
-      ],
-      "brief": "СП это who?",
-      "description": "Расшифровка СП.",
-      "usage": "sp",
-      "help": "Расшифровка аббревиатуры СП.\nРаботает только на сервере.\n\n**Кулдаун:** 10 минут, действует на весь сервер.\n**Необходимый уровень:** 3",
-      "required_level": 0,
-      "has_cooldown": true,
-      "cooldown_rate": 1,
-      "cooldown_per_second": 600,
-      "cooldown_type": "guild",
-      "hidden": false
-    },
     "avatar": {
       "name": "avatar",
       "aliases": [
