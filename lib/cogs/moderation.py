@@ -3,11 +3,9 @@ import json
 import re
 from asyncio import sleep
 from datetime import datetime, timedelta
-from os import getenv
 from random import choice, randint
 from typing import Optional
 
-import aiohttp
 from discord import Color, Embed, Invite, Member, Message, PartialInviteGuild
 from discord.errors import NotFound
 from discord.ext import tasks
@@ -221,24 +219,13 @@ class Moderation(Cog, name='Модерация'):
             await ctx.reply('Укажите пользователя.', delete_after=15)
             return
 
-        if seconds > 2_592_000:
-            await ctx.reply('Время не может превышать 30 дней.', delete_after=15)
+        if seconds > 2_419_200:
+            await ctx.reply('Время не может превышать 28 дней.', delete_after=15)
             return
 
-        url = f"https://discord.com/api/v9/guilds/{ctx.guild.id}/members/{member.id}"
-        headers = {
-            "User-Agent": "Durker",
-            "Authorization": f"Bot {getenv('DISCORD_BOT_TOKEN')}",
-            "Content-Type": "application/json",
-        }
-        data = {
-            "communication_disabled_until": (datetime.utcnow() + timedelta(seconds=seconds)).isoformat() if seconds else None
-        }
+        until = datetime.utcnow() + timedelta(seconds=seconds) if seconds else None
 
-        async with aiohttp.ClientSession() as session:
-            async with session.patch(url, headers=headers, json=data) as r:
-                if not 200 <= r.status <= 299:
-                    await ctx.send('Что-то пошло не так, действие отменено.', delete_after=60)
+        await member.timeout(until)
 
 
     async def mute_members(
