@@ -1,7 +1,5 @@
 from datetime import datetime
-from difflib import get_close_matches
 
-import aiofiles
 from discord import Message, TextChannel, NotFound
 from discord.ext.commands import Cog
 from discord.utils import remove_markdown
@@ -13,8 +11,6 @@ from ..utils.decorators import listen_for_guilds
 class MessagesHandler(Cog, name='Messages handler'):
     def __init__(self, bot):
         self.bot = bot
-        self.rep_filter = []
-        self.question_filter = []
         self.profanity_whitelisted_users = (
             384728793895665675, #tvoya_pechal
             342783617983840257, #lexenus
@@ -36,23 +32,6 @@ class MessagesHandler(Cog, name='Messages handler'):
             777979537795055636, #testing на dev сервере
         )
 
-        bot.loop.create_task(self.parse_questions_from_txt())
-
-    async def parse_questions_from_txt(self):
-        async with aiofiles.open(f'data/txt/question_filter.txt', mode='r', encoding='utf-8') as f:
-            lines = await f.readlines()
-            self.question_filter = [line.strip() for line in lines if line != '']
-
-        async with aiofiles.open(f'data/txt/rep_filter.txt', mode='r', encoding='utf-8') as f:
-            lines = await f.readlines()
-            self.rep_filter = [line.strip() for line in lines if line != '']
-
-    async def invoke_command(self, message: Message, cmd: str):
-        ctx = await self.bot.get_context(message)
-        command = self.bot.get_command(cmd)
-        ctx.command = command
-        await self.bot.invoke(ctx)
-
     async def can_message_be_counted(self, message: Message) -> bool:
         message_content = remove_markdown(message.clean_content)
         ctx = await self.bot.get_context(message)
@@ -72,9 +51,7 @@ class MessagesHandler(Cog, name='Messages handler'):
                         return False
 
     def increase_user_messages_counter(self, user_id: int):
-        db.execute("UPDATE users_stats SET messages_count = messages_count + 1 WHERE user_id = %s",
-                    user_id)
-        db.execute("UPDATE users_stats SET last_message_date = %s WHERE user_id = %s",
+        db.execute("UPDATE users_stats SET messages_count = messages_count + 1, last_message_date = %s WHERE user_id = %s",
                     datetime.now(), user_id)
         db.commit()
 
@@ -94,15 +71,6 @@ class MessagesHandler(Cog, name='Messages handler'):
         if await self.can_message_be_counted(message):
             if message.author.id not in self.bot.banlist:
                 self.increase_user_messages_counter(message.author.id)
-
-        rep = get_close_matches(message.clean_content.lower(), self.rep_filter, cutoff=0.75)
-        if rep:
-            await self.invoke_command(message, 'repinfo')
-
-        question = get_close_matches(message.clean_content.lower(), self.question_filter, cutoff=0.85)
-        if question:
-            if message.channel.id != 546700132390010882:
-                await self.invoke_command(message, 'question')
 
         if message.channel.id == 639925210849476608 and message.author.id != 479499525921308703:
             try:
